@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenVAS Scanner
+After=network.target redis-server.service
+
+[Service]
+ExecStart=/usr/local/sbin/openvassd --foreground
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
