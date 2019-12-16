@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenVAS Manager
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/openvasmd --foreground
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

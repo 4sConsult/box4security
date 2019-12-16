@@ -1,0 +1,13 @@
+actions:
+        1:
+                action: delete_indices
+                description: "Delete BOX4security indices older than 30 days"
+                filters:
+                        - filtertype: age
+                          source: creation_date
+                          direction: older
+                          unit: days
+                          unit_count: 30
+                        - filtertype: pattern
+                          kind: regex
+                          value: '^(suricata|metricbeat-|logstash-).*$'
