@@ -60,7 +60,7 @@ echo "Installiere Suricata"
 echo
 echo
 cd /home/amadmin/qc_git/
-git clone https://github.com/OISF/suricata.git
+git clone https://github.com/OISF/suricata.git --branch suricata-5.0.1
 cd suricata
 echo "Hole libhtp"
 echo
@@ -137,16 +137,16 @@ done
 sudo cp * / -R
 sed -i "s/--af-packet=ens[^ ]*//g" /etc/systemd/system/suricata.service
 sed -i "s/\/etc\/suricata\/suricata.yaml /& $IFSTRING/" /etc/systemd/system/suricata.service
-suricata-update update-sources
-suricata-update
-suricata-update enable-source et/open
-suricata-update enable-source oisf/trafficid
-suricata-update enable-source ptresearch/attackdetection
-suricata-update enable-source sslbl/ssl-fp-blacklist
-#suricata-update enable-source sslbl/ja3-fingerprints #need to be checked for necessary
-suricata-update enable-source etnetera/aggressive
-suricata-update enable-source tgreen/hunting
-suricata-update
+/usr/local/bin/suricata-update update-sources
+/usr/local/bin/suricata-update
+/usr/local/bin/suricata-update enable-source et/open
+/usr/local/bin/suricata-update enable-source oisf/trafficid
+/usr/local/bin/suricata-update enable-source ptresearch/attackdetection
+/usr/local/bin/suricata-update enable-source sslbl/ssl-fp-blacklist
+#/usr/local/bin/suricata-update enable-source sslbl/ja3-fingerprints #need to be checked for necessary
+/usr/local/bin/suricata-update enable-source etnetera/aggressive
+/usr/local/bin/suricata-update enable-source tgreen/hunting
+/usr/local/bin/suricata-update
 
 
 sudo systemctl daemon-reload
@@ -241,11 +241,14 @@ rm ip2asn-combined.tsv
 echo "Initialisiere Systemvariablen"
 echo
 echo
-IPINFO=$(ip a | grep -E "inet 192" ) #TODO Make it more flexible for 10 and 172 addresses
+IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
 echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
+# Set INT-IP as --allow-header-host
+sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/multi-user.target.wants/greenbone-security-assistant.service
+sudo systemctl daemon-reload
 #Copy postgres driver
 sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-core/lib/jars/
 # make /data writeable to Elasticsearch
