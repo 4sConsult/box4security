@@ -1,0 +1,198 @@
+# List of pipelines to be loaded by Logstash
+#
+# This document must be a list of dictionaries/hashes, where the keys/values are pipeline settings.
+# Default values for ommitted settings are read from the `logstash.yml` file.
+# When declaring multiple pipelines, each MUST have its own `pipeline.id`.
+#
+# Example of two pipelines:
+#
+#- pipeline.id: beats
+#  path.config: "/etc/logstash/conf.d/beats.conf"
+#  - pipeline.id: suricata
+#    path.config: "/etc/logstash/conf.d/suricata/suricata.conf"
+#
+#
+# Elastic Search outputs
+#
+- pipeline.id: estransfer_nmap_output
+  path.config: "/etc/logstash/conf.d/estransfer/nmap_es_transfer.conf"
+- pipeline.id: estransfer_openvas_output
+  path.config: "/etc/logstash/conf.d/estransfer/openvas_es_transfer.conf"
+- pipeline.id: estranster_packetbeat_output
+  path.config: "/etc/logstash/conf.d/estransfer/packetbeat_es_transfer.conf"
+- pipeline.id: estransfer_suricata_output
+  path.config: "/etc/logstash/conf.d/estransfer/suricata_es_transfer.conf"
+- pipeline.id: estransfer_heartbeat_output
+  path.config: "/etc/logstash/conf.d/estransfer/heartbeat_es_transfer.conf"
+- pipeline.id: estransfer_winlogbeat_output
+  path.config: "/etc/logstash/conf.d/estransfer/winlogbeat_es_transfer.conf"
+- pipeline.id: estransfer_auditbeat_output
+  path.config: "/etc/logstash/conf.d/estransfer/auditbeat_es_transfer.conf"
+- pipeline.id: estransfer_metricbeat_output
+  path.config: "/etc/logstash/conf.d/estransfer/metricbeat_es_transfer.conf"
+
+  # MS SQL :output pipes
+#
+#- pipeline.id: sqltransfer_suricata_output
+#  path.config: "/etc/logstash/conf.d/sqltransfer/suricata_output_mssql.conf"
+#
+#- pipeline.id: sqltransfer_nmap_output
+#  path.config: "/etc/logstash/conf.d/sqltransfer/nmap_output_mssql.conf"
+#
+#- pipeline.id: sqltransfer_openvas_output
+#  path.config: "/etc/logstash/conf.d/sqltransfer/openvas_output_mssql.conf"
+#
+#- pipeline.id: sqltransfer_packetbeat_output
+#  path.config: "/etc/logstash/conf.d/sqltransfer/packetbeat_output_mssql.conf"
+
+  #Filter pipes
+  #
+- pipeline.id: openvas_filter
+  path.config: "/etc/logstash/conf.d/openvas/*.conf"
+  pipeline.workers: 1
+- pipeline.id: nmap_filter
+  path.config: "/etc/logstash/conf.d/nmap/*.conf"
+- pipeline.id: suricata_filter
+  queue.type: memory
+  pipeline.batch.delay: 150
+  queue.checkpoint.interval: 500
+  path.config: "/etc/logstash/conf.d/suricata/*.conf"
+- pipeline.id: packetbeat_filter
+  queue.type: memory
+  path.config: "/etc/logstash/conf.d/packetbeat/*.conf"
+- pipeline.id: auditbeat_filter
+  queue.type: memory
+  path.config: "/etc/logstash/conf.d/auditbeat/*.conf"
+- pipeline.id: heartbeat_filter
+  path.config: "/etc/logstash/conf.d/heartbeat/*.conf"
+- pipeline.id: winlogbeat_filter
+  path.config: "/etc/logstash/conf.d/winlogbeat/*.conf"
+- pipeline.id: metricbeat_filter
+  path.config: "/etc/logstash/conf.d/metricbeat/*.conf"
+
+  #
+  #
+  #Input pipes
+  #
+- pipeline.id: beats_input
+  queue.type: memory
+  queue.checkpoint.interval: 500
+  config.string: |
+   input { beats {
+             id => "input_beats"
+             client_inactivity_timeout => 180
+             host => "0.0.0.0"
+             port => "5044"
+          }}
+   output {
+   if [@metadata][beat] == "packetbeat" {
+      pipeline { send_to => ["packetbeat_pipe"] }
+   }
+   if [@metadata][beat] == "auditbeat" {
+      pipeline { send_to => ["auditbeat_pipe"] }
+   }
+   else if [@metadata][beat] == "heartbeat" {
+      pipeline { send_to => ["heartbeat_pipe"] }
+     }
+   else if [fields][event][type] == "suricata" {
+      pipeline { send_to => ["suricata_pipe"] }
+     }
+   else if [@metadata][beat] == "metricbeat" {
+      pipeline { send_to => ["metricbeat_pipe"] }
+     }
+    else if [fields][event][type] == "openvas" {
+      pipeline { send_to => ["openvas_pipe"] }
+     }
+
+   else { file { path => "/var/log/logstash/logstash_debug"  } }
+   }
+
+
+
+- pipeline.id: nmap_input
+  config.string: |
+   input { http {
+          host => "127.0.0.1"
+          port => "5045"
+          codec => nmap
+          tags => [nmap]
+        }}
+   output {
+   pipeline { send_to => ["nmap_output"] }
+   }
+
+- pipeline.id: winlogbeat_input
+  config.string: |
+   input { beats {
+          host => "0.0.0.0"
+          port => "5046"
+          type => "wincli-log"
+        }}
+   output {
+   pipeline { send_to => ["winlogbeat_pipe"] }
+   }   
+
+
+# Available options:
+#   # name of the pipeline
+#   pipeline.id: mylogs
+#
+#   # The configuration string to be used by this pipeline
+#   config.string: "input { generator {} } filter { sleep { time => 1 } } output { stdout { codec => dots } }"
+#
+#   # The path from where to read the configuration text
+#   path.config:etc/conf.d/logstash/myconfig.cfg"
+#
+#   # How many worker threads execute the Filters+Outputs stage of the pipeline
+#   pipeline.workers: 1 (actually defaults to number of CPUs)
+#
+#   # How many events to retrieve from inputs before sending to filters+workers
+#   pipeline.batch.size: 125
+#
+#   # How long to wait in milliseconds while polling for the next event
+#   # before dispatching an undersized batch to filters+outputs
+#pipeline.batch.delay: 50
+#
+#   # How many workers should be used per output plugin instance
+#   pipeline.output.workers: 1
+#
+#   # Internal queuing model, "memory" for legacy in-memory based queuing and
+#   # "persisted" for disk-based acked queueing. Defaults is memory
+#   queue.type: memory
+#
+#   # If using queue.type: persisted, the page data files size. The queue data consists of
+#   # append-only data files separated into pages. Default is 64mb
+#   queue.page_capacity: 64mb
+#
+#   # If using queue.type: persisted, the maximum number of unread events in the queue.
+#   # Default is 0 (unlimited)
+#   queue.max_events: 0
+#
+#   # If using queue.type: persisted, the total capacity of the queue in number of bytes.
+#   # Default is 1024mb or 1gb
+#   queue.max_bytes: 1024mb
+#
+#   # If using queue.type: persisted, the maximum number of acked events before forcing a checkpoint
+#   # Default is 1024, 0 for unlimited
+#   queue.checkpoint.acks: 1024
+#
+#   # If using queue.type: persisted, the maximum number of written events before forcing a checkpoint
+#   # Default is 1024, 0 for unlimited
+#   queue.checkpoint.writes: 1024
+#
+#   # If using queue.type: persisted, the interval in milliseconds when a checkpoint is forced on the head page
+#   # Default is 1000, 0 for no periodic checkpoint.
+#   queue.checkpoint.interval: 1000
+#
+#   # Enable Dead Letter Queueing for this pipeline.
+#   dead_letter_queue.enable: false
+#
+#   If using dead_letter_queue.enable: true, the maximum size of dead letter queue for this pipeline. Entries
+#   will be dropped if they would increase the size of the dead letter queue beyond this setting.
+#   Default is 1024mb
+#   dead_letter_queue.max_bytes: 1024mb
+#
+#   If using dead_letter_queue.enable: true, the directory path where the data files will be stored.
+#   Default is path.data/dead_letter_queue
+#
+#   path.dead_letter_queue:
