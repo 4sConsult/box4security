@@ -188,7 +188,7 @@ deactivate
 echo
 echo
 echo "Install Crontab"
-cd /home/amadmin/BOX4s-main/crontab
+cd /home/amadmin/box4s/BOX4s-main/crontab
 su - amadmin -c "crontab ~/box4s/BOX4s-main/crontab/amadmin.crontab"
 sudo crontab root.crontab
 echo "Initialisiere Datenbanken"
