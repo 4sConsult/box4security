@@ -13,7 +13,7 @@ if [[ ! -w $LOG_FILE ]]; then
 fi
 # Redirect STDOUT to LOG_FILE
 exec 1>>$LOG_FILE && exec 2>>$LOG_FILE
-cd /home/amadmin/qc_git/siem/system
+cd /home/amadmin/box4s
 
 sudo systemctl stop irqbalance
 sudo systemctl disable irqbalance
@@ -31,7 +31,7 @@ echo
 #Remove standard ubuntu kernel
 #sudo apt -y remove linux-generic linux-headers-generic linux-image-generic amd64-microcode iucode-tool intel-microcode libpcre16*
 sudo apt -y remove libpcre16* libpcre32*
-cd /home/amadmin/qc_git
+cd /home/amadmin/box4s
 wget  https://ftp.pcre.org/pub/pcre/pcre-8.43.zip
 unzip pcre-8.43.zip
 cd pcre-8.43
@@ -49,7 +49,7 @@ make install
 echo "Installiere libbpf"
 echo
 echo
-cd /home/amadmin/qc_git
+cd /home/amadmin/box4s
 git clone https://github.com/libbpf/libbpf.git
 cd libbpf/src/
 make -j8
@@ -59,15 +59,15 @@ sudo ldconfig
 echo "Installiere Suricata"
 echo
 echo
-cd /home/amadmin/qc_git/
-git clone https://github.com/OISF/suricata.git --branch suricata-5.0.1
-cd suricata
+cd /home/amadmin/box4s
+git clone https://github.com/OISF/suricata.git --branch suricata-5.0.1 suricata-git
+cd suricata-git
 echo "Hole libhtp"
 echo
 echo
 sudo apt remove -y libhtp2
-git clone https://github.com/OISF/libhtp.git -b 0.5.x
-cd libhtp
+git clone https://github.com/OISF/libhtp.git -b 0.5.x libhtp-git
+cd libhtp-git
 echo "Installiere libhtp"
 echo
 echo
@@ -80,8 +80,8 @@ cd ..
 echo "Installiere Hyperscan"
 echo
 echo
-git clone https://github.com/intel/hyperscan
-cd hyperscan
+git clone https://github.com/intel/hyperscan hyperscan-git
+cd hyperscan-git
 mkdir build
 cd build
 cmake -DBUILD_STATIC_AND_SHARED=1 ../
@@ -92,7 +92,7 @@ sudo ldconfig
 echo "Installiere suricata"
 echo
 echo
-cd /home/amadmin/qc_git/suricata
+cd /home/amadmin/box4s/suricata-git
 ./autogen.sh
 ./configure \
 --prefix=/usr/ --sysconfdir=/etc/ --localstatedir=/var/ \
@@ -121,9 +121,8 @@ echo "Installiere suricata update"
 echo
 echo
 pip3 install suricata-update
-cd /home/amadmin/qc_git/siem
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/suricata.git -b $TAG
-cd suricata
+cd /home/amadmin/box4s
+cd Suricata
 echo "Setze Suricata interfaces"
 echo
 echo
@@ -157,30 +156,29 @@ echo "Install Dashboards"
 echo ""
 echo
 echo
-cd /home/amadmin/qc_git/siem/
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/scripts.git -b $TAG
+cd /home/amadmin/box4s
 status_code=$(curl -XGET localhost:9200/_snapshot/kibana --write-out %{http_code} --silent --output /dev/null)
 if [[ "$status_code" -ne 200 ]] ; then
 	curl -XPUT localhost:9200/_snapshot/kibana -H "Content-Type: application/json" -d '{"type":"fs", "settings":{"location":"kibana"}}'
 fi
 sudo systemctl stop kibana
 curl -XDELETE localhost:9200/.kibana*
-cd /home/amadmin/qc_git/siem/kibana/home/amadmin
+cd /home/amadmin/box4s/Kibana/home/amadmin
 tar -xzf kibana.tar.gz
 sudo cp -r kibana /data/elasticsearch_backup/Snapshots/
 rm -r kibana
 SNAPNAME=$(curl -XGET localhost:9200/_snapshot/kibana/_all?pretty --silent | grep '"snapshot" :' | tail -n 1 | grep -Po ': "\K.*(?=")')
 curl -XPOST localhost:9200/_snapshot/kibana/$SNAPNAME/_restore
 sudo systemctl start kibana
+
 echo "Hole fetchqc"
 echo
 echo
 # curl -X POST "localhost:5601/api/saved_objects/_import" -H "kbn-xsrf: true" --form file=@home/amadmin/kibana-dashboard_v1.5.0.ndjson
 # Remove Cron entry
 echo "CREATE DATABASE \"box4S_db\" OWNER postgres;" | sudo -u postgres psql
-cd /home/amadmin/qc_git/siem/
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/fetch-qc.git -b $TAG
-cd fetch-qc
+cd /home/amadmin/box4s
+cd Fetch\ QC
 python3 -m venv .venv
 source .venv/bin/activate
 sed -i '/pkg-resources==0.0.0/g' requirements.txt
@@ -190,8 +188,8 @@ deactivate
 echo
 echo
 echo "Install Crontab"
-cd /home/amadmin/qc_git/siem/main/crontab
-su - amadmin -c "crontab ~/qc_git/siem/main/crontab/amadmin.crontab"
+cd /home/amadmin/BOX4s-main/crontab
+su - amadmin -c "crontab ~/box4s/BOX4s-main/crontab/amadmin.crontab"
 sudo crontab root.crontab
 echo "Initialisiere Datenbanken"
 echo
@@ -258,7 +256,7 @@ sudo chown suri:suri /data/suricata/ -R
 echo "Initialisiere Schwachstellendatenbank und hole aktuelle Angriffspattern"
 echo
 echo
-/home/amadmin/qc_git/siem/scripts/System_Scripts/update_system.sh
+/home/amadmin/box4s/Scripts/System_Scripts/update_system.sh
 # apply network/interfaces
 sudo systemctl restart networking
 sudo systemctl enable heartbeat-elastic
