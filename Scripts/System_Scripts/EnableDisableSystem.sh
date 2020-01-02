@@ -1,5 +1,5 @@
 #!/bin/bash
-script_dir=$BASEDIR/$GITDIR"scripts/Elastic_Scripts/"
+script_dir=$BASEDIR/$GITDIR"Scripts/Elastic_Scripts/"
 
 if [[ $EUID -ne 0 ]]; then
   echo "Enabe / Disable System erfordert root-Privilegien" 1>&2
