@@ -46,7 +46,7 @@ cd qc_git/siem
 git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/main.git -b $TAG
 
 sudo apt update
-sudo apt install -y rpm nsis alien openvas
+sudo apt install -y rpm nsis alien openvas=9.0.3
 #No update openvas -> update system @te
 sudo openvasmd --create-user amadmin
 sudo openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
@@ -74,7 +74,7 @@ sudo apt -y install openjdk-8-jre
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 sudo apt install -y apt-transport-https
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
-sudo apt update && sudo apt install -y elasticsearch
+sudo apt update && sudo apt install -y elasticsearch=7.5.0
 sudo mkdir /data/elasticsearch
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
 sudo chown elasticsearch:elasticsearch /data/elasticsearch_backup/ -R
@@ -100,31 +100,31 @@ sudo cp /home/amadmin/qc_git/siem/main/ssl/*.pem /etc/nginx/certs
 sudo chmod 500 /etc/nginx/certs/box4security.key.pem
 #Install Auditbeat
 sudo apt install -y auditd
-sudo apt install -y auditbeat
+sudo apt install -y auditbeat=7.5.0
 cd /home/amadmin/qc_git/siem/
 git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/auditbeat.git -b $TAG
 cd auditbeat/
 sudo cp * / -R
 #Install Metricbeat
-sudo apt install -y metricbeat
+sudo apt install -y metricbeat=7.5.0
 cd /home/amadmin/qc_git/siem/
 git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/metricbeat.git -b $TAG
 cd metricbeat
 sudo cp * / -R
 #Install Filebeat
-sudo apt install -y filebeat
+sudo apt install -y filebeat=7.5.0
 cd /home/amadmin/qc_git/siem/
 git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/filebeat.git -b $TAG
 cd filebeat
 sudo cp * / -R
 # Install Heartbeat
-sudo apt install -y heartbeat-elastic
+sudo apt install -y heartbeat-elastic=7.5.0
 cd /home/amadmin/qc_git/siem/
 git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/heartbeat.git -b $TAG
 cd heartbeat
 sudo cp * / -R
 #Install Kibana
-sudo apt install -y kibana
+sudo apt install -y kibana=7.5.0
 cd /home/amadmin/qc_git/siem/
 git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/kibana.git -b $TAG
 cd kibana
@@ -134,7 +134,7 @@ sudo chown kibana:kibana /etc/kibana/ -R
 sudo chown kibana:kibana /var/log/kibana/ -R
 
 #Install logstash
-sudo apt install -y logstash
+sudo apt install -y logstash=1:7.5.0-1
 cd /home/amadmin/qc_git/siem/
 git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/logstash.git -b $TAG
 cd logstash

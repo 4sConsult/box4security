@@ -15,7 +15,7 @@
 # Use a descriptive name for your cluster:
 #
 #cluster.name: testcluster
-cluster.name: testcluster
+cluster.name: box4scluster
 node.name: box4security
 
 #
@@ -24,10 +24,10 @@ node.name: box4security
 # Use a descriptive name for the node:
 #
 #node.name: box4security
-#node.master: true 
-#node.data: true 
-#node.ingest: true 
-#cluster.remote.connect: false 
+#node.master: true
+#node.data: true
+#node.ingest: true
+#cluster.remote.connect: false
 #index.mapper.dynamic: true
 #
 # Add custom attributes to the node:
@@ -80,12 +80,12 @@ discovery.type: single-node
 # Pass an initial list of hosts to perform discovery when new node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-#discovery.seed_hosts: 
+#discovery.seed_hosts:
 #       -localhost
 #File based seedhosts
 #discovery.seed_providers: localhost
 
-#cluster.initial_master_nodes: 
+#cluster.initial_master_nodes:
 #        -localhost
 discovery.zen.ping.unicast.hosts: ["localhost"]
 #
