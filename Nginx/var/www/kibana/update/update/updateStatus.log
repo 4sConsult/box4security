@@ -1,0 +1,6 @@
+/home/amadmin/box4s/BOX4s-main/update.Hole neue GIT Daten von Version 
+Starte Systemaktualisierung
+Ich befinde mich im updatescript für das Versionsupdate. Das ist im box4s Main Verzeichnis und heißt update-patch.sh
+Das script muss ausführbar sein und www-data gehören
+Das Updatescript muss exit 1 ausgeben, falls etwas schief läuft!!!! Das wird per trap um updatescript BOX4S-main/update.sh abgefangen und ABBRUCH ausgegeben. Dadurch wird das Frontend wieder freigegeben
+Update abgeschlossen
