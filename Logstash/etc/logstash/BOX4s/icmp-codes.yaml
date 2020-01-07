@@ -1,0 +1,50 @@
+"16.0" : "No Code" #
+"18.0" : "No Code" #
+"40.0" : "Bad SPI" #
+"40.1" : "Authentication Failed" #
+"40.2" : "Decompression Failed" #
+"40.3" : "Decryption Failed" #
+"40.4" : "Need Authentication" #
+"40.5" : "Need Authorization" #
+"10.0" : "No Code" #
+"15.0" : "No Code" #
+"4.0" : "No Code" #
+"3.0" : "Net Unreachable" #[RFC792]
+"3.1" : "Host Unreachable" #[RFC792]
+"3.2" : "Protocol Unreachable" #[RFC792]
+"3.3" : "Port Unreachable" #[RFC792]
+"3.4" : "Fragmentation Needed and Don't Fragment was Set" #[RFC792]
+"3.5" : "Source Route Failed" #[RFC792]
+"3.6" : "Destination Network Unknown" #[RFC1122]
+"3.7" : "Destination Host Unknown" #[RFC1122]
+"3.8" : "Source Host Isolated" #[RFC1122]
+"3.9" : "Communication with Destination Network is Administratively Prohibited" #[RFC1122]
+"3.10" : "Communication with Destination Host is Administratively Prohibited" #[RFC1122]
+"3.11" : "Destination Network Unreachable for Type of Service" #[RFC1122]
+"3.12" : "Destination Host Unreachable for Type of Service" #[RFC1122]
+"3.13" : "Communication Administratively Prohibited" #[RFC1812]
+"3.14" : "Host Precedence Violation" #[RFC1812]
+"3.15" : "Precedence cutoff in effect" #[RFC1812]
+"17.0" : "No Code" #
+"11.0" : "Time to Live exceeded in Transit" #
+"11.1" : "Fragment Reassembly Time Exceeded" #
+"12.0" : "Pointer indicates the error" #
+"12.1" : "Missing a Required Option" #[RFC1108]
+"12.2" : "Bad Length" #
+"5.0" : "Redirect Datagram for the Network (or subnet)" #
+"5.1" : "Redirect Datagram for the Host" #
+"5.2" : "Redirect Datagram for the Type of Service and Network" #
+"5.3" : "Redirect Datagram for the Type of Service and Host" #
+"9.0" : "Normal router advertisement" #[RFC3344]
+"9.16" : "Does not route common traffic" #[RFC3344]
+"42.0" : "No Error" #[RFC8335]
+"13.0" : "No Code" #
+"8.0" : "No Code" #
+"14.0" : "No Code" #
+"43.0" : "No Error" #[RFC8335]
+"43.1" : "Malformed Query" #[RFC8335]
+"43.2" : "No Such Interface" #[RFC8335]
+"43.3" : "No Such Table Entry" #[RFC8335]
+"43.4" : "Multiple Interfaces Satisfy Query" #[RFC8335]
+"0.0" : "No Code" #
+"6.0" : "Alternate Address for Host" #
