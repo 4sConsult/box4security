@@ -20,10 +20,10 @@ else
   REBOOT=true
 fi
 if [ "$1" != "" ]; then
-TAG_COUNT=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
+TAG_COUNT=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
 for((i=0; i<$TAG_COUNT; i++))
 do
-TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[$i]['name'])")
+TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[$i]['name'])")
 if [[ $TAG == $1 ]];then
         echo "Tag $TAG gefunden"
         break;
@@ -37,13 +37,11 @@ fi
 
 else
   # Ermittle aktuellsten Tag
-  TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
+  TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
 fi
 
 cd /home/amadmin
-mkdir qc_git/siem -p
-cd qc_git/siem
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/main.git -b $TAG
+git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4s.git -b $TAG
 
 sudo apt update
 sudo apt install -y rpm nsis alien openvas=9.0.3
@@ -63,12 +61,10 @@ pip install -r requirements.txt
 python setup.py install
 deactivate
 
-cd /home/amadmin
-mkdir qc_git/siem -p
-cd qc_git/siem
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/openvas.git -b $TAG
-cd openvas
+cd /home/amadmin/box4s
+cd OpenVAS
 sudo cp * / -R
+
 sudo apt -y install openjdk-8-jre
 #Install Elasticsearch
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
@@ -79,55 +75,54 @@ sudo mkdir /data/elasticsearch
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
 sudo chown elasticsearch:elasticsearch /data/elasticsearch_backup/ -R
 sudo chown elasticsearch:elasticsearch /data/elasticsearch/
-cd /home/amadmin/qc_git/siem
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/elasticsearch.git -b $TAG
-cd elasticsearch
+cd /home/amadmin/box4s
+cd Elasticsearch
 sudo cp * / -R
+
 # Install nginx
 sudo systemctl stop apache2
 sudo apt remove -y apache2
 sudo apt install -y nginx php7.3 php7.3-fpm
-cd /home/amadmin/qc_git/siem/
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/nginx.git -b $TAG
-cd nginx
+cd /home/amadmin/box4s
+cd Nginx
 PHPVER=$(php -v | grep -Po '(PHP) \K([0-9]\.[0-9]+)') # e.g. 7.3
 sed -i "s/php[0-9]\.[0-9]-fpm/php$PHPVER-fpm/g" etc/nginx/sites-available/default
 sudo cp * / -R
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
 sudo chown www-data:www-data /etc/nginx/certs
-sudo cp /home/amadmin/qc_git/siem/main/ssl/*.pem /etc/nginx/certs
+sudo cp /home/amadmin/box4s/BOX4s-main/ssl/*.pem /etc/nginx/certs
 sudo chmod 500 /etc/nginx/certs/box4security.key.pem
+
 #Install Auditbeat
 sudo apt install -y auditd
 sudo apt install -y auditbeat=7.5.0
-cd /home/amadmin/qc_git/siem/
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/auditbeat.git -b $TAG
-cd auditbeat/
+cd /home/amadmin/box4s/
+cd Auditbeat/
 sudo cp * / -R
+
 #Install Metricbeat
 sudo apt install -y metricbeat=7.5.0
-cd /home/amadmin/qc_git/siem/
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/metricbeat.git -b $TAG
-cd metricbeat
+cd /home/amadmin/box4s
+cd Metricbeat
 sudo cp * / -R
+
 #Install Filebeat
 sudo apt install -y filebeat=7.5.0
-cd /home/amadmin/qc_git/siem/
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/filebeat.git -b $TAG
-cd filebeat
+cd /home/amadmin/box4s
+cd Filebeat
 sudo cp * / -R
+
 # Install Heartbeat
 sudo apt install -y heartbeat-elastic=7.5.0
-cd /home/amadmin/qc_git/siem/
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/heartbeat.git -b $TAG
-cd heartbeat
+cd /home/amadmin/box4s
+cd Heartbeat
 sudo cp * / -R
+
 #Install Kibana
 sudo apt install -y kibana=7.5.0
-cd /home/amadmin/qc_git/siem/
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/kibana.git -b $TAG
-cd kibana
+cd /home/amadmin/box4s
+cd Kibana
 sudo mkdir -p /var/log/kibana
 sudo cp * / -R
 sudo chown kibana:kibana /etc/kibana/ -R
@@ -135,9 +130,8 @@ sudo chown kibana:kibana /var/log/kibana/ -R
 
 #Install logstash
 sudo apt install -y logstash=1:7.5.0-1
-cd /home/amadmin/qc_git/siem/
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/logstash.git -b $TAG
-cd logstash
+cd /home/amadmin/box4s
+cd Logstash
 sudo cp * / -R
 sudo chown logstash /etc/logstash/ -R
 sudo chown logstash /var/log/logstash/ -R
@@ -146,9 +140,8 @@ sudo chown logstash /var/log/logstash/ -R
 # Kernel necessary
 # Reboot required
 #sudo apt remove -yy -qq linux-image* linux-headers* linux-modules* amd64-microcode intel-microcode iucode-tool
-cd /home/amadmin/qc_git/siem
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4security/system.git -b $TAG
-sudo cp system/boot/* /boot/ -R
+cd /home/amadmin/box4s
+sudo cp System/boot/* /boot/ -R
 sudo update-grub
 sudo apt install -y msmtp msmtp-mta landscape-common
 sudo mkdir /home/downloads
@@ -165,9 +158,9 @@ PACKAGE=$(ls | grep dnsmasq-base_)
 sudo dpkg -i $PACKAGE
 PACKAGE=$(ls | grep dnsmasq)
 sudo dpkg -i $PACKAGE
-cd /home/amadmin/qc_git/siem/
-sudo cp system/etc/* /etc/ -R
-sudo cp system/home/amadmin/* /home/amadmin -R
+cd /home/amadmin/box4s
+sudo cp System/etc/* /etc/ -R
+sudo cp System/home/amadmin/* /home/amadmin -R
 sudo mkdir /var/log/dnsmasq
 sudo systemctl start dnsmasq
 sudo systemctl restart dnsmasq
@@ -191,11 +184,11 @@ sudo systemctl enable kibana
 sudo bash -c 'crontab -l > /tmp/crontab.root'
 sudo bash -c 'echo SHELL=/bin/bash >> /tmp/crontab.root'
 ESCAPED_LOG_FILE=$(echo $LOG_FILE | sed 's/\//\\\//g')
-cp /home/amadmin/qc_git/siem/main/install_system_after_reboot.sh /home/amadmin/qc_git/
-sudo chmod +x /home/amadmin/qc_git/install_system_after_reboot.sh
-sed -i '2s/.*$/LOG_FILE="'$ESCAPED_LOG_FILE'"/g' /home/amadmin/qc_git/install_system_after_reboot.sh
-sed -i '3s/.*$/BRANCH="'$TAG'"/g' /home/amadmin/qc_git/install_system_after_reboot.sh
-LOADER="@reboot /home/amadmin/qc_git/install_system_after_reboot.sh"
+cp /home/amadmin/box4s/BOX4s-main/install_system_after_reboot.sh /home/amadmin/
+sudo chmod +x /home/amadmin/install_system_after_reboot.sh
+sed -i '2s/.*$/LOG_FILE="'$ESCAPED_LOG_FILE'"/g' /home/amadmin/install_system_after_reboot.sh
+sed -i '3s/.*$/BRANCH="'$TAG'"/g' /home/amadmin/install_system_after_reboot.sh
+LOADER="@reboot /home/amadmin/install_system_after_reboot.sh"
 echo $LOADER | sudo tee -a /tmp/crontab.root
 sudo crontab /tmp/crontab.root
 sudo rm /tmp/crontab.root

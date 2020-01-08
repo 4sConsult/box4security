@@ -1,5 +1,5 @@
 BASEDIR=/home/amadmin/
-GITDIR=/qc_git/siem/
+GITDIR=/box4s/
 KUNDE="4s DEV DF"
 
 PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$BASEDIR/$GITDIR/Scripts/System_Scripts:$BASEDIR/$GITDIR/Scripts/Elastic_Scripts"
