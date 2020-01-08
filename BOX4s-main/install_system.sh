@@ -48,7 +48,7 @@ sudo apt install -y rpm nsis alien openvas=9.0.3
 #No update openvas -> update system @te
 sudo openvasmd --create-user amadmin
 sudo openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
-
+sudo openvasmd --rebuild --progress
 sudo apt install -y net-tools
 #Install vulnWhisperer
 sudo apt install -y  zlib1g-dev libxml2-dev libxslt1-dev virtualenv net-tools ifupdown python-pip python3-pip
