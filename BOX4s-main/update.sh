@@ -15,7 +15,9 @@ then
         exit 1
 fi
 echo "Hole neue GIT Daten von Version $TAG"
+git fetch
 git checkout -b $TAG
+git pull
 
 sleep 5;
 echo "Starte Systemaktualisierung"
