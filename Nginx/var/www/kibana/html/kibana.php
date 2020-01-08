@@ -19,11 +19,11 @@ function update() {$('.ui.modal').modal('show');}
 //Wenn das Auswahlmenü aufgerufen oder gespeichert wird.
 if((isset ($_GET['bpf_filter'])) || (isset ($_GET['set_bpf_filter']))){
 
-if(isset($_GET["src_ip"])){  $src_ip=$_GET["src_ip"]; } else { $src_ip=""; }
-if(isset($_GET["src_port"])){  $src_port=$_GET["src_port"]; } else { $src_port=""; }
-if(isset($_GET["dest_ip"])){  $dest_ip=$_GET["dest_ip"]; } else { $dest_ip=""; }
-if(isset($_GET["dest_port"])){  $dest_port=$_GET["dest_port"]; } else { $dest_port=""; }
-if(isset($_GET["proto"])){  $proto=$_GET["proto"]; } else { $proto=""; }
+if($_GET["src_ip"]!=""){  $src_ip=$_GET["src_ip"]; } else { $src_ip="0.0.0.0"; }
+if($_GET["src_port"]!=""){  $src_port=$_GET["src_port"]; } else { $src_port="0"; }
+if($_GET["dest_ip"]!=""){  $dest_ip=$_GET["dest_ip"]; } else { $dest_ip="0.0.0.0"; }
+if($_GET["dest_port"]!=""){  $dest_port=$_GET["dest_port"]; } else { $dest_port="0"; }
+if($_GET["proto"]!=""){  $proto=$_GET["proto"]; } else { $proto=""; }
 
 }//Ende setze Variablen für bpf Filter
 
@@ -34,43 +34,44 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
  if(isset ($_GET['set_bpf_filter'])) {
 	$query = "INSERT INTO blocks_by_bpffilter (src_ip,src_port,dst_ip,dst_port,proto) 
 		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto')";
-	 $result = pg_query($query) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
-
-       
-
-
-
-
-
-
+	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
 
 //Daten in Filterdatei schreiben
 	 
- $file="/usr/libexec/suricata/ebpf/bypass_filter.bpf";
-	unlink($file);
+ $file="/var/www/kibana/ebpf/bypass_filter.bpf";
+	//unlink($file);
 	$query ="SELECT * from blocks_by_bpffilter";
-	$filterentries[] = pg_fetch_assoc($query);
-	//	$result = pg_query($query);
-	//foreach($result AS 	
-	var_dump($filterentries);
+	$results = pg_query($query);
+	$filterrule="";
+	while ($row = pg_fetch_array($results)){
+	$filterrule.="!(";
+	if ($row['src_ip']!='0.0.0.0'){
+		$filterrule.="src host ".$row['src_ip'];}
+	if ($row['src_port']!='0'){
+		if ($row['src_ip']!='0.0.0.0'){ $filterrule.=" && ";}
+		$filterrule.="src port ".$row['src_port'];}
+        if ($row['dst_ip']!='0.0.0.0'){
+                if ($row['src_ip']!='0.0.0.0' || $row['src_port']!=0){ $filterrule.=" && ";}
+                $filterrule.="dst host ".$row['dst_ip'];}
+        if ($row['dst_port']!='0'){
+                if ($row['src_ip']!='0.0.0.0' || $row['src_port']!=0 || $row['dst_ip']!='0.0.0.0'){ $filterrule.=" && ";}
+                $filterrule.="dst port ".$row['dst_port'];}
+	      if ($row['proto']!=''){
+                if ($row['src_ip']!='0.0.0.0' || $row['src_port']!=0 || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!=0){ $filterrule.=" && ";}
+		$filterrule.="ip proto ".$row['proto'];}
+	$filterrule .=") &&\r\n";
+        }
 
+	//TODO: Proof if entry is in DB
+	//
+	//
+	$filterrule = substr($filterrule, 0, -4);
+	
 
-
-
-
-
-
-
-	$rule="not ("
-  . (isset($_POST["proto"]) ? $_POST['proto'] . " " : "" )
-  . (isset($_POST["srcip"]) ? "src host " . $_POST["srcip"] . " " : "" )
-  . (isset($_POST["srcport"]) ? "src port " . $_POST["srcport"] . " " : "" )
-  . (isset($_POST["dstip"]) ? "dst host " . $_POST["dstip"] . " " : "" )
-  . (isset($_POST["dstport"]) ? "dst port " . $_POST["dstport"] . " " : "" )
-  . ")\n";
-    //  file_put_contents($file, $rule, FILE_APPEND);
-
-
+    file_put_contents($file, $filterrule);
+	exec('sudo /var/www/kibana/html/restartSuricata.sh',$output,$return_var);
+	//echo ($return_var);
+	//print_r($output);
  }//close_setbpfFilter
 $_POST = array();
 $_GET = array();

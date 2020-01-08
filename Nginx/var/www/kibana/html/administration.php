@@ -13,29 +13,21 @@ header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 ?>
 <script>
-var updateStatus="";
+
 function sleep(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
-
-function updateUpdateStatus() {
-<?php 
-exec("tail -10 /var/www/kibana/html/update/updateStatus.log",$update);
-?>
-	updateStatus ="<?php echo(implode('<br>',$update));?>";
-	document.getElementById("updateStatus").innerHTML = updateStatus;
-}
-
 
 async function openUpdateModal() {
 $('.ui.modal')
   .modal('show')
 ;
-	
+var iframe = document.getElementById('dynamic');
+
 <?php
 if(isset($_POST['update'])) {
 exec("rm /var/www/kibana/html/update/updateStatus.log");
-$TAG=$POST["update"];
+$TAG=$_POST["update"];
 exec("sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' /home/amadmin/box4s/BOX4S-main/update.sh");
 }
 ?>
@@ -43,7 +35,6 @@ exec("sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' /home/amadmin/box4s/BOX4S-main/update.sh
 var updateStatus="";
 do {
 	// Iframe dynamicContent.php wird alle 2 sec neu aufgerufen und der Status geupdatet
-	var iframe = document.getElementById('dynamic');
 	  await sleep(1000);
 	  iframe.src="dynamicContent.php";
 	  await sleep(1000);
@@ -84,10 +75,9 @@ document.getElementById("dimmer").setAttribute('class','ui inverted dimmer');
 
 </div>
 <?php
-error_reporting(E_ALL & ~E_NOTICE);
 if(isset($_POST['update'])) {
        //Update.sh muss per Installscript und UpdateScript www-data gehören und +x bekommen	
-	passthru('/home/amadmin/box4s/BOX4s-main/update.sh '.$_POST['update'].'&',$return);
+	passthru('sudo /home/amadmin/box4s/BOX4s-main/update.sh '.$_POST['update'].'&',$return);
 }
 ?> 
   </div>
@@ -98,7 +88,9 @@ if(isset($_POST['update'])) {
 exec("curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header 'PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC' | python3 -c 'import sys, json; print(len(json.load(sys.stdin)))'",$curTag);
 exec("curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header 'PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC' | python3 -c 'import sys, json; print(len(json.load(sys.stdin)))'",$tagCount);
 exec("tail /home/amadmin/box4s/BOX4s-main/VERSION",$curVer);
-exec('curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$curTag);
+
+
+//exec('curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$curTag);
 for($ctr=0;$ctr<$tagCount[0];$ctr++){
 	exec('curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$tags[$ctr]);
 }
@@ -127,22 +119,22 @@ echo('<tr>');
 echo('<td class="right aligned">');
 echo($tags[$ctr][0]);
 echo('</td><td>');
+if ($ctr+1<$tagCount[0]){
 if ($curVer[0]==$tags[$ctr+1][0]){
 	echo('<form method="post" action="administration.php">');
 	
 	echo('<input type="hidden" value="'.$tags[$ctr][0].'" name="update">');
 	echo('<button class="ui button" type="submit">Update</button>');
 	echo('</form>');
-}
-elseif ($curVer[0]==$tags[$ctr][0]){
+}elseif ($curVer[0]==$tags[$ctr][0]){
 	echo('<i class="large green checkmark icon"></i>');
-}
-elseif ($curVer[0]> $tags[$ctr][0]){
+}elseif ($curVer[0]> $tags[$ctr][0]){
 	echo('<i class="large green checkmark icon"></i>');
 }elseif ($curVer[0]< $tags[$ctr][0]){
 echo('<i class="large red close icon"></i>');
 }
 echo ('</td>');
+}
 }
 ?>
 
