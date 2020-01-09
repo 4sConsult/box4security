@@ -1,5 +1,0 @@
-not (host 192.168.90.236) and
-not (host 192.168.90.235) and
-not (host 192.168.90.234) and
-not (host 192.168.90.29) and
-not (host 192.168.90.38)

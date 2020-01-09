@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Placeholder for TAG
-#
+
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
 exec 1>/var/www/kibana/html/update/updateStatus.log && exec 2>/var/www/kibana/html/update/updateStatus.log
 trap 'echo "ABBRUCH"'  1 2 3 15
@@ -21,7 +21,9 @@ git pull
 
 sleep 5;
 echo "Starte Systemaktualisierung"
+sudo chmod +x /home/amadmin/box4s/BOX4s-main/update.sh
 ./update-patch.sh
 #Diese letzte Meldung MUSS ausgegeben werden, damit das Frontend weiß, dass das Update abgeschlossen ist.
-echo "Update abgeschlossen"
+echo " "
+echo "<br>Update abgeschlossen<br>"
 
