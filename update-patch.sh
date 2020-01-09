@@ -47,3 +47,16 @@ echo "INSERT INTO blocks_by_bpffilter VALUES ('127.0.0.1',0,'0.0.0.0',0,'');" | 
 echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'127.0.0.1',0,'');" | sudo -u postgres psql box4S_db
 echo " Install Dashboards"
 sudo /home/amadmin/box4s/Scripts/Elastic_Scripts/import_saved_objects.sh /home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson
+
+echo "Führe OpenVAS rebuild aus"
+sudo openvasmd --rebuild --progress
+
+echo "Mache alle Scripts ausführbar"
+chmod +x -R $BASEDIR$GITDIR/Scripts
+
+echo "Installiere neuen Crontab"
+sudo crontab $BASEDIR$GITDIR/BOX4s-main/crontab/root.crontab
+
+echo "Installiere OpenVAS Scan Config"
+cp $BASEDIR$GITDIR/BOX4s-main/4s-OpenVAS.xml /home/amadmin
+$BASEDIR$GITDIR/Scripts/Automation/run-OpenVASinsertConf.sh
