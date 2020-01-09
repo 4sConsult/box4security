@@ -44,6 +44,6 @@ echo "not (dst host 127.0.0.1)"  | sudo tee -a  /var/www/kibana/ebpf/bypass_filt
 echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | sudo -u postgres psql box4S_db
 echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | sudo -u postgres psql box4S_db
 echo "INSERT INTO blocks_by_bpffilter VALUES ('127.0.0.1',0,'0.0.0.0',0,'');" | sudo -u postgres psql box4S_db
-echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'127.0.0.1',0,'');" | sudo -u postgres psql box4S_db
+echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'127.0.0.1',0,'');" | sudo -u postgres psql box4S_db
 echo " Install Dashboards"
 sudo /home/amadmin/box4s/Scripts/Elastic_Scripts/import_saved_objects.sh /home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson
