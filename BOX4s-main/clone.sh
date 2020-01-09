@@ -1,5 +1,7 @@
 #!/bin/bash
-
+echo
+echo "This script is deprecated and will be removed soon, in a future release." 
+echo
 # Clone Script
 # Clones all module repos to $BASEDIR$GITDIR e.g. /home/amadmin/qc_git/siem
 # It will ask once for authentication to gitlab and save credentials in cache for 15 minutes

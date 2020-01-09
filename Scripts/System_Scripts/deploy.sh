@@ -1,7 +1,9 @@
 #!/bin/bash
 # Purpose: Deploy the downloaded git repo to the config folders
 # Make sure to have updated the repo before.
-
+echo
+echo "This script is deprecated and will be removed soon, in a future release."
+echo
 if [[ $EUID -ne 0 ]]; then
        	echo "Deploy erfordert root-Privilegien" 1>&2
 	exit 1
