@@ -185,7 +185,8 @@ sed -i '/pkg-resources==0.0.0/g' requirements.txt
 pip install -r requirements.txt
 alembic upgrade head
 deactivate
-/home/amadmin/box4s/Scripts/Automation/run-OpenVASinsertConf.sh
+chmod +x -R $BASEDIR$GITDIR/Scripts
+$BASEDIR$GITDIR/Scripts/Automation/run-OpenVASinsertConf.sh
 echo
 echo
 echo "Install Crontab"
