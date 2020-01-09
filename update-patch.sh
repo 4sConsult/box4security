@@ -27,7 +27,7 @@ echo "
 
 sudo mkdir /var/www/kibana/html/update/
 sudo chown www-data:www-data /var/www/kibana/html/update/ -R
-#sudo cp -r /home/amadmin/box4s/Nginx/var/www/kibana/html/* /var/www/kibana/html/
+sudo cp -r /home/amadmin/box4s/Nginx/var/www/kibana/html/* /var/www/kibana/html/
 sudo mkdir /var/www/kibana/ebpf
 touch /var/www/kibana/ebpf/bypass_filter.bpf
 sudo chown suri:www-data /var/www/kibana/ebpf/bypass_filter.bpf -R
