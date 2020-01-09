@@ -50,6 +50,7 @@ sudo /home/amadmin/box4s/Scripts/Elastic_Scripts/import_saved_objects.sh /home/a
 
 echo "Führe OpenVAS rebuild aus"
 sudo openvasmd --rebuild --progress
+sudo systemctl restart openvas-manager
 
 echo "Mache alle Scripts ausführbar"
 chmod +x -R $BASEDIR$GITDIR/Scripts
