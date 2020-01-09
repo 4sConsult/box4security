@@ -15,7 +15,7 @@ MAILTO=box@4sconsult.de
 
 
 # Update Resources on Sunday at 9 am
-0 9 * * 7 $BASEDIR/$GITDIR/Scripts/Automation/resourceupdate.sh | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Resourceupdate-Log"
+0 9 * * 0 $BASEDIR/$GITDIR/Scripts/Automation/resourceupdate.sh | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Resourceupdate-Log"
 
 # Start openvasmanager if not running
 */1 * * * * $BASEDIR/$GITDIR/Scripts/Automation/startOpenVas.sh | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "startOpenVas-Log"
