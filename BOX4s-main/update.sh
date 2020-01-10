@@ -22,6 +22,8 @@ echo "Starte Systemaktualisierung"
 sudo chmod +x /home/amadmin/box4s/BOX4s-main/update.sh
 ./update-patch.sh
 #Diese letzte Meldung MUSS ausgegeben werden, damit das Frontend weiß, dass das Update abgeschlossen ist.
+#Das sleep sollte hier dirn bleiben
+sleep 2
 echo " "
 echo "<br>Update abgeschlossen<br>"
 
