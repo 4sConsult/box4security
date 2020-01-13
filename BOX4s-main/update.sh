@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-$TAG="1.2.3.4"
-#
+# Placeholder for TAG
+
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
 exec 1>/var/www/kibana/html/update/updateStatus.log && exec 2>/var/www/kibana/html/update/updateStatus.log
 trap 'echo "ABBRUCH"'  1 2 3 15
@@ -15,7 +15,9 @@ then
         exit 1
 fi
 echo "Hole neue GIT Daten von Version $TAG"
+git fetch
 git checkout -b $TAG
+git pull
 
 sleep 5;
 echo "Starte Systemaktualisierung"

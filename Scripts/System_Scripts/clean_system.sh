@@ -6,7 +6,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 
-script_dir=$BASEDIR/$GITDIR"/scripts/Elastic_Scripts"
+script_dir=$BASEDIR/$GITDIR"/Scripts/Elastic_Scripts"
 if [ "$1" == '--bitte-reinigen' ]
 then
 echo "Das System wird bereinigt"

@@ -1,5 +1,7 @@
 #!/bin/bash
-
+echo
+echo "This script is deprecated and will be removed soon, in a future release."
+echo
 # Deploy Script
 # Asks if previously run the clone script
 # Copies config files in their respective folder
