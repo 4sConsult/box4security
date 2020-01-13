@@ -56,11 +56,11 @@ document.getElementById("dimmer").setAttribute('class','ui inverted dimmer');
 
 <?php
 // Logik für die Anzeige der bereits installierten und installierbaren Versionen. CurVer ist die aktuell installierte Version.
-exec("curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header 'PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC' | python3 -c 'import sys, json; print(len(json.load(sys.stdin)))'",$tagCount);
+exec("curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s%2Fmain/repository/tags --header 'PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC' | python3 -c 'import sys, json; print(len(json.load(sys.stdin)))'",$tagCount);
 exec("tail /home/amadmin/box4s/BOX4s-main/VERSION",$curVer);
 
 for($ctr=0;$ctr<$tagCount[0];$ctr++){
-	exec('curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2FBOX4security%2Fmain/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$tags[$ctr]);
+	exec('curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s%2Fmain/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$tags[$ctr]);
 }
 ?>
 </head>
