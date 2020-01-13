@@ -78,8 +78,8 @@ echo "
 
 sudo touch /var/www/kibana/ebpf/15_kibana_filter.conf
 sudo ln /var/www/kibana/ebpf/15_kibana_filter.conf /etc/logstash/conf.d/suricata/15_kibana_filter.conf 
-sudo chown logstash:www-data 1/var/www/kibana/ebpf/5_kibana_filter.conf 
-sudo chmod 0664 1/var/www/kibana/ebpf/5_kibana_filter.conf 
+sudo chown logstash:www-data 1/var/www/kibana/ebpf/15_kibana_filter.conf 
+sudo chmod 0664 1/var/www/kibana/ebpf/15_kibana_filter.conf 
 
 sudo mkdir /var/www/kibana/html/update/
 sudo chown www-data:www-data /var/www/kibana/html/update/ -R
