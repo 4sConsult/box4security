@@ -21,10 +21,10 @@ echo "Hole neue GIT Daten von Version $TAG"
 git fetch
 git checkout -b $TAG
 git pull
-
 sleep 5;
 echo "Starte Systemaktualisierung"
-sudo chmod +x /home/amadmin/box4s/BOX4s-main/update.sh
+sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' /home/amadmin/box4s/update-patch.sh
+sudo chmod +x /home/amadmin/box4s/update-patch.sh
 ./update-patch.sh
 #Diese letzte Meldung MUSS ausgegeben werden, damit das Frontend weiß, dass das Update abgeschlossen ist.
 #Das sleep sollte hier dirn bleiben
