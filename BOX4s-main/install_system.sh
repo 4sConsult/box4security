@@ -8,8 +8,7 @@ LOG_FILE="/var/log/installScript.log"
 if [[ ! -w $LOG_FILE ]]; then
   LOG_FILE="/home/amadmin/installScript.log"
 fi
-# Redirect STDOUT to LOG_FILE
-exec 1>$LOG_FILE && exec 2>$LOG_FILE
+
 
 echo '193.104.90.111  lockedbox-bugtracker.am-gmbh.de' | sudo tee -a /etc/hosts
 sudo apt install -y curl python3 git
@@ -39,6 +38,11 @@ else
   # Ermittle aktuellsten Tag
   TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
 fi
+
+# Redirect STDOUT to LOG_FILE
+# DO NOT PUT THIS higher in source code because no error messages are thrown than
+exec 1>$LOG_FILE && exec 2>$LOG_FILE
+
 
 cd /home/amadmin
 git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4s.git -b $TAG
