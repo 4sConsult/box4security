@@ -9,10 +9,13 @@ echo "Dieses Script aktualisiert das System"
 sleep 2
 cd /home/amadmin/box4s/
 if [ $TAG == "" ]
+if [ $1 != ""]
 then
-        echo "Tag wurde nicht gesetzt"
-        echo "ABBRUCH"
-        exit 1
+        $TAG=$1
+        else
+                echo "Tag wurde nicht gesetzt"
+                echo "ABBRUCH"
+                exit 1
 fi
 echo "Hole neue GIT Daten von Version $TAG"
 git fetch
