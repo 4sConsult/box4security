@@ -96,7 +96,7 @@ cd /home/amadmin/box4s/suricata-git
 ./autogen.sh
 ./configure \
 --prefix=/usr/ --sysconfdir=/etc/ --localstatedir=/var/ \
---enable-nfqueue --disable-gccmarch-native \
+--enable-nfqueue --disable-gccmarch-native  --enable-non-bundled-htp --with-libhtp-includes=/usr/local/lib/ \
 --enable-geoip --enable-gccprotect  --enable-luajit --enable-pie --enable-ebpf --enable-ebpf-build
 make clean
 make -j8
