@@ -1,6 +1,6 @@
 #!/bin/bash
 python3 -m venv .venv-openvas
-source .venv/bin/activate
+source .venv-openvas/bin/activate
 pip install python-gvm
 python OpenVASinsertConf.py
 deactivate
