@@ -53,7 +53,22 @@ echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | 
 echo "INSERT INTO blocks_by_bpffilter VALUES ('127.0.0.1',0,'0.0.0.0',0,'');" | sudo -u postgres psql box4S_db
 echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'127.0.0.1',0,'');" | sudo -u postgres psql box4S_db
 echo " Install Dashboards"
-sudo /home/amadmin/box4s/Scripts/Elastic_Scripts/import_saved_objects.sh /home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson
+#Funktioniert nur bei frischen Installationen
+#sudo /home/amadmin/box4s/Scripts/Elastic_Scripts/import_saved_objects.sh /home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson
+echo "Install  new Suricata Index"
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --
+form file=@box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"index-pattern","id":"95298780-ce16-11e9-943f-fdbfa2556276","overwrite":true}]'
+echo "Install new Visualisations"
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualisation","id":"f73f0e40-e37e-11e9-a3a2-adf9cc70853f","overwrite":true}]'
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"search","id":"5dccc860-cef2-11e9-943f-fdbfa2556276","overwrite":true}]'
+
+
+echo "Install new Dashboard"
+echo "Achtung: Filtereinstellungen werden gelöscht."
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"dashboard","id":"a7bfd050-ce1d-11e9-943f-fdbfa2556276","overwrite":true}]'
+
+
+
 
 echo "Dieses Update installiert die logstash Alarmfilterfunktion"
 
