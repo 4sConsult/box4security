@@ -96,7 +96,7 @@ cd /home/amadmin/box4s/suricata-git
 ./autogen.sh
 ./configure \
 --prefix=/usr/ --sysconfdir=/etc/ --localstatedir=/var/ \
---enable-nfqueue --disable-gccmarch-native \
+--enable-nfqueue --disable-gccmarch-native  --enable-non-bundled-htp --with-libhtp-includes=/usr/local/lib/ \
 --enable-geoip --enable-gccprotect  --enable-luajit --enable-pie --enable-ebpf --enable-ebpf-build
 make clean
 make -j8
@@ -178,7 +178,7 @@ echo
 # Remove Cron entry
 echo "CREATE DATABASE \"box4S_db\" OWNER postgres;" | sudo -u postgres psql
 cd /home/amadmin/box4s
-cd Fetch\ QC
+cd FetchQC
 python3 -m venv .venv
 source .venv/bin/activate
 sed -i '/pkg-resources==0.0.0/g' requirements.txt
@@ -186,7 +186,8 @@ pip install -r requirements.txt
 alembic upgrade head
 deactivate
 chmod +x -R $BASEDIR$GITDIR/Scripts
-$BASEDIR$GITDIR/Scripts/Automation/run-OpenVASinsertConf.sh
+cd $BASEDIR$GITDIR/Scripts
+./run-OpenVASinsertConf.sh
 echo
 echo
 echo "Install Crontab"

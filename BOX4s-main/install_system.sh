@@ -8,8 +8,7 @@ LOG_FILE="/var/log/installScript.log"
 if [[ ! -w $LOG_FILE ]]; then
   LOG_FILE="/home/amadmin/installScript.log"
 fi
-# Redirect STDOUT to LOG_FILE
-exec 1>$LOG_FILE && exec 2>$LOG_FILE
+
 
 echo '193.104.90.111  lockedbox-bugtracker.am-gmbh.de' | sudo tee -a /etc/hosts
 sudo apt install -y curl python3 git
@@ -19,11 +18,14 @@ then
 else
   REBOOT=true
 fi
+#SEARCH FOR BRANCHES THIS IS A DEVELOPMENT FUNCTION SO LET THE BRANCHES HERE!!!!!!!!!
+#
+#
 if [ "$1" != "" ]; then
-TAG_COUNT=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
+TAG_COUNT=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/branches --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
 for((i=0; i<$TAG_COUNT; i++))
 do
-TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[$i]['name'])")
+TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/branches --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[$i]['name'])")
 if [[ $TAG == $1 ]];then
         echo "Tag $TAG gefunden"
         break;
@@ -37,8 +39,17 @@ fi
 
 else
   # Ermittle aktuellsten Tag
+  #
+  # Normal behavior search for tags.!!!!!!!!
+  #
+  #
   TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
 fi
+
+# Redirect STDOUT to LOG_FILE
+# DO NOT PUT THIS higher in source code because no error messages are thrown than
+exec 1>$LOG_FILE && exec 2>$LOG_FILE
+
 
 cd /home/amadmin
 git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4s.git -b $TAG
@@ -135,6 +146,30 @@ cd Logstash
 sudo cp * / -R
 sudo chown logstash /etc/logstash/ -R
 sudo chown logstash /var/log/logstash/ -R
+echo "Erstelle Links"
+cd /etc/logstash/conf.d/
+cd suricata
+ln -s ../general/AM-special.conf  30-4s_Special.conf
+cd ..
+cd filebeat
+ln -s  ../general/AM-special.conf 21-4s_Special.conf
+cd ..
+cd nmap
+ln -s  ../general/AM-special.conf 21-4s_Special.conf
+ln -s ../general/dns_resolv.conf 22-dns_resolv.conf
+cd ..
+cd openvas
+ln -s ../general/AM-special.conf 15-4s_Special.conf
+cd ..
+cd winlogbeat
+ln -s ../general/dns_resolv.conf 15-dns_resolv.conf
+cd ..
+cd metricbeat
+ln -s ../general/dns_resolv.conf 15-dns_resolv.conf
+cd ..
+cd packetbeat
+ln -s ../general/dns_resolv.conf 21-dns_resolv.conf
+ln -s ../general/AM-special.conf 25-4s_Special.conf
 # Install System depedencies
 # Install suricata
 # Kernel necessary

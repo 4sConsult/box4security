@@ -10,20 +10,27 @@ sleep 2
 cd /home/amadmin/box4s/
 if [ $TAG == "" ]
 then
-        echo "Tag wurde nicht gesetzt"
-        echo "ABBRUCH"
-        exit 1
+if [ $1 != ""]
+then
+        $TAG=$1
+        else
+                echo "Tag wurde nicht gesetzt"
+                echo "ABBRUCH"
+                exit 1
+fi
 fi
 echo "Hole neue GIT Daten von Version $TAG"
 git fetch
 git checkout -b $TAG
 git pull
-
 sleep 5;
 echo "Starte Systemaktualisierung"
-sudo chmod +x /home/amadmin/box4s/BOX4s-main/update.sh
+sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' /home/amadmin/box4s/update-patch.sh
+sudo chmod +x /home/amadmin/box4s/update-patch.sh
 ./update-patch.sh
 #Diese letzte Meldung MUSS ausgegeben werden, damit das Frontend weiß, dass das Update abgeschlossen ist.
+#Das sleep sollte hier dirn bleiben
+sleep 2
 echo " "
 echo "<br>Update abgeschlossen<br>"
 
