@@ -186,7 +186,8 @@ pip install -r requirements.txt
 alembic upgrade head
 deactivate
 chmod +x -R $BASEDIR$GITDIR/Scripts
-$BASEDIR$GITDIR/Scripts/Automation/run-OpenVASinsertConf.sh
+cd $BASEDIR$GITDIR/Scripts
+./run-OpenVASinsertConf.sh
 echo
 echo
 echo "Install Crontab"
