@@ -6,8 +6,8 @@ After=network.target
 Type=forking
 ExecStartPre=-/bin/mkdir /var/run/suricata
 ExecStartPre=/bin/chown -R suri:suri /var/run/suricata
-#ExecStart=/usr/bin/suricata -c /etc/suricata/suricata.yaml --af-packet=ens192 --af-packet=ens224 -D --pidfile /var/run/suricata/suricata.pid -vvv "not host 192.168.90.236"
-ExecStart=/usr/bin/suricata -c /etc/suricata/suricata.yaml --af-packet=ens192 --af-packet=ens224 -D --pidfile /var/run/suricata/suricata.pid -vvv -F /usr/libexec/suricata/ebpf/bypass_filter.bpf
+#ExecStart=/usr/bin/suricata -c /etc/suricata/suricata.yaml  --af-packet=ens192   -D --pidfile /var/run/suricata/suricata.pid -vvv "not host 192.168.90.236"
+ExecStart=/usr/bin/suricata -c /etc/suricata/suricata.yaml  --af-packet=ens192   -D --pidfile /var/run/suricata/suricata.pid -vvv -F /var/www/kibana/ebpf/bypass_filter.bpf
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStop=/bin/dash -c "/usr/bin/suricatasc -c shutdown ${UNIXCMD_SOCKET}"
 ExecStopPost=/bin/rm -rf /var/run/suricata

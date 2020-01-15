@@ -17,13 +17,15 @@ function update() {$('.ui.modal').modal('show');}
 <?php
 // Verbindungsaufbau und Auswahl der Datenbank
 //Wenn das Auswahlmenü aufgerufen oder gespeichert wird.
-if((isset ($_GET['bpf_filter'])) || (isset ($_GET['set_bpf_filter']))){
+if((isset ($_GET['bpf_filter'])) || (isset ($_GET['set_filter']))){
 
-if(isset($_GET["src_ip"])){  $src_ip=$_GET["src_ip"]; } else { $src_ip=""; }
-if(isset($_GET["src_port"])){  $src_port=$_GET["src_port"]; } else { $src_port=""; }
-if(isset($_GET["dest_ip"])){  $dest_ip=$_GET["dest_ip"]; } else { $dest_ip=""; }
-if(isset($_GET["dest_port"])){  $dest_port=$_GET["dest_port"]; } else { $dest_port=""; }
-if(isset($_GET["proto"])){  $proto=$_GET["proto"]; } else { $proto=""; }
+if($_GET["src_ip"]!=""){  $src_ip=$_GET["src_ip"]; } else { $src_ip="0.0.0.0"; }
+if($_GET["src_port"]!=""){  $src_port=$_GET["src_port"]; } else { $src_port="0"; }
+if($_GET["dest_ip"]!=""){  $dest_ip=$_GET["dest_ip"]; } else { $dest_ip="0.0.0.0"; }
+if($_GET["dest_port"]!=""){  $dest_port=$_GET["dest_port"]; } else { $dest_port="0"; }
+if($_GET["proto"]!=""){  $proto=$_GET["proto"]; } else { $proto=""; }
+if(isset($_GET["signature_id"])) { if ($_GET["signature_id"]!=""){  $signature_id=$_GET["signature_id"]; } else { $signature_id=""; }}
+if(isset($_GET["signature"])){ if ($_GET["signature"]!=""){  $signature=$_GET["signature"]; } else { $signature=""; }}
 
 }//Ende setze Variablen für bpf Filter
 
@@ -34,44 +36,94 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
  if(isset ($_GET['set_bpf_filter'])) {
 	$query = "INSERT INTO blocks_by_bpffilter (src_ip,src_port,dst_ip,dst_port,proto) 
 		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto')";
-	 $result = pg_query($query) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
-
-       
-
-
-
-
-
-
+	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
 
 //Daten in Filterdatei schreiben
 	 
- $file="/usr/libexec/suricata/ebpf/bypass_filter.bpf";
-	unlink($file);
+ $file="/var/www/kibana/ebpf/bypass_filter.bpf";
+	//unlink($file);
 	$query ="SELECT * from blocks_by_bpffilter";
-	$filterentries[] = pg_fetch_assoc($query);
-	//	$result = pg_query($query);
-	//foreach($result AS 	
-	var_dump($filterentries);
+	$results = pg_query($query);
+	$filterrule="";
+	while ($row = pg_fetch_array($results)){
+	$filterrule.="!(";
+	if ($row['src_ip']!='0.0.0.0'){
+		$filterrule.="src host ".$row['src_ip'];}
+	if ($row['src_port']!='0'){
+		if ($row['src_ip']!='0.0.0.0'){ $filterrule.=" && ";}
+		$filterrule.="src port ".$row['src_port'];}
+        if ($row['dst_ip']!='0.0.0.0'){
+                if ($row['src_ip']!='0.0.0.0' || $row['src_port']!=0){ $filterrule.=" && ";}
+                $filterrule.="dst host ".$row['dst_ip'];}
+        if ($row['dst_port']!='0'){
+                if ($row['src_ip']!='0.0.0.0' || $row['src_port']!=0 || $row['dst_ip']!='0.0.0.0'){ $filterrule.=" && ";}
+                $filterrule.="dst port ".$row['dst_port'];}
+	      if ($row['proto']!=''){
+                if ($row['src_ip']!='0.0.0.0' || $row['src_port']!=0 || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!=0){ $filterrule.=" && ";}
+		$filterrule.="ip proto \\".$row['proto'];}
+	$filterrule .=") &&\r\n";
+        }
 
-
-
-
-
-
-
-
-	$rule="not ("
-  . (isset($_POST["proto"]) ? $_POST['proto'] . " " : "" )
-  . (isset($_POST["srcip"]) ? "src host " . $_POST["srcip"] . " " : "" )
-  . (isset($_POST["srcport"]) ? "src port " . $_POST["srcport"] . " " : "" )
-  . (isset($_POST["dstip"]) ? "dst host " . $_POST["dstip"] . " " : "" )
-  . (isset($_POST["dstport"]) ? "dst port " . $_POST["dstport"] . " " : "" )
-  . ")\n";
-    //  file_put_contents($file, $rule, FILE_APPEND);
-
-
+	//TODO: Proof if entry is in DB
+	//
+	//
+	$filterrule = substr($filterrule, 0, -4);
+	
+ $ffile = fopen($file,"w");
+  fwrite($ffile,$filterrule);
+    //file_put_contents($file, $filterrule);
+	fclose($ffile);
+	exec('sudo /var/www/kibana/html/restartSuricata.sh',$output,$return_var);
+	//echo ($return_var);
+	//print_r($output);
  }//close_setbpfFilter
+ 
+ 
+  if(isset ($_GET['set_logstash_filter'])) {
+ $query = "INSERT INTO blocks_by_logstashfilter (src_ip,src_port,dst_ip,dst_port,proto,signature_id,signature) 
+		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto','$signature_id','$signature')";
+	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
+
+//Daten in Filterdatei schreiben
+	 
+ $file="/var/www/kibana/ebpf/15_kibana_filter.conf";
+	//unlink($file);
+	$query ="select * from blocks_by_logstashfilter";
+	$results = pg_query($query);
+	$filterrule=" filter { \r\n";
+	while ($row = pg_fetch_array($results)){
+		$filterrule.=" if {";
+	if ($row['src_ip']!='0.0.0.0'){
+		$filterrule.=$row['src_ip']." in [client][ip] }";
+	}
+	if ($row['src_ip']!='0' || $row['src_port']!='0'){
+		if ($row['src_ip']!='0.0.0.0'){ $filterrule.=" AND "; }
+		$filterrule.=$row['src_port']." in [client][port][number] }";
+	}
+		if ($row['dst_ip']!='0.0.0.0'){
+			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0'){ $filterrule.=" AND "; }
+		$filterrule.=$row['dst_ip']." in [destination][ip]  }";
+	}
+		if ($row['dst_port']!='0'){
+			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0'){ $filterrule.=" AND "; }
+		$filterrule.=$row['dst_port']." in  [destination][port][number]";
+	}
+		if ($row['proto']!=''){
+			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!='0' ){ $filterrule.=" AND "; }
+		$filterrule.=$row['proto']." in [network][transport] ";
+	}
+		if ($row['signature_id']!=''){
+			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!='0' || $row['signature_id']!=''  ){ $filterrule.=" AND "; } 
+		$filterrule.=$row['signature_id']." in [alert][signature_id]";
+	}
+	$filterrule.="\r\n { drop { } }}\r\n"; 
+	}
+		$filterrule.="}";
+ $ffile = fopen($file,"w");
+  fwrite($ffile,$filterrule);
+    //file_put_contents($file, $filterrule);
+	fclose($ffile);
+	}
 $_POST = array();
 $_GET = array();
 }//close setfilter
@@ -128,7 +180,11 @@ function printObject(o) {
 
 
 </head>
-<?php if(isset ($_GET['bpf_filter'])) {
+
+<?php 
+//bpf Filter wird über das Kibana Frontend gesetzt
+//body onload für das Modal Menü des Filtermenüs
+if(isset ($_GET['bpf_filter'])) {
 	echo "<body onload=$('.ui.modal').modal('show')>";
 }else { echo "<body onload=setActive()>";
 }
@@ -201,58 +257,140 @@ function printObject(o) {
 <iframe  style="width: 100%; border: none;" height="87%" scrolling="yes" frameborder="0" id="frame" src="/kibana/app/kibana#/dashboard/a7bfd050-ce1d-11e9-943f-fdbfa2556276?_g=()" name="frame">
 </iframe>
 
-<!-- Modal Form für den Alarmfilter -->
-<form method="get" class="ui modal form">
 
+
+<div class="ui modal">
+<?php
+// Der Modaldiaog wird beim body onload gesetzt wernn GET bpffilter durch Kibana gesetzt wird. 
+
+if (isset($_GET['bpf_filter']))
+	if ($_GET['bpf_filter'] !=""){
+echo '
+<form method="get" class="ui form">
+<h3> Kernel Filter </h3>
 <!-- Lade bestehende Blocks -->
 
 <div class="ui six column doubling stackable grid container with=300px">
 <div class="ui grid">
-	<div class="row">
+        <div class="row">
   <div class="three wide column">
     <p>Source IP</p>
     <div class="ui input">
-		<input type="text" name="src_ip" value="<?php echo $src_ip; ?>">
-	</div>
+                <input type="text" name="src_ip" value="'.$src_ip.'">
+        </div>
   </div>
   <div class="three wide column">
     <p>Source Port</p>
     <div class="ui input">
-		<input type="text" name="src_port" value="<?php echo $src_port; ?>">
-	</div>
+                <input type="text" name="src_port" value="'.$src_port.'">
+        </div>
   </div>
   <div class="three wide column">
     <p>Destination IP</p>
     <div class="ui input">
-	<input type="text" name="dest_ip" value="<?php echo $dest_ip; ?>">
-	</div>
+        <input type="text" name="dest_ip" value="'.$dest_ip.'">
+        </div>
   </div>
   <div class="three wide column">
     <p>Destination Port</p>
     <div class="ui input">
-	<input type="text" name="dest_port" value="<?php echo $dest_port; ?>">
-	</div>
+        <input type="text" name="dest_port" value="'.$dest_port.'">
+        </div>
   </div>
   <div class="three wide column">
     <p>Protocol</p>
-    <select name="proto" class="ui dropdown" value="<?php echo $proto; ?>">
-	<option value=""></option> 
-	<option value="tcp">tcp</option>
-  	<option value="udp">udp</option>
-	<option value="icmp">icmp</option>
-	
-	</select>
-	<input type="hidden" name="set_filter" value="1">
-	<input type="hidden" name="set_bpf_filter" value="1">
-	</div>
-	</div>
-	<div class="row" style="margin-bottom: 20px">
-		<div class="three wide column">
-			<button class="ui button" type="submit">Submit</button>
+    <select name="proto" class="ui dropdown" value="'.$proto.'">
+        <option value=""></option>
+        <option value="tcp"'; if ($proto=="TCP"){echo "selected";};echo '>tcp</option>
+        <option value="udp"'; if ($proto=="UDP"){echo "selected";};echo '>udp</option>
+        <option value="icmp"'; if ($proto=="ICMP"){echo "selected";};echo '>icmp</option>
+        </select>
+        <input type="hidden" name="set_filter" value="1">
+        <input type="hidden" name="set_bpf_filter" value="1">
 		</div>
-	</div>
+	
+        </div>
+        <div class="row" style="margin-bottom: 20px">
+                <div class="three wide column">
+                        <button class="ui button" type="submit">Submit</button>
+                </div>
+        </div>
 </div>
-</form>
+</div>
+</form>';}?>
+
+
+
+<?php
+if (isset($_GET['signature_id']))
+	if($_GET['signature_id'] !=""){
+echo '
+<form method="get" class="ui form">
+<h3> Logstash Filter </h3>
+<!-- Lade bestehende Blocks -->
+
+<div class="ui six column doubling stackable grid container with=300px">
+<div class="ui grid">
+        <div class="row">
+  <div class="three wide column">
+    <p>Source IP</p>
+    <div class="ui input">
+                <input type="text" name="src_ip" value="'.$src_ip.'">
+        </div>
+  </div>
+  <div class="three wide column">
+    <p>Source Port</p>
+    <div class="ui input">
+                <input type="text" name="src_port" value="'.$src_port.'">
+        </div>
+  </div>
+  <div class="three wide column">
+    <p>Destination IP</p>
+    <div class="ui input">
+        <input type="text" name="dest_ip" value="'.$dest_ip.'">
+        </div>
+  </div>
+  <div class="three wide column">
+    <p>Destination Port</p>
+    <div class="ui input">
+        <input type="text" name="dest_port" value="'.$dest_port.'">
+        </div>
+  </div>
+  <div class="three wide column">
+    <p>Protocol</p>
+    <select name="proto" class="ui dropdown" value="'.$proto.'">
+        <option value=""></option>
+        <option value="tcp"'; if ($proto=="TCP"){echo "selected";};echo '>tcp</option>
+        <option value="udp"'; if ($proto=="UDP"){echo "selected";};echo '>udp</option>
+        <option value="icmp"'; if ($proto=="ICMP"){echo "selected";};echo '>icmp</option>
+        </select>
+        <input type="hidden" name="set_filter" value="1">
+        <input type="hidden" name="set_logstash_filter" value="1">
+        <input type="hidden" name="signature_id" value="'.$signature_id.'">
+		</div>
+		  <div class="three wide column">
+    <p>Alarmsignatur</p>
+    <div class="ui input">
+        <input type="text" name="signature" value="'.$signature.'">
+        </div>
+  </div>
+		
+		
+        </div>
+        <div class="row" style="margin-bottom: 20px">
+                <div class="three wide column">
+                        <button class="ui button" type="submit">Submit</button>
+                </div>
+        </div>
+</div>
+</div>
+</form>';}?>
+</div>
+
+
+
+
+
 <footer>
 </footer>
 </html>

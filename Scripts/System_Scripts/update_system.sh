@@ -20,7 +20,7 @@ if [[ $1 != "--only-elastic" ]]; then
 
 #TODO Elasticseach not upgrade
 apt-get update
-apt-get upgrade -Vy
+#apt-get upgrade -Vy
 if [[ $1 == "--update-unused" ]];then
 cd $BASEDIR
 mkdir -p evebox
@@ -80,7 +80,7 @@ echo "OpenVAS Install omited but NVTs are updated"
 #cd gvm-libs
 #cmake .
 #make installl
-# cp $BASEDIR/$GITDIR/OpenVAS/openvas-scanner.service /lib/systemd/system/ 
+# cp $BASEDIR/$GITDIR/OpenVAS/openvas-scanner.service /lib/systemd/system/
 echo "Aktualisiere Schwachstellendatenbank"
 sudo openvas-feed-update --verbose --progress
 sudo greenbone-nvt-sync --verbose --progress
@@ -127,4 +127,3 @@ systemctl restart nginx
 systemctl restart suricata #ggfs. Interface eintragen
 systemctl restart heartbeat-elastic
 exit
-
