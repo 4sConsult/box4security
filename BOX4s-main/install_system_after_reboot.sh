@@ -31,9 +31,11 @@ echo
 #Remove standard ubuntu kernel
 #sudo apt -y remove linux-generic linux-headers-generic linux-image-generic amd64-microcode iucode-tool intel-microcode libpcre16*
 sudo apt -y remove libpcre16* libpcre32*
-cd /home/amadmin/box4s
+mdir -p /home/amadmin/suricata-src
+cd /home/amadmin/suricata-src
 wget  https://ftp.pcre.org/pub/pcre/pcre-8.43.zip
 unzip pcre-8.43.zip
+rm pcre-8.43.zip
 cd pcre-8.43
 ./configure --prefix=/usr                     \
             --docdir=/usr/share/doc/pcre-8.43 \
@@ -49,7 +51,7 @@ make install
 echo "Installiere libbpf"
 echo
 echo
-cd /home/amadmin/box4s
+cd /home/amadmin/suricata-src
 git clone https://github.com/libbpf/libbpf.git
 cd libbpf/src/
 make -j8
@@ -59,7 +61,7 @@ sudo ldconfig
 echo "Installiere Suricata"
 echo
 echo
-cd /home/amadmin/box4s
+cd /home/amadmin/suricata-src
 git clone https://github.com/OISF/suricata.git --branch suricata-5.0.1 suricata-git
 cd suricata-git
 echo "Hole libhtp"
@@ -92,7 +94,7 @@ sudo ldconfig
 echo "Installiere suricata"
 echo
 echo
-cd /home/amadmin/box4s/suricata-git
+cd /home/amadmin/suricata-src/suricata-git
 ./autogen.sh
 ./configure \
 --prefix=/usr/ --sysconfdir=/etc/ --localstatedir=/var/ \
@@ -181,7 +183,6 @@ cd /home/amadmin/box4s
 cd FetchQC
 python3 -m venv .venv
 source .venv/bin/activate
-sed -i '/pkg-resources==0.0.0/g' requirements.txt
 pip install -r requirements.txt
 alembic upgrade head
 deactivate

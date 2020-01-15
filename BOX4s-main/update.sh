@@ -21,7 +21,8 @@ fi
 fi
 echo "Hole neue GIT Daten von Version $TAG"
 git fetch
-git checkout -b $TAG
+# Force checkout to Tag, discards local changes!
+git checkout -f $TAG
 git pull
 sleep 5;
 echo "Starte Systemaktualisierung"
@@ -33,4 +34,3 @@ sudo chmod +x /home/amadmin/box4s/update-patch.sh
 sleep 2
 echo " "
 echo "<br>Update abgeschlossen<br>"
-
