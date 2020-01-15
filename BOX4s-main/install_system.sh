@@ -166,6 +166,10 @@ ln -s ../general/dns_resolv.conf 15-dns_resolv.conf
 cd ..
 cd metricbeat
 ln -s ../general/dns_resolv.conf 15-dns_resolv.conf
+cd ..
+cd packetbeat
+ln -s ../general/dns_resolv.conf 21-dns_resolv.conf
+ln -s ../general/AM-special.conf 25-4s_Special.conf
 # Install System depedencies
 # Install suricata
 # Kernel necessary
