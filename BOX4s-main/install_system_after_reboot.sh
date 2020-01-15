@@ -178,7 +178,7 @@ echo
 # Remove Cron entry
 echo "CREATE DATABASE \"box4S_db\" OWNER postgres;" | sudo -u postgres psql
 cd /home/amadmin/box4s
-cd Fetch\ QC
+cd FetchQC
 python3 -m venv .venv
 source .venv/bin/activate
 sed -i '/pkg-resources==0.0.0/g' requirements.txt
