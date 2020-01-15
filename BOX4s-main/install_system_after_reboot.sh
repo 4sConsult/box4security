@@ -31,7 +31,7 @@ echo
 #Remove standard ubuntu kernel
 #sudo apt -y remove linux-generic linux-headers-generic linux-image-generic amd64-microcode iucode-tool intel-microcode libpcre16*
 sudo apt -y remove libpcre16* libpcre32*
-mdir -p /home/amadmin/suricata-src
+mkdir -p /home/amadmin/suricata-src
 cd /home/amadmin/suricata-src
 wget  https://ftp.pcre.org/pub/pcre/pcre-8.43.zip
 unzip pcre-8.43.zip
