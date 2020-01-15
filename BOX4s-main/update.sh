@@ -21,7 +21,8 @@ fi
 fi
 echo "Hole neue GIT Daten von Version $TAG"
 git fetch
-git checkout -b $TAG
+# Force checkout to Tag, discards local changes!
+git checkout -f -b $TAG
 git pull
 sleep 5;
 echo "Starte Systemaktualisierung"
