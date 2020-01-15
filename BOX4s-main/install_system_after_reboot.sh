@@ -183,7 +183,6 @@ cd /home/amadmin/box4s
 cd FetchQC
 python3 -m venv .venv
 source .venv/bin/activate
-sed -i '/pkg-resources==0.0.0/g' requirements.txt
 pip install -r requirements.txt
 alembic upgrade head
 deactivate
