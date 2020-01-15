@@ -92,6 +92,7 @@ echo "
       OWNER to postgres;" | sudo -u postgres psql box4S_db
 
 sudo touch /var/www/kibana/ebpf/15_kibana_filter.conf
-sudo ln /var/www/kibana/ebpf/15_kibana_filter.conf /etc/logstash/conf.d/suricata/15_kibana_filter.conf 
 sudo chown logstash:www-data /var/www/kibana/ebpf/15_kibana_filter.conf 
-sudo chmod 0664 /var/www/kibana/ebpf/15_kibana_filter.conf 
+sudo chmod 0664 /var/www/kibana/ebpf/15_kibana_filter.conf
+sudo ln -s /var/www/kibana/ebpf/15_kibana_filter.conf /etc/logstash/conf.d/suricata/15_kibana_filter.conf 
+ 
