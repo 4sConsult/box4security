@@ -178,7 +178,7 @@ echo
 # Remove Cron entry
 echo "CREATE DATABASE \"box4S_db\" OWNER postgres;" | sudo -u postgres psql
 cd /home/amadmin/box4s
-cd Fetch\ QC
+cd FetchQC
 python3 -m venv .venv
 source .venv/bin/activate
 sed -i '/pkg-resources==0.0.0/g' requirements.txt
@@ -186,7 +186,8 @@ pip install -r requirements.txt
 alembic upgrade head
 deactivate
 chmod +x -R $BASEDIR$GITDIR/Scripts
-$BASEDIR$GITDIR/Scripts/Automation/run-OpenVASinsertConf.sh
+cd $BASEDIR$GITDIR/Scripts
+./run-OpenVASinsertConf.sh
 echo
 echo
 echo "Install Crontab"
