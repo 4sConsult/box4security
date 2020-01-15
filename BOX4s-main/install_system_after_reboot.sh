@@ -35,6 +35,7 @@ mdir -p /home/amadmin/suricata-src
 cd /home/amadmin/suricata-src
 wget  https://ftp.pcre.org/pub/pcre/pcre-8.43.zip
 unzip pcre-8.43.zip
+rm pcre-8.43.zip
 cd pcre-8.43
 ./configure --prefix=/usr                     \
             --docdir=/usr/share/doc/pcre-8.43 \
