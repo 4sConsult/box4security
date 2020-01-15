@@ -185,6 +185,8 @@ sudo chmod -R 777 /home/downloads/*
 sudo apt download dnsmasq dns-root-data dnsmasq dnsmasq-base resolvconf dns-root-data dnsmasq-base
 sudo systemctl stop systemd-resolved
 sudo systemctl disable systemd-resolved
+sudo systemctl stop bind9 
+sudo systemctl disable bind9
 PACKAGE=$(ls | grep dns-root-data)
 sudo dpkg -i $PACKAGE
 PACKAGE=$(ls | grep resolvconf_)
