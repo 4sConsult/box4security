@@ -118,8 +118,6 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
         }
         $filterrule.="\r\n { drop { } }\r\n";
         }
-  $filterrule.="}";
-	}
 		$filterrule.="}";
  $ffile = fopen($file,"w");
   fwrite($ffile,$filterrule);
