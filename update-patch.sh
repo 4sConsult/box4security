@@ -61,8 +61,11 @@ echo "Install Dashboards"
 echo "Install  new Suricata Index"
 curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"index-pattern","id":"95298780-ce16-11e9-943f-fdbfa2556276","overwrite":true}]'
 echo "Install new Visualisations"
-curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualisation","id":"f73f0e40-e37e-11e9-a3a2-adf9cc70853f","overwrite":true}]'
+response=$(curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualisation","id":"f73f0e40-e37e-11e9-a3a2-adf9cc70853f","overwrite":true}]')
+if ($response=='{"successCount":0,"success":true}')
+then {
 curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"search","id":"5dccc860-cef2-11e9-943f-fdbfa2556276","overwrite":true}]'
+}
 curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualization","id":"82177890-3073-11ea-87fd-73a617d8affb","replaceReferences":[{"type":"index-pattern","from":"95298780-ce16-11e9-943f-fdbfa2556276","to":"95298780-ce16-11e9-943f-fdbfa2556276"}]}]'
 
 echo "Install new Dashboard"
