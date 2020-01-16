@@ -1,6 +1,6 @@
 #!/bin/bash
 ##
-#TAG BLANK
+$TAG=""
 ##
 
 echo "Update System auf v1.5.8"
@@ -110,3 +110,4 @@ echo "Installiere OpenVAS Scan Config"
 cp $BASEDIR$GITDIR/BOX4s-main/4s-OpenVAS.xml /home/amadmin
 cd $BASEDIR$GITDIR/Scripts/Automation
 ./run-OpenVASinsertConf.sh
+
