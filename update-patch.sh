@@ -104,7 +104,7 @@ sudo touch /var/www/kibana/ebpf/15_kibana_filter.conf
 sudo chown logstash:www-data /var/www/kibana/ebpf/15_kibana_filter.conf
 sudo chmod 0664 /var/www/kibana/ebpf/15_kibana_filter.conf
 sudo ln -s /var/www/kibana/ebpf/15_kibana_filter.conf /etc/logstash/conf.d/suricata/15_kibana_filter.conf
-
+echo "filter{\r\n" >> /var/www/kibana/ebpf/15_kibana_filter.conf
 echo "Führe OpenVAS rebuild aus"
 sudo openvasmd --rebuild --progress
 sudo systemctl restart openvas-manager
