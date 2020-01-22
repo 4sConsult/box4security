@@ -160,7 +160,7 @@ def modGeneral(networks, systems):
     drop_systems_iplist = [ip for ip, in db.session.query(models.System.ip).filter(models.System.notrack).all()]
     drop_systems_iplist += ['localhost', '127.0.0.1', '127.0.0.53']
     if os.getenv('INT_IP'):
-        drop_systems_iplist += os.getenv('INT_IP')
+        drop_systems_iplist.append(os.getenv('INT_IP'))
     with open('/etc/logstash/conf.d/general/BOX4s-special.conf', 'r') as fd_4sspecial:
         fd_4sspecial.seek(0)
         content = fd_4sspecial.read()
