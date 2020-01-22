@@ -17,7 +17,7 @@ vars:
     #HOME_NET: "[10.0.0.0/8]"
     #HOME_NET: "[172.16.0.0/12]"
     #HOME_NET: "any"
-    INTERNAL_IP: "[192.168.90.236]"    
+    INTERNAL_IP:   
     EXTERNAL_NET: "!$HOME_NET"
     #EXTERNAL_NET: "any"
 
