@@ -63,7 +63,7 @@ sudo openvasmd --rebuild --progress
 sudo apt install -y net-tools
 #Install vulnWhisperer
 sudo apt install -y  zlib1g-dev libxml2-dev libxslt1-dev virtualenv net-tools ifupdown python-pip python3-pip
-cd /home/amadmin/qc_git
+cd /home/amadmin/box4s
 git clone https://github.com/box4s/VulnWhisperer.git
 cd VulnWhisperer/
 virtualenv venv
@@ -185,7 +185,7 @@ sudo chmod -R 777 /home/downloads/*
 sudo apt download dnsmasq dns-root-data dnsmasq dnsmasq-base resolvconf dns-root-data dnsmasq-base
 sudo systemctl stop systemd-resolved
 sudo systemctl disable systemd-resolved
-sudo systemctl stop bind9 
+sudo systemctl stop bind9
 sudo systemctl disable bind9
 PACKAGE=$(ls | grep dns-root-data)
 sudo dpkg -i $PACKAGE
