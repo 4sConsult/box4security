@@ -205,7 +205,7 @@ def modSuricata(networks, systems):
     box = db.session.query(models.System).join(models.SystemType, models.System.types).filter(models.SystemType.name == 'BOX4security').first()
     with open('/etc/suricata/suricata.yaml', 'r', encoding='utf-8') as fd_suricata:
         content = fd_suricata.read()
-        content = re.sub(r"(\s*INTERNAL_IP: )", r'\g<1>["{}"]\n'.format(box.ip), content)
+        content = re.sub(r"(\s*INTERNAL_IP: )", r'\g<1>"[{}]"\n'.format(box.ip), content)
     with open('/etc/suricata/suricata.yaml', 'w', encoding='utf-8') as fd_suricata:
         fd_suricata.write(content)
     print("Changes written to suricata.yaml")
