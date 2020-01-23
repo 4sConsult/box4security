@@ -246,7 +246,8 @@ echo
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash
+echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
+source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 # Set INT-IP as --allow-header-host
 sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/multi-user.target.wants/greenbone-security-assistant.service
