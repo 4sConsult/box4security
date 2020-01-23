@@ -82,10 +82,10 @@ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add
 sudo apt install -y apt-transport-https
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
 sudo apt update && sudo apt install -y elasticsearch=7.5.0
-sudo mkdir /data/elasticsearch
+sudo mkdir /data/elasticsearch -p
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
 sudo chown elasticsearch:elasticsearch /data/elasticsearch_backup/ -R
-sudo chown elasticsearch:elasticsearch /data/elasticsearch/
+sudo chown elasticsearch:elasticsearch /data/elasticsearch/ -R
 cd /home/amadmin/box4s
 cd Elasticsearch
 sudo cp * / -R

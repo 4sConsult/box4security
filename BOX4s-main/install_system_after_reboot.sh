@@ -107,7 +107,7 @@ echo
 echo "Install suricata"
 sudo make install
 sudo make install-conf
-sudo mkdir /data/suricata
+sudo mkdir /data/suricata -p
 sudo groupadd suri
 sudo useradd suri -g suri
 sudo mkdir -p /var/log/suricata
@@ -159,6 +159,16 @@ echo ""
 echo
 echo
 cd /home/amadmin/box4s
+systemctl is-active --quiet elasticsearch
+if [ $? -ne 0 ]
+then
+  echo
+  echo
+  echo
+  echo "Elasticsearch not running. Restarting the service and waiting for 90s before continuing!!"
+  systemctl restart elasticsearch
+  sleep 90
+fi
 status_code=$(curl -XGET localhost:9200/_snapshot/kibana --write-out %{http_code} --silent --output /dev/null)
 if [[ "$status_code" -ne 200 ]] ; then
 	curl -XPUT localhost:9200/_snapshot/kibana -H "Content-Type: application/json" -d '{"type":"fs", "settings":{"location":"kibana"}}'
