@@ -187,7 +187,7 @@ pip install -r requirements.txt
 alembic upgrade head
 deactivate
 chmod +x -R $BASEDIR$GITDIR/Scripts
-cd $BASEDIR$GITDIR/Scripts
+cd $BASEDIR$GITDIR/Scripts/Automation
 ./run-OpenVASinsertConf.sh
 echo
 echo
