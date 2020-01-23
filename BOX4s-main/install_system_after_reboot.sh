@@ -3,6 +3,23 @@
 # PLAZHALTER BRANCH
 #
 #
+function testNet() {
+  # Returns 0 for successful internet connection and dns resolution, 1 else
+  if ping -q -c 1 -W 1 google.com >/dev/null; then
+  return 0
+else
+  return 1
+fi
+}
+
+function waitForNet() {
+  while ! testNet; do
+    # while testNet returns non zero value
+    echo "No internet connectivity or dns resolution, sleeping for 15s"
+    sleep 15s
+  done
+}
+
 if [ "$BRANCH" != "" ]; then
   TAG=$BRANCH
 elif [ "$1" != "" ]; then
@@ -20,10 +37,14 @@ sudo systemctl disable irqbalance
 echo "Installiere Suricata Deps"
 echo
 echo
+waitForNet
 sudo apt -y install clang llvm libelf-dev libc6-dev-i386 --no-install-recommends
+waitForNet
 sudo apt -y install python3-pip python3-venv
 #install suricata deps
+waitForNet
 sudo apt -y install libtool pkg-config libghc-bzlib-dev libghc-readline-dev ragel cmake libyaml-dev libboost-dev libjansson-dev libpcap-dev libcap-ng-dev libnspr4-dev libnss3-dev  libmagic-dev libluajit-5.1-dev libmaxminddb-dev liblz4-dev rustc cargo
+waitForNet
 sudo apt -y install libhyperscan5
 echo "Installiere PCRE"
 echo
@@ -33,6 +54,7 @@ echo
 sudo apt -y remove libpcre16* libpcre32*
 mkdir -p /home/amadmin/suricata-src
 cd /home/amadmin/suricata-src
+waitForNet
 wget  https://ftp.pcre.org/pub/pcre/pcre-8.43.zip
 unzip pcre-8.43.zip
 rm pcre-8.43.zip
@@ -52,6 +74,7 @@ echo "Installiere libbpf"
 echo
 echo
 cd /home/amadmin/suricata-src
+waitForNet
 git clone https://github.com/libbpf/libbpf.git
 cd libbpf/src/
 make -j8
@@ -62,12 +85,14 @@ echo "Installiere Suricata"
 echo
 echo
 cd /home/amadmin/suricata-src
+waitForNet
 git clone https://github.com/OISF/suricata.git --branch suricata-5.0.1 suricata-git
 cd suricata-git
 echo "Hole libhtp"
 echo
 echo
 sudo apt remove -y libhtp2
+waitForNet
 git clone https://github.com/OISF/libhtp.git -b 0.5.x libhtp-git
 cd libhtp-git
 echo "Installiere libhtp"
@@ -82,6 +107,7 @@ cd ..
 echo "Installiere Hyperscan"
 echo
 echo
+waitForNet
 git clone https://github.com/intel/hyperscan hyperscan-git
 cd hyperscan-git
 mkdir build
@@ -122,6 +148,7 @@ cd ..
 echo "Installiere suricata update"
 echo
 echo
+waitForNet
 pip3 install suricata-update
 cd /home/amadmin/box4s
 cd Suricata
@@ -138,6 +165,7 @@ done
 sudo cp * / -R
 sed -i "s/--af-packet=ens[^ ]*//g" /etc/systemd/system/suricata.service
 sed -i "s/\/etc\/suricata\/suricata.yaml /& $IFSTRING/" /etc/systemd/system/suricata.service
+waitForNet
 /usr/local/bin/suricata-update update-sources
 /usr/local/bin/suricata-update
 /usr/local/bin/suricata-update enable-source et/open
@@ -193,6 +221,7 @@ cd /home/amadmin/box4s
 cd FetchQC
 python3 -m venv .venv
 source .venv/bin/activate
+waitForNet
 pip install -r requirements.txt
 alembic upgrade head
 deactivate
@@ -208,8 +237,8 @@ sudo crontab root.crontab
 echo "Initialisiere Datenbanken"
 echo
 echo
-
 cd /tmp/
+waitForNet
 curl -O -s https://iptoasn.com/data/ip2asn-combined.tsv.gz
 gunzip -f ip2asn-combined.tsv.gz
 
@@ -271,6 +300,7 @@ sudo chown suri:suri /data/suricata/ -R
 echo "Initialisiere Schwachstellendatenbank und hole aktuelle Angriffspattern"
 echo
 echo
+waitForNet
 /home/amadmin/box4s/Scripts/System_Scripts/update_system.sh
 # apply network/interfaces
 sudo systemctl restart networking
