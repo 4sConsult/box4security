@@ -1,7 +1,7 @@
 import json
 
 # Read the contents of the result
-file = open("vuln_score_result.json", "r")
+file = open("/home/amadmin/box4s/Scripts/Automation/score_calculation/vuln_score_result.json", "r")
 
 # Load content into a json datastore
 datastore = json.load(file)
