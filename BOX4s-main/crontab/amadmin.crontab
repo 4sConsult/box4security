@@ -9,3 +9,6 @@ MAILTO=box@4sconsult.de
 
 # Execute Curator Daily
 @daily curator --config ~/.curator.yml ~/.actions.yml | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Elastic Curator Log"
+
+# Score calculation
+*/5 * * * * /home/amadmin/box4s/Scripts/Automation/score_calculation/calculate_scores.sh

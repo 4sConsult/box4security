@@ -262,6 +262,10 @@ echo
 echo
 /home/amadmin/box4s/Scripts/System_Scripts/update_system.sh
 # apply network/interfaces
+
+# Install the scores index
+/home/amadmin/box4s/Scripts/Automation/score_calculation/install_index.sh
+
 sudo systemctl restart networking
 sudo systemctl enable heartbeat-elastic
 sudo systemctl enable suricata
