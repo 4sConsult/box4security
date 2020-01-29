@@ -7,7 +7,7 @@ $TAG=""
 echo "Update System auf v1.5.8"
 echo "Hole Systemberechtigung"
 sudo su -
-sudo mkdir /var/www/kibana/html/update/
+sudo mkdir -p /var/www/kibana/html/update/
 chown www-data:www-data  /var/www/kibana/html/update/-R
 cp /home/amadmin/box4s/Nginx/var/www/kibana/html/* /var/www/kibana/html/ -r
 cp /home/amadmin/box4s/Nginx/etc/nginx/nginx.conf /etc/nginx
