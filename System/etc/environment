@@ -1,6 +1,6 @@
 BASEDIR=/home/amadmin/
 GITDIR=/box4s/
-KUNDE="4s DEV DF"
+KUNDE="NEWSYSTEM"
 
 PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$BASEDIR/$GITDIR/Scripts/System_Scripts:$BASEDIR/$GITDIR/Scripts/Elastic_Scripts"
 BOX4SPATH="$BASEDIR$GITDIR"
@@ -9,5 +9,4 @@ ES_TMPDIR=/tmp/elasticsearch
 
 IPADRESS=$(landscape-sysinfo --sysinfo-plugins=Network | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
 
-INT_IP=192.168.10.236
-COMPANY_NAME="Dominiks TestBox v2"
+COMPANY_NAME=$KUNDE

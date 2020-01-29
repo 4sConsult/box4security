@@ -160,7 +160,7 @@ def modGeneral(networks, systems):
     drop_systems_iplist = [ip for ip, in db.session.query(models.System.ip).filter(models.System.notrack).all()]
     drop_systems_iplist += ['localhost', '127.0.0.1', '127.0.0.53']
     if os.getenv('INT_IP'):
-        drop_systems_iplist += os.getenv('INT_IP')
+        drop_systems_iplist.append(os.getenv('INT_IP'))
     with open('/etc/logstash/conf.d/general/BOX4s-special.conf', 'r') as fd_4sspecial:
         fd_4sspecial.seek(0)
         content = fd_4sspecial.read()
@@ -205,7 +205,7 @@ def modSuricata(networks, systems):
     box = db.session.query(models.System).join(models.SystemType, models.System.types).filter(models.SystemType.name == 'BOX4security').first()
     with open('/etc/suricata/suricata.yaml', 'r', encoding='utf-8') as fd_suricata:
         content = fd_suricata.read()
-        content = re.sub(r"(\s*INTERNAL_IP: )", r'\g<1>["{}"]\n'.format(box.ip), content)
+        content = re.sub(r"(\s*INTERNAL_IP: )", r'\g<1>"[{}]"\n'.format(box.ip), content)
     with open('/etc/suricata/suricata.yaml', 'w', encoding='utf-8') as fd_suricata:
         fd_suricata.write(content)
     print("Changes written to suricata.yaml")
