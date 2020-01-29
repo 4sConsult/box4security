@@ -1,6 +1,6 @@
-# Updating ASN und GEOIPDB Dictionaries
 #!/bin/bash
-systemctl start logstash
+# Updating ASN
+/bin/bash $BASEDIR$GITDIR/Scripts/Automation/ASN_update.sh
 
 # Updating Suricata Rules
 /usr/local/bin/suricata-update
