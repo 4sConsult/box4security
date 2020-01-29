@@ -87,37 +87,38 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
 //Daten in Filterdatei schreiben
 	 
  $file="/var/www/kibana/ebpf/15_kibana_filter.conf";
-	//unlink($file);
-	$query ="select * from blocks_by_logstashfilter";
-	$results = pg_query($query);
-	$filterrule=" filter { \r\n";
-	while ($row = pg_fetch_array($results)){
-		$filterrule.=" if {";
-	if ($row['src_ip']!='0.0.0.0'){
-		$filterrule.=$row['src_ip']." in [client][ip] }";
-	}
-	if ($row['src_ip']!='0' || $row['src_port']!='0'){
-		if ($row['src_ip']!='0.0.0.0'){ $filterrule.=" AND "; }
-		$filterrule.=$row['src_port']." in [client][port][number] }";
-	}
-		if ($row['dst_ip']!='0.0.0.0'){
-			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0'){ $filterrule.=" AND "; }
-		$filterrule.=$row['dst_ip']." in [destination][ip]  }";
-	}
-		if ($row['dst_port']!='0'){
-			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0'){ $filterrule.=" AND "; }
-		$filterrule.=$row['dst_port']." in  [destination][port][number]";
-	}
-		if ($row['proto']!=''){
-			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!='0' ){ $filterrule.=" AND "; }
-		$filterrule.=$row['proto']." in [network][transport] ";
-	}
-		if ($row['signature_id']!=''){
-			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!='0' || $row['signature_id']!=''  ){ $filterrule.=" AND "; } 
-		$filterrule.=$row['signature_id']." in [alert][signature_id]";
-	}
-	$filterrule.="\r\n { drop { } }}\r\n"; 
-	}
+        //unlink($file);
+        $query ="select * from blocks_by_logstashfilter";
+        $results = pg_query($query);
+        $filterrule=" filter { \r\n";
+        while ($row = pg_fetch_array($results)){
+                $filterrule.=" if  ";
+        if ($row['src_ip']!='0.0.0.0'){
+                $filterrule.="[client][ip]==\"".$row['src_ip']."\" ";
+        }
+        if ($row['src_ip']!='0' || $row['src_port']!='0'){
+                if ($row['src_ip']!='0.0.0.0'){ $filterrule.=" and "; }
+                $filterrule.="[client][port][number]==\"".$row['src_port']."\" ";
+        }
+                if ($row['dst_ip']!='0.0.0.0'){
+                        if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0'){ $filterrule.=" and "; }
+                $filterrule.="[destination][ip]==\"".$row['dst_ip']."\" ";
+        }
+                if ($row['dst_port']!='0'){
+                        if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0'){ $filterrule.=" and "; }
+                $filterrule.="[destination][port][number]==\"".$row['dst_port']."\"";
+        }
+                if ($row['proto']!=''){
+                        if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!='0' ){ $filterrule.=" and "; }
+                $filterrule.="[network][transport]==\"".$row['proto']."\"";
+        }
+                if ($row['signature_id']!=''){
+                        if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!='0' || $row['signature_id']!=''  ){ $filterrule.=" and "; }
+                $filterrule.="[alert][signature_id]==\"".$row['signature_id']."\"";
+        }
+        $filterrule.="\r\n { drop { } }\r\n";
+
+        }
 		$filterrule.="}";
  $ffile = fopen($file,"w");
   fwrite($ffile,$filterrule);
