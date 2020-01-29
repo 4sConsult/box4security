@@ -11,7 +11,7 @@ sudo mkdir -p /var/www/kibana/html/update/
 sudo chown -R www-data:www-data  /var/www/kibana/html/update/ 
 sudo cp /home/amadmin/box4s/Nginx/var/www/kibana/html/* /var/www/kibana/html/ -r
 sudo cp /home/amadmin/box4s/Nginx/etc/nginx/nginx.conf /etc/nginx
-suudo cp /home/amadmin/box4s/Nginx/etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/
+sudo cp /home/amadmin/box4s/Nginx/etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/
 sudo systemctl restart nginx
 
 
