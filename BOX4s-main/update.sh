@@ -28,7 +28,7 @@ sleep 5;
 echo "Starte Systemaktualisierung"
 sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' /home/amadmin/box4s/update-patch.sh
 sudo chmod +x /home/amadmin/box4s/update-patch.sh
-./update-patch.sh
+sudo ./update-patch.sh
 #Diese letzte Meldung MUSS ausgegeben werden, damit das Frontend weiß, dass das Update abgeschlossen ist.
 #Das sleep sollte hier dirn bleiben
 sleep 2

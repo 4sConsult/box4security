@@ -105,7 +105,7 @@ if ($_GET['deletels']==1){
 	}
   $filterrule.="}\r\n { drop { } }}\r\n"; 
 	}
-	$filterrule.="}";
+//	$filterrule.="}"; //Filtered out for 1 Filter rule in logstash
 	
  $ffile = fopen($file,"w");
   fwrite($ffile,$filterrule);
