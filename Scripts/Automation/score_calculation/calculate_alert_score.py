@@ -18,15 +18,15 @@ class AlertWeighting:
 
     def calcThreshold(self):
         if self.severity == 1:
-                self.threshold = 100000
+                self.threshold = 300
         if self.severity == 2:
-                self.threshold = 10000
+                self.threshold = 150
         if self.severity == 3:
-                self.threshold = 100
-        if self.severity == 4:
                 self.threshold = 10
+        if self.severity == 4:
+                self.threshold = 3
         if self.severity == 5:
-                self.threshold = 0
+                self.threshold = 1
 
     def calcWeighting(self, sumCount):
         self.weighting = pow(self.severity * sumCount, 2) / sumCount
