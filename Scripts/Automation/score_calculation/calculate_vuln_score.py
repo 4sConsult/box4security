@@ -88,6 +88,6 @@ for w in weightings:
     sumCalculation += w.calculation
     sumWeightingPercent += w.weightingPercent
 
-vulnscore = 1 - (sumCalculation / sumWeightingPercent)
+vulnscore = (1 - (sumCalculation / sumWeightingPercent)) * 100
 print(vulnscore)
 

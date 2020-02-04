@@ -78,6 +78,6 @@ for w in weightings:
     sumCalculation += w.calculation
     sumWeightingPercent += w.weightingPercent
 
-alarmscore = 1 - (sumCalculation / sumWeightingPercent)
+alarmscore = (1 - (sumCalculation / sumWeightingPercent)) * 100
 print(alarmscore)
 
