@@ -63,31 +63,34 @@ sumWeightingPercent = 0
 vulnscore = 0
 weightings = []
 
-for row in datastore["rows"]:
-    w = VulnWeighting(row[0], row[1])
-    w.calcThreshold()
-    w.calcThresholdRounded()
-    weightings.append(w)
+if "rows" in datastore:
+    for row in datastore["rows"]:
+    	w = VulnWeighting(row[0], row[1])
+    	w.calcThreshold()
+    	w.calcThresholdRounded()
+    	weightings.append(w)
 
-for w in weightings:
-    sumCount += w.count
+    for w in weightings:
+    	sumCount += w.count
 
-for w in weightings:
-    w.calcWeighting(sumCount)
+    for w in weightings:
+    	w.calcWeighting(sumCount)
 
-for w in weightings:
-    if w.weighting >= maxWeighting:
-        maxWeighting = w.weighting
+    for w in weightings:
+    	if w.weighting >= maxWeighting:
+            maxWeighting = w.weighting
 
-for w in weightings:
-    w.calcWeightingPercent(maxWeighting)
-    w.calcFullfillment()
-    w.calcCalculation()
+    for w in weightings:
+    	w.calcWeightingPercent(maxWeighting)
+    	w.calcFullfillment()
+    	w.calcCalculation()
 
-for w in weightings:
-    sumCalculation += w.calculation
-    sumWeightingPercent += w.weightingPercent
+    for w in weightings:
+    	sumCalculation += w.calculation
+    	sumWeightingPercent += w.weightingPercent
 
-vulnscore = (1 - (sumCalculation / sumWeightingPercent)) * 100
+    vulnscore = (1 - (sumCalculation / sumWeightingPercent)) * 100
+else:
+    vulnscore = 100
 print(vulnscore)
 

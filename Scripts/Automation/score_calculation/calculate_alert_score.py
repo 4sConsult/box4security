@@ -54,30 +54,33 @@ sumWeightingPercent = 0
 alarmscore = 0
 weightings = []
 
-for row in datastore["rows"]:
-    w = AlertWeighting(row[0], row[1])
-    w.calcThreshold()
-    weightings.append(w)
+if "rows" in datastore:
+    for row in datastore["rows"]:
+    	w = AlertWeighting(row[0], row[1])
+    	w.calcThreshold()
+    	weightings.append(w)
 
-for w in weightings:
-    sumCount += w.count
+    for w in weightings:
+    	sumCount += w.count
 
-for w in weightings:
-    w.calcWeighting(sumCount)
+    for w in weightings:
+    	w.calcWeighting(sumCount)
 
-for w in weightings:
-    if w.weighting >= maxWeighting:
-        maxWeighting = w.weighting
+    for w in weightings:
+    	if w.weighting >= maxWeighting:
+            maxWeighting = w.weighting
 
-for w in weightings:
-    w.calcWeightingPercent(maxWeighting)
-    w.calcFullfillment()
-    w.calcCalculation()
+    for w in weightings:
+    	w.calcWeightingPercent(maxWeighting)
+    	w.calcFullfillment()
+    	w.calcCalculation()
 
-for w in weightings:
-    sumCalculation += w.calculation
-    sumWeightingPercent += w.weightingPercent
+    for w in weightings:
+    	sumCalculation += w.calculation
+    	sumWeightingPercent += w.weightingPercent
 
-alarmscore = (1 - (sumCalculation / sumWeightingPercent)) * 100
+    alarmscore = (1 - (sumCalculation / sumWeightingPercent)) * 100
+else:
+    alarmscore = 100
 print(alarmscore)
 
