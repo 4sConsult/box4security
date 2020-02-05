@@ -338,6 +338,5 @@ sudo systemctl enable openvas-scanner
 sudo systemctl enable openvas-manager
 sudo systemctl enable greenbone-security-assistant
 sudo systemctl enable logstash
-sudo systemctl disable packetbeat
 sudo systemctl start logstash metricbeat filebeat openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
 echo "BOX4security installiert."
