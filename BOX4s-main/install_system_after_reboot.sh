@@ -318,6 +318,9 @@ echo "Install new Dashboard"
 echo "Achtung: Filtereinstellungen werden gelöscht."
 curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"dashboard","id":"a7bfd050-ce1d-11e9-943f-fdbfa2556276","overwrite":true}]'
 
+echo
+echo "Installiere Elastic Curator"
+pip3 install elasticsearch-curator --user
 
 echo "Initialisiere Schwachstellendatenbank und hole aktuelle Angriffspattern"
 echo
