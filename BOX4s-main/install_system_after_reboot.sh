@@ -3,6 +3,23 @@
 # PLAZHALTER BRANCH
 #
 #
+function testNet() {
+  # Returns 0 for successful internet connection and dns resolution, 1 else
+  if ping -q -c 1 -W 1 google.com >/dev/null; then
+  return 0
+else
+  return 1
+fi
+}
+
+function waitForNet() {
+  while ! testNet; do
+    # while testNet returns non zero value
+    echo "No internet connectivity or dns resolution, sleeping for 15s"
+    sleep 15s
+  done
+}
+
 if [ "$BRANCH" != "" ]; then
   TAG=$BRANCH
 elif [ "$1" != "" ]; then
@@ -20,10 +37,14 @@ sudo systemctl disable irqbalance
 echo "Installiere Suricata Deps"
 echo
 echo
+waitForNet
 sudo apt -y install clang llvm libelf-dev libc6-dev-i386 --no-install-recommends
+waitForNet
 sudo apt -y install python3-pip python3-venv
 #install suricata deps
+waitForNet
 sudo apt -y install libtool pkg-config libghc-bzlib-dev libghc-readline-dev ragel cmake libyaml-dev libboost-dev libjansson-dev libpcap-dev libcap-ng-dev libnspr4-dev libnss3-dev  libmagic-dev libluajit-5.1-dev libmaxminddb-dev liblz4-dev rustc cargo
+waitForNet
 sudo apt -y install libhyperscan5
 echo "Installiere PCRE"
 echo
@@ -33,6 +54,7 @@ echo
 sudo apt -y remove libpcre16* libpcre32*
 mkdir -p /home/amadmin/suricata-src
 cd /home/amadmin/suricata-src
+waitForNet
 wget  https://ftp.pcre.org/pub/pcre/pcre-8.43.zip
 unzip pcre-8.43.zip
 rm pcre-8.43.zip
@@ -52,6 +74,7 @@ echo "Installiere libbpf"
 echo
 echo
 cd /home/amadmin/suricata-src
+waitForNet
 git clone https://github.com/libbpf/libbpf.git
 cd libbpf/src/
 make -j8
@@ -62,12 +85,14 @@ echo "Installiere Suricata"
 echo
 echo
 cd /home/amadmin/suricata-src
+waitForNet
 git clone https://github.com/OISF/suricata.git --branch suricata-5.0.1 suricata-git
 cd suricata-git
 echo "Hole libhtp"
 echo
 echo
 sudo apt remove -y libhtp2
+waitForNet
 git clone https://github.com/OISF/libhtp.git -b 0.5.x libhtp-git
 cd libhtp-git
 echo "Installiere libhtp"
@@ -82,6 +107,7 @@ cd ..
 echo "Installiere Hyperscan"
 echo
 echo
+waitForNet
 git clone https://github.com/intel/hyperscan hyperscan-git
 cd hyperscan-git
 mkdir build
@@ -107,7 +133,7 @@ echo
 echo "Install suricata"
 sudo make install
 sudo make install-conf
-sudo mkdir /data/suricata
+sudo mkdir /data/suricata -p
 sudo groupadd suri
 sudo useradd suri -g suri
 sudo mkdir -p /var/log/suricata
@@ -122,6 +148,7 @@ cd ..
 echo "Installiere suricata update"
 echo
 echo
+waitForNet
 pip3 install suricata-update
 cd /home/amadmin/box4s
 cd Suricata
@@ -138,6 +165,7 @@ done
 sudo cp * / -R
 sed -i "s/--af-packet=ens[^ ]*//g" /etc/systemd/system/suricata.service
 sed -i "s/\/etc\/suricata\/suricata.yaml /& $IFSTRING/" /etc/systemd/system/suricata.service
+waitForNet
 /usr/local/bin/suricata-update update-sources
 /usr/local/bin/suricata-update
 /usr/local/bin/suricata-update enable-source et/open
@@ -159,6 +187,16 @@ echo ""
 echo
 echo
 cd /home/amadmin/box4s
+systemctl is-active --quiet elasticsearch
+if [ $? -ne 0 ]
+then
+  echo
+  echo
+  echo
+  echo "Elasticsearch not running. Restarting the service and waiting for 90s before continuing!!"
+  systemctl restart elasticsearch
+  sleep 90
+fi
 status_code=$(curl -XGET localhost:9200/_snapshot/kibana --write-out %{http_code} --silent --output /dev/null)
 if [[ "$status_code" -ne 200 ]] ; then
 	curl -XPUT localhost:9200/_snapshot/kibana -H "Content-Type: application/json" -d '{"type":"fs", "settings":{"location":"kibana"}}'
@@ -183,11 +221,12 @@ cd /home/amadmin/box4s
 cd FetchQC
 python3 -m venv .venv
 source .venv/bin/activate
+waitForNet
 pip install -r requirements.txt
 alembic upgrade head
 deactivate
 chmod +x -R $BASEDIR$GITDIR/Scripts
-cd $BASEDIR$GITDIR/Scripts
+cd $BASEDIR$GITDIR/Scripts/Automation
 ./run-OpenVASinsertConf.sh
 echo
 echo
@@ -198,8 +237,8 @@ sudo crontab root.crontab
 echo "Initialisiere Datenbanken"
 echo
 echo
-
 cd /tmp/
+waitForNet
 curl -O -s https://iptoasn.com/data/ip2asn-combined.tsv.gz
 gunzip -f ip2asn-combined.tsv.gz
 
@@ -246,7 +285,8 @@ echo
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash
+echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
+source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 # Set INT-IP as --allow-header-host
 sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/multi-user.target.wants/greenbone-security-assistant.service
@@ -257,9 +297,32 @@ sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-c
 sudo chown elasticsearch:elasticsearch /data/elasticsearch -R
 sudo chown suri:suri /data/suricata/ -R
 #Updating System with openvas and installing necessary logstash plugins
+
+echo "Install Dashboards"
+#DF!!!
+echo "Install  new Suricata Index"
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"index-pattern","id":"95298780-ce16-11e9-943f-fdbfa2556276","overwrite":true}]'
+echo "\r\n"
+echo "Install new Visualisations"
+response=$(curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualisation","id":"f73f0e40-e37e-11e9-a3a2-adf9cc70853f","overwrite":true}]')
+echo "\r\n"
+if [ $response=='{"successCount":0,"success":true}' ];
+then
+echo "Try alternative visualisation Installation"
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualization","id":"82177890-3073-11ea-87fd-73a617d8affb","replaceReferences":[{"type":"index-pattern","from":"95298780-ce16-11e9-943f-fdbfa2556276","to":"95298780-ce16-11e9-943f-fdbfa2556276"}]}]'
+fi
+echo "\r\n"
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"search","id":"5dccc860-cef2-11e9-943f-fdbfa2556276","overwrite":true}]'
+echo "\r\n"
+echo "Install new Dashboard"
+echo "Achtung: Filtereinstellungen werden gelöscht."
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"dashboard","id":"a7bfd050-ce1d-11e9-943f-fdbfa2556276","overwrite":true}]'
+
+
 echo "Initialisiere Schwachstellendatenbank und hole aktuelle Angriffspattern"
 echo
 echo
+waitForNet
 /home/amadmin/box4s/Scripts/System_Scripts/update_system.sh
 # apply network/interfaces
 sudo systemctl restart networking

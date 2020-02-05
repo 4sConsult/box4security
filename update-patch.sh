@@ -1,14 +1,17 @@
 #!/bin/bash
 ##
-#TAG BLANK
+$TAG=""
 ##
-
+#T Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden. Im Update 1.5.8 ist das nicht der Fall.
+#
 echo "Update System auf v1.5.8"
-sudo mkdir /var/www/kibana/html/update/
-chown www-data:www-data  /var/www/kibana/html/update/
-cp /home/amadmin/box4s/Nginx/var/www/kibana/html/* /var/www/kibana/html/ -r
-cp /home/amadmin/box4s/Nginx/etc/nginx/nginx.conf /etc/nginx
-cp /home/amadmin/box4s/Nginx/etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/
+echo "Hole Systemberechtigung"
+sudo su -
+sudo mkdir -p /var/www/kibana/html/update/
+sudo chown -R www-data:www-data  /var/www/kibana/html/update/ 
+sudo cp /home/amadmin/box4s/Nginx/var/www/kibana/html/* /var/www/kibana/html/ -r
+sudo cp /home/amadmin/box4s/Nginx/etc/nginx/nginx.conf /etc/nginx
+sudo cp /home/amadmin/box4s/Nginx/etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/
 sudo systemctl restart nginx
 
 
@@ -32,8 +35,6 @@ echo "
   ALTER TABLE blocks_by_bpffilter
       OWNER to postgres;" | sudo -u postgres psql box4S_db
 
-sudo mkdir /var/www/kibana/html/update/
-sudo chown www-data:www-data /var/www/kibana/html/update/ -R
 sudo cp -r /home/amadmin/box4s/Nginx/var/www/kibana/html/* /var/www/kibana/html/
 sudo mkdir /var/www/kibana/ebpf
 touch /var/www/kibana/ebpf/bypass_filter.bpf
@@ -55,19 +56,23 @@ echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'127.0.0.1',0,'');" | 
 
 
 echo "Install Dashboards"
-#Funktioniert nur bei frischen Installationen
-#sudo /home/amadmin/box4s/Scripts/Elastic_Scripts/import_saved_objects.sh /home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson
 echo "Install  new Suricata Index"
-curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --
-form file=@box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"index-pattern","id":"95298780-ce16-11e9-943f-fdbfa2556276","overwrite":true}]'
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"index-pattern","id":"95298780-ce16-11e9-943f-fdbfa2556276","overwrite":true}]'
+echo "\r\n"
 echo "Install new Visualisations"
-curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualisation","id":"f73f0e40-e37e-11e9-a3a2-adf9cc70853f","overwrite":true}]'
-curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"search","id":"5dccc860-cef2-11e9-943f-fdbfa2556276","overwrite":true}]'
-
-
+response=$(curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualisation","id":"f73f0e40-e37e-11e9-a3a2-adf9cc70853f","overwrite":true}]')
+echo "\r\n"
+if [ $response=='{"successCount":0,"success":true}' ];
+then 
+echo "Try alternative visualisation Installation"
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualization","id":"82177890-3073-11ea-87fd-73a617d8affb","replaceReferences":[{"type":"index-pattern","from":"95298780-ce16-11e9-943f-fdbfa2556276","to":"95298780-ce16-11e9-943f-fdbfa2556276"}]}]'
+fi
+echo "\r\n"
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"search","id":"5dccc860-cef2-11e9-943f-fdbfa2556276","overwrite":true}]'
+echo "\r\n"
 echo "Install new Dashboard"
 echo "Achtung: Filtereinstellungen werden gelöscht."
-curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"dashboard","id":"a7bfd050-ce1d-11e9-943f-fdbfa2556276","overwrite":true}]'
+curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"dashboard","id":"a7bfd050-ce1d-11e9-943f-fdbfa2556276","overwrite":true}]'
 
 
 
@@ -97,7 +102,7 @@ sudo touch /var/www/kibana/ebpf/15_kibana_filter.conf
 sudo chown logstash:www-data /var/www/kibana/ebpf/15_kibana_filter.conf
 sudo chmod 0664 /var/www/kibana/ebpf/15_kibana_filter.conf
 sudo ln -s /var/www/kibana/ebpf/15_kibana_filter.conf /etc/logstash/conf.d/suricata/15_kibana_filter.conf
-
+#echo "filter{\r\n" >> /var/www/kibana/ebpf/15_kibana_filter.conf
 echo "Führe OpenVAS rebuild aus"
 sudo openvasmd --rebuild --progress
 sudo systemctl restart openvas-manager
@@ -110,3 +115,4 @@ echo "Installiere OpenVAS Scan Config"
 cp $BASEDIR$GITDIR/BOX4s-main/4s-OpenVAS.xml /home/amadmin
 cd $BASEDIR$GITDIR/Scripts/Automation
 ./run-OpenVASinsertConf.sh
+
