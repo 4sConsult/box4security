@@ -1,9 +1,6 @@
 MAILTO=box@4sconsult.de
 # m h  dom mon dow   command
 
-#nmapd short scan
-0 * * * *  $BASEDIR/$GITDIR/../listscan.sh | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Nmap List-Scan Log"
-
 # Check Disk Space Daily
 @daily  $BASEDIR/$GITDIR/scripts/Automation/diskspacealert.sh | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Festplattenspeicher erschöpft"
 
