@@ -12,19 +12,20 @@
     }
   },
     "mappings": {
-        "link" : {
-        "type": "string",
+      "properties": {
+      "link" : {
+        "type": "object",
         "properties": {
-          "surpress": {
-            "type" : "nested",
-            "properties": {
-              "bpf" : {
-                "type": "keyword"
+            "surpress": {
+              "type" : "nested",
+                "properties": {
+                  "bpf" : {
+                    "type": "keyword"
+                  }
+                }
               }
             }
-          }
-        },
-
+      },
       "destination" : {
         "type": "object",
         "properties": {
@@ -97,4 +98,4 @@
       }
     }
   }
-
+}
