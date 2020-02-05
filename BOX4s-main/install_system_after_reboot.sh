@@ -289,7 +289,7 @@ echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
 source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 # Set INT-IP as --allow-header-host
-sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/multi-user.target.wants/greenbone-security-assistant.service
+sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/greenbone-security-assistant.service
 sudo systemctl daemon-reload
 #Copy postgres driver
 sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-core/lib/jars/
