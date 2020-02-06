@@ -9,7 +9,7 @@
     <div class="ui main text container">
       <h1 class="ui header">BOX4Security - FAQ</h1>
       <div class="ui inverted section divider"></div>
-      <div class="ui styled accordion">
+      <div class="ui fluid styled accordion">
       <div class="title">
         <i class="dropdown icon"></i>
           What is a dog?
@@ -68,16 +68,19 @@
         <p class="transition hidden">A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
       </div>
     </div>
+    <div class="ui hidden divider"></div>
+    <div class="ui message">
+      <div class="content">
+        <p>
+        <i class="svg question circle icon" aria-hidden="true">
+        </i>
+          Haben Sie eine weitere Frage? <br> Kontaktieren Sie unsere Mitarbeiter per E-Mail an <a href="mailto:box@4sconsult.de">box@4sconsult.de</a>.</p>
+        </div>
+      </div>
     </div>
     <div class="ui vertical footer segment">
       <div class="ui center aligned container">
       <img src="/res/Box4S_Logo.png" class="ui centered small image">
-      <!-- <div class="ui horizontal inverted small divided link list">
-        <a class="item" href="#">Site Map</a>
-        <a class="item" href="#">Contact Us</a>
-        <a class="item" href="#">Terms and Conditions</a>
-        <a class="item" href="#">Privacy Policy</a>
-      </div> -->
     </div>
     </div>
     <script
