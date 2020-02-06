@@ -34,12 +34,12 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
    or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
 // Eine SQL-Abfrage ausführen
  if(isset ($_GET['set_bpf_filter'])) {
-	$query = "INSERT INTO blocks_by_bpffilter (src_ip,src_port,dst_ip,dst_port,proto) 
+	$query = "INSERT INTO blocks_by_bpffilter (src_ip,src_port,dst_ip,dst_port,proto)
 		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto')";
 	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
 
 //Daten in Filterdatei schreiben
-	 
+
  $file="/var/www/kibana/ebpf/bypass_filter.bpf";
 	//unlink($file);
 	$query ="SELECT * from blocks_by_bpffilter";
@@ -68,7 +68,7 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
 	//
 	//
 	$filterrule = substr($filterrule, 0, -4);
-	
+
  $ffile = fopen($file,"w");
   fwrite($ffile,$filterrule);
     //file_put_contents($file, $filterrule);
@@ -77,15 +77,15 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
 	//echo ($return_var);
 	//print_r($output);
  }//close_setbpfFilter
- 
- 
+
+
   if(isset ($_GET['set_logstash_filter'])) {
- $query = "INSERT INTO blocks_by_logstashfilter (src_ip,src_port,dst_ip,dst_port,proto,signature_id,signature) 
+ $query = "INSERT INTO blocks_by_logstashfilter (src_ip,src_port,dst_ip,dst_port,proto,signature_id,signature)
 		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto','$signature_id','$signature')";
 	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
 
 //Daten in Filterdatei schreiben
-	 
+
  $file="/var/www/kibana/ebpf/15_kibana_filter.conf";
         //unlink($file);
         $query ="select * from blocks_by_logstashfilter";
@@ -146,6 +146,7 @@ function setActive(id,pageName,pageLink){
 	if (localStorage.getItem('mainmenustorage') == 'netmenu') { document.getElementById('netmenu').setAttribute('class','item active'); }
 	if (localStorage.getItem('mainmenustorage') == 'administration') { document.getElementById('administration').setAttribute('class','item active'); }
 	if (localStorage.getItem('mainmenustorage') == '4smenu') { document.getElementById('4smenu').setAttribute('class','item right image active'); }
+
 // Breadcrumb
 var siteLink = [];
 var siteTitle =[];
@@ -182,7 +183,7 @@ function printObject(o) {
 
 </head>
 
-<?php 
+<?php
 //bpf Filter wird über das Kibana Frontend gesetzt
 //body onload für das Modal Menü des Filtermenüs
 if(isset ($_GET['bpf_filter'])) {
@@ -230,8 +231,9 @@ if(isset ($_GET['bpf_filter'])) {
 
 <!--<div class="ui pointing item"> -->
 	<i class="cogs icon"></i> Administration <i class="dropdown icon"></i>
- 
- <div class="menu">	
+
+ <div class="menu">
+<a class="item" href="faq.php" target="frame"  onclick="setActive('administration','FAQ','faq.php')">FAQ</a>
 <a class="item" href="administration.php" target="frame"  onclick="setActive('administration','System','administration.php')">System</a>
 <a class="item" href="filteradministration.php" target="frame"  onclick="setActive('administration','Filter','filteradministration.php')">Filter</a>
 </div></div></div>
@@ -262,7 +264,7 @@ if(isset ($_GET['bpf_filter'])) {
 
 <div class="ui modal">
 <?php
-// Der Modaldiaog wird beim body onload gesetzt wernn GET bpffilter durch Kibana gesetzt wird. 
+// Der Modaldiaog wird beim body onload gesetzt wernn GET bpffilter durch Kibana gesetzt wird.
 
 if (isset($_GET['bpf_filter']))
 	if ($_GET['bpf_filter'] !=""){
@@ -309,7 +311,7 @@ echo '
         <input type="hidden" name="set_filter" value="1">
         <input type="hidden" name="set_bpf_filter" value="1">
 		</div>
-	
+
         </div>
         <div class="row" style="margin-bottom: 20px">
                 <div class="three wide column">
@@ -375,8 +377,8 @@ echo '
         <input type="text" name="signature" value="'.$signature.'">
         </div>
   </div>
-		
-		
+
+
         </div>
         <div class="row" style="margin-bottom: 20px">
                 <div class="three wide column">
