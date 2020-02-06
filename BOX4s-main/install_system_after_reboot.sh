@@ -298,26 +298,6 @@ sudo chown elasticsearch:elasticsearch /data/elasticsearch -R
 sudo chown suri:suri /data/suricata/ -R
 #Updating System with openvas and installing necessary logstash plugins
 
-echo "Install Dashboards"
-#DF!!!
-echo "Install  new Suricata Index"
-curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"index-pattern","id":"95298780-ce16-11e9-943f-fdbfa2556276","overwrite":true}]'
-echo "\r\n"
-echo "Install new Visualisations"
-response=$(curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualisation","id":"f73f0e40-e37e-11e9-a3a2-adf9cc70853f","overwrite":true}]')
-echo "\r\n"
-if [ $response=='{"successCount":0,"success":true}' ];
-then
-echo "Try alternative visualisation Installation"
-curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"visualization","id":"82177890-3073-11ea-87fd-73a617d8affb","replaceReferences":[{"type":"index-pattern","from":"95298780-ce16-11e9-943f-fdbfa2556276","to":"95298780-ce16-11e9-943f-fdbfa2556276"}]}]'
-fi
-echo "\r\n"
-curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"search","id":"5dccc860-cef2-11e9-943f-fdbfa2556276","overwrite":true}]'
-echo "\r\n"
-echo "Install new Dashboard"
-echo "Achtung: Filtereinstellungen werden gelöscht."
-curl -X POST "localhost:5601/api/saved_objects/_resolve_import_errors" -H "kbn-xsrf: true" --form file=@$BASEDIR$GITDIR/Kibana/Dashboard_filterUpdate090120.ndjson --form retries='[{"type":"dashboard","id":"a7bfd050-ce1d-11e9-943f-fdbfa2556276","overwrite":true}]'
-
 echo
 echo "Installiere Elastic Curator"
 pip3 install elasticsearch-curator --user
