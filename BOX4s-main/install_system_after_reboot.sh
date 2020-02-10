@@ -311,6 +311,8 @@ waitForNet
 
 # Install the scores index
 /home/amadmin/box4s/Scripts/Automation/score_calculation/install_index.sh
+# Import BI Dashboards
+curl -X POST "localhost:5601/api/saved_objects/_import" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Scripts/Automation/score_calculation/BIDashboards.ndjson
 
 sudo systemctl restart networking
 sudo systemctl enable heartbeat-elastic
