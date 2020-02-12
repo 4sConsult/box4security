@@ -273,7 +273,49 @@ echo "CREATE TABLE public.uniquevulns
 
  ALTER TABLE public.uniquevulns
      OWNER to postgres;"  |sudo -u postgres psql box4S_db
-
+# Filter Functionality
+sudo mkdir /var/www/kibana/ebpf -p
+sudo touch /var/www/kibana/ebpf/bypass_filter.bpf
+sudo chown suri:www-data /var/www/kibana/ebpf/bypass_filter.bpf
+sudo chmod 664 /var/www/kibana/ebpf/bypass_filter.bpf
+echo "CREATE TABLE blocks_by_bpffilter
+       (
+           src_ip inet,
+           src_port integer,
+           dst_ip inet,
+           dst_port integer,
+           proto  varchar(4)
+       )
+       WITH (
+           OIDS = FALSE
+       )
+       TABLESPACE pg_default;
+       ALTER TABLE blocks_by_bpffilter
+           OWNER to postgres;" | sudo -u postgres psql box4S_db
+echo "not (src host 127.0.0.1)"  | sudo tee -a  /var/www/kibana/ebpf/bypass_filter.bpf
+echo "not (dst host 127.0.0.1)"  | sudo tee -a  /var/www/kibana/ebpf/bypass_filter.bpf
+echo "INSERT INTO blocks_by_bpffilter VALUES ('127.0.0.1',0,'0.0.0.0',0,'');" | sudo -u postgres psql box4S_db
+echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'127.0.0.1',0,'');" | sudo -u postgres psql box4S_db
+echo "CREATE TABLE blocks_by_logstashfilter
+             (
+                 src_ip inet,
+                 src_port integer,
+                 dst_ip inet,
+                 dst_port integer,
+                 proto  varchar(4),
+                 signature_id varchar(10),
+                 signature varchar(256)
+             )
+             WITH (
+                 OIDS = FALSE
+             )
+             TABLESPACE pg_default;
+             ALTER TABLE blocks_by_logstashfilter
+                 OWNER to postgres;" | sudo -u postgres psql box4S_db
+sudo touch /var/www/kibana/ebpf/15_kibana_filter.conf
+sudo chown logstash:www-data /var/www/kibana/ebpf/15_kibana_filter.conf
+sudo chmod 0664 /var/www/kibana/ebpf/15_kibana_filter.conf
+sudo ln -s /var/www/kibana/ebpf/15_kibana_filter.conf /etc/logstash/conf.d/suricata/15_kibana_filter.conf
 
 sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'zgJnwauCAsHrR6JB';"
 fi
@@ -291,6 +333,11 @@ echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 # Set INT-IP as --allow-header-host
 sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/greenbone-security-assistant.service
 sudo systemctl daemon-reload
+#Ignore own INT_IP
+echo "not (src host $INT_IP)" | sudo tee -a /var/www/kibana/ebpf/bypass_filter.bpf
+echo "not (dst host $INT_IP)"  | sudo tee -a  /var/www/kibana/ebpf/bypass_filter.bpf
+echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | sudo -u postgres psql box4S_db
+echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | sudo -u postgres psql box4S_db
 #Copy postgres driver
 sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-core/lib/jars/
 # make /data writeable to Elasticsearch
