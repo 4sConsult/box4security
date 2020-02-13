@@ -26,7 +26,8 @@ function waitForNet() {
 
 echo '193.104.90.111  lockedbox-bugtracker.am-gmbh.de' | sudo tee -a /etc/hosts
 waitForNet
-sudo apt install -y curl python3 git
+sudo apt install -y curl python3 git git-lfs
+git lfs install
 if [[ "$*" == *skip-reboot* ]]
 then
   REBOOT=false
