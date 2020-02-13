@@ -25,7 +25,6 @@
           Was ist die BOX4Security?
       </div>
       <div class="content text-justify">
-        <!-- <img class="ui small image" src="res/Box4S_Logo.png"> -->
         <span class="transition hidden">Die BOX4Security ist eine von 4sConsult entwickelte Security-Lösung für das Firmennetz. Durch Aufzeichnung und Analyse von Netzwerkverehrsinformationen, Systemscans nach Schwachstellen und grafische Darstellung der Alarme und Warnungen in Dashboards kann jederzeit der Sicherheitszustand des Firmennetzes überwacht werden.</span>
       </div>
       <div class="title">
@@ -107,14 +106,6 @@
       </div>
     </div>
     <div class="ui hidden divider"></div>
-    <!-- <div class="ui message">
-      <div class="content">
-        <p>
-        <i class="svg question circle icon" aria-hidden="true">
-        </i>
-          Haben Sie eine weitere Frage? <br> Kontaktieren Sie unsere Mitarbeiter per E-Mail an <a href="mailto:box@4sconsult.de">box@4sconsult.de</a>.</p>
-        </div>
-      </div> -->
     <div class="ui message">
       <div class="content">
         <p>
