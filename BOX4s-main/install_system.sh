@@ -127,6 +127,11 @@ sudo apt install -y nginx php7.3 php7.3-fpm
 cd /home/amadmin/box4s
 cd Nginx
 PHPVER=$(php -v | grep -Po '(PHP) \K([0-9]\.[0-9]+)') # e.g. 7.3
+sudo cp /lib/systemd/system/php$PHPVER-fpm.service /etc/systemd/system/
+sudo sed -i '/\[Service\]/a EnvironmentFile=\/etc\/environment' /etc/systemd/system/php$PHPVER-fpm.service
+sudo systemctl daemon-reload
+sudo sed -i 's/;clear_env = no/clear_env = no/g' /etc/php/$PHPVER/fpm/pool.d/www.conf
+sudo systemctl reload php$PHPVER-fpm.service
 sed -i "s/php[0-9]\.[0-9]-fpm/php$PHPVER-fpm/g" etc/nginx/sites-available/default
 sudo cp * / -R
 # Copy certificates over
