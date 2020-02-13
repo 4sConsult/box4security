@@ -8,4 +8,4 @@ MAILTO=box@4sconsult.de
 @daily $HOME/.local/bin/curator --config ~/curator.yml ~/actions.yml | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Elastic Curator Log"
 
 # Score calculation
-*/5 * * * * $BASEDIR/$GITDIR/Scripts/Automation/score_calculation/calculate_scores.sh
+*/5 * * * * $BASEDIR/$GITDIR/Scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1 
