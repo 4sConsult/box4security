@@ -122,7 +122,7 @@ sudo cp * / -R
 sudo systemctl stop apache2
 sudo apt remove -y apache2
 waitForNet
-sudo apt install -y nginx php7.3 php7.3-fpm
+sudo apt install -y nginx php7.3 php7.3-fpm php-pgsql
 cd /home/amadmin/box4s
 cd Nginx
 PHPVER=$(php -v | grep -Po '(PHP) \K([0-9]\.[0-9]+)') # e.g. 7.3

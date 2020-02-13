@@ -23,7 +23,7 @@ server {
                 #include snippets/fastcgi-php.conf;
         	 fastcgi_split_path_info ^(.+?\.php)(/.*)$;
 		fastcgi_index kibana.php; 
-	       fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+	       fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
 # regex to split $uri to $fastcgi_script_name and $fastcgi_path
 	fastcgi_split_path_info ^(.+?\.php)(/.*)$;
 
@@ -57,7 +57,7 @@ server {
 		root /var/www/kibana/html/;
 		auth_basic off;
                 include snippets/fastcgi-php.conf;
-                fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;	
+                fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;	
 	}
         location /kibana/ {
                 auth_basic off;
@@ -70,7 +70,7 @@ server {
 #	location /phpmyadmin {
 #		root /var/www/html;
 #                include snippets/fastcgi-php.conf;
-#                fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+#                fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
 #		
 #		auth_basic off;
 #		}
