@@ -41,6 +41,26 @@
       </div>
       <div class="title">
         <i class="dropdown icon"></i>
+        Wie wird ein aufgetretener Alarm genauer verfolgt?
+      </div>
+      <div class="content text-justify">
+        <p class="transition hidden">Mithilfe von angepinnten Filtern lassen sich aufgetretene Alarme weiter verfolgen. Haben Sie ein auffälliges Datenmerkmal identifiziert, so fahren Sie mit der Maus über die Information und klicken Sie auf die Lupe, die ein Pluszeichen enthält. Sie können nach jeglichen dargestellten Informationen filtern.</p>
+        <div class="ui divider"></div>
+        <p class="transition hidden">Die folgenden Bilder zeigen Ihnen die Filtermöglichkeiten näher auf.</p>
+        <img class="ui fluid bordered image" src="res/faq/filtercategory.jpg">
+        <br>
+        <img class="ui fluid bordered image" src="res/faq/filtersignature.jpg">
+        <br>
+        <img class="ui fluid bordered image" src="res/faq/filtersource.jpg">
+        <div class="ui divider"></div>
+        <p class="transition hidden">Schließlich erscheinen die von Ihnen gewählten Filter unterhalb der Suchleiste am oberen Ende der Seite.</p>
+        <img class="ui fluid bordered image" src="res/faq/appliedfilters.jpg">
+        <div class="ui divider"></div>
+        <p class="transition hidden">Um einen gewählten Filter auf andere Bereiche zu übertragen, klicken Sie mit der linken Maustaste auf den Filter und wählen Sie <i>Pin across all apps</i>. Der gewählte Filter greift nun auch bei Aufruf der übrigen Oberflächen. Angepinnte Filter lassen sich durch Klick auf den Filter und schließlich auf <i>Unpin</i> wieder entfernen.</p>
+        <img class="ui fluid bordered image" src="res/faq/pinfilter.jpg">
+      </div>
+      <div class="title">
+        <i class="dropdown icon"></i>
           Wie können False Positives ausgeblendet werden?
       </div>
       <div class="content text-justify">
@@ -53,7 +73,7 @@
             <span class="item">Dialog absenden</span>
           </div>
           Nachdem diese Prozedur ausgeführt wurde, wird der Alarm künftig nicht mehr aufgezeichnet und erscheint in Zukunft nicht mehr im Dashboards.
-          Eine Übersicht der unterdrückten Alarme sowie die Möglichkeit der Rücknahme dieser, finden Sie unter <i>Adminstration - Filter </i>
+          Eine Übersicht der unterdrückten Alarme sowie die Möglichkeit der Rücknahme dieser, finden Sie unter <i>Adminstration - Filter </i>.
         </p>
         <p class="transition hidden">Gerne folgen Sie auch diesem Video zur Durchführung der obigen Prozedur:</p>
         <div class="transition hidden fluid">
