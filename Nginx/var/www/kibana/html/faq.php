@@ -45,7 +45,7 @@
       </div>
       <div class="content text-justify">
         <p class="transition hidden">Der Schwachstellenscanner wurde bei der Installation der BOX4Security eingerichtet. Der wöchentliche Ablauf der Schwachstellenscans sowie die betrachteten Netzwerke wurden nach gemeinsamer Vereinbarung zwischen der IT-Administration Ihres Unternehmens und den Mitarbeitern der 4sConsult GmbH implementiert.</p>
-        <p class="transition hidden">Wünschen Sie Veränderungen des Zeitablaufes oder der Netzkonfiguration, so wenden Sie sich bitte über das <a href="#kontakt">Kontaktformular</a> an uns.</p>
+        <p class="transition hidden">Wünschen Sie Veränderungen des Zeitablaufes oder der Netzkonfiguration, so wenden Sie sich bitte über das <a class="kontakt" href="#kontakt">Kontaktformular</a> an uns.</p>
       </div>
       <div class="title">
         <i class="dropdown icon"></i>
@@ -102,7 +102,7 @@
           Wie können fehlende Features angefragt werden?
       </div>
       <div class="content text-justify">
-        <p class="transition hidden">Um Einfluss auf die Weiterentwicklung der BOX4Security zu nehmen, wenden Sie sich bitte über das <a href="#kontakt">Kontaktformular</a> an uns.</p>
+        <p class="transition hidden">Um Einfluss auf die Weiterentwicklung der BOX4Security zu nehmen, wenden Sie sich bitte über das <a class="kontakt" href="#kontakt">Kontaktformular</a> an uns.</p>
       </div>
     </div>
     <div class="ui hidden divider"></div>
@@ -120,7 +120,7 @@
               <p>Vielen Dank für Ihre Anfrage. Wir werden uns zügig bemühen auf Ihr Anliegen zurückzukommen.</p>
             </div>
           <?php endif; ?>
-          <div class="ui fluid accordion">
+          <div id="contact" class="ui fluid accordion">
             <div class="title">
               <i class="dropdown icon"></i>
               Nehmen Sie hier Kontakt zu uns auf.
@@ -164,8 +164,12 @@
       crossorigin="anonymous"></script>
     <script src="semantic/dist/semantic.min.js"></script>
     <script type="text/javascript">
-    $('.ui.accordion').accordion();
+    $('#contact').accordion();
     $('#faq').accordion('open',0);
+    $("a.kontakt").click(() => {
+      $('#contact').accordion('open', 0);
+      setTimeout(() => window.location.href = '#contact', 200);
+    })
     $('#contactsubmit').click(() => {
       $('.ui.dimmer').dimmer('show');
     })
