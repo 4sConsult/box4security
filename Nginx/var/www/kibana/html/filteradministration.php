@@ -29,7 +29,7 @@ if ($_GET['delete']==1){
 		dst_port='".$dest_port."' AND
 		proto='".$proto."')";
 		//echo $query;
-	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
+	 $result = pg_query($query) or die('Insert statement fehlgeschlagen: ' . pg_last_error());
  //TODO make function for reusage
  $file="/var/www/kibana/ebpf/bypass_filter.bpf";
 	//unlink($file);
@@ -70,14 +70,14 @@ if ($_GET['deletels']==1){
 		proto='".$proto."' AND
 		signature_id='".$signature_id."')";
 		//echo $query;
-	 $result = pg_query($query) or die('DELETE statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
+	 $result = pg_query($query) or die('DELETE statement fehlgeschlagen: ' . pg_last_error());
  //TODO make function for reusage
  $file="/var/www/kibana/ebpf/15_kibana_filter.conf";
 	//unlink($file);
 	$query ="select * from blocks_by_logstashfilter";
 	$results = pg_query($query);
 	$filterrule=" filter { \r\n";
-	
+
 	while ($row = pg_fetch_array($results)){
 		$filterrule.=" if {";
 	if ($row['src_ip']!='0.0.0.0'){
@@ -100,13 +100,13 @@ if ($_GET['deletels']==1){
 		$filterrule.=$row['proto']." in [network][transport] ";
 	}
 		if ($row['signature_id']!=''){
-			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!='0' || $row['signature_id']!=''  ){ $filterrule.=" AND "; } 
+			if ($row['src_ip']!='0.0.0.0' || $row['src_port']!='0' || $row['dst_ip']!='0.0.0.0' || $row['dst_port']!='0' || $row['signature_id']!=''  ){ $filterrule.=" AND "; }
 		$filterrule.=$row['signature_id']." in [alert][signature_id]";
 	}
-  $filterrule.="}\r\n { drop { } }}\r\n"; 
+  $filterrule.="}\r\n { drop { } }}\r\n";
 	}
 //	$filterrule.="}"; //Filtered out for 1 Filter rule in logstash
-	
+
  $ffile = fopen($file,"w");
   fwrite($ffile,$filterrule);
     //file_put_contents($file, $filterrule);
@@ -131,7 +131,7 @@ if ($_GET['deletels']==1){
 <div class="column"><p> Anweisung<p> </div>
 </div>
 </div>
-<?php 
+<?php
 $query ="SELECT * from blocks_by_bpffilter";
         $results = pg_query($query);
         $filterrule="";
@@ -153,17 +153,17 @@ $query ="SELECT * from blocks_by_bpffilter";
 	 while ($kf_ctr > $ctr){
 		echo '
 
- <form  method="get" class="ui form"> 
+ <form  method="get" class="ui form">
 <div class="ui six column grid">
 <div class="column"><input type="text" name="src_ip" value="'.$kf[$ctr]["src_ip"].'"></div>
 <div class="column"><input type="text" name="src_port" value="'.$kf[$ctr]["src_port"].'"></div>
 <div class="column"><input type="text" name="dest_ip" value="'.$kf[$ctr]["dst_ip"].'"></div>
 <div class="column"><input type="text" name="dest_port" value="'.$kf[$ctr]["dst_port"].'"></div>
 <div class="column"><input type="text" name="proto" value="'.$kf[$ctr]["proto"].'"></div>
-<div class="column"><button value="1" name="delete" class="ui negative basic button">Löschen</button></div>  
+<div class="column"><button value="1" name="delete" class="ui negative basic button">Löschen</button></div>
 </div>
 </form>
-</div>';	
+</div>';
 	$ctr++;
  } ?>
 </div>
@@ -182,7 +182,7 @@ $query ="SELECT * from blocks_by_bpffilter";
 <div class="column"><p> Anweisung<p> </div>
 </div>
 </div>
-<?php 
+<?php
 $query ="SELECT * from blocks_by_logstashfilter";
         $results = pg_query($query);
         $filterrule="";
@@ -206,7 +206,7 @@ $query ="SELECT * from blocks_by_logstashfilter";
 	 while ($kf_ctr > $ctr){
 		echo '
 
- <form  method="get" class="ui form"> 
+ <form  method="get" class="ui form">
 <div class="ui seven column grid">
 <div class="column"><input type="text" name="src_ip" value="'.$kf[$ctr]["src_ip"].'"></div>
 <div class="column"><input type="text" name="src_port" value="'.$kf[$ctr]["src_port"].'"></div>
@@ -215,10 +215,10 @@ $query ="SELECT * from blocks_by_logstashfilter";
 <div class="column"><input type="text" name="proto" value="'.$kf[$ctr]["proto"].'"></div>
 <div class="column"><input type="text" name="signature" value="'.$kf[$ctr]["signature"].'"></div>
 <input type="hidden" name="signature_id" value="'.$kf[$ctr]["signature_id"].'">
-<div class="column"><button value="1" name="deletels" class="ui negative basic button">Löschen</button></div>  
+<div class="column"><button value="1" name="deletels" class="ui negative basic button">Löschen</button></div>
 </div>
 </form>
-</div>';	
+</div>';
 	$ctr++;
  } ?>
 </div>
@@ -227,7 +227,7 @@ $query ="SELECT * from blocks_by_logstashfilter";
 
 
 </div>
- 
+
 <div class="two wide column">
 </div>
 </body>
