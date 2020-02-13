@@ -56,6 +56,10 @@
           Eine Übersicht der unterdrückten Alarme sowie die Möglichkeit der Rücknahme dieser, finden Sie unter <i>Adminstration - Filter </i>
         </p>
         <p class="transition hidden">Gerne folgen Sie auch diesem Video zur Durchführung der obigen Prozedur:</p>
+        <div class="transition hidden fluid">
+          <video class="transition" controls src="res/SuppressAlarms.mp4">
+          </video>
+        </div>
       </div>
       <div class="title">
         <i class="dropdown icon"></i>

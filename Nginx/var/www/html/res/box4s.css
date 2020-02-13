@@ -1,3 +1,8 @@
 .text-justify {
     text-align: justify;
 }
+video {
+  width: 100%    !important;
+  height: auto   !important;
+  display: block;
+}
