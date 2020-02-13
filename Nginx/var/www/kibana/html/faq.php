@@ -1,3 +1,12 @@
+<?php if (!empty($_POST)) {
+  $BODY = "Kunde: " . getenv('KUNDE') . "\n". "Kontakt: " . $_POST['email'] . "\n\n" .$_POST['body'];
+  $headers   = array();
+  $headers[] = "MIME-Version: 1.0";
+  $headers[] = "Content-type: text/plain; charset=utf-8";
+  $SUBJECT = '['. getenv('KUNDE') .'] ' . (!empty($_POST['subject']) ? $_POST['subject'] : 'BOX4Security FAQ-Kontaktformular');
+  $SUBJECT = '=?UTF-8?B?'.base64_encode($SUBJECT).'?=';
+  $SENT = mail('0972f9a3.4sconsult.de@emea.teams.ms', $SUBJECT, $BODY, $headers);
+} ?>
 <!DOCTYPE html>
 <html lang="de" dir="ltr">
   <head>
@@ -10,7 +19,7 @@
     <div class="ui main text container">
       <h1 class="ui header">BOX4Security - FAQ</h1>
       <div class="ui inverted section divider"></div>
-      <div class="ui fluid styled accordion">
+      <div id="faq" class="ui fluid styled accordion">
       <div class="title">
         <i class="dropdown icon"></i>
           Was ist die BOX4Security?
@@ -98,13 +107,59 @@
       </div>
     </div>
     <div class="ui hidden divider"></div>
-    <div class="ui message">
+    <!-- <div class="ui message">
       <div class="content">
         <p>
         <i class="svg question circle icon" aria-hidden="true">
         </i>
           Haben Sie eine weitere Frage? <br> Kontaktieren Sie unsere Mitarbeiter per E-Mail an <a href="mailto:box@4sconsult.de">box@4sconsult.de</a>.</p>
         </div>
+      </div> -->
+    <div class="ui message">
+      <div class="content">
+        <p>
+        <i class="svg question circle icon" aria-hidden="true">
+        </i>
+          Haben Sie eine weitere Frage oder benötigen Sie Unterstützung? <br></p>
+          <?php if ($SENT): ?>
+            <div class="ui positive message">
+              <div class="header">
+                Ihre Anfrage wurde versandt.
+              </div>
+              <p>Vielen Dank für Ihre Anfrage. Wir werden uns zügig bemühen auf Ihr Anliegen zurückzukommen.</p>
+            </div>
+          <?php endif; ?>
+          <div class="ui fluid accordion">
+            <div class="title">
+              <i class="dropdown icon"></i>
+              Nehmen Sie hier Kontakt zu uns auf.
+            </div>
+            <div class="content">
+          <form class="ui form" method="post">
+            <div class="ui dimmer">
+              <div class="ui active loader"></div>
+            </div>
+            <div class="field">
+              <label>Unternehmen</label>
+              <input type="text" name="company" value="<?php echo getenv('KUNDE');?>" readonly>
+            </div>
+            <div class="field">
+              <label>Ihre E-Mail-Adresse</label>
+              <input type="email" name="email" placeholder="Ihre E-Mailadresse" required>
+            </div>
+            <div class="field">
+              <label>Betreff (optional)</label>
+              <input type="text" name="subject" placeholder="BOX4Security: FAQ-Anfrage">
+            </div>
+            <div class="field">
+              <label>Ihr Anliegen</label>
+              <textarea name="body"></textarea>
+            </div>
+            <button id="contactsubmit" class="ui button" type="submit">Abschicken</button>
+          </form>
+        </div>
+        </div>
+      </div>
       </div>
     </div>
     <div class="ui vertical footer segment">
@@ -118,7 +173,11 @@
       crossorigin="anonymous"></script>
     <script src="semantic/dist/semantic.min.js"></script>
     <script type="text/javascript">
-    $('.ui.accordion').accordion('open',0);
+    $('.ui.accordion').accordion();
+    $('#faq').accordion('open',0);
+    $('#contactsubmit').click(() => {
+      $('.ui.dimmer').dimmer('show');
+    })
     </script>
   </body>
 </html>
