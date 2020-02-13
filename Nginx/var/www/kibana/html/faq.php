@@ -44,7 +44,7 @@
           Wie können False Positives ausgeblendet werden?
       </div>
       <div class="content text-justify">
-        <p class="transition hidden">Haben Sie ein False Positive identifiziert, so lässt sich dieser Alarm künftig von der Aufzeichnung ausnehmen. Gehen Sie dazu wie folgt vor:</p>
+        <p class="transition hidden">Haben Sie einen False Positive identifiziert, so lässt sich dieser Alarm künftig von der Aufzeichnung ausnehmen. Gehen Sie dazu wie folgt vor:</p>
         <p class="transition hidden">
           <div class="ui ordered list">
             <span class="item">False Positive identifizieren</span>
@@ -63,31 +63,18 @@
       </div>
       <div class="title">
         <i class="dropdown icon"></i>
+          Alarme unterdrücken: Worin unterscheiden sich die Methoden Kernel und Logstash?
+      </div>
+      <div class="content text-justify">
+        <p class="transition hidden"><b>Kernel</b> - Über die Option des Kernels lassen sich Pakete bereits vor der Aufzeichnung durch das Intrusion Detection System ausschließen. Diese Option ist die performanteste. Es kann allerdings nur nach Informationen der Netz- und Transportschicht, d.h. IP-Adressen, Port und Protokoll, gefiltert werden.</p>
+        <p class="transition hidden"><b>Logstash</b> - Die Filterfunktion Logstash greift nach Aufzeichnug des Paketes durch das Intrusion Detection System. Hier lassen sich zusätzlich gezielt Alarme anhand ihrer Signatur verwerfen.</p>
+      </div>
+      <div class="title">
+        <i class="dropdown icon"></i>
           Wie können fehlende Features angefragt werden?
       </div>
-      <div class="content">
+      <div class="content text-justify">
         <p class="transition hidden">Um Einfluss auf die Weiterentwicklung der BOX4Security zu nehmen, wenden Sie sich bitte über das <a href="#kontakt">Kontaktformular</a> an uns.</p>
-      </div>
-      <div class="title">
-        <i class="dropdown icon"></i>
-          What is a dog?
-      </div>
-      <div class="content">
-        <p class="transition hidden">A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
-      </div>
-      <div class="title">
-        <i class="dropdown icon"></i>
-          What is a dog?
-      </div>
-      <div class="content">
-        <p class="transition hidden">A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
-      </div>
-      <div class="title">
-        <i class="dropdown icon"></i>
-          What is a dog?
-      </div>
-      <div class="content">
-        <p class="transition hidden">A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
       </div>
     </div>
     <div class="ui hidden divider"></div>
