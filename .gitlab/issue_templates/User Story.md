@@ -18,7 +18,7 @@ Die folgenden Aufgaben müssen erledigt werden, um die User Story zu implementie
 | Story Points      | x      |
 | Zugehöriges Epic  | #      |
 
-
+`In dieser User Story werden zunächst keine Story Points oder die Business Value gepflegt.`
 ___
 ## Folgendes Löschen
 ### Eine gute User Story folgt dem "I-N-V-E-S-T-Prinzip"
