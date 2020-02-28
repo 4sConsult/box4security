@@ -1,3 +1,3 @@
-*‹Grobe Beschreibung des Epics›*
+__‹Grobe Beschreibung des Epics›__
 
-*‹Welchen Mehrwert bietet das Epic?›*
+__‹Welchen Mehrwert bietet das Epic?›__
