@@ -12,6 +12,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Changed
 
 ### Fixed
+* Bug behoben, der bei Installation falsche BPF schrieb und somit den Start von Suricata verhinderte.
 
 ### Deprecated
 
