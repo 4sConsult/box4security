@@ -335,7 +335,7 @@ sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{
 sudo systemctl daemon-reload
 #Ignore own INT_IP
 echo "not (src host $INT_IP) and" | sudo tee -a /var/www/kibana/ebpf/bypass_filter.bpf
-echo "not (dst host $INT_IP) and"  | sudo tee -a  /var/www/kibana/ebpf/bypass_filter.bpf
+echo "not (dst host $INT_IP)"  | sudo tee -a  /var/www/kibana/ebpf/bypass_filter.bpf
 echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | sudo -u postgres psql box4S_db
 echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | sudo -u postgres psql box4S_db
 #Copy postgres driver
