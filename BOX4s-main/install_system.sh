@@ -61,7 +61,7 @@ else
   #
   #
   waitForNet
-  TAG=$(curl -s https:/gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
+  TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
 fi
 
 # Redirect STDOUT to LOG_FILE
