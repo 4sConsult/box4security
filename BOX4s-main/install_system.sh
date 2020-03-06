@@ -24,7 +24,6 @@ function waitForNet() {
 }
 
 
-echo '193.104.90.111  lockedbox-bugtracker.am-gmbh.de' | sudo tee -a /etc/hosts
 waitForNet
 sudo apt install -y curl python3 git git-lfs
 git lfs install
@@ -39,11 +38,11 @@ fi
 #
 waitForNet
 if [ "$1" != "" ]; then
-TAG_COUNT=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/branches --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
+TAG_COUNT=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/branches --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
 for((i=0; i<$TAG_COUNT; i++))
 do
 waitForNet
-TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/branches --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[$i]['name'])")
+TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/branches --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)[$i]['name'])")
 if [[ $TAG == $1 ]];then
         echo "Tag $TAG gefunden"
         break;
@@ -62,7 +61,7 @@ else
   #
   #
   waitForNet
-  TAG=$(curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
+  TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
 fi
 
 # Redirect STDOUT to LOG_FILE
@@ -72,7 +71,7 @@ exec 1>$LOG_FILE && exec 2>$LOG_FILE
 
 cd /home/amadmin
 waitForNet
-git clone https://deployment:X7nrVy2JcosG96vGp9Xc@lockedbox-bugtracker.am-gmbh.de/AM-GmbH/box4s.git -b $TAG
+git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git -b $TAG
 
 sudo apt update
 waitForNet
