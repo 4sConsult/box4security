@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-# Placeholder for TAG
+# Placeholder for TAG=
+# The Tag will be the highest version, so the goal of the update
 
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
 exec 1>/var/www/kibana/html/update/updateStatus.log && exec 2>/var/www/kibana/html/update/updateStatus.log
@@ -32,5 +33,7 @@ sudo ./update-patch.sh
 #Diese letzte Meldung MUSS ausgegeben werden, damit das Frontend weiß, dass das Update abgeschlossen ist.
 #Das sleep sollte hier dirn bleiben
 sleep 2
+sudo chown www-data:www-data $BASEDIR$GITDIR/BOX4s-main/update.sh
+sudo chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
 echo " "
 echo "<br>Update abgeschlossen<br>"
