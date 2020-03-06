@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Master-Branch aus ursprünglichem GitLab in Version 1.6.2 übernommen
 
 ### Changed
+* Installscript auf neues GitLab migriert
 
 ### Fixed
 * Bug behoben, der bei Installation falsche BPF schrieb und somit den Start von Suricata verhinderte.
