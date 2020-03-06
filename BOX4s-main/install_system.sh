@@ -71,7 +71,7 @@ exec 1>$LOG_FILE && exec 2>$LOG_FILE
 
 cd /home/amadmin
 waitForNet
-git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git -b $TAG
+git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git box4s -b $TAG
 
 sudo apt update
 waitForNet
