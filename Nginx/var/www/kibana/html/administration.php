@@ -19,9 +19,11 @@ if(isset($_GET['update'])) {
 exec("chmod 777 /var/www/kibana/html/update/update -R");
 exec("rm /var/www/kibana/html/update/updateStatus.log");
 $TAG=$_GET["update"];
+$TAG=escapeshellcmd($TAG);
 exec("sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' /home/amadmin/box4s/BOX4s-main/update.sh");
 //Update.sh muss per Installscript und UpdateScript www-data gehören und +x bekommen
-exec('sudo /home/amadmin/box4s/BOX4s-main/update.sh >/dev/null &2>/dev/null &');
+// $updatePid holds the pid of update.sh
+exec('sudo /home/amadmin/box4s/BOX4s-main/update.sh >/dev/null 2>&1 & echo $!', $updatePid);
 //exec("chmod 777 /var/www/kibana/html/update/ -R");
 }
 ?>
@@ -35,36 +37,40 @@ function sleep(milliseconds) {
 
 async function openUpdateModal() {
 $('.ui.modal').modal('show');
-var updateStatus="";
+var consoleEcho="";
+var updateRunning=true;
 do {
 	// Iframe dynamicContent.php wird alle 2 sec neu aufgerufen und der Status geupdatet
 	var iframe = document.getElementById('dynamic');
-	updateStatus=iframe.contentWindow.consoleEcho;
 	await sleep(1000);
-	iframe.src="dynamicContent.php";
+	iframe.src="/dynamicContent.php?pid="+<?=$updatePid[0]?>;
+  consoleEcho=iframe.contentWindow.consoleEcho;
+  updateRunning=iframe.contentWindow.updateRunning;
+  console.log(updateRunning)
 	await sleep(1000);
-	console.log(updateStatus);
-	document.getElementById("updateStatus").innerHTML = updateStatus;
-} while (updateStatus.match("Update abgeschlossen") != "Update abgeschlossen");
+	console.log(consoleEcho);
+	document.getElementById("consoleEcho").innerHTML = consoleEcho;
+} while (updateRunning);
 // Nachdem Update abgeschlossen im Status erscheit wird die Seite freigegeben und die Elemente entsprechend mit neuem Content versehen
-document.getElementById("statusUpdateMessage").innerHTML = "Das Update ist abgeschlossen";
-document.getElementById("updateHeader").innerHTML = "Sie können das Fenster jetzt schließen";
+document.getElementById("statusUpdateMessage").innerHTML = "Das Update ist abgeschlossen.";
+document.getElementById("statusUpdateMessageLong").innerHTML = "Sie können das Fenster jetzt schließen.";
 document.getElementById("dimmer").setAttribute('class','ui inverted dimmer');
+$('#circle').attr('class','large icon green checkmark');
 
 }
 </script>
 
 <?php
 // Get TAG Count
-exec("curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header 'PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6' | python3 -c 'import sys, json; print(len(json.load(sys.stdin)))'",$tagCount);
-// exec("curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header 'PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC' | python3 -c 'import sys, json; print(len(json.load(sys.stdin)))'",$tagCount);
+// exec("curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header 'PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6' | python3 -c 'import sys, json; print(len(json.load(sys.stdin)))'",$tagCount);
+exec("curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header 'PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC' | python3 -c 'import sys, json; print(len(json.load(sys.stdin)))'",$tagCount);
 
 // CurVer ist die aktuell installierte Version.
 exec("tail /home/amadmin/VERSION",$curVer);
 for($ctr=0;$ctr<$tagCount[0];$ctr++){
   // get TAG Names
-	exec('curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$tags[$ctr]);
-  // exec('curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$tags[$ctr]);
+	// exec('curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$tags[$ctr]);
+  exec('curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$tags[$ctr]);
 }
 ?>
 </head>
@@ -78,15 +84,22 @@ for($ctr=0;$ctr<$tagCount[0];$ctr++){
 <iframe src="dynamicContent.php" name="dynamic" width="0px" height="0px" id="dynamic"> </iframe>
 
 <div class="ui modal">
-  <div id="updateHeader" class="header">Bitte lassen Sie das Fenster geöffnet</div>
+  <div class="header">Update</div>
   <div class="content">
     <p id="updateContent"></p>
-    <p id="statusUpdateMessage">Der Updatevorgang läuft</p>
+    <div class="ui icon message">
+      <i id="circle" class="notched circle loading icon"></i>
+      <div class="content">
+        <div id="statusUpdateMessage" class="header">
+          Der Updatevorgang läuft..
+        </div>
+        <p id="statusUpdateMessageLong">Das System wird aktualisiert. Bitte lassen Sie das Fenster geöffnet.</p>
+      </div>
+    </div>
    <div class="ui segment">
   <div class="ui active inverted dimmer" id="dimmer">
-    <div class="ui text loader">Loading</div>
   </div>
-  <p id="updateStatus"><br> </p>
+  <p id="consoleEcho"><br> </p>
 </div></div></div>
 
 <div class="ui grid padded">
