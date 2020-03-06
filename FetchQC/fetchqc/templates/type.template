@@ -1,0 +1,12 @@
+if [source][ip] in $iplist
+    {
+        mutate {
+            add_field => {"[soure][host][type]" => $type }
+        }
+    }
+if [destination][ip] in $iplist
+    {
+        mutate {
+            add_field => {"[destination][host][type]" => $type }
+        }
+    }

@@ -1,0 +1,16 @@
+
+name: Example_rule
+type: frequency
+index: suricata-*
+
+num_events: 1
+timeframe:
+    minutes: 1
+filter:
+- term:
+    alert.signature.keyword: "SURICATA STREAM FIN invalid ack"
+alert:
+- command:
+        #command: "echo \"Testmail elastalert  Alarm aufgetrete bei {event[host]} am: @{timestamp}\" | sendmail -s \"Alarmsignatur: {alert[signature]} \"  box@4sconsult.de"
+        #command: 'echo -e "From: Box <box@4sconsult.de> \nTo: Box <box@4sconsult.de> \nSubject:Alarmsignatur: {alert[signature]} \n\n Testmail ElastAlert Alarm aufgetreten bei {event[host]} am: {@timestamp}" | sendmail box@4sconsult.de'
+  

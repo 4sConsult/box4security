@@ -1,0 +1,3 @@
+{ 
+  "query": " SELECT COUNT(cvss), cvss FROM \"logstash-vulnwhisperer-*\" WHERE cvss IS NOT NULL GROUP BY 2 "
+}

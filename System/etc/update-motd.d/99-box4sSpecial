@@ -1,0 +1,23 @@
+#!/bin/sh
+
+IPINFO=$(ip a | grep -E "inet 192" )
+ELASTICSEARCH=$(systemctl status elasticsearch | grep "Active:")
+LOGSTASH=$(systemctl status logstash | grep "Active:")
+KIBANA=$(systemctl status kibana | grep "Active:")
+HEARTBEAT=$(systemctl status heartbeat | grep "Active:")
+METRICBEAT=$(systemctl status metricbeat | grep "Active:")
+
+# Exit immediately, unless we're enabled
+# This makes this script very easy to disable in /etc/default/motd-news configuration
+
+# Ensure we print safely, maximum of the first 10 lines,
+# maximum of the first 80 chars per line, no control chars
+safe_print() {
+	cat "$1" | head -n 10 | tr -d '\000-\011\013\014\016-\037' | cut -c -80
+}
+echo IP Info: $IPINFO
+echo Elasticsearch: $ELASTICSEARCH
+echo Logstash: $LOGSTASH
+echo Kibana: $KIBANA
+echo Heartbeat: $HEARTBEAT
+echo Metricbeat: $METRICBEAT

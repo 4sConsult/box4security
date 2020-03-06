@@ -1,0 +1,4 @@
+FLASK_APP=box4start.py
+FLASK_ENV=development
+GIT_USERNAME=deployment
+GIT_PASSWORD=QQTY9Lu7eKVcaqZPzk
