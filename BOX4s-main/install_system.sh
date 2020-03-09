@@ -25,7 +25,7 @@ function waitForNet() {
 
 
 waitForNet
-sudo apt install -y curl python3 git git-lfs
+sudo apt install -y curl python3 git git-lfs openconnect
 git lfs install
 if [[ "$*" == *skip-reboot* ]]
 then
