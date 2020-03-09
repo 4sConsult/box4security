@@ -2,38 +2,54 @@
 #
 # Placeholder for TAG=
 # The Tag will be the highest version, so the goal of the update
+CURVER=$(head -n1 /home/amadmin/VERSION)
+function testNet() {
+  # Returns 0 for successful internet connection and dns resolution, 1 else
+  ping -q -c 1 -W 1 $1 >/dev/null;
+  return $?
+}
 
+function waitForNet() {
+  # use argument or default value of google.com
+  HOST=${1:-"google.com"}
+  while ! testNet $HOST; do
+    # while testNet returns non zero value
+    echo "No internet connectivity or dns resolution, sleeping for 15s"
+    sleep 15s
+  done
+}
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
 exec 1>/var/www/kibana/html/update/updateStatus.log && exec 2>/var/www/kibana/html/update/updateStatus.log
-trap 'echo "ABBRUCH"'  1 2 3 15
-echo "Dieses Script aktualisiert das System"
+echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet"
 sleep 2
 cd /home/amadmin/box4s/
-if [ $TAG == "" ]
-then
-if [ $1 != ""]
-then
-        $TAG=$1
-        else
-                echo "Tag wurde nicht gesetzt"
-                echo "ABBRUCH"
-                exit 1
-fi
-fi
-echo "Hole neue GIT Daten von Version $TAG"
-git fetch
-# Force checkout to Tag, discards local changes!
-git checkout -f $TAG
-git pull
-sleep 5;
-echo "Starte Systemaktualisierung"
-sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' /home/amadmin/box4s/update-patch.sh
-sudo chmod +x /home/amadmin/box4s/update-patch.sh
-sudo ./update-patch.sh
-#Diese letzte Meldung MUSS ausgegeben werden, damit das Frontend weiß, dass das Update abgeschlossen ist.
-#Das sleep sollte hier dirn bleiben
+
+VERSIONS=()
+# Use Python Script to create array of versions that have to be installed
+# versions between current and the latest
+waitForNet gitlab.am-gmbh.de
+mapfile -t VERSIONS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 update.py)
+for v in "${VERSIONS[@]}"
+do
+   echo "Installiere Version v$v"
+   cd $BASEDIR$GITDIR
+   waitForNet
+   git fetch
+   git checkout -f $TAG
+   git pull
+   sleep 3
+   echo "Führe Updateanweisungen aus Version v$v aus"
+   sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' $BASEDIR$GITDIR/update-patch.sh
+   sudo chmod +x $BASEDIR$GITDIR/update-patch.sh
+   sudo $BASEDIR$GITDIR/update-patch.sh
+   if  [[ ! $? -eq 0 ]]; then
+     echo "Update auf $v fehlgeschlagen"
+     break
+   fi
+done
 sleep 2
+echo "Update auf $TAG abgeschlossen."
+# Prepare new update.sh for next update
 sudo chown www-data:www-data $BASEDIR$GITDIR/BOX4s-main/update.sh
 sudo chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
-echo " "
-echo "<br>Update abgeschlossen<br>"
+exit $?
