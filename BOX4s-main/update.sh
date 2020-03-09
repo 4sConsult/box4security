@@ -22,7 +22,6 @@ function waitForNet() {
 exec 1>/var/www/kibana/html/update/updateStatus.log && exec 2>/var/www/kibana/html/update/updateStatus.log
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet"
 sleep 2
-cd /home/amadmin/box4s/
 
 VERSIONS=()
 # Use Python Script to create array of versions that have to be installed
