@@ -52,4 +52,5 @@ echo "Update auf $TAG abgeschlossen."
 # Prepare new update.sh for next update
 sudo chown www-data:www-data $BASEDIR$GITDIR/BOX4s-main/update.sh
 sudo chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
+echo $TAG > /home/amadmin/VERSION
 exit $?
