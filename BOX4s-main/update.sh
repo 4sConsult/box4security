@@ -37,9 +37,8 @@ do
    waitForNet gitlab.am-gmbh.de
    git fetch
    git checkout -f $TAG >/dev/null 2>&1
-   git pull
-   sleep 3
    echo "Führe Updateanweisungen aus Version v$v aus"
+   sleep 3
    sed -i "3s/.*/TAG=$TAG/g" $BASEDIR$GITDIR/update-patch.sh
    sudo chmod +x $BASEDIR$GITDIR/update-patch.sh
    sudo $BASEDIR$GITDIR/update-patch.sh
@@ -48,7 +47,6 @@ do
      break
    fi
 done
-sleep 2
 echo "Update auf $TAG abgeschlossen."
 # Prepare new update.sh for next update
 sudo chown www-data:www-data $BASEDIR$GITDIR/BOX4s-main/update.sh
