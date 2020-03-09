@@ -20,8 +20,9 @@ exec("chmod 777 /var/www/kibana/html/update/update -R");
 exec("rm /var/www/kibana/html/update/updateStatus.log");
 $TAG=$_GET["update"];
 $TAG=escapeshellcmd($TAG);
-$cmd="sed -i '3s/.*$/TAG='$TAG'/g' /home/amadmin/box4s/BOX4s-main/update.sh";
-exec($cmd);
+# Man könnte hier TAG in das Script schreiben,
+# allerdings nicht nötig, wir bekommen per GitLab API ohnehin die neueste Version raus.
+# Daher ist der Parameter hier nicht weiter verwendet
 //Update.sh muss per Installscript und UpdateScript www-data gehören und +x bekommen
 // $updatePid holds the pid of update.sh
 exec('sudo /home/amadmin/box4s/BOX4s-main/update.sh >/dev/null 2>&1 & echo $!', $updatePid);

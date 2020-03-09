@@ -20,7 +20,6 @@ function waitForNet() {
 }
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
 exec 1>/var/www/kibana/html/update/updateStatus.log && exec 2>/var/www/kibana/html/update/updateStatus.log
-echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet"
 sleep 2
 
 VERSIONS=()
@@ -29,6 +28,8 @@ VERSIONS=()
 cd $BASEDIR$GITDIR/BOX4s-main
 waitForNet gitlab.am-gmbh.de
 mapfile -t VERSIONS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 update.py)
+TAG=${VERSIONS[-1]}
+echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
 for v in "${VERSIONS[@]}"
 do
    echo "Installiere Version v$v"
