@@ -26,6 +26,7 @@ sleep 2
 VERSIONS=()
 # Use Python Script to create array of versions that have to be installed
 # versions between current and the latest
+cd $BASEDIR$GITDIR/BOX4s-main
 waitForNet gitlab.am-gmbh.de
 mapfile -t VERSIONS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 update.py)
 for v in "${VERSIONS[@]}"

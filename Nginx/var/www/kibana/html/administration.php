@@ -20,7 +20,8 @@ exec("chmod 777 /var/www/kibana/html/update/update -R");
 exec("rm /var/www/kibana/html/update/updateStatus.log");
 $TAG=$_GET["update"];
 $TAG=escapeshellcmd($TAG);
-exec("sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' /home/amadmin/box4s/BOX4s-main/update.sh");
+$cmd="sed -i '3s/.*$/TAG='$TAG'/g' /home/amadmin/box4s/BOX4s-main/update.sh";
+exec($cmd);
 //Update.sh muss per Installscript und UpdateScript www-data gehören und +x bekommen
 // $updatePid holds the pid of update.sh
 exec('sudo /home/amadmin/box4s/BOX4s-main/update.sh >/dev/null 2>&1 & echo $!', $updatePid);
@@ -50,9 +51,7 @@ do {
   <?php endif; ?>
   consoleEcho=iframe.contentWindow.consoleEcho;
   updateRunning=iframe.contentWindow.updateRunning;
-  console.log(updateRunning)
 	await sleep(1000);
-	console.log(consoleEcho);
 	document.getElementById("consoleEcho").innerHTML = consoleEcho;
 } while (updateRunning);
 // Nachdem Update abgeschlossen im Status erscheit wird die Seite freigegeben und die Elemente entsprechend mit neuem Content versehen
@@ -79,7 +78,7 @@ for($ctr=0;$ctr<$tagCount[0];$ctr++){
   // get TAG Names
 	exec('curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$tags[$ctr]);
   // exec('curl -s https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: Lmp3tZkURptSjWsn7tyC" | python3 -c "import sys, json; print(json.load(sys.stdin)['.$ctr.'][\'name\'])"',$tags[$ctr]);
-  $pos = strpos($tags[$ctr], 'v');
+  $pos = strpos($tags[$ctr][0], 'v');
   if ($pos === 0) {
     $tags[$ctr] = substr_replace($tags[$ctr], '', $pos, strlen('v'));
   }
