@@ -36,7 +36,7 @@ do
    cd $BASEDIR$GITDIR
    waitForNet gitlab.am-gmbh.de
    git fetch
-   git checkout -f $TAG
+   git checkout -f $TAG >/dev/null 2>&1
    git pull
    sleep 3
    echo "Führe Updateanweisungen aus Version v$v aus"
