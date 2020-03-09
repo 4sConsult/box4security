@@ -30,6 +30,8 @@ if [[ ! -w $LOG_FILE ]]; then
 fi
 # Redirect STDOUT to LOG_FILE
 exec 1>>$LOG_FILE && exec 2>>$LOG_FILE
+waitForNet
+pip3 install packaging
 cd /home/amadmin/box4s
 
 sudo systemctl stop irqbalance
