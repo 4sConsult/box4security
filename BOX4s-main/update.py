@@ -19,7 +19,7 @@ for t in json.load(sys.stdin):
     # discard all lower and equal versions
     v = version.parse(t['name'])
     if v > CURRVER:
-        VERSIONS.append(v)
+        VERSIONS.append(t['name'])
 
 # !! Script Output!!
 # All Versions greater than installed one
