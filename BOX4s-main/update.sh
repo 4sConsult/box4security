@@ -33,13 +33,13 @@ for v in "${VERSIONS[@]}"
 do
    echo "Installiere Version v$v"
    cd $BASEDIR$GITDIR
-   waitForNet
+   waitForNet gitlab.am-gmbh.de
    git fetch
    git checkout -f $TAG
    git pull
    sleep 3
    echo "Führe Updateanweisungen aus Version v$v aus"
-   sed -i '3s/.*$/$TAG=\"'$TAG'\"/g' $BASEDIR$GITDIR/update-patch.sh
+   sed -i "3s/.*/TAG=$TAG/g" $BASEDIR$GITDIR/update-patch.sh
    sudo chmod +x $BASEDIR$GITDIR/update-patch.sh
    sudo $BASEDIR$GITDIR/update-patch.sh
    if  [[ ! $? -eq 0 ]]; then
