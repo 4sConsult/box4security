@@ -31,12 +31,12 @@ if(isset($_GET["signature"])){ if ($_GET["signature"]!=""){  $signature=$_GET["s
 
 if(isset ($_GET['set_filter'])) {
 $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJnwauCAsHrR6JB")
-   or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
+   or die('Verbindungsaufbau fehlgeschlagen');
 // Eine SQL-Abfrage ausführen
  if(isset ($_GET['set_bpf_filter'])) {
 	$query = "INSERT INTO blocks_by_bpffilter (src_ip,src_port,dst_ip,dst_port,proto)
 		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto')";
-	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
+	 $result = pg_query($query);
 
 //Daten in Filterdatei schreiben
 
@@ -82,7 +82,7 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
   if(isset ($_GET['set_logstash_filter'])) {
  $query = "INSERT INTO blocks_by_logstashfilter (src_ip,src_port,dst_ip,dst_port,proto,signature_id,signature)
 		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto','$signature_id','$signature')";
-	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
+	 $result = pg_query($query);
 
 //Daten in Filterdatei schreiben
 
@@ -287,7 +287,7 @@ echo '
   <div class="three wide column">
     <p>Source IP</p>
     <div class="ui input">
-                <input type="text" name="src_ip" value="'.htmlspecialchars(src_ip, ENT_QUOTES, 'UTF-8').'">
+                <input type="text" name="src_ip" value="'.htmlspecialchars($src_ip, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
   <div class="three wide column">

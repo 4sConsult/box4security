@@ -9,7 +9,7 @@
 
 <?php
 $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJnwauCAsHrR6JB")
-   or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
+   or die('Verbindungsaufbau fehlgeschlagen');
 if($_GET["src_ip"]!=""){  $src_ip=$_GET["src_ip"]; } else { $src_ip="0.0.0.0"; }
 if($_GET["src_port"]!=""){  $src_port=$_GET["src_port"]; } else { $src_port="0"; }
 if($_GET["dest_ip"]!=""){  $dest_ip=$_GET["dest_ip"]; } else { $dest_ip="0.0.0.0"; }
@@ -29,7 +29,7 @@ if ($_GET['delete']==1){
 		dst_port='".$dest_port."' AND
 		proto='".$proto."')";
 		//echo $query;
-	 $result = pg_query($query) or die('Insert statement fehlgeschlagen: ' . pg_last_error());
+	 $result = pg_query($query);
  //TODO make function for reusage
  $file="/var/www/kibana/ebpf/bypass_filter.bpf";
 	//unlink($file);
@@ -70,7 +70,7 @@ if ($_GET['deletels']==1){
 		proto='".$proto."' AND
 		signature_id='".$signature_id."')";
 		//echo $query;
-	 $result = pg_query($query) or die('DELETE statement fehlgeschlagen: ' . pg_last_error());
+	 $result = pg_query($query);
  //TODO make function for reusage
  $file="/var/www/kibana/ebpf/15_kibana_filter.conf";
 	//unlink($file);
