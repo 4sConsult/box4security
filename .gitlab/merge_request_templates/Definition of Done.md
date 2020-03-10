@@ -10,7 +10,6 @@ Zum Verständnis: Ein Merge Request wird nicht als fertiggestellt angesehen, sol
 * [ ] Änderungen sind ausreichend dokumentiert
 * [ ] Alle Dashboards funktionieren nach den Tests
 
-
 #### Zusatzliche Notizen
 * ...
 * ...
