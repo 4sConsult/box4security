@@ -155,11 +155,11 @@ $query ="SELECT * from blocks_by_bpffilter";
 
  <form  method="get" class="ui form">
 <div class="ui six column grid">
-<div class="column"><input type="text" name="src_ip" value="'.$kf[$ctr]["src_ip"].'"></div>
-<div class="column"><input type="text" name="src_port" value="'.$kf[$ctr]["src_port"].'"></div>
-<div class="column"><input type="text" name="dest_ip" value="'.$kf[$ctr]["dst_ip"].'"></div>
-<div class="column"><input type="text" name="dest_port" value="'.$kf[$ctr]["dst_port"].'"></div>
-<div class="column"><input type="text" name="proto" value="'.$kf[$ctr]["proto"].'"></div>
+<div class="column"><input type="text" name="src_ip" value="'. htmlspecialchars($kf[$ctr]["src_ip"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="src_port" value="'. htmlspecialchars($kf[$ctr]["src_port"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="dest_ip" value="'. htmlspecialchars($kf[$ctr]["dst_ip"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="dest_port" value="'. htmlspecialchars($kf[$ctr]["dst_port"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="proto" value="'. htmlspecialchars($kf[$ctr]["proto"], ENT_QUOTES, 'UTF-8') .'"></div>
 <div class="column"><button value="1" name="delete" class="ui negative basic button">Löschen</button></div>
 </div>
 </form>
@@ -208,13 +208,13 @@ $query ="SELECT * from blocks_by_logstashfilter";
 
  <form  method="get" class="ui form">
 <div class="ui seven column grid">
-<div class="column"><input type="text" name="src_ip" value="'.$kf[$ctr]["src_ip"].'"></div>
-<div class="column"><input type="text" name="src_port" value="'.$kf[$ctr]["src_port"].'"></div>
-<div class="column"><input type="text" name="dest_ip" value="'.$kf[$ctr]["dst_ip"].'"></div>
-<div class="column"><input type="text" name="dest_port" value="'.$kf[$ctr]["dst_port"].'"></div>
-<div class="column"><input type="text" name="proto" value="'.$kf[$ctr]["proto"].'"></div>
-<div class="column"><input type="text" name="signature" value="'.$kf[$ctr]["signature"].'"></div>
-<input type="hidden" name="signature_id" value="'.$kf[$ctr]["signature_id"].'">
+<div class="column"><input type="text" name="src_ip" value="'. htmlspecialchars($kf[$ctr]["src_ip"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="src_port" value="'. htmlspecialchars($kf[$ctr]["src_port"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="dest_ip" value="'. htmlspecialchars($kf[$ctr]["dst_ip"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="dest_port" value="'. htmlspecialchars($kf[$ctr]["dst_port"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="proto" value="'. htmlspecialchars($kf[$ctr]["proto"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="signature" value="'. htmlspecialchars($kf[$ctr]["signature"], ENT_QUOTES, 'UTF-8') .'"></div>
+<input type="hidden" name="signature_id" value="'. htmlspecialchars($kf[$ctr]["signature_id"], ENT_QUOTES, 'UTF-8') .'">
 <div class="column"><button value="1" name="deletels" class="ui negative basic button">Löschen</button></div>
 </div>
 </form>
