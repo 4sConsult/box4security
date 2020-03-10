@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 * Master-Branch aus ursprünglichem GitLab in Version 1.6.2 übernommen
+* Update-Funktion zur Aktualisierung der BOX4security nach Tags aus dem GitLab
 
 ### Changed
 * Installscript auf neues GitLab migriert
