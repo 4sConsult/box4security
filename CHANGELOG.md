@@ -11,6 +11,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Installscript auf neues GitLab migriert
+* Neue Startseite eingefügt
 
 ### Fixed
 * Bug behoben, der bei Installation falsche BPF schrieb und somit den Start von Suricata verhinderte.

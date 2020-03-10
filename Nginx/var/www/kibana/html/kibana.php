@@ -136,12 +136,14 @@ $_GET = array();
 <script>
 function setActive(id,pageName,pageLink){
 	localStorage.setItem('mainmenustorage',id);
+	document.getElementById('start').setAttribute('class', 'item');
 	document.getElementById('secmenu').setAttribute('class','item');
 	document.getElementById('vulmenu').setAttribute('class','item');
 	document.getElementById('netmenu').setAttribute('class','item');
 	document.getElementById('administration').setAttribute('class','item small');
 	document.getElementById('4smenu').setAttribute('class','item right image');
 	if (localStorage.getItem('mainmenustorage') == 'secmenu') { document.getElementById('secmenu').setAttribute('class','item active'); }
+	if (localStorage.getItem('mainmenustorage') == 'start') { document.getElementById('start').setAttribute('class', 'item active'); }
 	if (localStorage.getItem('mainmenustorage') == 'vulmenu') { document.getElementById('vulmenu').setAttribute('class','item active'); }
 	if (localStorage.getItem('mainmenustorage') == 'netmenu') { document.getElementById('netmenu').setAttribute('class','item active'); }
 	if (localStorage.getItem('mainmenustorage') == 'administration') { document.getElementById('administration').setAttribute('class','item active'); }
@@ -192,8 +194,14 @@ if(isset ($_GET['bpf_filter'])) {
 }
 ?>
 <div class="ui tabular menu">
+<div class="item active" id="start">
+<i class="home icon"></i>
+<a class="item" id="startitem" href="/kibana/app/kibana#/dashboard/8d13ea50-3de1-11ea-bbd4-bb7e0278945f" onclick="setActive('start','Startseite','/kibana/app/kibana#/dashboard/8d13ea50-3de1-11ea-bbd4-bb7e0278945f')" target="frame">
+Startseite</a>
+</div>
 <div class="active item" id="secmenu">
 <!-- Menüpunkte mit Untermenü sind divs -->
+
 <div class="ui dropdown pointing link item">
       <i class="globe icon" id="securitymenu"></i> SIEM
 	  <i class="dropdown icon"></i>
@@ -257,7 +265,7 @@ if(isset ($_GET['bpf_filter'])) {
 </div>
 </div>
 
-<iframe  style="width: 100%; border: none;" height="87%" scrolling="yes" frameborder="0" id="frame" src="/kibana/app/kibana#/dashboard/a7bfd050-ce1d-11e9-943f-fdbfa2556276?_g=()" name="frame">
+<iframe  style="width: 100%; border: none;" height="87%" scrolling="yes" frameborder="0" id="frame" src="/kibana/app/kibana#/dashboard/8d13ea50-3de1-11ea-bbd4-bb7e0278945f?_g=()" name="frame">
 </iframe>
 
 
