@@ -44,12 +44,13 @@ do
    sudo $BASEDIR$GITDIR/update-patch.sh
    if  [[ ! $? -eq 0 ]]; then
      echo "Update auf $v fehlgeschlagen"
-     break
+     exit 1
    fi
+   # successful so update current version
+   echo $v > /home/amadmin/VERSION
 done
 echo "Update auf $TAG abgeschlossen."
 # Prepare new update.sh for next update
 sudo chown www-data:www-data $BASEDIR$GITDIR/BOX4s-main/update.sh
 sudo chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
-echo $TAG > /home/amadmin/VERSION
 exit $?
