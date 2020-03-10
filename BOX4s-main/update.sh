@@ -32,14 +32,14 @@ TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
 for v in "${VERSIONS[@]}"
 do
-   echo "Installiere Version v$v"
+   echo "Installiere Version $v"
    cd $BASEDIR$GITDIR
    waitForNet gitlab.am-gmbh.de
    git fetch
-   git checkout -f $TAG >/dev/null 2>&1
-   echo "Führe Updateanweisungen aus Version v$v aus"
+   git checkout -f $v >/dev/null 2>&1
+   echo "Führe Updateanweisungen aus Version $v aus"
    sleep 3
-   sed -i "3s/.*/TAG=$TAG/g" $BASEDIR$GITDIR/update-patch.sh
+   sed -i "3s/.*/TAG=$v/g" $BASEDIR$GITDIR/update-patch.sh
    sudo chmod +x $BASEDIR$GITDIR/update-patch.sh
    sudo $BASEDIR$GITDIR/update-patch.sh
    if  [[ ! $? -eq 0 ]]; then
