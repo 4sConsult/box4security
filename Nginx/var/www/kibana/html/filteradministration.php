@@ -9,7 +9,7 @@
 
 <?php
 $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJnwauCAsHrR6JB")
-   or die('Verbindungsaufbau fehlgeschlagen');
+   or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
 if($_GET["src_ip"]!=""){  $src_ip=$_GET["src_ip"]; } else { $src_ip="0.0.0.0"; }
 if($_GET["src_port"]!=""){  $src_port=$_GET["src_port"]; } else { $src_port="0"; }
 if($_GET["dest_ip"]!=""){  $dest_ip=$_GET["dest_ip"]; } else { $dest_ip="0.0.0.0"; }
@@ -29,7 +29,7 @@ if ($_GET['delete']==1){
 		dst_port='".$dest_port."' AND
 		proto='".$proto."')";
 		//echo $query;
-	 $result = pg_query($query);
+	 $result = pg_query($query) or die('Insert statement fehlgeschlagen: ' . pg_last_error());
  //TODO make function for reusage
  $file="/var/www/kibana/ebpf/bypass_filter.bpf";
 	//unlink($file);
@@ -70,7 +70,7 @@ if ($_GET['deletels']==1){
 		proto='".$proto."' AND
 		signature_id='".$signature_id."')";
 		//echo $query;
-	 $result = pg_query($query);
+	 $result = pg_query($query) or die('DELETE statement fehlgeschlagen: ' . pg_last_error());
  //TODO make function for reusage
  $file="/var/www/kibana/ebpf/15_kibana_filter.conf";
 	//unlink($file);
@@ -155,11 +155,11 @@ $query ="SELECT * from blocks_by_bpffilter";
 
  <form  method="get" class="ui form">
 <div class="ui six column grid">
-<div class="column"><input type="text" name="src_ip" value="'. htmlspecialchars($kf[$ctr]["src_ip"], ENT_QUOTES, 'UTF-8') .'"></div>
-<div class="column"><input type="text" name="src_port" value="'. htmlspecialchars($kf[$ctr]["src_port"], ENT_QUOTES, 'UTF-8') .'"></div>
-<div class="column"><input type="text" name="dest_ip" value="'. htmlspecialchars($kf[$ctr]["dst_ip"], ENT_QUOTES, 'UTF-8') .'"></div>
-<div class="column"><input type="text" name="dest_port" value="'. htmlspecialchars($kf[$ctr]["dst_port"], ENT_QUOTES, 'UTF-8') .'"></div>
-<div class="column"><input type="text" name="proto" value="'. htmlspecialchars($kf[$ctr]["proto"], ENT_QUOTES, 'UTF-8') .'"></div>
+<div class="column"><input type="text" name="src_ip" value="'.$kf[$ctr]["src_ip"].'"></div>
+<div class="column"><input type="text" name="src_port" value="'.$kf[$ctr]["src_port"].'"></div>
+<div class="column"><input type="text" name="dest_ip" value="'.$kf[$ctr]["dst_ip"].'"></div>
+<div class="column"><input type="text" name="dest_port" value="'.$kf[$ctr]["dst_port"].'"></div>
+<div class="column"><input type="text" name="proto" value="'.$kf[$ctr]["proto"].'"></div>
 <div class="column"><button value="1" name="delete" class="ui negative basic button">Löschen</button></div>
 </div>
 </form>
@@ -208,13 +208,13 @@ $query ="SELECT * from blocks_by_logstashfilter";
 
  <form  method="get" class="ui form">
 <div class="ui seven column grid">
-<div class="column"><input type="text" name="src_ip" value="'. htmlspecialchars($kf[$ctr]["src_ip"], ENT_QUOTES, 'UTF-8') .'"></div>
-<div class="column"><input type="text" name="src_port" value="'. htmlspecialchars($kf[$ctr]["src_port"], ENT_QUOTES, 'UTF-8') .'"></div>
-<div class="column"><input type="text" name="dest_ip" value="'. htmlspecialchars($kf[$ctr]["dst_ip"], ENT_QUOTES, 'UTF-8') .'"></div>
-<div class="column"><input type="text" name="dest_port" value="'. htmlspecialchars($kf[$ctr]["dst_port"], ENT_QUOTES, 'UTF-8') .'"></div>
-<div class="column"><input type="text" name="proto" value="'. htmlspecialchars($kf[$ctr]["proto"], ENT_QUOTES, 'UTF-8') .'"></div>
-<div class="column"><input type="text" name="signature" value="'. htmlspecialchars($kf[$ctr]["signature"], ENT_QUOTES, 'UTF-8') .'"></div>
-<input type="hidden" name="signature_id" value="'. htmlspecialchars($kf[$ctr]["signature_id"], ENT_QUOTES, 'UTF-8') .'">
+<div class="column"><input type="text" name="src_ip" value="'.$kf[$ctr]["src_ip"].'"></div>
+<div class="column"><input type="text" name="src_port" value="'.$kf[$ctr]["src_port"].'"></div>
+<div class="column"><input type="text" name="dest_ip" value="'.$kf[$ctr]["dst_ip"].'"></div>
+<div class="column"><input type="text" name="dest_port" value="'.$kf[$ctr]["dst_port"].'"></div>
+<div class="column"><input type="text" name="proto" value="'.$kf[$ctr]["proto"].'"></div>
+<div class="column"><input type="text" name="signature" value="'.$kf[$ctr]["signature"].'"></div>
+<input type="hidden" name="signature_id" value="'.$kf[$ctr]["signature_id"].'">
 <div class="column"><button value="1" name="deletels" class="ui negative basic button">Löschen</button></div>
 </div>
 </form>
