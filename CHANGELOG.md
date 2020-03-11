@@ -16,7 +16,6 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Bug behoben, der bei Installation falsche BPF schrieb und somit den Start von Suricata verhinderte.
-* Stored-XSS-Lücke bei Ausgabe von Filtern entfernt.
 
 ### Deprecated
 
