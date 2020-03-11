@@ -31,12 +31,12 @@ if(isset($_GET["signature"])){ if ($_GET["signature"]!=""){  $signature=$_GET["s
 
 if(isset ($_GET['set_filter'])) {
 $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJnwauCAsHrR6JB")
-   or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
+   or die('Verbindungsaufbau fehlgeschlagen');
 // Eine SQL-Abfrage ausführen
  if(isset ($_GET['set_bpf_filter'])) {
 	$query = "INSERT INTO blocks_by_bpffilter (src_ip,src_port,dst_ip,dst_port,proto)
 		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto')";
-	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
+	 $result = pg_query($query);
 
 //Daten in Filterdatei schreiben
 
@@ -82,7 +82,7 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
   if(isset ($_GET['set_logstash_filter'])) {
  $query = "INSERT INTO blocks_by_logstashfilter (src_ip,src_port,dst_ip,dst_port,proto,signature_id,signature)
 		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto','$signature_id','$signature')";
-	 $result = pg_query($query) or die('Insert statement fehlgeschloagen fehlgeschlagen: ' . pg_last_error());
+	 $result = pg_query($query);
 
 //Daten in Filterdatei schreiben
 
@@ -287,30 +287,30 @@ echo '
   <div class="three wide column">
     <p>Source IP</p>
     <div class="ui input">
-                <input type="text" name="src_ip" value="'.$src_ip.'">
+                <input type="text" name="src_ip" value="'.htmlspecialchars($src_ip, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
   <div class="three wide column">
     <p>Source Port</p>
     <div class="ui input">
-                <input type="text" name="src_port" value="'.$src_port.'">
+                <input type="text" name="src_port" value="'.htmlspecialchars($src_port, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
   <div class="three wide column">
     <p>Destination IP</p>
     <div class="ui input">
-        <input type="text" name="dest_ip" value="'.$dest_ip.'">
+        <input type="text" name="dest_ip" value="'.htmlspecialchars($dest_ip, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
   <div class="three wide column">
     <p>Destination Port</p>
     <div class="ui input">
-        <input type="text" name="dest_port" value="'.$dest_port.'">
+        <input type="text" name="dest_port" value="'.htmlspecialchars($dest_port, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
   <div class="three wide column">
     <p>Protocol</p>
-    <select name="proto" class="ui dropdown" value="'.$proto.'">
+    <select name="proto" class="ui dropdown" value="'.htmlspecialchars($proto, ENT_QUOTES, 'UTF-8').'">
         <option value=""></option>
         <option value="tcp"'; if ($proto=="TCP"){echo "selected";};echo '>tcp</option>
         <option value="udp"'; if ($proto=="UDP"){echo "selected";};echo '>udp</option>
@@ -346,30 +346,30 @@ echo '
   <div class="three wide column">
     <p>Source IP</p>
     <div class="ui input">
-                <input type="text" name="src_ip" value="'.$src_ip.'">
+                <input type="text" name="src_ip" value="'.htmlspecialchars($src_ip, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
   <div class="three wide column">
     <p>Source Port</p>
     <div class="ui input">
-                <input type="text" name="src_port" value="'.$src_port.'">
+                <input type="text" name="src_port" value="'.htmlspecialchars($src_port, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
   <div class="three wide column">
     <p>Destination IP</p>
     <div class="ui input">
-        <input type="text" name="dest_ip" value="'.$dest_ip.'">
+        <input type="text" name="dest_ip" value="'.htmlspecialchars($dest_ip, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
   <div class="three wide column">
     <p>Destination Port</p>
     <div class="ui input">
-        <input type="text" name="dest_port" value="'.$dest_port.'">
+        <input type="text" name="dest_port" value="'.htmlspecialchars($dest_port, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
   <div class="three wide column">
     <p>Protocol</p>
-    <select name="proto" class="ui dropdown" value="'.$proto.'">
+    <select name="proto" class="ui dropdown" value="'.htmlspecialchars($proto, ENT_QUOTES, 'UTF-8').'">
         <option value=""></option>
         <option value="tcp"'; if ($proto=="TCP"){echo "selected";};echo '>tcp</option>
         <option value="udp"'; if ($proto=="UDP"){echo "selected";};echo '>udp</option>
@@ -377,12 +377,12 @@ echo '
         </select>
         <input type="hidden" name="set_filter" value="1">
         <input type="hidden" name="set_logstash_filter" value="1">
-        <input type="hidden" name="signature_id" value="'.$signature_id.'">
+        <input type="hidden" name="signature_id" value="'.htmlspecialchars($signature_id, ENT_QUOTES, 'UTF-8').'">
 		</div>
 		  <div class="three wide column">
     <p>Alarmsignatur</p>
     <div class="ui input">
-        <input type="text" name="signature" value="'.$signature.'">
+        <input type="text" name="signature" value="'.htmlspecialchars($signature, ENT_QUOTES, 'UTF-8').'">
         </div>
   </div>
 
