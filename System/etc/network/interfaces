@@ -1,0 +1,23 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto ens160	
+iface ens160 inet dhcp
+
+auto ens192
+iface ens192 inet manual
+        up ifconfig ens192 promisc up
+        down ifconfig ens192 promisc down 
+
+auto ens224
+iface ens224 inet manual
+        up ifconfig ens224 promisc up
+        down ifconfig ens224 promisc down
+

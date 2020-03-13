@@ -1,0 +1,15 @@
+.panel {
+  border-color: grey;
+  border-radius: 1px;
+  border-width: 1px;
+  border-style: solid;
+  display:table-cell;
+  padding: 10px;
+  text-align: center;
+}
+.enabled, .active {
+  color: green;
+}
+.disabled, .inactive {
+  color: red;
+}
