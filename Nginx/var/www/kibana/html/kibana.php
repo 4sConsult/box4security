@@ -225,9 +225,9 @@ Startseite</a>
 	<div class="ui dropdown pointing link item">
      <i class="sitemap icon"></i> Netzwerk <i class="dropdown icon"></i>
       <div class="menu">
-  <a class="item" href="/kibana/app/kibana#/dashboard/dc847fd0-3dd9-11ea-bbd4-bb7e0278945f&_a=(fullScreenMode:!t)"  onclick="setActive('netmenu','Übersicht','/kibana/app/kibana#/dashboard/dc847fd0-3dd9-11ea-bbd4-bb7e0278945f')" target="frame">Übersicht</a>
-	<a class="item" href="/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276&_a=(fullScreenMode:!t)"  onclick="setActive('netmenu','Datenflüsse','/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276')" target="frame">Datenflüsse</a>
-	<a class="item" href="/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276&_a=(fullScreenMode:!t)" onclick="setActive('netmenu','GeoIP & ASN','/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276')" target="frame">GeoIP & ASN</a>
+  <a class="item" href="/kibana/app/kibana#/dashboard/dc847fd0-3dd9-11ea-bbd4-bb7e0278945f?_g=()&_a=(fullScreenMode:!t)"  onclick="setActive('netmenu','Übersicht','/kibana/app/kibana#/dashboard/dc847fd0-3dd9-11ea-bbd4-bb7e0278945f')" target="frame">Übersicht</a>
+	<a class="item" href="/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)"  onclick="setActive('netmenu','Datenflüsse','/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276')" target="frame">Datenflüsse</a>
+	<a class="item" href="/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)" onclick="setActive('netmenu','GeoIP & ASN','/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276')" target="frame">GeoIP & ASN</a>
 	</div></div></div>
 
 <div class="item" id="administration">
