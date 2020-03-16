@@ -74,7 +74,7 @@ if ($_GET['deletels']==1){
       signature_id = $6
     )
     ');
-    $result = pg_execute($dbconn, "query", array($src_id, $src_port, $dest_ip, $dest_port, $proto, $signature_id));
+    $result = pg_execute($dbconn, "query", array($src_ip, $src_port, $dest_ip, $dest_port, $proto, $signature_id));
  //TODO make function for reusage
  $file="/var/www/kibana/ebpf/15_kibana_filter.conf";
 	//unlink($file);
