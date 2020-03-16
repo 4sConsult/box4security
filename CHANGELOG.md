@@ -20,6 +20,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Fixed
 * Bug behoben, der bei Installation falsche BPF schrieb und somit den Start von Suricata verhinderte.
 * Stored-XSS-Lücke bei Ausgabe von Filtern entfernt.
+* SQL-Injection Lücke beim Anlegen von Filtern entfernt.
 * Bug behoben, der den Index für die Scores falsch anlegte
 
 ### Deprecated

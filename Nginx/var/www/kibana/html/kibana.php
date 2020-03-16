@@ -34,15 +34,14 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
    or die('Verbindungsaufbau fehlgeschlagen');
 // Eine SQL-Abfrage ausführen
  if(isset ($_GET['set_bpf_filter'])) {
-	$query = "INSERT INTO blocks_by_bpffilter (src_ip,src_port,dst_ip,dst_port,proto)
-		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto')";
-	 $result = pg_query($query);
+   pg_prepare($dbconn, "query", 'INSERT INTO blocks_by_bpffilter (src_ip,src_port,dst_ip,dst_port,proto) VALUES ($1,$2,$3,$4,$5)');
+   $result = pg_execute($dbconn, "query", array($src_ip,$src_port,$dest_ip,$dest_port,$proto));
 
 //Daten in Filterdatei schreiben
 
  $file="/var/www/kibana/ebpf/bypass_filter.bpf";
 	//unlink($file);
-	$query ="SELECT * from blocks_by_bpffilter";
+	$query ="SELECT * FROM blocks_by_bpffilter";
 	$results = pg_query($query);
 	$filterrule="";
 	while ($row = pg_fetch_array($results)){
@@ -80,15 +79,13 @@ $dbconn = pg_connect("host=localhost dbname=box4S_db user=postgres password=zgJn
 
 
   if(isset ($_GET['set_logstash_filter'])) {
- $query = "INSERT INTO blocks_by_logstashfilter (src_ip,src_port,dst_ip,dst_port,proto,signature_id,signature)
-		VALUES ('$src_ip','$src_port','$dest_ip','$dest_port','$proto','$signature_id','$signature')";
-	 $result = pg_query($query);
-
+   pg_prepare($dbconn, "query", 'INSERT INTO blocks_by_logstashfilter (src_ip,src_port,dst_ip,dst_port,proto,signature_id,signature) VALUES ($1,$2,$3,$4,$5,$6,$7)');
+   $result = pg_execute($dbconn, "query", array($src_ip,$src_port,$dest_ip,$dest_port,$proto,$signature_id,$signature));
 //Daten in Filterdatei schreiben
 
  $file="/var/www/kibana/ebpf/15_kibana_filter.conf";
         //unlink($file);
-        $query ="select * from blocks_by_logstashfilter";
+        $query ="SELECT * FROM blocks_by_logstashfilter";
         $results = pg_query($query);
         $filterrule=" filter { \r\n";
         while ($row = pg_fetch_array($results)){
