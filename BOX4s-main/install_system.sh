@@ -260,6 +260,9 @@ sudo systemctl enable dnsmasq
 sudo systemctl enable elasticsearch
 sudo systemctl enable kibana
 
+# Install the scores index
+# Necessary to do here. Otherwise the cronjob for the scores will create a false index, which has wrong settings.
+/home/amadmin/box4s/Scripts/Automation/score_calculation/install_index.sh
 
 sudo bash -c 'crontab -l > /tmp/crontab.root'
 sudo bash -c 'echo SHELL=/bin/bash >> /tmp/crontab.root'
