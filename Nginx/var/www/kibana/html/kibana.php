@@ -225,13 +225,9 @@ Startseite</a>
 	<div class="ui dropdown pointing link item">
      <i class="sitemap icon"></i> Netzwerk <i class="dropdown icon"></i>
       <div class="menu">
-	<a class="item" href="/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276"  onclick="setActive('netmenu','Datenflüsse','/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276')" target="frame">Datenflüsse</a>
-	<a class="item" href="/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276" onclick="setActive('netmenu','GeoIP & ASN','/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276')" target="frame">GeoIP & ASN</a>
- 	<a class="item" href="/kibana/app/kibana#/dashboard/Winlogbeat-Dashboard-ecs" onclick="setActive('netmenu','Windows Logs','/kibana/app/kibana#/dashboard/Winlogbeat-Dashboard-ecs')" target ="frame">Windows Logs</a>
-	<a class="item" href="/kibana/app/kibana#/dashboard/Metricbeat-system-overview-ecs" onclick="setActive('netmenu','Systemmetriken Übersicht','/kibana/app/kibana#/dashboard/Metricbeat-system-overview-ecs')" target="frame">Systemmetriken Übersicht</a>
-	<a class="item" href="/kibana/app/kibana#/dashboard/79ffd6e0-faa0-11e6-947f-177f697178b8-ecs" onclick="setActive('netmenu','Systemmetriken Details','/kibana/app/kibana#/dashboard/79ffd6e0-faa0-11e6-947f-177f697178b8-ecs')" target="frame"> Systemmetriken Details</a>
-	<a class="item" href="/kibana/app/kibana#/dashboard/2bb743a0-cfe2-11e9-99db-bb656e2bf55c" onclick="setActive('netmenu','Verbindungsüberwachung','/kibana/app/kibana#/dashboard/2bb743a0-cfe2-11e9-99db-bb656e2bf55c')" target="frame">Verbindungsüberwachung</a>
-	<a class="item" href="/kibana/app/kibana#/dashboard/6ffffcd0-cfad-11e9-943f-fdbfa2556276" onclick="setActive('netmenu','Statistiken','/kibana/app/kibana#/dashboard/6ffffcd0-cfad-11e9-943f-fdbfa2556276')" target="frame">Statistiken</a>
+  <a class="item" href="/kibana/app/kibana#/dashboard/dc847fd0-3dd9-11ea-bbd4-bb7e0278945f?_g=()&_a=(fullScreenMode:!t)"  onclick="setActive('netmenu','Übersicht','/kibana/app/kibana#/dashboard/dc847fd0-3dd9-11ea-bbd4-bb7e0278945f')" target="frame">Übersicht</a>
+	<a class="item" href="/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)"  onclick="setActive('netmenu','Datenflüsse','/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276')" target="frame">Datenflüsse</a>
+	<a class="item" href="/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)" onclick="setActive('netmenu','GeoIP & ASN','/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276')" target="frame">GeoIP & ASN</a>
 	</div></div></div>
 
 <div class="item" id="administration">
