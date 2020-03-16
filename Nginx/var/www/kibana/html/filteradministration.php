@@ -22,14 +22,16 @@ if(isset($_GET["signature"])){ if ($_GET["signature"]!=""){  $signature=$_GET["s
 
 
 if ($_GET['delete']==1){
-	$query = "DELETE FROM blocks_by_bpffilter
-		WHERE (src_ip='".$src_ip."' AND
-		src_port ='".$src_port."' AND
-		dst_ip ='".$dest_ip."' AND
-		dst_port='".$dest_port."' AND
-		proto='".$proto."')";
-		//echo $query;
-	 $result = pg_query($query) or die('Insert statement fehlgeschlagen: ' . pg_last_error());
+  pg_prepare($dbconn, "query", 'DELETE FROM blocks_by_bpffilter WHERE
+    (
+      src_ip = $1 AND
+      src_port = $2 AND
+      dst_ip = $3 AND
+      dst_port = $4 AND
+      proto = $5
+    )
+    ');
+   $result = pg_execute($dbconn, "query", array($src_id, $src_port, $dest_ip, $dest_port, $proto));
  //TODO make function for reusage
  $file="/var/www/kibana/ebpf/bypass_filter.bpf";
 	//unlink($file);
@@ -62,19 +64,21 @@ if ($_GET['delete']==1){
 
 
 if ($_GET['deletels']==1){
-	$query = "DELETE FROM blocks_by_logstashfilter
-		WHERE (src_ip='".$src_ip."' AND
-		src_port ='".$src_port."' AND
-		dst_ip ='".$dest_ip."' AND
-		dst_port='".$dest_port."' AND
-		proto='".$proto."' AND
-		signature_id='".$signature_id."')";
-		//echo $query;
-	 $result = pg_query($query) or die('DELETE statement fehlgeschlagen: ' . pg_last_error());
+  pg_prepare($dbconn, "query", 'DELETE FROM blocks_by_logstashfilter WHERE
+    (
+      src_ip = $1 AND
+      src_port = $2 AND
+      dst_ip = $3 AND
+      dst_port = $4 AND
+      proto = $5 AND
+      signature_id = $6
+    )
+    ');
+    $results = pg_execute($dbconn, "query", array($src_id, $src_port, $dest_ip, $dest_port, $proto, $signature_id));
  //TODO make function for reusage
  $file="/var/www/kibana/ebpf/15_kibana_filter.conf";
 	//unlink($file);
-	$query ="select * from blocks_by_logstashfilter";
+	$query ="SELECT * FROM blocks_by_logstashfilter";
 	$results = pg_query($query);
 	$filterrule=" filter { \r\n";
 
@@ -132,7 +136,7 @@ if ($_GET['deletels']==1){
 </div>
 </div>
 <?php
-$query ="SELECT * from blocks_by_bpffilter";
+$query ="SELECT * FROM blocks_by_bpffilter";
         $results = pg_query($query);
         $filterrule="";
 		$ctr=0;
@@ -183,7 +187,7 @@ $query ="SELECT * from blocks_by_bpffilter";
 </div>
 </div>
 <?php
-$query ="SELECT * from blocks_by_logstashfilter";
+$query ="SELECT * FROM blocks_by_logstashfilter";
         $results = pg_query($query);
         $filterrule="";
 		$ctr=0;
