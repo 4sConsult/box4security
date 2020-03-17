@@ -22,6 +22,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Stored-XSS-Lücke bei Ausgabe von Filtern entfernt.
 * SQL-Injection Lücke beim Anlegen von Filtern entfernt.
 * Bug behoben, der den Index für die Scores falsch anlegte
+* Bug behoben, der den IT-Security Score falsch berechnete
 
 ### Deprecated
 
