@@ -12,7 +12,7 @@ curl -s -H "Content-type: application/json" -X POST http://localhost:9200/_sql -
 EPOCHTIMESTAMP=$(($(date +%s%N)/1000000))
 ALERTSCORE=$(python $DIR/calculate_alert_score.py)
 VULNSCORE=$(python $DIR/calculate_vuln_score.py)
-ITSECSCORE=$(echo "scale=2; $ALERTSCORE / $VULNSCORE" | bc)
+ITSECSCORE=$(echo "scale=2; ($ALERTSCORE + $VULNSCORE) / 2" | bc)
 
 cp $DIR/insert_template.json $DIR/insert_alert_score.json
 sed -i 's/%1/alert_score/g' $DIR/insert_alert_score.json
