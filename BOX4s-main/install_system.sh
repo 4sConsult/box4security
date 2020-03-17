@@ -63,7 +63,7 @@ else
   waitForNet
   TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
 fi
-
+echo "Tag $TAG gefunden"
 # Redirect STDOUT to LOG_FILE
 # DO NOT PUT THIS higher in source code because no error messages are thrown than
 exec 1>$LOG_FILE && exec 2>$LOG_FILE
