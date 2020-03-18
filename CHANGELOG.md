@@ -1,7 +1,24 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.6.3](x) - 2020-x-x
+## [1.6.4](x) - 2020-x-x
+
+### Compatible with
+* Elastic Products 7.3.0
+
+### Added
+* API zur programmatischen Steuerung der BOX4s eingeführt
+
+### Changed
+* Weboberfläche technisch erneuert
+
+### Fixed
+
+### Deprecated
+
+### Removed
+
+## [1.6.3](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.6.3) - 2020-03-18
 
 ### Compatible with
 * Elastic Products 7.3.0
