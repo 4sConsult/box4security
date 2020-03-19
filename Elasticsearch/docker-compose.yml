@@ -1,0 +1,12 @@
+version: '2.3'
+
+services:
+    elasticsearch:
+      build: .
+      container_name: elasticsearch
+      restart: always
+      ports:
+       - 9200:9200
+      image: "b4s/elasticsearch:7.5.0"
+      volumes:
+       - /data:/data

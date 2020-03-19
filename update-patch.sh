@@ -4,7 +4,7 @@ TAG=""
 ##
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
-# Copy kibana folder over (Stored XSS and SQLi)
-cp Nginx/var/www/kibana/html/bpf_filter.php /var/www/kibana/html/bpf_filter.php
-cp Nginx/var/www/kibana/html/filteradministration.php /var/www/kibana/html/filteradministration.php
-cp Nginx/var/www/kibana/html/kibana.php /var/www/kibana/html/kibana.php
+# Docker installieren mit docker-compose
+apt install -y docker.io
+sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
