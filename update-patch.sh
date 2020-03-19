@@ -22,3 +22,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 # Kopiere den neuen Service an die richtige Stelle und enable den Service
 cp /home/amadmin/box4s/System/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 systemctl enable box4security
+
+# Login bei der Docker-Registry des GitLabs
+docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
