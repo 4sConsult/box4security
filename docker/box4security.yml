@@ -2,7 +2,7 @@ version: '2.3'
 
 services:
     elasticsearch:
-      build: .
+      build: elasticsearch/.
       container_name: elasticsearch
       restart: always
       ports:

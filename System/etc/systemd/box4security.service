@@ -1,0 +1,26 @@
+[Unit]
+Description=box4security
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+RestartSec=5
+TimeoutSec=infinity
+
+# Remove old containers, images and volumes
+ExecStartPre=-/usr/bin/docker-compose -f /opt/tpot/etc/tpot.yml down -v
+ExecStartPre=-/usr/bin/docker-compose -f /opt/tpot/etc/tpot.yml rm -v
+ExecStartPre=-/bin/bash -c 'docker network rm $(docker network ls -q)'
+ExecStartPre=-/bin/bash -c 'docker volume rm $(docker volume ls -q)'
+ExecStartPre=-/bin/bash -c 'docker rm -v $(docker ps -aq)'
+ExecStartPre=-/bin/bash -c 'docker rmi $(docker images | grep "<none>" | awk \'{print $3}\')'
+
+# Compose Box4Security up
+ExecStart=/usr/bin/docker-compose -f /home/box4s/docker/box4security.yml up --no-color
+
+# Compose Box4Security down
+ExecStop=/usr/bin/docker-compose -f /home/box4s/docker/box4security.yml down -v
+
+[Install]
+WantedBy=multi-user.target
