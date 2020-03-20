@@ -17,8 +17,14 @@ class BPF(Resource):
     def put(self):
         return {}, 405
 
-    def delete(self):
-        return {}, 501
+    def delete(self, rule_id):
+        rule = models.BPFRule.query.get(rule_id)
+        if rule:
+            db.session.delete(rule)
+            db.session.commit()
+            return {}, 200
+        else:
+            abort(404, message="BPF Rule with ID {} not found. Nothing deleted.".format(rule_id))
 
 
 class BPFs(Resource):
@@ -57,8 +63,14 @@ class LSR(Resource):
     def put(self):
         abort(405, message="Not allowed.")
 
-    def delete(self):
-        return {}, 501
+    def delete(self, rule_id):
+        rule = models.LogstashRule.query.get(rule_id)
+        if rule:
+            db.session.delete(rule)
+            db.session.commit()
+            return {}, 200
+        else:
+            abort(404, message="Logstash Rule with ID {} not found. Nothing deleted.".format(rule_id))
 
 
 class LSRs(Resource):
