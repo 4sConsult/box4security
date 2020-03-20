@@ -1,4 +1,4 @@
-POSTGRESQL_DB = 'postgres'
+POSTGRESQL_DB = 'box4S_db'
 POSTGRESQL_USER = 'postgres'
 POSTGRESQL_PASS = 'zgJnwauCAsHrR6JB'
 POSTGRESQL_HOST = 'localhost'
