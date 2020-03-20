@@ -56,7 +56,6 @@ class BPF(Resource):
 class BPFs(Resource):
     def get(self):
         rules = models.BPFRule.query.all()
-        writeBPFFile()
         return models.BPFs.dump(rules)
 
     def post(self):
