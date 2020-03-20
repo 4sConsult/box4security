@@ -7,6 +7,6 @@ services:
       restart: always
       ports:
        - 9200:9200
-      image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:7.5.0"
+      image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:latest"
       volumes:
        - /data:/data
