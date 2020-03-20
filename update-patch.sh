@@ -4,7 +4,6 @@ TAG=""
 ##
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
-# Copy kibana folder over (Stored XSS and SQLi)
-cp Nginx/var/www/kibana/html/bpf_filter.php /var/www/kibana/html/bpf_filter.php
-cp Nginx/var/www/kibana/html/filteradministration.php /var/www/kibana/html/filteradministration.php
-cp Nginx/var/www/kibana/html/kibana.php /var/www/kibana/html/kibana.php
+# Add primary keys to rule tables
+echo "ALTER TABLE blocks_by_bpffilter ADD COLUMN id SERIAL PRIMARY KEY;" | sudo -u postgres psql box4S_db
+echo "ALTER TABLE blocks_by_logstashfilter ADD COLUMN id SERIAL PRIMARY KEY;" | sudo -u postgres psql box4S_db
