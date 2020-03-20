@@ -1,6 +1,30 @@
 from WebApp import app, models, db
 from flask_restful import Resource, reqparse, abort
 from flask import request
+import jinja2
+import os
+templateLoader = jinja2.FileSystemLoader(searchpath="")
+templateEnv = jinja2.Environment(loader=templateLoader)
+
+
+def writeLSRFile():
+    # Fetches all Logstash Rules from DB and writes to correct file
+    # TODO: check permissions / try error
+    with open('/var/www/kibana/ebpf/15_kibana_filter.conf', 'w') as f_logstash:
+        rules = models.LogstashRule.query.all()
+        template = templateEnv.get_template('templates/15_kibana_filter.conf.j2')
+        f_logstash.write(template.render({'rules': rules}))
+
+
+def writeBPFFile():
+    # Fetches all BPF Rules from DB and writes to correct file
+    # Then restarts suricata
+    # TODO: check permissions / Try error
+    with open('/var/www/kibana/ebpf/bypass_filter.bpf', 'w') as f_bpf:
+        rules = models.BPFRule.query.all()
+        template = templateEnv.get_template('templates/bypass_filter.bpf.j2')
+        f_bpf.write(template.render({'rules': rules}))
+        os.system('/var/www/kibana/html/restartSuricata.sh')
 
 
 class BPF(Resource):
@@ -12,7 +36,7 @@ class BPF(Resource):
             abort(404, message="BPF Rule with ID {} not found".format(rule_id))
 
     def post(self):
-        return {}, 501
+        return {}, 405
 
     def put(self):
         return {}, 405
@@ -22,7 +46,9 @@ class BPF(Resource):
         if rule:
             db.session.delete(rule)
             db.session.commit()
-            return {}, 200
+            # newly write file because rules have changed and restart suricata
+            writeBPFFile()
+            return '', 204
         else:
             abort(404, message="BPF Rule with ID {} not found. Nothing deleted.".format(rule_id))
 
@@ -30,6 +56,7 @@ class BPF(Resource):
 class BPFs(Resource):
     def get(self):
         rules = models.BPFRule.query.all()
+        writeBPFFile()
         return models.BPFs.dump(rules)
 
     def post(self):
@@ -44,8 +71,11 @@ class BPFs(Resource):
             dst_port=d['dst_port'],
             proto=d['proto'],
         )
+        # Add new rule to db
         db.session.add(newRule)
         db.session.commit()
+        # newly write file because rules have changed and restart suricata
+        writeBPFFile()
         return models.BPF.dump(newRule)
 
 
@@ -68,7 +98,9 @@ class LSR(Resource):
         if rule:
             db.session.delete(rule)
             db.session.commit()
-            return {}, 200
+            # newly write file because rules have changed
+            writeLSRFile()
+            return '', 204
         else:
             abort(404, message="Logstash Rule with ID {} not found. Nothing deleted.".format(rule_id))
 
@@ -92,8 +124,11 @@ class LSRs(Resource):
             signature_id=d['signature_id'],
             signature=d['signature']
         )
+        # Add new rule to db
         db.session.add(newRule)
         db.session.commit()
+        # newly write file because rules have changed
+        writeLSRFile()
         return models.LSR.dump(newRule)
 
     def delete(self):
