@@ -1,25 +1,14 @@
-from flask import Flask
-from flask_restful import Resource, Api, reqparse, abort
+from WebApp import app, models
+from flask_restful import Resource, reqparse, abort
 
 
-app = Flask(__name__)
-api = Api(app)
-
-bpfrules = {
-    1: {'src_ip': '127.0.0.1', 'src_port': 0, 'dst_ip': '0.0.0.0', 'dst_port': 0, 'proto': ''},
-    2: {'dst_ip': '127.0.0.1', 'src_port': 0, 'src_ip': '0.0.0.0', 'dst_port': 0, 'proto': ''},
-}
-
-
-def abort_if_not_exist(rule_id):
-    if rule_id not in bpfrules:
-        abort(404, message="Rule {} doesn't exist".format(rule_id))
-
-
-class BPFRule(Resource):
+class BPF(Resource):
     def get(self, rule_id):
-        abort_if_not_exist(rule_id)
-        return bpfrules[rule_id]
+        rule = models.BPFRule.query.get(rule_id)
+        if rule:
+            return models.BPF.dump(rule)
+        else:
+            abort(404, message="BPF Rule with ID {} not found".format(rule_id))
 
     def post(self):
         return {}, 501
@@ -31,14 +20,19 @@ class BPFRule(Resource):
         return {}, 501
 
 
-class BPFRuleList(Resource):
+class BPFs(Resource):
     def get(self):
-        return bpfrules
+        rules = models.BPFRule.query.all()
+        return models.BPFs.dump(rules)
 
 
-class LogstashRule(Resource):
+class LSR(Resource):
     def get(self, rule_id):
-        return {}, 501
+        rule = models.LogstashRule.get(rule_id)
+        if rule:
+            return models.LSR.dump(rule)
+        else:
+            abort(404, message="Logstash Rule with ID {} not found".format(rule_id))
 
     def post(self):
         return {}, 501
@@ -48,6 +42,12 @@ class LogstashRule(Resource):
 
     def delete(self):
         return {}, 501
+
+
+class LSRs(Resource):
+    def get(self):
+        rules = models.LogstashRule.query.all()
+        return models.LSRs.dump(rules)
 
 
 class Alert(Resource):
@@ -62,12 +62,3 @@ class Alert(Resource):
 
     def delete(self):
         return {}, 501
-
-
-api.add_resource(BPFRule, '/rules/bpf/<int:rule_id>')
-api.add_resource(BPFRuleList, '/rules/bpf/')
-api.add_resource(LogstashRule, '/rules/logstash/<int:rule_id>')
-api.add_resource(Alert, '/alert/<int:alert_id>')
-
-if __name__ == '__main__':
-    app.run(debug=True)
