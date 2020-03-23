@@ -189,7 +189,6 @@ echo ""
 echo
 echo
 cd /home/amadmin/box4s
-
 systemctl is-active --quiet elasticsearch
 if [ $? -ne 0 ]
 then
@@ -200,8 +199,6 @@ then
   systemctl restart elasticsearch
   sleep 90
 fi
-
-
 status_code=$(curl -XGET localhost:9200/_snapshot/kibana --write-out %{http_code} --silent --output /dev/null)
 if [[ "$status_code" -ne 200 ]] ; then
 	curl -XPUT localhost:9200/_snapshot/kibana -H "Content-Type: application/json" -d '{"type":"fs", "settings":{"location":"kibana"}}'
