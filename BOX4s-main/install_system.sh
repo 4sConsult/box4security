@@ -76,30 +76,21 @@ git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.
 sudo apt update
 waitForNet
 
-################## Docker ##################
-
-# Installiere Abhängigkeiten
-apt install -y docker.io
-curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-
-# Kopiere den Service an die richtige Stelle und enable den Service
-cp /home/amadmin/box4s/System/etc/systemd/box4security.service /etc/systemd/system/box4security.service
-systemctl enable box4security.service
-
-# Login bei der Docker-Registry des GitLabs und Download der Container
-docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
-docker-compose -f box4security.yml pull
-
-# Start des Services
-systemctl start box4security.service
-
-############################################
-
+#Install Elasticsearch
+waitForNet
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 waitForNet
 sudo apt install -y apt-transport-https
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+waitForNet
+sudo apt update && sudo apt install -y elasticsearch=7.5.0
+sudo mkdir /data/elasticsearch -p
+sudo mkdir /data/elasticsearch_backup/Snapshots -p
+sudo chown elasticsearch:elasticsearch /data/elasticsearch_backup/ -R
+sudo chown elasticsearch:elasticsearch /data/elasticsearch/ -R
+cd /home/amadmin/box4s
+cd Elasticsearch
+sudo cp * / -R
 
 
 sudo apt install -y rpm nsis alien openvas=9.0.3
