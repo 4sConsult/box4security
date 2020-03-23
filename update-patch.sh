@@ -8,7 +8,7 @@ TAG=""
 sudo service elasticsearch stop
 
 # Entferne Elasticsearch vom System
-sudo apt remove --purge elasticsearch
+sudo apt remove -y --purge elasticsearch
 sudo apt autoremove -y
 
 # Vergib die passenden Rechte für den neuen Container auf die vorhandenen Daten
