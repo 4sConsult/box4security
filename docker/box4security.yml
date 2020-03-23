@@ -7,6 +7,17 @@ services:
       restart: always
       ports:
        - 9200:9200
-      image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:latest"
+      image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
       volumes:
        - /data:/data
+    kibana:
+      build: kibana/.
+      container_name: kibana
+      restart: always
+      ports:
+       - 5601:5601
+      image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:dev"
+      #depends_on:
+      #  elasticsearch:
+      #    condition: service_started
+      stop_signal: SIGKILL
