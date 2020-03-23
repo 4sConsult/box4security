@@ -1,0 +1,12 @@
+version: '2.3'
+
+services:
+    elasticsearch:
+      build: elasticsearch/.
+      container_name: elasticsearch
+      restart: always
+      ports:
+       - 9200:9200
+      image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:latest"
+      volumes:
+       - /data:/data

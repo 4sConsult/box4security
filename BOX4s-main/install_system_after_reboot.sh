@@ -189,16 +189,9 @@ echo ""
 echo
 echo
 cd /home/amadmin/box4s
-systemctl is-active --quiet elasticsearch
-if [ $? -ne 0 ]
-then
-  echo
-  echo
-  echo
-  echo "Elasticsearch not running. Restarting the service and waiting for 90s before continuing!!"
-  systemctl restart elasticsearch
-  sleep 90
-fi
+#systemctl is-active --quiet elasticsearch
+#TODO: Prüfen, ob Elasticsearch läuft, wobei sich das im Zweifel erledigt, weil Kibana nur mit docker starten wird, wenn elasticsearch auch läuft
+
 status_code=$(curl -XGET localhost:9200/_snapshot/kibana --write-out %{http_code} --silent --output /dev/null)
 if [[ "$status_code" -ne 200 ]] ; then
 	curl -XPUT localhost:9200/_snapshot/kibana -H "Content-Type: application/json" -d '{"type":"fs", "settings":{"location":"kibana"}}'
@@ -342,8 +335,8 @@ echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | 
 echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | sudo -u postgres psql box4S_db
 #Copy postgres driver
 sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-core/lib/jars/
-# make /data writeable to Elasticsearch
-sudo chown elasticsearch:elasticsearch /data/elasticsearch -R
+# make /data writeable
+sudo chmod 777 -R /data
 sudo chown suri:suri /data/suricata/ -R
 #Updating System with openvas and installing necessary logstash plugins
 
