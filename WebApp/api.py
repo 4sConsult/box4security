@@ -36,10 +36,10 @@ class BPF(Resource):
             abort(404, message="BPF Rule with ID {} not found".format(rule_id))
 
     def post(self):
-        return {}, 405
+        abort(405, message="Cannot update or post directly to a rule ID.")
 
     def put(self):
-        return {}, 405
+        abort(405, message="Cannot update or post directly to a rule ID.")
 
     def delete(self, rule_id):
         rule = models.BPFRule.query.get(rule_id)
@@ -77,6 +77,12 @@ class BPFs(Resource):
         writeBPFFile()
         return models.BPF.dump(newRule)
 
+    def delete(self):
+        models.BPFRule.query.delete()
+        db.session.commit()
+        writeBPFFile()
+        return '', 204
+
 
 class LSR(Resource):
     def get(self, rule_id):
@@ -87,10 +93,10 @@ class LSR(Resource):
             abort(404, message="Logstash Rule with ID {} not found".format(rule_id))
 
     def post(self):
-        abort(405, message="Not allowed.")
+        abort(405, message="Cannot update or post directly to a rule ID.")
 
     def put(self):
-        abort(405, message="Not allowed.")
+        abort(405, message="Cannot update or post directly to a rule ID.")
 
     def delete(self, rule_id):
         rule = models.LogstashRule.query.get(rule_id)
@@ -129,6 +135,23 @@ class LSRs(Resource):
         # newly write file because rules have changed
         writeLSRFile()
         return models.LSR.dump(newRule)
+
+    def delete(self):
+        models.LogstashRule.query.delete()
+        db.session.commit()
+        writeLSRFile()
+        return '', 204
+
+
+class Update(Resource):
+    def get(self, alert_id):
+        return {}, 501
+
+    def post(self):
+        return {}, 501
+
+    def put(self):
+        return {}, 501
 
     def delete(self):
         return {}, 501
