@@ -373,8 +373,4 @@ sudo systemctl enable openvas-manager
 sudo systemctl enable greenbone-security-assistant
 sudo systemctl enable logstash
 sudo systemctl start logstash metricbeat filebeat openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
-
-# Führe nun alle Updates durch
-/home/amadmin/box4s/update.sh
-
 echo "BOX4security installiert."
