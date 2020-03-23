@@ -189,8 +189,18 @@ echo ""
 echo
 echo
 cd /home/amadmin/box4s
-#systemctl is-active --quiet elasticsearch
-#TODO: Prüfen, ob Elasticsearch läuft, wobei sich das im Zweifel erledigt, weil Kibana nur mit docker starten wird, wenn elasticsearch auch läuft
+
+systemctl is-active --quiet elasticsearch
+if [ $? -ne 0 ]
+then
+  echo
+  echo
+  echo
+  echo "Elasticsearch not running. Restarting the service and waiting for 90s before continuing!!"
+  systemctl restart elasticsearch
+  sleep 90
+fi
+
 
 status_code=$(curl -XGET localhost:9200/_snapshot/kibana --write-out %{http_code} --silent --output /dev/null)
 if [[ "$status_code" -ne 200 ]] ; then
