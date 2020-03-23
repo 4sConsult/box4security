@@ -13,7 +13,7 @@ ExecStartPre=-/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4se
 ExecStartPre=-/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml rm -v
 
 # Compose Box4Security up
-ExecStart=/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml up --no-color
+ExecStart=/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml up --no-color --no-build --remove-orphans
 
 # Compose Box4Security down
 ExecStop=/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml down -v
