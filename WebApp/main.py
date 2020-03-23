@@ -1,1 +1,0 @@
-from WebApp import app

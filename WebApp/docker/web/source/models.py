@@ -1,4 +1,4 @@
-from WebApp import db, ma
+from source import db, ma
 # When in doubt, see:
 # https://rahmanfadhil.com/flask-rest-api/
 
