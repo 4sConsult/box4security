@@ -82,7 +82,7 @@
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
   function apiEndpoint(endpoint, method='GET', redirect='follow') {
-  return fetch(`{{ request.url_root }}rules/${endpoint}`, {method: method, redirect: redirect})
+  return fetch(`//{{ request.host }}/rules/${endpoint}/`, {method: method, redirect: redirect})
     .then((response) => {
       return response.json()
     })
