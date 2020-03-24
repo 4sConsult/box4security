@@ -13,7 +13,6 @@ ADD etc/ /root/etc/
 ADD home/ /root/home/
 RUN cp /root/etc/kibana/* /etc/kibana/ -R
 
-EXPOSE 5601
 HEALTHCHECK --retries=10 CMD curl -s -XGET 'http://127.0.0.1:5601'
 STOPSIGNAL SIGKILL
 USER kibana:kibana

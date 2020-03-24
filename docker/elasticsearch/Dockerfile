@@ -10,7 +10,6 @@ RUN 	apt update && \
 ADD etc/ /root/etc/
 RUN cp /root/etc/elasticsearch/* /etc/elasticsearch/ -R
 
-EXPOSE 9200
 HEALTHCHECK --retries=10 CMD curl -s -XGET 'http://127.0.0.1:9200/_cat/health'
 USER elasticsearch:elasticsearch
 CMD ["/usr/share/elasticsearch/bin/elasticsearch"] 
