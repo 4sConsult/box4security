@@ -49,6 +49,8 @@ services:
       - 80:80
     volumes:
       - static_volume:/home/app/web/source/static
+      # certs (placed in host /etc/ folder by install script)
+      - /etc/nginx/certs:/etc/nginx/certs
     depends_on:
       - web
 
