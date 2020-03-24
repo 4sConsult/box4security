@@ -23,8 +23,9 @@ def writeBPFFile():
     with open('bypass_filter.bpf', 'w') as f_bpf:
         rules = models.BPFRule.query.all()
         filled = render_template('bypass_filter.bpf.j2', rules=rules)
+        sshpw = os.getenv('SSH_PASSWORD')
         f_bpf.write(filled)
-        os.system(f'sshpass -p {os.getenv('SSH_PASSWORD')} amadmin@dockerhost /bin/bash /home/amadmin/restartSuricata.sh')
+        os.system(f'sshpass -p {sshpw} amadmin@dockerhost sudo /bin/bash /home/amadmin/restartSuricata.sh')
 
 
 class BPF(Resource):
