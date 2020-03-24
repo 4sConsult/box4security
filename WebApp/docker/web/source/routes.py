@@ -18,7 +18,7 @@ api.add_resource(Update, '/update/')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return catchall('start')
 
 
 @app.route("/static/<path:filename>")
