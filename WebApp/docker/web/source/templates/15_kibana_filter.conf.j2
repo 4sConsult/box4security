@@ -1,0 +1,27 @@
+filter {
+  {#
+   # Creates a concatenated valid logstash filter rule
+   # for each rule from rules variable
+   # it has to start with 1 == 1 because then we can just chain with and
+   # THIS assumes that at least one field is not empty
+   # and I think that makes sense, empty filter shouldn't be allowed to create.
+   #}
+  {% for rule in rules %}
+    if 1 == 1 {% if rule.src_ip != '0.0.0.0' -%}
+      and [source][ip] == "{{ rule.src_ip }}" {% endif -%}
+    {% if rule.src_port != 0 -%}
+      and [source][port][number] == "{{ rule.src_port }}" {% endif -%}
+    {% if rule.dst_ip != '0.0.0.0' -%}
+      and [destination][ip] == "{{ rule.dst_ip }}" {% endif -%}
+    {% if rule.dst_port != 0 -%}
+      and [destination][port][number] == "{{ rule.dst_port }}" {% endif -%}
+    {% if rule.proto != '' -%}
+      and [network][transport] == "{{ rule.proto }}" {% endif -%}
+    {% if rule.signature_id != '' -%}
+      and [alert][signature_id] == "{{ rule.signature_id }}"
+    {% endif -%}
+    {
+      drop { }
+    }
+  {% endfor %}
+}
