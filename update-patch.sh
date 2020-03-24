@@ -32,3 +32,10 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Start des Services
 sudo systemctl start box4security.service
+
+
+# Apply new sudoers (change path for restart suricata)
+sudo cp /home/amadmin/box4s/System/etc/sudoers /etc/sudoers
+sudo cp /home/amadmin/box4s/System/home/amadmin/restartSuricata.sh /home/amadmin/restartSuricata.sh
+sudo chmod +x /home/amadmin/restartSuricata.sh
+sudo chown amadmin:amadmin /home/amadmin/restartSuricata.sh
