@@ -342,7 +342,6 @@ echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | 
 echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | sudo -u postgres psql box4S_db
 #Copy postgres driver
 sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-core/lib/jars/
-# make /data writeable to Elasticsearch
 sudo chown elasticsearch:elasticsearch /data/elasticsearch -R
 sudo chown suri:suri /data/suricata/ -R
 #Updating System with openvas and installing necessary logstash plugins

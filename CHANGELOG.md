@@ -1,7 +1,18 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.6.3](x) - 2020-x-x
+## [1.6.4](x) - 2020-x-x
+
+### Compatible with
+* Elastic Products 7.3.0
+
+### Changed
+* Dockerimage für Elasticsearch in Betrieb genommen
+
+### Removed
+* Elasticsearch-Installation auf Host entfernt
+
+## [1.6.3](x) - 2020-03-18
 
 ### Compatible with
 * Elastic Products 7.3.0
