@@ -4,11 +4,14 @@ TAG=""
 ##
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
-# Stoppe die aktuelle Elasticsearch-Instanz
+# Stoppe die aktuelle Elasticsearch- und Kibana-Instanz
 sudo service elasticsearch stop
+sudo service kibana stop
+sudo systemctl disable elasticsearch.service
+sudo systemctl disable kibana.service
 
 # Entferne Elasticsearch vom System
-sudo apt remove -y --purge elasticsearch
+sudo apt remove -y --purge elasticsearch kibana
 sudo apt autoremove -y
 
 # Vergib die passenden Rechte für den neuen Container auf die vorhandenen Daten

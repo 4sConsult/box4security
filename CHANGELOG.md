@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [](x) - 2020-xx-xx
+## [1.6.4](x) - 2020-x-x
 
 ### Compatible with
 * Elastic Products 7.3.0
