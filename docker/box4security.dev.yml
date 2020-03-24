@@ -24,7 +24,6 @@ services:
   web:
     build:
       context: ./web
-      network: host
     command: python main.py run -h 0.0.0.0
     volumes:
       - ./web/:/usr/src/app/
