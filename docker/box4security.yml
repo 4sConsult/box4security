@@ -34,7 +34,7 @@ services:
     extra_hosts:
       - "dockerhost:${INT_IP}"
     env_file:
-      - ./.env.prod
+      - ./.env.prod.web
     depends_on:
       - db
   db:
