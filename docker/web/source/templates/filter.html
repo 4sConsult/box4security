@@ -82,7 +82,7 @@
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
   function apiEndpoint(endpoint, method='GET', redirect='follow') {
-  return fetch(`//{{ request.host }}/rules/${endpoint}/`, {method: method, redirect: redirect})
+  return fetch(`//{{ request.host }}/rules/${endpoint}`, {method: method, redirect: redirect})
     .then((response) => {
       return response.json()
     })
@@ -98,10 +98,10 @@
   return ret
   }
   (async function() {
-    getEndpoint('bpf').then((ret) => {
+    getEndpoint('bpf/').then((ret) => {
       addToTable('bpf', ret);
     })
-    getEndpoint('logstash').then((ret => {
+    getEndpoint('logstash/').then((ret => {
       addToTable('logstash', ret)
     }))
   function addToTable(set, data) {
