@@ -19,7 +19,8 @@ Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 #Cmnd_Alias RESTARTSURI="systemctl restart suricata.service"
 # User privilege specification
 root	ALL=(ALL:ALL) ALL
-www-data ALL=NOPASSWD:/var/www/kibana/html/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/BOX4s-main/update.sh, /home/amadmin/box4s/update-patch.sh
+www-data ALL=NOPASSWD:/home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/BOX4s-main/update.sh, /home/amadmin/box4s/update-patch.sh
+amadmin ALL=NOPASSWD:/home/amadmin/restartSuricata.sh
 # Members of the admin group may gain root privileges
 %admin ALL=(ALL) ALL
 
