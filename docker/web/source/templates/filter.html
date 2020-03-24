@@ -81,8 +81,8 @@
   <script type="text/javascript">
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
-  function apiEndpoint(endpoint, method='GET') {
-  return fetch(`/rules/${endpoint}`, {method: method})
+  function apiEndpoint(endpoint, method='GET', redirect='follow') {
+  return fetch(`/rules/${endpoint}`, {method: method, redirect: redirect})
     .then((response) => {
       return response.json()
     })
