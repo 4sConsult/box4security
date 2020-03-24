@@ -47,6 +47,7 @@ services:
       context: ./nginx
     ports:
       - 80:80
+      - 443:443
     volumes:
       - static_volume:/home/app/web/source/static
       # certs (placed in host /etc/ folder by install script)
