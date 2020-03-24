@@ -41,3 +41,9 @@ sudo apt install -y openconnect
 
 # Hosts Datei aktualisieren
 sudo cp System/etc/hosts /etc/hosts
+
+# Service für automatische VPN-Verbindung einfügen
+sudo cp /home/amadmin/box4s/System/etc/systemd/vpn.service /etc/systemd/system/vpn.service
+sudo systemctl daemon-reload
+sudo systemctl enable vpn.service
+sudo systemctl start

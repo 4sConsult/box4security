@@ -6,6 +6,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Compatible with
 * Elastic Products 7.3.0
 
+### Added
+* Automatischer VPN-Verbindungsaufbau
+
 ### Changed
 * Dockerimage für Elasticsearch in Betrieb genommen
 * Dockerimage für Kibana in Betrieb genommen

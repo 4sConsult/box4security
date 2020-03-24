@@ -1,0 +1,16 @@
+[Unit]
+Description=vpn
+After=network.target
+
+[Service]
+Type=Simple
+Restart=always
+Environment=VPN_PASS=
+Environment=VPN_USER=
+
+# VPN-Tunnel aufbauen
+ExecStart=/bin/sh -c 'echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on-stdin connect.am-gmbh.de'
+
+
+[Install]
+WantedBy=multi-user.target
