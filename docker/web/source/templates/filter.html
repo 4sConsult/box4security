@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="ui main text container">
+    <h1 class="ui header">BOX4Security - Filter</h1>
+    <div class="ui floating tiny message">
+      <p>
+        Sie haben hier die Möglichkeit Security-Alerts anhand von definierten Daten-Features von der Aufzeichnung auszunehmen.
+        Dies eignet sich besonders, um False-Positives auszublenden.
+        Beachten Sie auch die Antworten auf <a href="/faq">häufig gestellte Fragen</a>.
+      </p>
+    </div>
+    <div class="ui inverted section divider"></div>
+    <div class="section">
+      <h2 class="ui header">BPF Filter<div class="sub header">Filter auf Ebene der Netzwerkkarte</div></h2>
+      <table id="tbl-bpf" class="ui celled single line small table">
+        <thead>
+          <tr>
+            <th>Quell-IP</th>
+            <th class="collapsing">Quell-Port</th>
+            <th>Ziel-IP</th>
+            <th class="collapsing">Ziel-Port</th>
+            <th class="collapsing">Protokoll</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+      <div class="ui grid">
+        <div class="two column row">
+          <div class="right floated column">
+            <div class="fluid ui labeled button">
+              <a data-set='bpf' class="fluid ui negative button _flush">
+                <i class="exclamation triangle icon"></i>
+                Alle BPF-Regeln irreversibel löschen
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui inverted section divider"></div>
+    <div class="section">
+      <h2 class="ui header">Logstash Filter<div class="sub header">Filter auf Softwareebene</div></h2>
+    </div>
+    <table id="tbl-logstash" class="ui celled small table">
+      <thead>
+        <tr>
+          <th>Quell-IP</th>
+          <th>Quell-Port</th>
+          <th>Ziel-IP</th>
+          <th>Ziel-Port</th>
+          <th>Protokoll</th>
+          <th>Angriffssignatur</th>
+          <th lass="collapsing">Aktion</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <div class="ui grid">
+      <div class="two column row">
+        <div class="right floated column">
+          <div class="fluid ui labeled button">
+            <a data-set="logstash" class="fluid ui negative button _flush">
+              <i class="exclamation triangle icon"></i>
+              Alle Logstash-Regeln irreversibel löschen
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui vertical footer segment">
+    <div class="ui center aligned container">
+    <img src="/static/Box4S_Logo.png" class="ui centered small image">
+  </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script type="text/javascript">
+  $('div.item.active').removeClass('active');
+  $('#administration').addClass('active');
+  function apiEndpoint(endpoint, method='GET') {
+  return fetch(`/rules/${endpoint}`, {method: method})
+    .then((response) => {
+      return response.json()
+    })
+    .then(json => {
+      return json
+    })
+    .catch((err) => {
+      console.log('Fetch Error :-S', err);
+    });
+  }
+  const getEndpoint = async(endpoint, method) => {
+  const ret = await apiEndpoint(endpoint, method)
+  return ret
+  }
+  (async function() {
+    getEndpoint('bpf').then((ret) => {
+      addToTable('bpf', ret);
+    })
+    getEndpoint('logstash').then((ret => {
+      addToTable('logstash', ret)
+    }))
+  function addToTable(set, data) {
+    let tbody = $(`#tbl-${set} tbody`);
+    data.forEach(rule => {
+      row = `<tr>
+        <td>${rule.src_ip}</td>
+        <td class="collapsing">${rule.src_port}</td>
+        <td>${rule.dst_ip}</td>
+        <td class="collapsing">${rule.dst_port}</td>
+        <td>${rule.proto}</td>`
+        +
+          ( rule.signature ? `<td>${rule.signature}</td>` : '' )
+        +`
+        <td class="collapsing">
+          <a data-rule-id="${rule.id}" class="ui icon red button">
+            <i class="trash alternate outline icon"></i>
+          </a>
+        </td>
+      </tr>`;
+      tbody.append(row);
+    })
+    $( `#tbl-${set} tbody tr td a` ).on('click', (e) => {
+      getEndpoint(`${set}/${$(e.delegateTarget).data('rule-id')}`, method='DELETE')
+      $(e.delegateTarget).closest('tr').remove();
+
+    })
+
+  }
+})();
+  $("a._flush").click((e) => {
+    var set = $(e.delegateTarget).data('set');
+    if (confirm(`Sind Sie sicher alle Regeln des ${set}-Filters unwiderruflich zu LÖSCHEN?`)) {
+      getEndpoint(`${set}/`, method='DELETE');
+      $( `#tbl-${set} tbody` ).empty()
+    }
+  })
+  </script>
+{% endblock %}

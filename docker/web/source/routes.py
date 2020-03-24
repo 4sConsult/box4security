@@ -61,7 +61,7 @@ def administration():
 
 @app.route('/filter', methods=['GET'])
 def rules():
-    return redirect(url_for('index'))
+    return render_template("filter.html")
 
 
 @app.route('/administration', methods=['POST'])

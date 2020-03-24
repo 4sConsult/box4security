@@ -32,7 +32,7 @@ class BPFSchema(ma.Schema):
 
 class LSRSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'src_ip', 'src_port', 'dst_ip', 'dst_port', 'proto')
+        fields = ('id', 'src_ip', 'src_port', 'dst_ip', 'dst_port', 'proto', 'signature_id', 'signature')
 
 
 BPF = BPFSchema()

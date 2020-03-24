@@ -1,4 +1,4 @@
-version: '3.7'
+version: '2.3'
 
 services:
   elasticsearch:
@@ -46,3 +46,4 @@ services:
 volumes:
   # to persist data beyond container's life
   postgres_data:
+  data:

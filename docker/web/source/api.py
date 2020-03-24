@@ -1,10 +1,8 @@
 from source import app, models, db
 from flask_restful import Resource, reqparse, abort
-from flask import request
+from flask import request, render_template
 import jinja2
 import os
-templateLoader = jinja2.FileSystemLoader(searchpath="")
-templateEnv = jinja2.Environment(loader=templateLoader)
 
 
 def writeLSRFile():
@@ -13,8 +11,8 @@ def writeLSRFile():
     # /var/www/kibana/ebpf/
     with open('15_kibana_filter.conf', 'w') as f_logstash:
         rules = models.LogstashRule.query.all()
-        template = templateEnv.get_template('templates/15_kibana_filter.conf.j2')
-        f_logstash.write(template.render({'rules': rules}))
+        filled = render_template('15_kibana_filter.conf.j2', rules=rules)
+        f_logstash.write(filled)
 
 
 def writeBPFFile():
@@ -24,8 +22,8 @@ def writeBPFFile():
     # /var/www/kibana/ebpf/
     with open('bypass_filter.bpf', 'w') as f_bpf:
         rules = models.BPFRule.query.all()
-        template = templateEnv.get_template('templates/bypass_filter.bpf.j2')
-        f_bpf.write(template.render({'rules': rules}))
+        filled = render_template('bypass_filter.bpf.j2', rules=rules)
+        f_bpf.write(filled)
         os.system('/var/www/kibana/html/restartSuricata.sh')
 
 
