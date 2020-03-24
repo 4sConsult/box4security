@@ -35,7 +35,7 @@ RUN pip install --no-cache /wheels/*
 
 # copy source
 COPY . $APP_HOME
-RUN chown -R app:app $APP_HOME
+RUN chown -R app:app $HOME
 
 # change to the app user
 USER app
