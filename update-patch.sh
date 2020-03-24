@@ -27,5 +27,8 @@ sudo systemctl enable box4security.service
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
+# Erstelle das Volume für die Daten
+sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
+
 # Start des Services
 sudo systemctl start box4security.service

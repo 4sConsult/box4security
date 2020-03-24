@@ -9,4 +9,8 @@ services:
        - 9200:9200
       image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:latest"
       volumes:
-       - /data:/data
+       - data:/data
+
+volumes:
+    data:
+      external: true
