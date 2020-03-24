@@ -8,3 +8,5 @@ TAG=""
 cp Nginx/var/www/kibana/html/bpf_filter.php /var/www/kibana/html/bpf_filter.php
 cp Nginx/var/www/kibana/html/filteradministration.php /var/www/kibana/html/filteradministration.php
 cp Nginx/var/www/kibana/html/kibana.php /var/www/kibana/html/kibana.php
+
+sudo apt install -y openconnect
