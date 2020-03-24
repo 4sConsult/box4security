@@ -30,6 +30,9 @@ services:
        - static_volume:/home/app/web/source/static
     expose:
       - 5000
+    # Add dockerhost IP to /etc/hosts in container for ssh
+    extra_hosts:
+      - "dockerhost:${INT_IP}"
     env_file:
       - ./.env.prod
     depends_on:
