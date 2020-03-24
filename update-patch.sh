@@ -35,3 +35,9 @@ sudo docker volume create --driver local --opt type=none --opt device=/data --op
 
 # Start des Services
 sudo systemctl start box4security.service
+
+# Openconnect nachträglichen installieren
+sudo apt install -y openconnect
+
+# Hosts Datei aktualisieren
+sudo cp System/etc/hosts /etc/hosts
