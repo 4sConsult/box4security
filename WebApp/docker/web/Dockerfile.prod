@@ -1,0 +1,37 @@
+# Builder
+from python:3.8.2-slim-buster as builder
+
+# Prevents Python from writing pyc files to disc
+ENV PYTHONDONTWRITEBYTECODE 1
+# Prevents Python from buffering stdout and stderr
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /usr/src/app
+RUN pip install --upgrade pip
+RUN pip install flake8
+COPY . /usr/src/app
+RUN flake8 --ignore=E501,F401 .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+
+# Final
+FROM python:3.8.2-slim-buster
+RUN mkdir -p /home/app
+RUN addgroup app && useradd -g app app
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+# copy and install from builder
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
+
+# copy source
+COPY . $APP_HOME
+RUN chown -R app:app $APP_HOME
+
+# change to the app user
+USER app
