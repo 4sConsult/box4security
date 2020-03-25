@@ -357,11 +357,6 @@ waitForNet
 /home/amadmin/box4s/Scripts/System_Scripts/update_system.sh
 # apply network/interfaces
 
-# Install the scores index
-cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
-./install_index.sh
-cd /home/amadmin/box4s
-
 # Import BI Dashboards
 curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Scripts/Automation/score_calculation/BIDashboards.ndjson
 # Import / Overwrite Dashboard "[Netzwerk]"
