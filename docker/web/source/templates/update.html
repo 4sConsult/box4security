@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ui main text container">
+  <h1 class="ui header">BOX4Security - Updates<div class="sub header">Verfügbare Aktualisierungen</div></h1>
+  <div class="ui inverted section divider"></div>
+  <div class="section">
+    <div class="table">
+      <table id="tbl" class="ui celled structured table">
+        <thead>
+          <tr>
+            <th class="collapsing">Version</th>
+            <th class="collapsing">Kurzbeschreibung</th>
+            <th class="collapsing">Zeit</th>
+            <th class="collapsing">Update</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+  <script src="/static/compareversion.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    function apiEndpoint(endpoint, method='GET', redirect='follow') {
+    return fetch(`//{{ request.host }}/${endpoint}`, {method: method, redirect: redirect})
+      .then((response) => {
+        return response.json()
+      })
+      .then(json => {
+        return json
+      })
+      .catch((err) => {
+        console.log('Fetch Error :-S', err);
+      });
+    }
+    const getEndpoint = async(endpoint, method) => {
+    const ret = await apiEndpoint(endpoint, method)
+    return ret
+    }
+  </script>
+  <script type="text/javascript">
+  $('div.item.active').removeClass('active');
+  $('#administration').addClass('active');
+  </script>
+  <script type="text/javascript">
+    (async function() {
+      getEndpoint('ver/releases/').then((ret) => {
+        addToTable(ret);
+      });
+
+      async function addToTable(data) {
+        const currver = await getEndpoint('ver/');
+        console.log(currver)
+        let tbody = $(`#tbl tbody`);
+        data.forEach((version) => {
+          let date = moment(version.date);
+          let ago = Math.abs(date.diff(moment(),'days'));
+          let row = `<tr>
+            <td class="collapsing">${version.version}</td>
+            <td class="collapsing">${version.message}</td>
+            <td class="collapsing">vor ${ago} Tagen</td>
+            <td class="collapsing">
+              <a data-version="${version.version}" class="ui icon green button">
+                <i class="download icon"></i>
+              </a></td>
+          </tr>`;
+          tbody.append(row);
+        });
+      }
+    })();
+  </script>
+{% endblock %}

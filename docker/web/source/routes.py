@@ -1,5 +1,5 @@
 from source import app, mail
-from source.api import BPF, BPFs, LSR, LSRs, Alert, Update
+from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases
 from source.config import Dashboards
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, redirect, url_for, abort
@@ -13,7 +13,8 @@ api.add_resource(BPFs, '/rules/bpf/')
 api.add_resource(LSR, '/rules/logstash/<int:rule_id>')
 api.add_resource(LSRs, '/rules/logstash/')
 api.add_resource(Alert, '/alert/<int:alert_id>')
-api.add_resource(Update, '/update/')
+api.add_resource(Version, '/ver/')
+api.add_resource(AvailableReleases, '/ver/releases/')
 
 
 @app.route('/')
@@ -54,19 +55,19 @@ def faq_mail():
     return render_template('faq.html', client=client, mailsent=True)
 
 
-@app.route('/administration', methods=['GET'])
-def administration():
-    return redirect(url_for('index'))
+@app.route('/update', methods=['GET'])
+def update():
+    return render_template("update.html")
+
+
+@app.route('/update', methods=['POST'])
+def update_post():
+    return render_template("update.html")
 
 
 @app.route('/filter', methods=['GET'])
 def rules():
     return render_template("filter.html")
-
-
-@app.route('/administration', methods=['POST'])
-def postfilter():
-    return redirect(url_for('index'))
 
 
 # must be the last one (catchall)

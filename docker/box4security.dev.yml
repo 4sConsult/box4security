@@ -31,6 +31,7 @@ services:
       - 5000:5000
     env_file:
       - ./.env.dev.web
+      - ../VERSION
     depends_on:
       - db
   db:

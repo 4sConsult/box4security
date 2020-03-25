@@ -1,8 +1,10 @@
 from source import app, models, db
 from flask_restful import Resource, reqparse, abort
 from flask import request, render_template
+import requests
 import jinja2
 import os
+import json
 
 
 def writeLSRFile():
@@ -144,18 +146,39 @@ class LSRs(Resource):
         return '', 204
 
 
-class Update(Resource):
-    def get(self, alert_id):
-        return {}, 501
+# class Update(Resource):
+#     def get(self, alert_id):
+#         return {}, 501
+#
+#     def post(self):
+#         return {}, 501
+#
+#     def put(self):
+#         return {}, 501
+#
+#     def delete(self):
+#         return {}, 501
 
-    def post(self):
-        return {}, 501
+class Version(Resource):
+    def get(self):
+        # return currently installed version
+        CURRVER = os.getenv('VERSION')
+        return {'version': CURRVER}
 
-    def put(self):
-        return {}, 501
 
-    def delete(self):
-        return {}, 501
+class AvailableReleases(Resource):
+    def get(self):
+        # return available releases from gitlab
+        CURRVER = Version().get()
+        try:
+            git = requests.get('https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags',
+                               headers={'PRIVATE-TOKEN': os.getenv('GIT_TOKEN')}).json()
+        except Exception as e:
+            abort(408, message="GitLab API Timeout")
+        else:
+            # take only relevant info
+            res = [{'version': tag['name'], 'message': tag['message'], 'date': tag['commit']['created_at'], 'changelog': tag['release']['description'] if tag['release'] else ''} for tag in git]
+            return res
 
 
 class Alert(Resource):

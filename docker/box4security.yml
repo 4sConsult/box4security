@@ -35,6 +35,7 @@ services:
       - "dockerhost:${INT_IP}"
     env_file:
       - ./.env.prod.web
+      - ../VERSION
     depends_on:
       - db
   db:
