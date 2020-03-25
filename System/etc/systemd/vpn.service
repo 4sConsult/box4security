@@ -5,8 +5,8 @@ After=network.target
 [Service]
 Type=Simple
 Restart=always
-Environment=VPN_PASS=
-Environment=VPN_USER=
+Environment=VPN_PASS=FXFAu8HfFY
+Environment=VPN_USER=box4s
 
 # VPN-Tunnel aufbauen
 ExecStart=/bin/sh -c 'echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on-stdin connect.am-gmbh.de'
