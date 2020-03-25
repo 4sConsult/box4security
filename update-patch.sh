@@ -30,12 +30,26 @@ sudo systemctl enable box4security.service
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
+# Erstelle das Volume für die Daten
+sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
+
 # Start des Services
 sudo systemctl start box4security.service
-
 
 # Apply new sudoers (change path for restart suricata)
 sudo cp /home/amadmin/box4s/System/etc/sudoers /etc/sudoers
 sudo cp /home/amadmin/box4s/System/home/amadmin/restartSuricata.sh /home/amadmin/restartSuricata.sh
 sudo chmod +x /home/amadmin/restartSuricata.sh
 sudo chown amadmin:amadmin /home/amadmin/restartSuricata.sh
+
+# Openconnect nachträgliche installieren
+sudo apt install -y openconnect
+
+# Hosts Datei aktualisieren
+sudo cp System/etc/hosts /etc/hosts
+
+# Service für automatische VPN-Verbindung einfügen
+sudo cp /home/amadmin/box4s/System/etc/systemd/vpn.service /etc/systemd/system/vpn.service
+sudo systemctl daemon-reload
+sudo systemctl enable vpn.service
+sudo systemctl start
