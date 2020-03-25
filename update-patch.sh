@@ -47,3 +47,6 @@ sudo cp /home/amadmin/box4s/System/etc/systemd/vpn.service /etc/systemd/system/v
 sudo systemctl daemon-reload
 sudo systemctl enable vpn.service
 sudo systemctl start
+
+# Installation der neuen Schwachstellendashboards
+curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
