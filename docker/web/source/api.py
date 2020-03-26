@@ -169,11 +169,10 @@ class Version(Resource):
 class AvailableReleases(Resource):
     def get(self):
         # return available releases from gitlab
-        CURRVER = Version().get()
         try:
             git = requests.get('https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags',
                                headers={'PRIVATE-TOKEN': os.getenv('GIT_TOKEN')}).json()
-        except Exception as e:
+        except Exception:
             abort(408, message="GitLab API Timeout")
         else:
             # take only relevant info
