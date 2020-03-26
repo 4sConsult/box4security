@@ -31,7 +31,7 @@ fi
 # Redirect STDOUT to LOG_FILE
 exec 1>>$LOG_FILE && exec 2>>$LOG_FILE
 waitForNet
-pip3 install packaging
+pip3 install semver
 cd /home/amadmin/box4s
 
 sudo systemctl stop irqbalance

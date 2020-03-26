@@ -42,6 +42,9 @@ sudo cp /home/amadmin/box4s/System/home/amadmin/restartSuricata.sh /home/amadmin
 sudo chmod +x /home/amadmin/restartSuricata.sh
 sudo chown amadmin:amadmin /home/amadmin/restartSuricata.sh
 
+# Install new Dependency for updatescript
+sudo pip3 install semver
+
 # Create BOX4s Log Path
 sudo mkdir -p /var/log/box4s/
 
