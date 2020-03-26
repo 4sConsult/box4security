@@ -9,45 +9,32 @@ import io
 import subprocess
 
 
-# https://thispointer.com/python-get-last-n-lines-of-a-text-file-like-tail-command/
-def tail(file_name, N):
-    # Create an empty list to keep the track of last N lines
-    list_of_lines = []
-    # Open file for reading in binary mode
-    with open(file_name, 'rb') as read_obj:
-        # Move the cursor to the end of the file
-        read_obj.seek(0, os.SEEK_END)
-        # Create a buffer to keep the last read line
-        buffer = bytearray()
-        # Get the current position of pointer i.e eof
-        pointer_location = read_obj.tell()
-        # Loop till pointer reaches the top of the file
-        while pointer_location >= 0:
-            # Move the file pointer to the location pointed by pointer_location
-            read_obj.seek(pointer_location)
-            # Shift pointer location by -1
-            pointer_location = pointer_location - 1
-            # read that byte / character
-            new_byte = read_obj.read(1)
-            # If the read byte is new line character then it means one line is read
-            if new_byte == b'\n':
-                # Save the line in list of lines
-                list_of_lines.append(buffer.decode()[::-1])
-                # If the size of list reaches N, then return the reversed list
-                if len(list_of_lines) == N:
-                    return list(reversed(list_of_lines))
-                # Reinitialize the byte array to save next line
-                buffer = bytearray()
-            else:
-                # If last read character is not eol then add it in buffer
-                buffer.extend(new_byte)
+# https://stackoverflow.com/questions/136168/get-last-n-lines-of-a-file-with-python-similar-to-tail?page=1&tab=votes#tab-top
+def tail(file_name, lines):
+    total_lines_wanted = lines
 
-        # As file is read completely, if there is still data in buffer, then its first line.
-        if len(buffer) > 0:
-            list_of_lines.append(buffer.decode()[::-1])
-
-    # return the reversed list
-    return list(reversed(list_of_lines))
+    BLOCK_SIZE = 1024
+    f.seek(0, 2)
+    block_end_byte = f.tell()
+    lines_to_go = total_lines_wanted
+    block_number = -1
+    blocks = []   # blocks of size BLOCK_SIZE, in reverse order starting from the end of the file
+    while lines_to_go > 0 and block_end_byte > 0:
+        if (block_end_byte - BLOCK_SIZE > 0):
+            # read the last block we haven't yet read
+            f.seek(block_number * BLOCK_SIZE, 2)
+            blocks.append(f.read(BLOCK_SIZE))
+        else:
+            # file too small, start from begining
+            f.seek(0, 0)
+            # only read what was not read
+            blocks.append(f.read(block_end_byte))
+        lines_found = blocks[-1].count('\n')
+        lines_to_go -= lines_found
+        block_end_byte -= BLOCK_SIZE
+        block_number -= 1
+    all_read_text = ''.join(reversed(blocks))
+    return '\n'.join(all_read_text.splitlines()[-total_lines_wanted:])
 
 
 def writeLSRFile():
