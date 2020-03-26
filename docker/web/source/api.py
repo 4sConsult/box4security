@@ -6,7 +6,7 @@ import jinja2
 import os
 import json
 import io
-from subprocess import Popen
+import subprocess
 
 
 # https://thispointer.com/python-get-last-n-lines-of-a-text-file-like-tail-command/
@@ -219,7 +219,7 @@ class LaunchUpdate(Resource):
 
     def post(self):
         # launch update.sh with target version
-        targetVersion = self.args['target']
+        # targetVersion = self.args['target']
         subprocess.Popen('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/BOX4s-main/update.sh', shell=True)
         return {"message": "accepted"}, 200
 
