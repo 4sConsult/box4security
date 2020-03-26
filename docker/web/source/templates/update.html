@@ -20,6 +20,26 @@
     </div>
   </div>
 </div>
+<div class="ui modal">
+  <div class="header"></div>
+  <div class="content">
+    <p id=""></p>
+    <div class="ui icon message">
+      <i id="" class="notched circle loading icon"></i>
+      <div class="content">
+        <div id="" class="header">
+          Der Updatevorgang läuft..
+        </div>
+        <p id="">Das System wird aktualisiert. Bitte lassen Sie das Fenster geöffnet.</p>
+      </div>
+    </div>
+    <div class="ui segment">
+      <div class="ui active inverted dimmer" id="dimmer">
+      </div>
+      <p id="logLines"><br> </p>
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block scripts %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
@@ -116,7 +136,43 @@
           // add row to table
           tbody.append(row);
         });
+        $('a.green.button').on('click', async (e) => {
+          // Launch update process to most selected version
+          selectedVersion = $(e.delegateTarget).data('version')
+          const resp = await fetch('//{{request.host}}/update/launch/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            body: JSON.stringify({target: selectedVersion})
+          });
+          if(resp.ok)
+          // endpoint gave 200 OK -> update was started
+          {
+            updateRunner(selectedVersion);
+          } else {
+            // TODO: Failed to query for update
+          }
+        });
       }
     })();
+    async function updateRunner(target) {
+      // Modify and show modal
+      var modal = $('.ui.modal');
+      modal.children('.header').text(`Update auf ${target}`);
+      modal.modal('show');
+
+      var running = true;
+      //while update process running
+      while (running) {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        getEndpoint('update/log/').then((rs) => {
+          modal.find('#logLines').html(rs.lines.join(' <br/>'));
+        });
+        const status = await getEndpoint('update/status/');
+      }
+    }
   </script>
 {% endblock %}
