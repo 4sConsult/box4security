@@ -5,8 +5,8 @@ import requests
 import semver
 import requests
 
-CURRVER = requests.get('http://localhost:5000/ver/').json()['version']
-tags = requests.get('http://localhost:5000/ver/releases/').json()
+CURRVER = requests.get('http://localhost/ver/').json()['version']
+tags = requests.get('http://localhost/ver/releases/').json()
 VERSIONS = []
 # Source: https://stackoverflow.com/questions/11887762/how-do-i-compare-version-numbers-in-python
 for t in tags:
