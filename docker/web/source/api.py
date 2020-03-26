@@ -32,7 +32,7 @@ def tail(file_name, N):
             block_end_byte -= BLOCK_SIZE
             block_number -= 1
             all_read_text = ''.join(reversed(blocks))
-        return '\n'.join(all_read_text.splitlines()[-total_lines_wanted:])
+        return '\n'.join(all_read_text.splitlines()[-N:])
 
 
 def writeLSRFile():
