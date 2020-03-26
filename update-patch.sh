@@ -42,6 +42,9 @@ sudo cp /home/amadmin/box4s/System/home/amadmin/restartSuricata.sh /home/amadmin
 sudo chmod +x /home/amadmin/restartSuricata.sh
 sudo chown amadmin:amadmin /home/amadmin/restartSuricata.sh
 
+# Create BOX4s Log Path
+sudo mkdir -p /var/log/box4s/
+
 # Openconnect nachträgliche installieren
 sudo apt install -y openconnect
 

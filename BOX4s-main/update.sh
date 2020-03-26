@@ -19,7 +19,7 @@ function waitForNet() {
   done
 }
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
-exec 1>/var/www/kibana/html/update/updateStatus.log && exec 2>/var/www/kibana/html/update/updateStatus.log
+exec 1>/var/log/box4s/updateStatus.log && exec 2>>/var/log/box4s/updateStatus.log
 sleep 2
 
 VERSIONS=()
