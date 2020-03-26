@@ -47,3 +47,7 @@ sudo cp /home/amadmin/box4s/System/etc/systemd/vpn.service /etc/systemd/system/v
 sudo systemctl daemon-reload
 sudo systemctl enable vpn.service
 sudo systemctl start
+
+# Scores Index in vorheriger Version fehlerhaft gewesen
+cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
+./install_index.sh

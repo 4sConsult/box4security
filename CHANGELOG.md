@@ -13,6 +13,11 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dockerimage für Elasticsearch in Betrieb genommen
 * Dockerimage für Kibana in Betrieb genommen
 
+### Fixed
+* Fehlerhafte Installation des Score-Indizes behoben
+
+### Deprecated
+
 ### Removed
 * Elasticsearch-Installation auf Host entfernt
 * Kibana-Installation auf Host entfernt
