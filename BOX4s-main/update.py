@@ -4,7 +4,8 @@ import json
 import requests
 import semver
 import requests
-
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 CURRVER = requests.get('http://localhost/ver/', verify=False).json()['version']
 tags = requests.get('http://localhost/ver/releases/', verify=False).json()
 VERSIONS = []
