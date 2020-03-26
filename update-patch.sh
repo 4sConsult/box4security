@@ -47,6 +47,7 @@ sudo pip3 install semver
 
 # Create BOX4s Log Path
 sudo mkdir -p /var/log/box4s/
+sudo touch /var/log/box4s/update.log
 
 # Openconnect nachträgliche installieren
 sudo apt install -y openconnect

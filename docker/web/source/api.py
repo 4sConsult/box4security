@@ -220,7 +220,7 @@ class LaunchUpdate(Resource):
     def post(self):
         # launch update.sh with target version
         # targetVersion = self.args['target']
-        subprocess.Popen('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/BOX4s-main/update.sh', shell=True)
+        subprocess.Popen('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/box4s/BOX4s-main/update.sh', shell=True)
         return {"message": "accepted"}, 200
 
 
