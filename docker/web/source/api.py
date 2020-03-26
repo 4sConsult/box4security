@@ -211,7 +211,7 @@ class UpdateLog(Resource):
     def get(self):
         # Return last 15 lines of updatelog file
         with open('/var/log/box4s/update.log', 'rb') as f:
-            lastLines = tail(f, 15).decode('utf-8')
+            lastLines = tail(f, 15).decode('utf-8').splitlines()
             return {'lines': lastLines}, 200
 
 
