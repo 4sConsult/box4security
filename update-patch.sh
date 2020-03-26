@@ -18,7 +18,20 @@ sudo apt autoremove -y
 sudo chmod 777 /data/elasticsearch -R
 
 # Docker installieren mit docker-compose
-sudo apt install -y docker.io
+# Uninstall old versions
+sudo apt remove -y docker docker-engine docker.io containerd runc
+sudo apt update
+# Install Docker Dependencies
+sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+# Install GPG Key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+# Add repository
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+# Install
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+
 sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
