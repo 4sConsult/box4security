@@ -8,10 +8,15 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 * Automatischer VPN-Verbindungsaufbau
+* Dashboard "Übersicht" zum Bereich "Schwachstellen hinzugefügt"
+* Dashboard "Schwachstellendetails" zum Bereich "Schwachstellen" hinzugefügt
 
 ### Changed
 * Dockerimage für Elasticsearch in Betrieb genommen
 * Dockerimage für Kibana in Betrieb genommen
+* Dashboard "Schwachstellenübersicht" umbenannt in "Detailübersicht"
+* Dashboard "Schwachstellenübersicht" überarbeitet
+* Menüpunkt "Schwachstellen" neu strukturiert
 
 ### Fixed
 * Fehlerhafte Installation des Score-Indizes behoben
@@ -21,6 +26,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Removed
 * Elasticsearch-Installation auf Host entfernt
 * Kibana-Installation auf Host entfernt
+* Dashboard "Schwachstellenübersicht "
 
 ## [1.6.3](x) - 2020-03-18
 
