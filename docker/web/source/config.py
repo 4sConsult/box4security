@@ -31,7 +31,7 @@ Dashboards = [
     Dashboard(name='start', url='/kibana/app/kibana#/dashboard/8d13ea50-3de1-11ea-bbd4-bb7e0278945f?_g=()&_a=(fullScreenMode:!t)', parent_id='#start'),
     Dashboard(name='ids', url='/kibana/app/kibana#/dashboard/a7bfd050-ce1d-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)', parent_id='#siem'),
     Dashboard(name='vuln-overview', url='/kibana/app/kibana#/dashboard/140fb900-6e82-11ea-84ea-3b1a8de87e76?_g=()&_a=(fullScreenMode:!t)', parent_id='#vuln'),
-    Dashboard(name='vuln-detailedoverview', url='/kibana/app/kibana#/dashboard/f8712020-cefa-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)', parent_id='#vuln'),
+    Dashboard(name='vuln-progress', url='/kibana/app/kibana#/dashboard/f8712020-cefa-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)', parent_id='#vuln'),
     Dashboard(name='vuln-details', url='/kibana/app/kibana#/dashboard/39c6fc40-6e81-11ea-84ea-3b1a8de87e76?_g=()&_a=(fullScreenMode:!t)', parent_id='#vuln'),
     Dashboard(name='network-overview', url='/kibana/app/kibana#/dashboard/dc847fd0-3dd9-11ea-bbd4-bb7e0278945f?_g=()&_a=(fullScreenMode:!t)', parent_id='#net'),
     Dashboard(name='network-streams', url='/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)', parent_id='#net'),
