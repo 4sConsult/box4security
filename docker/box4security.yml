@@ -58,6 +58,7 @@ services:
       - /etc/nginx/certs:/etc/nginx/certs
     depends_on:
       - web
+      - kibana
 
 volumes:
   # to persist data beyond container's life
