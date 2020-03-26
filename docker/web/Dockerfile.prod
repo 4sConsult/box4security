@@ -36,6 +36,7 @@ RUN pip install --no-cache /wheels/*
 # copy source
 COPY . $APP_HOME
 RUN chown -R app:app $HOME
+RUN chown -R app:app /var/log/box4s/
 
 # change to the app user
 USER app

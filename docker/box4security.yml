@@ -28,6 +28,7 @@ services:
     command: gunicorn --bind 0.0.0.0:5000 main:app
     volumes:
        - static_volume:/home/app/web/source/static
+       - /var/log/box4s/:/var/log/box4s/
     expose:
       - 5000
     # Add dockerhost IP to /etc/hosts in container for ssh

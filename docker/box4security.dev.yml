@@ -27,6 +27,7 @@ services:
     command: python main.py run -h 0.0.0.0
     volumes:
       - ./web/:/usr/src/app/
+      - update.log:/var/log/box4s/update.log
     ports:
       - 5000:5000
     env_file:
