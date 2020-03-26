@@ -11,7 +11,7 @@ import subprocess
 
 def tail(file_name, N):
     BLOCK_SIZE = 1024
-    with io.open(file_name, 'rb'):
+    with io.open(file_name, 'rb') as f:
         f.seek(0, 2)
         block_end_byte = f.tell()
         lines_to_go = N
