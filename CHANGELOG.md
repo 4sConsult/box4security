@@ -18,6 +18,11 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dashboard "Schwachstellenübersicht" überarbeitet
 * Menüpunkt "Schwachstellen" neu strukturiert
 
+### Fixed
+* Fehlerhafte Installation des Score-Indizes behoben
+
+### Deprecated
+
 ### Removed
 * Elasticsearch-Installation auf Host entfernt
 * Kibana-Installation auf Host entfernt
