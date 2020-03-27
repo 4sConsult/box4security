@@ -8,6 +8,15 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 * Automatischer VPN-Verbindungsaufbau
+* Dashboard "Übersicht" für den Bereich SIEM hinzugefügt
+* Dashboard "Alarme" für den Bereich SIEM hinzugefügt
+* Dashboard "ASN" für den Bereich SIEM hinzugefügt
+* Dashboard "HTTP" für den Bereich SIEM hinzugefügt
+* Dashboard "DNS" für den Bereich SIEM hinzugefügt
+* Dashboard "Protokolle & Dienste" für den Bereich SIEM hinzugefügt
+* Die Startseite ist nun als Startseite in Share verfügbar
+* Die Dashboards des Bereichs "SIEM" sind nun in Share verfügbar
+* Die Dashboards des Bereichs "Netzwerk" sind nun in Share verfügbar
 
 ### Changed
 * Dockerimage für Elasticsearch in Betrieb genommen
@@ -21,6 +30,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Removed
 * Elasticsearch-Installation auf Host entfernt
 * Kibana-Installation auf Host entfernt
+* Dashboard "Intrusion Detection" in dem Bereich SIEM entfernt
 
 ## [1.6.3](x) - 2020-03-18
 
