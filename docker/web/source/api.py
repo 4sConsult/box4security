@@ -235,6 +235,11 @@ class UpdateStatus(Resource):
             f.write(self.args['status'])
             return {}, 200
 
+    def delete(self):
+        # empty update state file
+        f = open('./.update.state', 'w')
+        f.close()
+
 
 class Alert(Resource):
     def get(self, alert_id):
