@@ -25,19 +25,20 @@
   <div class="content">
     <p id=""></p>
     <div class="ui icon message">
-      <i id="" class="notched circle loading icon"></i>
+      <i class="notched circle loading icon"></i>
       <div class="content">
-        <div id="" class="header">
+        <div class="header">
           Der Updatevorgang läuft..
         </div>
-        <p id="">Das System wird aktualisiert. Bitte lassen Sie das Fenster geöffnet.</p>
+        <p>Das System wird aktualisiert. Bitte lassen Sie das Fenster geöffnet.</p>
       </div>
     </div>
     <div class="ui segment">
-      <div class="ui active inverted dimmer" id="dimmer">
-      </div>
+      <!-- <div class="ui active inverted dimmer" id="dimmer">
+      </div> -->
       <p id="logLines"><br> </p>
     </div>
+    <a class="ui labeled icon button transition hidden" href="//{request.host}/update/log/download"><i class="icon green download"></i>Download Update-Log</a>
   </div>
 </div>
 {% endblock %}
@@ -159,19 +160,39 @@
     })();
     async function updateRunner(target) {
       // Modify and show modal
-      var modal = $('.ui.modal');
+    1
       modal.children('.header').text(`Update auf ${target}`);
       modal.modal('show');
 
       var running = true;
-      //while update process running
+      // while update process running
       while (running) {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         getEndpoint('update/log/').then((rs) => {
           modal.find('#logLines').html(rs.lines.join(' <br/>'));
         });
-        const status = await getEndpoint('update/status/');
+        const resStatus = await getEndpoint('update/status/');
+        switch (resStatus.status) {
+          case "running":
+
+            break;
+          case "successful":
+            running = false;  // break out of while loop
+            {
+              // Block to change modal
+              modal.children().find('.message .header').text('Update abgeschlossen.');
+              modal.children().find('.message i').addClass('checkmark').removeClass('notched circle loading');
+              modal.children().find('.message .content p').text('Update erfolgreich abgeschlossen. Sie können das Fenster nun schließen.');
+              modal.append('<i class="close icon"></i>')
+              modal.children('.content').find('a.ui.labeled').removeClass('transition hidden');
+            }
+
+            break;
+          case "failed":
+            running = false;  // break out of while loop
+            break;
+        }
       }
     }
   </script>
