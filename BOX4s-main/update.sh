@@ -53,6 +53,8 @@ do
    # successfully updated version
 done
 echo "Update auf $TAG abgeschlossen."
+# set version in file
+echo "VERSION=$TAG" > /home/amadmin/box4s/VERSION
 # Notify API that we're finished
 curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
 # Prepare new update.sh for next update
