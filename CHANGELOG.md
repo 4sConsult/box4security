@@ -17,6 +17,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Die Startseite ist nun als Startseite in Share verfügbar
 * Die Dashboards des Bereichs "SIEM" sind nun in Share verfügbar
 * Die Dashboards des Bereichs "Netzwerk" sind nun in Share verfügbar
+* Die Dashboards des Bereichs "Schwachstellen" sind nun in Share verfügbar
+* Dashboard "Übersicht" für den Bereich "Schwachstellen hinzugefügt"
+* Dashboard "Schwachstellendetails" für den Bereich "Schwachstellen" hinzugefügt
 
 ### Changed
 * Dockerimage für Elasticsearch in Betrieb genommen
@@ -31,6 +34,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Elasticsearch-Installation auf Host entfernt
 * Kibana-Installation auf Host entfernt
 * Dashboard "Intrusion Detection" in dem Bereich SIEM entfernt
+* Dashbaord "Schwachstellenübersicht" in dem Bereich Schwachstellen entfernt
 
 ## [1.6.3](x) - 2020-03-18
 
