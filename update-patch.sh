@@ -37,6 +37,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 # Kopiere den neuen Service an die richtige Stelle und enable den Service
 sudo cp /home/amadmin/box4s/System/etc/systemd/box4security.service /etc/systemd/system/box4security.service
+sudo systemctl daemon-reload
 sudo systemctl enable box4security.service
 
 # Login bei der Docker-Registry des GitLabs und Download der Container
