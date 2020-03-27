@@ -65,12 +65,11 @@ sudo touch /var/log/box4s/update.log
 # Create BOX4s lib Path
 sudo mkdir -p /var/lib/box4s/
 sudo touch /var/lib/box4s/.update.state
-sudo chmod -R 766 /var/lib/box4s/
 
 # create
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
 sudo touch /var/lib/box4s/suricata_suppress.bpf
-sudo chmod -R 766 /var/lib/box4s/
+sudo chmod -R 777 /var/lib/box4s/
 # rm old links
 sudo rm /etc/logstash/conf.d/suricata/15_kibana_filter.conf
 # create links
