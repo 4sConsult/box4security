@@ -71,8 +71,6 @@ sudo apt install -y openconnect
 # Hosts Datei aktualisieren
 sudo cp System/etc/hosts /etc/hosts
 
-# Start des Services
-sudo systemctl restart box4security.service
 
 # Service für automatische VPN-Verbindung einfügen
 
@@ -90,3 +88,6 @@ cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 
 # Installation der SIEM Dashboards
 curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
+
+# Start des Services
+sudo systemctl restart box4security.service
