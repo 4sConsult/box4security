@@ -36,9 +36,9 @@ def tail(f, window=1):
 def writeLSRFile():
     # Fetches all Logstash Rules from DB and writes to correct file
     # TODO: check permissions / try error
-    with open('/var/lib/box4s/15_custom_suppress.conf', 'w') as f_logstash:
+    with open('/var/lib/box4s/15_logstash_suppress.conf', 'w') as f_logstash:
         rules = models.LogstashRule.query.all()
-        filled = render_template('15_custom_suppress.conf.j2', rules=rules)
+        filled = render_template('15_logstash_suppress.conf.j2', rules=rules)
         f_logstash.write(filled)
 
 
@@ -47,9 +47,9 @@ def writeBPFFile():
     # Then restarts suricata
     # TODO: check permissions / Try error
     # /var/www/kibana/ebpf/
-    with open('custom_suppress.bpf', 'w') as f_bpf:
+    with open('suricata_suppress.bpf', 'w') as f_bpf:
         rules = models.BPFRule.query.all()
-        filled = render_template('custom_suppress.bpf.j2', rules=rules)
+        filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
         # read pw from $SSHPASS and login to dockerhost to execute restartSuricata
         os.system(f'sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')

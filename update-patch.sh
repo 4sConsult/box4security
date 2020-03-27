@@ -65,14 +65,17 @@ sudo mkdir -p /var/lib/box4s/
 sudo touch /var/lib/box4s/.update.state
 sudo chmod -R 766 /var/lib/box4s/
 
-# cp empty rule files,
-sudo cp /home/amadmin/box4s/docker/web/source/templates/15_custom_suppress.conf.j2 /var/lib/box4s/15_logstash_suppress.conf
-sudo cp /home/amadmin/box4s/docker/web/source/templates/custom_suppress.bpf.j2 /var/lib/box4s/suricata_suppress.bpf
+# create
+sudo touch /var/lib/box4s/15_logstash_suppress.conf
+sudo touch /var/lib/box4s/suricata_suppress.bpf
+sudo chmod -R 766 /var/lib/box4s/
 # rm old links
 sudo rm /etc/logstash/conf.d/suricata/15_kibana_filter.conf
 # create links
 sudo ln -s /etc/logstash/conf.d/suricata/15_logstash_suppress.conf /var/lib/box4s/15_logstash_suppress.conf
-
+# Copy updated Suricata Service
+sudo cp /home/amadmin/box4s/Suricata/etc/systemd/system/suricata.service /etc/systemd/system/suricata.service
+sudo systemctl daemon-reload
 # Restart suricata
 sudo systemctl restart suricata
 
