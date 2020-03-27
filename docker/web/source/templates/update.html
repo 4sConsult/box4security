@@ -151,6 +151,8 @@
           if(resp.ok)
           // endpoint gave 200 OK -> update was started
           {
+            // disable button and change its look
+            $(e.delegateTarget).unbind('click').addClass('grey').removeClass('green').children('i').removeClass('downloads').addClass('notched circle loading');
             updateRunner(selectedVersion);
           } else {
             // TODO: Failed to query for update
@@ -160,7 +162,7 @@
     })();
     async function updateRunner(target) {
       // Modify and show modal
-    1
+      var modal = $('.ui.modal');
       modal.children('.header').text(`Update auf ${target}`);
       modal.modal('show');
 
