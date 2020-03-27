@@ -46,8 +46,11 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Erstelle das Volume für die Daten
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
-# Erstelle Volume für Anwendungsdaten (/var/lib)
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib --opt o=bind var_lib
+# Erstelle Volume für BOX4s Anwendungsdaten (/var/lib/box4s)
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
+# Erstelle Volume für PostgreSQL
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
+
 
 # Apply new sudoers (change path for restart suricata)
 sudo cp /home/amadmin/box4s/System/etc/sudoers /etc/sudoers

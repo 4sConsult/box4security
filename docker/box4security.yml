@@ -31,7 +31,7 @@ services:
     volumes:
        - static_volume:/home/app/web/source/static
        - /var/log/box4s/:/var/log/box4s/
-       - var_lib/:/var/lib/
+       - varlib_box4s/:/var/lib/box4s/
     expose:
       - 5000
     # Add dockerhost IP to /etc/hosts in container for ssh
@@ -48,7 +48,7 @@ services:
     build:
       context: ./db
     volumes:
-      - var_lib/:/var/lib/
+      - varlib_postgresql/:/var/lib/postgresql/data
     env_file:
       - ./.env.prod.db
   nginx:
@@ -69,9 +69,10 @@ services:
 
 volumes:
   # to persist data beyond container's life
-  postgres_data:
   static_volume:
   data:
     external: true
-  var_lib:
+  varlib_postgresql:
+    external: true
+  varlib_box4s:
     external: true
