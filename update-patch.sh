@@ -73,7 +73,7 @@ sudo chmod -R 777 /var/lib/box4s/
 # rm old links
 sudo rm /etc/logstash/conf.d/suricata/15_kibana_filter.conf
 # create links
-sudo ln -s /etc/logstash/conf.d/suricata/15_logstash_suppress.conf /var/lib/box4s/15_logstash_suppress.conf
+sudo ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf
 # Copy updated Suricata Service
 sudo cp /home/amadmin/box4s/Suricata/etc/systemd/system/suricata.service /etc/systemd/system/suricata.service
 sudo systemctl daemon-reload
