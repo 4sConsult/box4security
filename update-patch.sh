@@ -90,4 +90,6 @@ cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
 
 # Start des Services
+echo "Restarting BOX4s Service. Please wait."
+sleep 8 # Sleep can be replaced later with uptime or health check..
 sudo systemctl restart box4security.service
