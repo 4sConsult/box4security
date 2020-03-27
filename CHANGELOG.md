@@ -24,6 +24,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Changed
 * Dockerimage für Elasticsearch in Betrieb genommen
 * Dockerimage für Kibana in Betrieb genommen
+* Dashboard "Schwachstellenübersicht" umbenannt in "Detailübersicht"
+* Dashboard "Schwachstellenübersicht" überarbeitet
+* Menüpunkt "Schwachstellen" neu strukturiert
 
 ### Fixed
 * Fehlerhafte Installation des Score-Indizes behoben
