@@ -48,16 +48,16 @@ sudo systemctl daemon-reload
 sudo systemctl enable vpn.service
 sudo systemctl start
 
-# Installation der neuen Schwachstellendashboards
+# Installation der neuen Dashboards
 # Zunächst prüfen, ob Kibana bereits vollständig hochgefahren ist
 sudo Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
 sudo Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
 
+curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
+curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/NetzwerkDashboards.ndjson
 curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
+curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/StartseiteDashboard.ndjson
 
 # Scores Index in vorheriger Version fehlerhaft gewesen
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
-
-# Installation der SIEM Dashboards
-curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
