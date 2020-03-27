@@ -215,6 +215,27 @@ class UpdateLog(Resource):
             return {'lines': lastLines}, 200
 
 
+class UpdateStatus(Resource):
+    def __init__(self):
+        # Argument parser
+        self.parser = reqparse.RequestParser()
+
+    def get(self):
+        # return status of update
+        with open('./.update.state', 'r') as f:
+            # Remove whitespaces and newlines from line
+            status = f.readline().strip().rstrip()
+            return {'status': status}, 200
+
+    def post(self):
+        # set new status of update
+        self.parser.add_argument('status', type=str)
+        self.args = self.parser.parse_args()
+        with open('./.update.state', 'w') as f:
+            f.write(self.args['status'])
+            return {}, 200
+
+
 class Alert(Resource):
     def get(self, alert_id):
         return {}, 501
