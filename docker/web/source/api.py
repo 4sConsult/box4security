@@ -46,8 +46,7 @@ def writeBPFFile():
     # Fetches all BPF Rules from DB and writes to correct file
     # Then restarts suricata
     # TODO: check permissions / Try error
-    # /var/www/kibana/ebpf/
-    with open('suricata_suppress.bpf', 'w') as f_bpf:
+    with open('/var/lib/box4s/suricata_suppress.bpf', 'w') as f_bpf:
         rules = models.BPFRule.query.all()
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
