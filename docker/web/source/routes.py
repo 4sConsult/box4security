@@ -73,7 +73,7 @@ def rules():
     return render_template("filter.html")
 
 
-@app.route('/update/log/download' methods=['GET'])
+@app.route('/update/log/download', methods=['GET'])
 def updatelogdl():
     try:
         return send_file('/var/log/box4s/update.log')
