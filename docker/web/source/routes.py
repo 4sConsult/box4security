@@ -77,7 +77,7 @@ def rules():
 def updatelogdl():
     try:
         return send_file('/var/log/box4s/update.log')
-    except Exception as e:
+    except Exception:
         return "", 501
 
 
