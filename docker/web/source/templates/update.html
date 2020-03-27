@@ -172,31 +172,34 @@
           modal.find('#logLines').html(rs.lines.join(' <br/>'));
         });
         const resStatus = await getEndpoint('update/status/');
-        switch (resStatus.status) {
-          case "running":
+        if(resStatus){
+          // successfully received, else just query again in 1.5s
+          switch (resStatus.status) {
+            case "running":
 
-            break;
-          case "successful":
-            running = false;  // break out of while loop
-            {
-              // empty version table
-              $('#tbl').children('tbody').empty();
-              getEndpoint('ver/releases/').then((ret) => {
-                addToTable(ret);
-                // update version table
-              });
-              // Block to change modal
-              modal.children().find('.message .header').text('Update abgeschlossen.');
-              modal.children().find('.message i').addClass('checkmark').removeClass('notched circle loading');
-              modal.children().find('.message .content p').text('Update erfolgreich abgeschlossen. Sie können das Fenster nun schließen.');
-              modal.append('<i class="close icon"></i>')
-              modal.children('.content').find('a.ui.labeled').removeClass('transition hidden');
-            }
+              break;
+            case "successful":
+              running = false;  // break out of while loop
+              {
+                // empty version table
+                $('#tbl').children('tbody').empty();
+                getEndpoint('ver/releases/').then((ret) => {
+                  addToTable(ret);
+                  // update version table
+                });
+                // Block to change modal
+                modal.children().find('.message .header').text('Update abgeschlossen.');
+                modal.children().find('.message i').addClass('checkmark').removeClass('notched circle loading');
+                modal.children().find('.message .content p').text('Update erfolgreich abgeschlossen. Sie können das Fenster nun schließen.');
+                modal.append('<i class="close icon"></i>')
+                modal.children('.content').find('a.ui.labeled').removeClass('transition hidden');
+              }
 
-            break;
-          case "failed":
-            running = false;  // break out of while loop
-            break;
+              break;
+            case "failed":
+              running = false;  // break out of while loop
+              break;
+          }
         }
       }
     }
