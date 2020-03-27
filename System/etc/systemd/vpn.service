@@ -11,6 +11,8 @@ Environment=VPN_USER=box4s
 # VPN-Tunnel aufbauen
 ExecStart=/bin/sh -c 'echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on-stdin connect.am-gmbh.de'
 
+# DNS-Dienst neu laden lassen
+ExecStartPost=/bin/sh -c 'service dnsmasq reload'
 
 [Install]
 WantedBy=multi-user.target
