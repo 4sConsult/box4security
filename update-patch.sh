@@ -99,3 +99,4 @@ sudo systemctl restart box4security.service
 # Waiting for healthy containers before continuation
 sudo Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
 sudo Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
+sudo Scripts/System_Scripts/wait-for-healthy-container.sh web >> /dev/null

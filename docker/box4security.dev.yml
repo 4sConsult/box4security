@@ -24,6 +24,7 @@ services:
   web:
     build:
       context: ./web
+    container_name: web
     command: python main.py run -h 0.0.0.0
     volumes:
       - ./web/:/usr/src/app/
@@ -39,6 +40,7 @@ services:
   db:
     build:
       context: ./db
+    container_name: db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
