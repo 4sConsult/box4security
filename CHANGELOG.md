@@ -20,6 +20,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Fehlerhafte Installation des Score-Indizes behoben
+* Einige Dashboards haben sich nicht über den gesamten Bildschirm erstreckt, sodass es zu unschönen Anzeigen in Share kam
 
 ### Deprecated
 
