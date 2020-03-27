@@ -46,6 +46,8 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Erstelle das Volume für die Daten
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
+# Erstelle Volume für Anwendungsdaten (/var/lib)
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib --opt o=bind var_lib
 
 # Apply new sudoers (change path for restart suricata)
 sudo cp /home/amadmin/box4s/System/etc/sudoers /etc/sudoers
