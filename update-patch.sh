@@ -66,6 +66,7 @@ sudo touch /var/log/box4s/update.log
 # Create BOX4s lib Path
 sudo mkdir -p /var/lib/box4s/
 sudo touch /var/lib/box4s/.update.state
+sudo chmod 766 /var/lib/box4s/.update.state
 
 # Openconnect nachträgliche installieren
 sudo apt install -y openconnect
