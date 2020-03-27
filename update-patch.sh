@@ -19,7 +19,7 @@ sudo chmod 777 /data/elasticsearch -R
 
 # Docker installieren mit docker-compose
 sudo apt install -y docker.io
-sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo curl -s -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Kopiere den neuen Service an die richtige Stelle und enable den Service
@@ -49,7 +49,11 @@ sudo systemctl enable vpn.service
 sudo systemctl start
 
 # Installation der neuen Schwachstellendashboards
-curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
+# Zunächst prüfen, ob Kibana bereits vollständig hochgefahren ist
+sudo Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
+sudo Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
+
+curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
 
 # Scores Index in vorheriger Version fehlerhaft gewesen
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
