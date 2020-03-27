@@ -23,6 +23,7 @@ services:
     stop_signal: SIGKILL
   web:
     container_name: web
+    image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
     build:
       context: ./web
       dockerfile: Dockerfile.prod
@@ -43,6 +44,7 @@ services:
       - db
   db:
     container_name: db
+    image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"
     build:
       context: ./db
     volumes:
@@ -51,6 +53,7 @@ services:
       - ./.env.prod.db
   nginx:
     container_name: nginx
+    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:dev"
     build:
       context: ./nginx
     ports:

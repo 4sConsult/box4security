@@ -22,6 +22,7 @@ services:
     #    condition: service_started
     stop_signal: SIGKILL
   web:
+    image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
     build:
       context: ./web
     container_name: web
@@ -38,6 +39,7 @@ services:
     depends_on:
       - db
   db:
+    image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"
     build:
       context: ./db
     container_name: db
