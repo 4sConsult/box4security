@@ -20,7 +20,8 @@ function waitForNet() {
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
 exec 1>/var/log/box4s/update.log && exec 2>>/var/log/box4s/update.log
 # Notify API that we're starting
-curl -XPOST http://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"running"}'
+# Follow redirects, accept invalid certificate and dont produce output
+curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"running"}'
 sleep 2
 
 VERSIONS=()
@@ -46,14 +47,14 @@ do
    if  [[ ! $? -eq 0 ]]; then
      echo "Update auf $v fehlgeschlagen"
      # Notify API that we've failed
-     curl -XPOST http://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"failed"}'
+     curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"failed"}'
      exit 1
    fi
    # successfully updated version
 done
 echo "Update auf $TAG abgeschlossen."
 # Notify API that we're finished
-curl -XPOST http://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}'
+curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}'
 # Prepare new update.sh for next update
 sudo chown amadmin:amadmin $BASEDIR$GITDIR/BOX4s-main/update.sh
 sudo chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
