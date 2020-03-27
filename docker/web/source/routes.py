@@ -76,7 +76,7 @@ def rules():
 @app.route('/update/log/download', methods=['GET'])
 def updatelogdl():
     try:
-        return send_file('/var/log/box4s/update.log')
+        return send_file('/var/log/box4s/update.log', as_attachment=True, attachment_filename='update.log', mimetype='text/plain')
     except Exception:
         return "", 501
 

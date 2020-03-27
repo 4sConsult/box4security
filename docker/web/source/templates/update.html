@@ -38,7 +38,7 @@
       </div> -->
       <p id="logLines"><br> </p>
     </div>
-    <a class="ui labeled icon button transition hidden" href="//{request.host}/update/log/download"><i class="icon green download"></i>Download Update-Log</a>
+    <a class="ui labeled icon button transition hidden" href="//{{request.host}}/update/log/download"><i class="icon green download"></i>Download Update-Log</a>
   </div>
 </div>
 {% endblock %}
@@ -69,12 +69,10 @@
   $('#administration').addClass('active');
   </script>
   <script type="text/javascript">
-    (async function() {
       // fetch all available releases and add to table
       getEndpoint('ver/releases/').then((ret) => {
         addToTable(ret);
       });
-
       async function addToTable(data) {
         // Fetch current version from api
         const currver = await getEndpoint('ver/');
@@ -159,7 +157,6 @@
           }
         });
       }
-    })();
     async function updateRunner(target) {
       // Modify and show modal
       var modal = $('.ui.modal');
@@ -182,13 +179,18 @@
           case "successful":
             running = false;  // break out of while loop
             {
+              // empty version table
+              $('#tbl').children('tbody').empty();
+              getEndpoint('ver/releases/').then((ret) => {
+                addToTable(ret);
+                // update version table
+              });
               // Block to change modal
               modal.children().find('.message .header').text('Update abgeschlossen.');
               modal.children().find('.message i').addClass('checkmark').removeClass('notched circle loading');
               modal.children().find('.message .content p').text('Update erfolgreich abgeschlossen. Sie können das Fenster nun schließen.');
               modal.append('<i class="close icon"></i>')
               modal.children('.content').find('a.ui.labeled').removeClass('transition hidden');
-              
             }
 
             break;
