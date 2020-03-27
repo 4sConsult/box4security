@@ -27,6 +27,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dockerimage für Kibana in Betrieb genommen
 * Menüpunkt "Schwachstellen" neu strukturiert
 * Menüpunkt "SIEM" neu strukturiert
+* Das Dashboard der Startseite zeigt standardmäßig immer Daten von heute
+* Die Dashboards im Bereich "SIEM" zeigen standardmäßig immer Daten von heute
+* Die Dashboards im Bereich "Schwachstellen" zeigen standardmäßig immer Daten von den letzten 30 Tagen
+* Die Dashboards im Bereich "Netzwerk" zeigen standardmäßig immer Daten von den letzten 30 Tagen
 
 ### Fixed
 * Fehlerhafte Installation des Score-Indizes behoben
