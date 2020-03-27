@@ -18,15 +18,15 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Die Dashboards des Bereichs "SIEM" sind nun in Share verfügbar
 * Die Dashboards des Bereichs "Netzwerk" sind nun in Share verfügbar
 * Die Dashboards des Bereichs "Schwachstellen" sind nun in Share verfügbar
-* Dashboard "Übersicht" für den Bereich "Schwachstellen hinzugefügt"
+* Dashboard "Übersicht" für den Bereich Schwachstellen hinzugefügt
+* Dashboard "Verlauf" für den Bereich Schwachstellen hinzugefügt
 * Dashboard "Schwachstellendetails" für den Bereich "Schwachstellen" hinzugefügt
 
 ### Changed
 * Dockerimage für Elasticsearch in Betrieb genommen
 * Dockerimage für Kibana in Betrieb genommen
-* Dashboard "Schwachstellenübersicht" umbenannt in "Detailübersicht"
-* Dashboard "Schwachstellenübersicht" überarbeitet
 * Menüpunkt "Schwachstellen" neu strukturiert
+* Menüpunkt "SIEM" neu strukturiert
 
 ### Fixed
 * Fehlerhafte Installation des Score-Indizes behoben
