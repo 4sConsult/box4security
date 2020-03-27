@@ -222,7 +222,7 @@ class UpdateStatus(Resource):
 
     def get(self):
         # return status of update
-        with open('./.update.state', 'r') as f:
+        with open('/var/lib/box4s/.update.state', 'r') as f:
             # Remove whitespaces and newlines from line
             status = f.readline().strip().rstrip()
             return {'status': status}, 200
@@ -231,13 +231,13 @@ class UpdateStatus(Resource):
         # set new status of update
         self.parser.add_argument('status', type=str)
         self.args = self.parser.parse_args()
-        with open('./.update.state', 'w') as f:
+        with open('/var/lib/box4s/.update.state', 'w') as f:
             f.write(self.args['status'])
             return {}, 200
 
     def delete(self):
         # empty update state file
-        f = open('./.update.state', 'w')
+        f = open('/var/lib/box4s/.update.state', 'w')
         f.close()
 
 

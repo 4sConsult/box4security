@@ -28,6 +28,7 @@ services:
     volumes:
       - ./web/:/usr/src/app/
       - ./web/update.log:/var/log/box4s/update.log
+      - ./web/.update.state:/var/lib/box4s/.update.state
     ports:
       - 5000:5000
     env_file:
