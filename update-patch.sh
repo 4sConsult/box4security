@@ -72,7 +72,7 @@ sudo apt install -y openconnect
 sudo cp System/etc/hosts /etc/hosts
 
 # Start des Services
-sudo systemctl start box4security.service
+sudo systemctl restart box4security.service
 
 # Service für automatische VPN-Verbindung einfügen
 
