@@ -22,9 +22,9 @@ services:
         condition: service_healthy
     stop_signal: SIGKILL
   web:
+    container_name: web
     build:
       context: ./web
-      container_name: web
       dockerfile: Dockerfile.prod
     command: gunicorn --bind 0.0.0.0:5000 main:app
     volumes:
@@ -42,17 +42,17 @@ services:
     depends_on:
       - db
   db:
+    container_name: db
     build:
       context: ./db
-      container_name: db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.prod.db
   nginx:
+    container_name: nginx
     build:
       context: ./nginx
-      container_name: nginx
     ports:
       - 80:80
       - 443:443
