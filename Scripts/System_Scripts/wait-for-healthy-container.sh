@@ -25,9 +25,9 @@ function usage() {
 function get_health_state {
     state=$(docker inspect -f '{{ .State.Health.Status }}' ${container_name})
     return_code=$?
-    if [ ! ${return_code} -eq 0 ]; then
-        exit ${RETURN_ERROR}
-    fi
+    # if [ ! ${return_code} -eq 0 ]; then
+    #     exit ${RETURN_ERROR}
+    # fi
     if [[ "${state}" == "healthy" ]]; then
         return ${RETURN_HEALTHY}
     elif [[ "${state}" == "unhealthy" ]]; then
@@ -61,4 +61,3 @@ if [ -z ${container_name} ]; then
 else
     wait_for
 fi
-
