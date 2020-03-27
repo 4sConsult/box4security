@@ -23,11 +23,8 @@ function usage() {
 }
 
 function get_health_state {
-    state=$(docker inspect -f '{{ .State.Health.Status }}' ${container_name})
+    state=$(docker inspect -f '{{ .State.Health.Status }}' ${container_name} 2>/dev/null)
     return_code=$?
-    # if [ ! ${return_code} -eq 0 ]; then
-    #     exit ${RETURN_ERROR}
-    # fi
     if [[ "${state}" == "healthy" ]]; then
         return ${RETURN_HEALTHY}
     elif [[ "${state}" == "unhealthy" ]]; then
@@ -35,6 +32,7 @@ function get_health_state {
     elif [[ "${state}" == "starting" ]]; then
         return ${RETURN_STARTING}
     else
+        # Return unknown also in case of error, because we can retry for the desired timeout time.
         return ${RETURN_UNKNOWN}
     fi
 }
