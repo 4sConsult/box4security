@@ -7,6 +7,8 @@ After=docker.service
 Restart=always
 RestartSec=5
 TimeoutSec=infinity
+# Pass environmentfile to service
+EnvironmentFile=/etc/environment
 
 # Stop and remove old container
 ExecStartPre=-/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml down -v
