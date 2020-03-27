@@ -50,8 +50,8 @@ sudo systemctl start
 
 # Installation der neuen Schwachstellendashboards
 # Zunächst prüfen, ob Kibana bereits vollständig hochgefahren ist
-sudo Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-sudo Scripts/System_Scripts/wait-for-healthy-container.sh kibana
+sudo Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
+sudo Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
 
 curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
 
