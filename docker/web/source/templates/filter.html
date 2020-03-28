@@ -76,6 +76,75 @@
     <img src="/static/Box4S_Logo.png" class="ui centered small image">
   </div>
   </div>
+  <div class="ui small modal">
+    <i class="close icon"></i>
+    <div class="header">Filterregel hinzufügen</div>
+    <div class="content">
+      <form class="ui form">
+        <div class="ui centered grid">
+          <div class="row">
+            <div class="four wide field">
+              <label>Quell-IP</label>
+              <input type="text" placeholder="Quell-IP">
+            </div>
+            <div class="one column">
+            </div>
+            <div class="three wide field">
+              <label>Quell-Port</label>
+              <input type="number" placeholder="Quell-Port">
+            </div>
+          </div>
+          <div class="row">
+            <div class="four wide field">
+              <label>Ziel-IP</label>
+              <input type="text" placeholder="Ziel-IP">
+            </div>
+            <div class="one column">
+            </div>
+            <div class="three wide field">
+              <label>Ziel-Port</label>
+              <input type="number" placeholder="Ziel-Port">
+            </div>
+          </div>
+          <div class="row">
+            <div class="eight wide field">
+              <label>Protokoll</label>
+              <select class="ui dropdown">
+                <option value=""></option>
+                <option value="tcp">tcp</option>
+                <option value="udp">udp</option>
+                <option value="icmp">icmp</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <input type="hidden" name="signature_id" value="">
+            </div>
+            <div class="eight wide field">
+              <label>Alarmsignatur</label>
+              <input type="text" placeholder="">
+            </div>
+          </div>
+          <div class="row">
+            <div class="six wide center aligned column">
+              <h5 class="ui center aligned top attached header">
+                Regel hinzufügen
+              </h5>
+              <div class="ui attached raised segment">
+                <div class="ui buttons">
+                  <button class="ui button" data-tooltip="Filter auf Eben der Netzwerk">BPF</button>
+                  <div class="or" data-text="od."></div>
+                  <button class="ui button" data-tooltip="Filter auf Softwareebene">Logstash</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
 {% block scripts %}
   <script type="text/javascript">
@@ -140,6 +209,6 @@
       getEndpoint(`${set}/`, method='DELETE');
       $( `#tbl-${set} tbody` ).empty()
     }
-  })
+  });
   </script>
 {% endblock %}
