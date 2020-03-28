@@ -28,6 +28,11 @@
       </table>
       <div class="ui grid">
         <div class="two column row">
+          <div class="left floated column">
+            <a class="ui positive centered icon button _open">
+              <i class="plus icon"></i>
+            </a>
+          </div>
           <div class="right floated column">
             <div class="fluid ui labeled button">
               <a data-set='bpf' class="fluid ui negative button _flush">
@@ -60,6 +65,11 @@
     </table>
     <div class="ui grid">
       <div class="two column row">
+        <div class="left floated column">
+          <a class="ui positive icon button _open">
+            <i class="plus icon"></i>
+          </a>
+        </div>
         <div class="right floated column">
           <div class="fluid ui labeled button">
             <a data-set="logstash" class="fluid ui negative button _flush">
@@ -83,47 +93,53 @@
       <form class="ui form">
         <div class="ui centered grid">
           <div class="row">
-            <div class="four wide field">
+            <div class="four wide field" data-tooltip='Leer für beliebig'>
               <label>Quell-IP</label>
-              <input type="text" placeholder="Quell-IP">
+              <input name="src_ip" type="text" placeholder="Quell-IP" value="{{request.args.get("src_ip", default='')}}">
             </div>
             <div class="one column">
             </div>
-            <div class="three wide field">
+            <div class="three wide field" data-tooltip='Leer für beliebig'>
               <label>Quell-Port</label>
-              <input type="number" placeholder="Quell-Port">
+              <input name="src_port" type="number" placeholder="Quell-Port"  value="{{request.args.get("src_port", default='')}}">
             </div>
           </div>
           <div class="row">
-            <div class="four wide field">
+            <div class="four wide field" data-tooltip='Leer für beliebig'>
               <label>Ziel-IP</label>
-              <input type="text" placeholder="Ziel-IP">
+              <input name="dst_ip" type="text" placeholder="Ziel-IP" value="{{request.args.get("dst_ip", default='')}}">
             </div>
             <div class="one column">
             </div>
-            <div class="three wide field">
+            <div class="three wide field" data-tooltip='Leer für beliebig'>
               <label>Ziel-Port</label>
-              <input type="number" placeholder="Ziel-Port">
+              <input name="dst_port" type="number" placeholder="Ziel-Port" value="{{request.args.get("dst_port", default='')}}">
             </div>
           </div>
           <div class="row">
-            <div class="eight wide field">
+            <div class="eight wide field" data-tooltip='Leer für beliebig'>
               <label>Protokoll</label>
-              <select class="ui dropdown">
-                <option value=""></option>
-                <option value="tcp">tcp</option>
-                <option value="udp">udp</option>
-                <option value="icmp">icmp</option>
+              <select name="proto" class="ui dropdown">
+                <option value=" " selected></option>
+              {% for value in ['', 'tcp', 'udp', 'icmp'] %}
+                 <option value="{{value}}"
+                 {% if value == request.args.get("proto", default='') %}
+                 selected="selected"
+                 {% endif %}
+                 >
+                 {{value}}
+                 </option>
+              {% endfor %}
               </select>
             </div>
           </div>
           <div class="row">
             <div class="field">
-              <input type="hidden" name="signature_id" value="">
+              <input type="hidden" name="signature_id" value="{{request.args.get("signature_id", default='')}}">
             </div>
-            <div class="eight wide field">
+            <div class="eight wide field" data-tooltip='Nur Logstash. Leer für beliebig.'>
               <label>Alarmsignatur</label>
-              <input type="text" placeholder="">
+              <input name="signature" type="text" placeholder="" value="{{request.args.get("signature", default='')}}">
             </div>
           </div>
           <div class="row">
@@ -133,9 +149,9 @@
               </h5>
               <div class="ui attached raised segment">
                 <div class="ui buttons">
-                  <button class="ui button" data-tooltip="Filter auf Eben der Netzwerk">BPF</button>
+                  <button class="ui button _add" data-set="bpf" data-tooltip="Filter auf Eben der Netzwerk">BPF</button>
                   <div class="or" data-text="od."></div>
-                  <button class="ui button" data-tooltip="Filter auf Softwareebene">Logstash</button>
+                  <button class="ui button _add" data-set="logstash" data-tooltip="Filter auf Softwareebene">Logstash</button>
                 </div>
               </div>
             </div>
@@ -196,7 +212,7 @@
       tbody.append(row);
     })
     $( `#tbl-${set} tbody tr td a` ).on('click', (e) => {
-      getEndpoint(`${set}/${$(e.delegateTarget).data('rule-id')}`, method='DELETE')
+      getEndpoint(`rules/${set}/${$(e.delegateTarget).data('rule-id')}`, method='DELETE')
       $(e.delegateTarget).closest('tr').remove();
 
     })
@@ -206,9 +222,40 @@
   $("a._flush").click((e) => {
     var set = $(e.delegateTarget).data('set');
     if (confirm(`Sind Sie sicher alle Regeln des ${set}-Filters unwiderruflich zu LÖSCHEN?`)) {
-      getEndpoint(`${set}/`, method='DELETE');
+      getEndpoint(`rules/${set}/`, method='DELETE');
       $( `#tbl-${set} tbody` ).empty()
     }
   });
+  </script>
+  {% if request.args.get('create') %}
+    <script type="text/javascript">
+      $('.ui.modal').modal('show');
+    </script>
+  {% endif %}
+  <script type="text/javascript">
+    // show modal
+    $('a._open').click(() => $('.ui.modal').modal('show'));
+    // Submit Filter Script
+    $('button._add').click(async (e) => {
+      e.preventDefault();
+      // Parse form data into json object
+      var fd = new FormData($('form.ui.form')[0])
+      var json = {};
+      fd.forEach((value, key) => {json[key] = value});
+      var set = $(e.delegateTarget).data('set');
+      const response = await fetch(`rules/${set}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        body: JSON.stringify(json)
+      });
+      if (response.ok) {
+        $('.ui.modal').modal('hide');
+        // Reload without parameters
+        window.location = window.location.pathname;
+      }
+    });
   </script>
 {% endblock %}

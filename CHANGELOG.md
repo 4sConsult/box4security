@@ -32,6 +32,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Fehlerhafte Installation des Score-Indizes behoben
 
 ### Deprecated
+* Vorherige link_surpress_bpf-Links können nicht mehr eingesetzt werden, um vereinfacht Filter zu setzen
 
 ### Removed
 * Elasticsearch-Installation auf Host entfernt
