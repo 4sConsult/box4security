@@ -102,14 +102,14 @@ sudo systemctl start vpn.service
 sudo Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
 sudo Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
 
-curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
 
 # Scores Index in vorheriger Version fehlerhaft gewesen
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
 
 # Installation der SIEM Dashboards
-curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
 
 # Start des Services
 echo "Restarting BOX4s Service. Please wait."
