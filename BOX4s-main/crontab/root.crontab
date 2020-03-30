@@ -4,10 +4,10 @@ MAILTO=box@4sconsult.de
 # Leere eve.json
 0 */6 * * *  echo "" > /data/suricata/eve.json | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Delete Suricata Log"
 
-*/30 * * * *  /home/amadmin/box4s/VulnWhisperer/venv/bin/vuln_whisperer -c /usr/local/etc/vuln_openvas.ini -s openvas 2>&1 >/dev/null | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "VulnWhisperer Log"
+*/30 * * * *  /usr/local/bin/vuln_whisperer -c /usr/local/etc/vuln_openvas.ini -s openvas 2>&1 >/dev/null | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "VulnWhisperer Log"
 
 # Update Resources on Sunday at 9 am
 0 9 * * 0 $BASEDIR/$GITDIR/Scripts/Automation/resourceupdate.sh | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Resourceupdate-Log"
 
 # Start openvasmanager if not running
-*/1 * * * * $BASEDIR/$GITDIR/Scripts/Automation/startOpenVas.sh > /dev/null 2>&1 
+*/1 * * * * $BASEDIR/$GITDIR/Scripts/Automation/startOpenVas.sh > /dev/null 2>&1

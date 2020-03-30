@@ -16,6 +16,21 @@ sudo systemctl disable nginx postgresql
 sudo apt remove -y --purge nginx postgresql
 sudo apt autoremove -y
 
+# Reinstall VulnWhisperer, but to /opt/
+cd /opt/
+sudo git clone https://github.com/box4s/VulnWhisperer.git
+cd VulnWhisperer/
+sudo virtualenv venv
+source venv/bin/activate
+sudo pip install -r requirements.txt
+sudo python setup.py install --prefix /usr/local
+deactivate
+
+echo "Install new Crontab"
+cd /home/amadmin/box4s/BOX4s-main/crontab
+sudo crontab root.crontab
+
+
 # Stoppe die aktuelle Elasticsearch- und Kibana-Instanz
 sudo service elasticsearch stop
 sudo service kibana stop
