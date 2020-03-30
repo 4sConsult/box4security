@@ -59,6 +59,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Neue Startseite eingefügt
 * Menüpunkt "Netzwerk" neu strukturiert
 * Dashboards sind im Bereich "Netzwerk" nun standardmäßig immer im Vollbild
+* E-Mailzugang erneruert
 
 ### Fixed
 * Bug behoben, der bei Installation falsche BPF schrieb und somit den Start von Suricata verhinderte.

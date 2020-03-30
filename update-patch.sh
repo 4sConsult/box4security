@@ -4,6 +4,12 @@ TAG=""
 ##
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
+# Copy new E-Mail data
+cd /home/amadmin/box4s
+sudo cp System/home/amadmin/.msmtprc /home/amadmin/.msmtprc
+chown amadmin:amadmin /home/amadmin/.msmtprc
+sudo cp System/etc/msmtprc /etc/msmtprc
+
 # Stoppe die aktuelle Elasticsearch- und Kibana-Instanz
 sudo service elasticsearch stop
 sudo service kibana stop
@@ -61,3 +67,4 @@ curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kb
 # Scores Index in vorheriger Version fehlerhaft gewesen
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
+
