@@ -97,10 +97,14 @@ sudo systemctl daemon-reload
 sudo systemctl enable vpn.service
 sudo systemctl start vpn.service
 
+# Start des Services
+echo "Restarting BOX4s Service. Please wait."
+sudo systemctl restart box4security.service
+
 # Installation der neuen Dashboards
 # Zunächst prüfen, ob Kibana bereits vollständig hochgefahren ist
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
 
 curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Startseite/Startseite-Uebersicht.ndjson
 curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Alarme.ndjson
@@ -121,10 +125,7 @@ curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kb
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
 
-# Start des Services
-echo "Restarting BOX4s Service. Please wait."
-sudo systemctl restart box4security.service
 # Waiting for healthy containers before continuation
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx >> /dev/null
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx
