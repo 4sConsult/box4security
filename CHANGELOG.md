@@ -32,18 +32,20 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Die Dashboards im Bereich "SIEM" zeigen standardmäßig immer Daten von heute
 * Die Dashboards im Bereich "Schwachstellen" zeigen standardmäßig immer Daten von den letzten 30 Tagen
 * Die Dashboards im Bereich "Netzwerk" zeigen standardmäßig immer Daten von den letzten 30 Tagen
+* Der Log des Updatescripts ist nun unter /var/log/box4s/update.log einsehbar
 
 ### Fixed
 * Fehlerhafte Installation des Score-Indizes behoben
 * Einige Dashboards haben sich nicht über den gesamten Bildschirm erstreckt, sodass es zu unschönen Anzeigen in Share kam
 
 ### Deprecated
+* Vorherige link_surpress_bpf-Links können nicht mehr eingesetzt werden, um vereinfacht Filter zu setzen
 
 ### Removed
 * Elasticsearch-Installation auf Host entfernt
 * Kibana-Installation auf Host entfernt
 * Dashboard "Intrusion Detection" in dem Bereich SIEM entfernt
-* Dashbaord "Schwachstellenübersicht" in dem Bereich Schwachstellen entfernt
+* Dashboard "Schwachstellenübersicht" in dem Bereich Schwachstellen entfernt
 
 ## [1.6.3](x) - 2020-03-18
 

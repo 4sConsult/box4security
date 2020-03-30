@@ -11,11 +11,11 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	chown kibana:kibana /var/log/kibana -R && \
 	rm -rf /var/lib/apt/lists/*
 
-ADD etc/ /root/etc/ 
+ADD etc/ /root/etc/
 ADD home/ /root/home/
 RUN cp /root/etc/kibana/* /etc/kibana/ -R
 
-HEALTHCHECK --retries=10 CMD curl -s -XGET 'http://127.0.0.1:5601'
+HEALTHCHECK --retries=10 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana'
 STOPSIGNAL SIGKILL
 USER kibana:kibana
 CMD ["/usr/share/kibana/bin/kibana"]

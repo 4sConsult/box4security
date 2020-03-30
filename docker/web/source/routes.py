@@ -1,8 +1,8 @@
 from source import app, mail
-from source.api import BPF, BPFs, LSR, LSRs, Alert, Update
+from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus
 from source.config import Dashboards
 from flask_restful import Api
-from flask import render_template, send_from_directory, request, redirect, url_for, abort
+from flask import render_template, send_from_directory, request, redirect, url_for, abort, send_file
 from flask_mail import Message
 import os
 
@@ -13,7 +13,11 @@ api.add_resource(BPFs, '/rules/bpf/')
 api.add_resource(LSR, '/rules/logstash/<int:rule_id>')
 api.add_resource(LSRs, '/rules/logstash/')
 api.add_resource(Alert, '/alert/<int:alert_id>')
-api.add_resource(Update, '/update/')
+api.add_resource(Version, '/ver/')
+api.add_resource(AvailableReleases, '/ver/releases/')
+api.add_resource(LaunchUpdate, '/update/launch/')
+api.add_resource(UpdateLog, '/update/log/')
+api.add_resource(UpdateStatus, '/update/status/')
 
 
 @app.route('/')
@@ -54,19 +58,27 @@ def faq_mail():
     return render_template('faq.html', client=client, mailsent=True)
 
 
-@app.route('/administration', methods=['GET'])
-def administration():
-    return redirect(url_for('index'))
+@app.route('/update', methods=['GET'])
+def update():
+    return render_template("update.html")
+
+
+@app.route('/update', methods=['POST'])
+def update_post():
+    return render_template("update.html")
 
 
 @app.route('/filter', methods=['GET'])
 def rules():
-    return redirect(url_for('index'))
+    return render_template("filter.html")
 
 
-@app.route('/administration', methods=['POST'])
-def postfilter():
-    return redirect(url_for('index'))
+@app.route('/update/log/download', methods=['GET'])
+def updatelogdl():
+    try:
+        return send_file('/var/log/box4s/update.log', as_attachment=True, attachment_filename='update.log', mimetype='text/plain')
+    except Exception:
+        return "", 501
 
 
 # must be the last one (catchall)

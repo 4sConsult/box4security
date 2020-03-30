@@ -5,6 +5,9 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Prevents Python from buffering stdout and stderr
 ENV PYTHONUNBUFFERED 1
 
+RUN apt update
+RUN apt install -y sshpass
+
 WORKDIR /usr/src/app
 RUN pip install --upgrade pip
 COPY ./requirements.txt /usr/src/app

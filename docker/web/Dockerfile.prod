@@ -23,6 +23,10 @@ ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
+# Install sshpass
+RUN apt update
+RUN apt install -y sshpass
+
 # copy and install from builder
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
@@ -31,7 +35,11 @@ RUN pip install --no-cache /wheels/*
 
 # copy source
 COPY . $APP_HOME
-RUN chown -R app:app $APP_HOME
+RUN chown -R app:app $HOME
+RUN mkdir -p /var/log/box4s/
+RUN chown -R app:app /var/log/box4s/
+RUN mkdir -p /var/lib/box4s
+RUN chown -R app:app /var/lib/box4s/
 
 # change to the app user
 USER app

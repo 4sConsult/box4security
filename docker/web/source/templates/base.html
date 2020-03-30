@@ -5,7 +5,7 @@
     {% block head %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha256-9mbkOfVho3ZPXfM7W8sV2SndrGDuh7wuyLjtsWeTI1Q=" crossorigin="anonymous" />
     <link rel="stylesheet" type="text/css" href="static/box4s.css">
-    <title>BOX4security FAQ</title>
+    <title>BOX4Security</title>
     {% endblock %}
   </head>
   <body>
@@ -19,7 +19,13 @@
           <i class="globe icon" id="securitymenu"></i> SIEM
   	       <i class="dropdown icon"></i>
            <div class="menu">
-             <a class="item" href="/ids">Intrusion Detection</a>
+             <a class="item" href="/siem-overview">Übersicht</a>
+             <a class="item" href="/siem-alerts">Alarme</a>
+             <a class="item" href="/siem-asn">ASN</a>
+             <a class="item" href="/siem-http">HTTP</a>
+             <a class="item" href="/siem-dns">DNS</a>
+             <a class="item" href="/siem-proto">Protokolle & Dienste</a>
+             <a class="item" href="/siem-social-media">Social Media (Alpha)</a>
            </div>
          </div>
        </div>
@@ -28,9 +34,9 @@
   	         <i class="bug icon"></i> Schwachstellen
   	          <i class="dropdown icon"></i>
               <div class="menu">
-  	             <a class="item" href="/vuln-overview"> Schwachstellenübersicht </a>
-  	             <a class="item" href="/vuln-details"> Schwachstellendetails </a>
-  	             <a class="item" href="/vuln-progress"> Schwachstellenverlauf </a>
+  	             <a class="item" href="/vuln-overview"> Übersicht </a>
+  	             <a class="item" href="/vuln-progress"> Verlauf </a>
+  	             <a class="item" href="/vuln-details"> Details </a>
               </div>
           </div>
       </div>
@@ -50,8 +56,8 @@
            <i class="dropdown icon"></i>
            <div class="menu">
              <a class="item" href="/faq">FAQ</a>
-             <a class="item" href="/administration">System</a>
              <a class="item" href="/filter">Filter</a>
+             <a class="item" href="/update">Updates</a>
            </div>
          </div>
        </div>
