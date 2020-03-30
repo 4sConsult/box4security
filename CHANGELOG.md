@@ -40,6 +40,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Die Dashboards im Bereich "SIEM" zeigen standardmäßig immer Daten von heute
 * Die Dashboards im Bereich "Schwachstellen" zeigen standardmäßig immer Daten von den letzten 30 Tagen
 * Die Dashboards im Bereich "Netzwerk" zeigen standardmäßig immer Daten von den letzten 30 Tagen
+* Diverse Optimierungen in Funktionalität und Stabilität
 * Der Log des Updatescripts ist nun unter /var/log/box4s/update.log einsehbar
 * Update-Übersicht zeigt nun auch Kurzbeschreibung und Release-Zeitpunkt der Updates
 * Styling der Update-Seite erneuert
