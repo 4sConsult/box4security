@@ -10,6 +10,12 @@ sudo cp System/home/amadmin/.msmtprc /home/amadmin/.msmtprc
 chown amadmin:amadmin /home/amadmin/.msmtprc
 sudo cp System/etc/msmtprc /etc/msmtprc
 
+# Stoppe und deinstalliere Nginx und PostgreSQL
+sudo systemctl stop nginx postgresql
+sudo systemctl disable nginx postgresql
+sudo apt remove -y --purge nginx postgresql
+sudo apt autoremove -y
+
 # Stoppe die aktuelle Elasticsearch- und Kibana-Instanz
 sudo service elasticsearch stop
 sudo service kibana stop
@@ -118,6 +124,9 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
 
+# Entferne /var/www (nach Deinstallation nginx unnötig)
+sudo rm -rf /var/www/
+
 # Start des Services
 echo "Restarting BOX4s Service. Please wait."
 sudo systemctl restart box4security.service
@@ -125,4 +134,3 @@ sudo systemctl restart box4security.service
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx >> /dev/null
-
