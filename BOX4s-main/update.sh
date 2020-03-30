@@ -2,7 +2,6 @@
 #
 # Placeholder for TAG=
 # The Tag will be the highest version, so the goal of the update
-CURVER=$(head -n1 /home/amadmin/VERSION)
 function testNet() {
   # Returns 0 for successful internet connection and dns resolution, 1 else
   ping -q -c 1 -W 1 $1 >/dev/null;
@@ -14,12 +13,15 @@ function waitForNet() {
   HOST=${1:-"google.com"}
   while ! testNet $HOST; do
     # while testNet returns non zero value
-    echo "No internet connectivity or dns resolution, sleeping for 15s"
+    echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s"
     sleep 15s
   done
 }
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
-exec 1>/var/www/kibana/html/update/updateStatus.log && exec 2>/var/www/kibana/html/update/updateStatus.log
+exec 1>/var/log/box4s/update.log && exec 2>>/var/log/box4s/update.log
+# Notify API that we're starting
+# Follow redirects, accept invalid certificate and dont produce output
+curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"running"}' > /dev/null
 sleep 2
 
 VERSIONS=()
@@ -27,7 +29,7 @@ VERSIONS=()
 # versions between current and the latest
 cd $BASEDIR$GITDIR/BOX4s-main
 waitForNet gitlab.am-gmbh.de
-mapfile -t VERSIONS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 update.py)
+mapfile -t VERSIONS < <(python3 update.py)
 TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
 for v in "${VERSIONS[@]}"
@@ -44,13 +46,18 @@ do
    sudo $BASEDIR$GITDIR/update-patch.sh
    if  [[ ! $? -eq 0 ]]; then
      echo "Update auf $v fehlgeschlagen"
+     # Notify API that we've failed
+     curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"failed"}' > /dev/null
      exit 1
    fi
-   # successful so update current version
-   echo $v > /home/amadmin/VERSION
+   # successfully updated version
 done
 echo "Update auf $TAG abgeschlossen."
+# set version in file
+echo "VERSION=$TAG" > /home/amadmin/box4s/VERSION
+# Notify API that we're finished
+curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
 # Prepare new update.sh for next update
-sudo chown www-data:www-data $BASEDIR$GITDIR/BOX4s-main/update.sh
+sudo chown amadmin:amadmin $BASEDIR$GITDIR/BOX4s-main/update.sh
 sudo chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
 exit $?

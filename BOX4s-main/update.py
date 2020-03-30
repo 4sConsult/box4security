@@ -1,25 +1,21 @@
 #!/usr/bin/python3
 import sys
 import json
-# 3rd party but used in setuptools so should be installed:
-from packaging import version
-# !!!! INPUT !!!!
-# Script expects piped input of GitLab API /tags endpoint
-# e.g.
-# https://lockedbox-bugtracker.am-gmbh.de/api/v4/projects/AM-GmbH%2Fbox4s/repository/tags
-
-# Source: https://stackoverflow.com/questions/11887762/how-do-i-compare-version-numbers-in-python
-with open('/home/amadmin/VERSION') as f:
-    # Readline and remove new line
-    CURRVER = version.parse(f.read().splitlines()[0])
+import requests
+import semver
+import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+CURRVER = requests.get('http://localhost/ver/', verify=False).json()['version']
+tags = requests.get('http://localhost/ver/releases/', verify=False).json()
 VERSIONS = []
-for t in json.load(sys.stdin):
-    # print(version.parse(t['name']))
+# Source: https://stackoverflow.com/questions/11887762/how-do-i-compare-version-numbers-in-python
+for t in tags:
     # now compare the versions
     # discard all lower and equal versions
-    v = version.parse(t['name'])
-    if v > CURRVER:
-        VERSIONS.append(t['name'])
+    if semver.compare(CURRVER, t['version']) < 0:
+        # semver.compare returns -1 if second argument is newer
+        VERSIONS.append(t['version'])
 
 # !! Script Output!!
 # All Versions greater than installed one
