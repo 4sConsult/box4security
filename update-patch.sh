@@ -63,8 +63,8 @@ curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kb
 curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/NetzwerkDashboards.ndjson
 curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
 curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/StartseiteDashboard.ndjson
+curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEM-SocialMedia.ndjson
 
 # Scores Index in vorheriger Version fehlerhaft gewesen
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
-

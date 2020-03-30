@@ -14,6 +14,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dashboard "HTTP" für den Bereich SIEM hinzugefügt
 * Dashboard "DNS" für den Bereich SIEM hinzugefügt
 * Dashboard "Protokolle & Dienste" für den Bereich SIEM hinzugefügt
+* Dashboard "Social Media (Alpha)" für den Bereich SIEM hinzugefügt - die Visualisierungen benötigen Feedback und sind daher noch im Alpha-Status
 * Die Startseite ist nun als Startseite in Share verfügbar
 * Die Dashboards des Bereichs "SIEM" sind nun in Share verfügbar
 * Die Dashboards des Bereichs "Netzwerk" sind nun in Share verfügbar
