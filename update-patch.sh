@@ -8,3 +8,9 @@ TAG=""
 cp Nginx/var/www/kibana/html/bpf_filter.php /var/www/kibana/html/bpf_filter.php
 cp Nginx/var/www/kibana/html/filteradministration.php /var/www/kibana/html/filteradministration.php
 cp Nginx/var/www/kibana/html/kibana.php /var/www/kibana/html/kibana.php
+
+# Copy new E-Mail data
+cd /home/amadmin/box4s
+sudo cp System/home/amadmin/.msmtprc /home/amadmin/.msmtprc
+chown amadmin:amadmin /home/amadmin/.msmtprc
+sudo cp System/etc/msmtprc /etc/msmtprc
