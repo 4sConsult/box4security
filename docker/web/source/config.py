@@ -35,6 +35,7 @@ Dashboards = [
     Dashboard(name='siem-http', url='/kibana/app/kibana#/dashboard/691ea410-cee1-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)', parent_id='#siem'),
     Dashboard(name='siem-dns', url='/kibana/app/kibana#/dashboard/1d109db0-ceed-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)', parent_id='#siem'),
     Dashboard(name='siem-proto', url='/kibana/app/kibana#/dashboard/f4ad4f80-ce38-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)', parent_id='#siem'),
+    Dashboard(name='siem-social-media', url='/kibana/app/kibana#/dashboard/bf5a8370-7031-11ea-93fd-e12e440dc7e1?_g=()&_a=(fullScreenMode:!t)', parent_id='#siem'),
     Dashboard(name='vuln-overview', url='/kibana/app/kibana#/dashboard/140fb900-6e82-11ea-84ea-3b1a8de87e76?_g=()&_a=(fullScreenMode:!t)', parent_id='#vuln'),
     Dashboard(name='vuln-progress', url='/kibana/app/kibana#/dashboard/f8712020-cefa-11e9-943f-fdbfa2556276?_g=()&_a=(fullScreenMode:!t)', parent_id='#vuln'),
     Dashboard(name='vuln-details', url='/kibana/app/kibana#/dashboard/39c6fc40-6e81-11ea-84ea-3b1a8de87e76?_g=()&_a=(fullScreenMode:!t)', parent_id='#vuln'),
