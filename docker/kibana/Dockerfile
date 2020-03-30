@@ -15,7 +15,7 @@ ADD etc/ /root/etc/
 ADD home/ /root/home/
 RUN cp /root/etc/kibana/* /etc/kibana/ -R
 
-HEALTHCHECK --retries=10 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana'
+HEALTHCHECK --retries=10 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana/api/status'
 STOPSIGNAL SIGKILL
 USER kibana:kibana
 CMD ["/usr/share/kibana/bin/kibana"]
