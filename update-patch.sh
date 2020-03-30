@@ -59,6 +59,9 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 # Erstelle das Volume für die Daten
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
 # Erstelle Volume für BOX4s Anwendungsdaten (/var/lib/box4s)
+sudo mkdir -p /var/lib/box4s
+sudo chown root:root /var/lib/box4s
+sudo chmod -R 777 /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
 # Erstelle Volume für PostgreSQL
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
@@ -94,6 +97,9 @@ sudo cp /home/amadmin/box4s/Suricata/etc/systemd/system/suricata.service /etc/sy
 sudo systemctl daemon-reload
 # Restart suricata
 sudo systemctl restart suricata
+
+# Copy suricata filter conf (creates updated link_surpress_bpf links)
+sudo cp /home/amadmin/box4s/Logstash/etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf /etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf
 
 # Openconnect nachträgliche installieren
 sudo apt install -y openconnect
