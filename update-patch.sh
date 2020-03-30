@@ -61,3 +61,4 @@ cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 
 # Installation der SIEM Dashboards
 curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
+curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEM-SocialMedia.ndjson
