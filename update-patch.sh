@@ -17,7 +17,7 @@ cd VulnWhisperer/
 sudo virtualenv venv
 source venv/bin/activate
 sudo pip install -r requirements.txt
-sudo python setup.py install
+sudo python setup.py install --prefix /usr/local
 deactivate
 
 echo "Install new Crontab"
