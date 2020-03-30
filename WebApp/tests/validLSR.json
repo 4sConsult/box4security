@@ -1,0 +1,9 @@
+{
+        "src_port": 80,
+        "src_ip": "127.0.0.1",
+        "dst_ip": "0.0.0.0",
+        "dst_port": 0,
+        "proto": "",
+        "signature_id":133769,
+        "signature":"+++ Bayern verhängt Ausgangsbeschränkungen +++"
+}

@@ -1,7 +1,50 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.6.3](x) - 2020-x-x
+## [1.6.4](x) - 2020-x-x
+
+### Compatible with
+* Elastic Products 7.3.0
+
+### Added
+* Automatischer VPN-Verbindungsaufbau
+* Dashboard "Übersicht" für den Bereich SIEM hinzugefügt
+* Dashboard "Alarme" für den Bereich SIEM hinzugefügt
+* Dashboard "ASN" für den Bereich SIEM hinzugefügt
+* Dashboard "HTTP" für den Bereich SIEM hinzugefügt
+* Dashboard "DNS" für den Bereich SIEM hinzugefügt
+* Dashboard "Protokolle & Dienste" für den Bereich SIEM hinzugefügt
+* Die Startseite ist nun als Startseite in Share verfügbar
+* Die Dashboards des Bereichs "SIEM" sind nun in Share verfügbar
+* Die Dashboards des Bereichs "Netzwerk" sind nun in Share verfügbar
+* Die Dashboards des Bereichs "Schwachstellen" sind nun in Share verfügbar
+* Dashboard "Übersicht" für den Bereich Schwachstellen hinzugefügt
+* Dashboard "Verlauf" für den Bereich Schwachstellen hinzugefügt
+* Dashboard "Schwachstellendetails" für den Bereich "Schwachstellen" hinzugefügt
+
+### Changed
+* Dockerimage für Elasticsearch in Betrieb genommen
+* Dockerimage für Kibana in Betrieb genommen
+* Menüpunkt "Schwachstellen" neu strukturiert
+* Menüpunkt "SIEM" neu strukturiert
+* Das Dashboard der Startseite zeigt standardmäßig immer Daten von heute
+* Die Dashboards im Bereich "SIEM" zeigen standardmäßig immer Daten von heute
+* Die Dashboards im Bereich "Schwachstellen" zeigen standardmäßig immer Daten von den letzten 30 Tagen
+* Die Dashboards im Bereich "Netzwerk" zeigen standardmäßig immer Daten von den letzten 30 Tagen
+
+### Fixed
+* Fehlerhafte Installation des Score-Indizes behoben
+* Einige Dashboards haben sich nicht über den gesamten Bildschirm erstreckt, sodass es zu unschönen Anzeigen in Share kam
+
+### Deprecated
+
+### Removed
+* Elasticsearch-Installation auf Host entfernt
+* Kibana-Installation auf Host entfernt
+* Dashboard "Intrusion Detection" in dem Bereich SIEM entfernt
+* Dashbaord "Schwachstellenübersicht" in dem Bereich Schwachstellen entfernt
+
+## [1.6.3](x) - 2020-03-18
 
 ### Compatible with
 * Elastic Products 7.3.0

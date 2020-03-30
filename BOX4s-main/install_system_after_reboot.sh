@@ -342,7 +342,6 @@ echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | 
 echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | sudo -u postgres psql box4S_db
 #Copy postgres driver
 sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-core/lib/jars/
-# make /data writeable to Elasticsearch
 sudo chown elasticsearch:elasticsearch /data/elasticsearch -R
 sudo chown suri:suri /data/suricata/ -R
 #Updating System with openvas and installing necessary logstash plugins
@@ -358,10 +357,18 @@ waitForNet
 /home/amadmin/box4s/Scripts/System_Scripts/update_system.sh
 # apply network/interfaces
 
+# Install the scores index
+cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
+./install_index.sh
+cd /home/amadmin/box4s
+
+
 # Import BI Dashboards
 curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Scripts/Automation/score_calculation/BIDashboards.ndjson
-# Import / Overwrite Dashboard "[Netzwerk]"
+# Import / Overwrite Dashboards"
 curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/NetzwerkDashboards.ndjson
+curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
+curl -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
 
 sudo systemctl restart networking
 sudo systemctl enable heartbeat-elastic

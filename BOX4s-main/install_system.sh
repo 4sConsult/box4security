@@ -75,6 +75,24 @@ git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.
 
 sudo apt update
 waitForNet
+
+#Install Elasticsearch
+waitForNet
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+waitForNet
+sudo apt install -y apt-transport-https
+echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+waitForNet
+sudo apt update && sudo apt install -y elasticsearch=7.5.0
+sudo mkdir /data/elasticsearch -p
+sudo mkdir /data/elasticsearch_backup/Snapshots -p
+sudo chown elasticsearch:elasticsearch /data/elasticsearch_backup/ -R
+sudo chown elasticsearch:elasticsearch /data/elasticsearch/ -R
+cd /home/amadmin/box4s
+cd Elasticsearch
+sudo cp * / -R
+
+
 sudo apt install -y rpm nsis alien openvas=9.0.3
 #No update openvas -> update system @te
 sudo openvasmd --create-user amadmin
@@ -102,21 +120,6 @@ sudo cp * / -R
 
 waitForNet
 sudo apt -y install openjdk-8-jre
-#Install Elasticsearch
-waitForNet
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-waitForNet
-sudo apt install -y apt-transport-https
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
-waitForNet
-sudo apt update && sudo apt install -y elasticsearch=7.5.0
-sudo mkdir /data/elasticsearch -p
-sudo mkdir /data/elasticsearch_backup/Snapshots -p
-sudo chown elasticsearch:elasticsearch /data/elasticsearch_backup/ -R
-sudo chown elasticsearch:elasticsearch /data/elasticsearch/ -R
-cd /home/amadmin/box4s
-cd Elasticsearch
-sudo cp * / -R
 
 # Install nginx
 sudo systemctl stop apache2
@@ -259,12 +262,6 @@ echo "ALTER USER postgres WITH ENCRYPTED PASSWORD 'zgJnwauCAsHrR6JB';" | sudo -u
 sudo systemctl enable dnsmasq
 sudo systemctl enable elasticsearch
 sudo systemctl enable kibana
-
-# Install the scores index
-# Necessary to do here. Otherwise the cronjob for the scores will create a false index, which has wrong settings.
-cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
-./install_index.sh
-cd /home/amadmin/box4s
 
 sudo bash -c 'crontab -l > /tmp/crontab.root'
 sudo bash -c 'echo SHELL=/bin/bash >> /tmp/crontab.root'
