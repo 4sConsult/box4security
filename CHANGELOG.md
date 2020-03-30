@@ -27,9 +27,14 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dockerimage für Kibana in Betrieb genommen
 * Menüpunkt "Schwachstellen" neu strukturiert
 * Menüpunkt "SIEM" neu strukturiert
+* Das Dashboard der Startseite zeigt standardmäßig immer Daten von heute
+* Die Dashboards im Bereich "SIEM" zeigen standardmäßig immer Daten von heute
+* Die Dashboards im Bereich "Schwachstellen" zeigen standardmäßig immer Daten von den letzten 30 Tagen
+* Die Dashboards im Bereich "Netzwerk" zeigen standardmäßig immer Daten von den letzten 30 Tagen
 
 ### Fixed
 * Fehlerhafte Installation des Score-Indizes behoben
+* Einige Dashboards haben sich nicht über den gesamten Bildschirm erstreckt, sodass es zu unschönen Anzeigen in Share kam
 
 ### Deprecated
 * Vorherige link_surpress_bpf-Links können nicht mehr eingesetzt werden, um vereinfacht Filter zu setzen
@@ -55,6 +60,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Neue Startseite eingefügt
 * Menüpunkt "Netzwerk" neu strukturiert
 * Dashboards sind im Bereich "Netzwerk" nun standardmäßig immer im Vollbild
+* E-Mailzugang erneruert
 
 ### Fixed
 * Bug behoben, der bei Installation falsche BPF schrieb und somit den Start von Suricata verhinderte.

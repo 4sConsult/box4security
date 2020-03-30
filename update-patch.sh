@@ -4,6 +4,12 @@ TAG=""
 ##
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
+# Copy new E-Mail data
+cd /home/amadmin/box4s
+sudo cp System/home/amadmin/.msmtprc /home/amadmin/.msmtprc
+chown amadmin:amadmin /home/amadmin/.msmtprc
+sudo cp System/etc/msmtprc /etc/msmtprc
+
 # Stoppe die aktuelle Elasticsearch- und Kibana-Instanz
 sudo service elasticsearch stop
 sudo service kibana stop
@@ -97,19 +103,19 @@ sudo systemctl daemon-reload
 sudo systemctl enable vpn.service
 sudo systemctl start vpn.service
 
-# Installation der neuen Schwachstellendashboards
+# Installation der neuen Dashboards
 # Zunächst prüfen, ob Kibana bereits vollständig hochgefahren ist
-sudo Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
-sudo Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
 
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/NetzwerkDashboards.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SchwachstellenDashboards.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/StartseiteDashboard.ndjson
 
 # Scores Index in vorheriger Version fehlerhaft gewesen
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
-
-# Installation der SIEM Dashboards
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Nginx/var/www/kibana/res/SIEMDashboards.ndjson
 
 # Start des Services
 echo "Restarting BOX4s Service. Please wait."
