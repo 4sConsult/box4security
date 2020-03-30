@@ -141,3 +141,4 @@ cython_debug/
 # development filter files:
 15_kibana_filter.conf
 bypass_filter.bpf
+.update.state

@@ -12,7 +12,7 @@ path.data: "/var/lib/kibana"
 # from requests it receives, and to prevent a deprecation warning at startup.
 # This setting cannot end in a slash.
 server.basePath: "/kibana"
-server.rewriteBasePath: false
+server.rewriteBasePath: true
 
 # Specifies whether Kibana should rewrite requests that are prefixed with
 # `server.basePath` or require that they are rewritten by your reverse proxy.
