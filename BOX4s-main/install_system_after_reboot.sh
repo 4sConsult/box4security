@@ -208,56 +208,20 @@ python3 -m venv .venv
 source .venv/bin/activate
 waitForNet
 pip install -r requirements.txt
-alembic upgrade head
+alembic upgrade head # Prepare DB
 deactivate
+
 chmod +x -R $BASEDIR$GITDIR/Scripts
+
+# Insert Config for scan without bruteforce to openvas
 cd $BASEDIR$GITDIR/Scripts/Automation
 ./run-OpenVASinsertConf.sh
-echo
-echo
+
 echo "Install Crontab"
 cd /home/amadmin/box4s/BOX4s-main/crontab
 su - amadmin -c "crontab ~/box4s/BOX4s-main/crontab/amadmin.crontab"
 sudo crontab root.crontab
-echo "Initialisiere Datenbanken"
-echo
-echo
-cd /tmp/
-waitForNet
-curl -O -s https://iptoasn.com/data/ip2asn-combined.tsv.gz
-gunzip -f ip2asn-combined.tsv.gz
 
-if sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -qw ASN_lookup_test;then
-	echo "DROP table asn; CREATE table asn (range_start INET,range_end INET, AS_number VARCHAR(10) ,country_code VARCHAR(7),AS_description VARCHAR(250)); COPY asn FROM '/tmp/ip2asn-combined.tsv' DELIMITER E'\t';" |sudo -u postgres psql ASN_lookup_test
-else
-	echo "CREATE DATABASE \"ASN_lookup_test\" OWNER postgres;" |sudo -u postgres psql
-	echo "CREATE table asn (range_start INET,range_end INET, AS_number VARCHAR(10) ,country_code VARCHAR(7),AS_description VARCHAR(250)); COPY asn FROM '/tmp/ip2asn-combined.tsv' DELIMITER E'\t';" |sudo -u postgres psql ASN_lookup_test
-
-echo "CREATE SEQUENCE public.uniquevulns_vul_id_seq
-    INCREMENT 1
-    START 27275
-    MINVALUE 1
-    MAXVALUE 2147483647
-    CACHE 1;
-
-ALTER SEQUENCE public.uniquevulns_vul_id_seq
-    OWNER TO postgres;"  |sudo -u postgres psql box4S_db
-
-echo "CREATE TABLE public.uniquevulns
- (
-     vul_id integer NOT NULL DEFAULT nextval('uniquevulns_vul_id_seq'::regclass),
-     uniqueidentifier character varying(50) COLLATE pg_catalog."default" NOT NULL,
-     CONSTRAINT uniquevulns_pkey PRIMARY KEY (vul_id),
-     CONSTRAINT uniquevulns_uniqueidentifier_key UNIQUE (uniqueidentifier)
-
- )
- WITH (
-     OIDS = FALSE
- )
- TABLESPACE pg_default;
-
- ALTER TABLE public.uniquevulns
-     OWNER to postgres;"  |sudo -u postgres psql box4S_db
 # Filter Functionality
 sudo mkdir /var/www/kibana/ebpf -p
 sudo touch /var/www/kibana/ebpf/bypass_filter.bpf
