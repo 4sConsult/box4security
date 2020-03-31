@@ -81,16 +81,22 @@ sudo mkdir /data/elasticsearch -p
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
 sudo chmod 777 /data/elasticsearch*
 
+# Install OpenVAS
+waitForNet
 sudo apt install -y rpm nsis alien openvas=9.0.3
-#No update openvas -> update system @te
 sudo openvasmd --create-user amadmin
 sudo openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
 sudo openvasmd --rebuild --progress
+
+cd /home/amadmin/box4s
+cd OpenVAS
+sudo cp * / -R
+
+sudo apt install -y zlib1g-dev libxml2-dev libxslt1-dev # TODO: even necessary?
+
+# Install VulnWhisperer
 waitForNet
-sudo apt install -y net-tools
-#Install vulnWhisperer
-waitForNet
-sudo apt install -y  zlib1g-dev libxml2-dev libxslt1-dev virtualenv net-tools ifupdown python-pip python3-pip
+virtualenv python-pip python3-pip
 cd /opt/
 waitForNet
 git clone https://github.com/box4s/VulnWhisperer.git
@@ -99,12 +105,10 @@ virtualenv venv
 source venv/bin/activate
 waitForNet
 pip install -r requirements.txt
-python setup.py install
+sudo python setup.py install --prefix /usr/local
 deactivate
 
-cd /home/amadmin/box4s
-cd OpenVAS
-sudo cp * / -R
+
 
 waitForNet
 sudo apt -y install openjdk-8-jre
