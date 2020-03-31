@@ -53,6 +53,11 @@ services:
       - "127.0.0.1:5432:5432"
     env_file:
       - ./.env.prod.db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   nginx:
     container_name: nginx
     image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:dev"
