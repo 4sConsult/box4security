@@ -2,12 +2,12 @@ MAILTO=box@4sconsult.de
 # m h  dom mon dow   command
 
 # Leere eve.json
-0 */6 * * *  echo "" > /data/suricata/eve.json | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Delete Suricata Log"
+0 */6 * * *  echo "" > /data/suricata/eve.json  && sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh delete_suricata_log SUCCESS || sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh delete_suricata_log FAILURE
 
-*/30 * * * *  /usr/local/bin/vuln_whisperer -c /usr/local/etc/vuln_openvas.ini -s openvas 2>&1 >/dev/null | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "VulnWhisperer Log"
+*/30 * * * *  /usr/local/bin/vuln_whisperer -c /usr/local/etc/vuln_openvas.ini -s openvas 2>&1 >/dev/null && sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh vulnwhisperer SUCCESS || sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh vulnwhisperer FAILURE
 
 # Update Resources on Sunday at 9 am
-0 9 * * 0 $BASEDIR/$GITDIR/Scripts/Automation/resourceupdate.sh | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Resourceupdate-Log"
+0 9 * * 0 $BASEDIR/$GITDIR/Scripts/Automation/resourceupdate.sh && sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh resourceupdate_sunday SUCCESS || sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh resourceupdate_sunday FAILURE
 
 # Start openvasmanager if not running
-*/1 * * * * $BASEDIR/$GITDIR/Scripts/Automation/startOpenVas.sh > /dev/null 2>&1
+*/1 * * * * $BASEDIR/$GITDIR/Scripts/Automation/startOpenVas.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh openvasmanager SUCCESS || sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh openvasmanager FAILURE

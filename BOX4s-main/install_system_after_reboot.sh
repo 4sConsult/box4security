@@ -142,17 +142,6 @@ pip3 install suricata-update
 cd /home/amadmin/box4s
 cd Suricata
 
-echo "Setze Suricata interfaces"
-IFARRAY=()
-# Caveat: This assumes that the first interface is the management one and all portmirror interfaces follow!
-for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
-do
-	IFARRAY+=("$iface")
-	IFSTRING+="--af-packet=$iface "
-done
-sudo cp * / -R
-sed -i "s/--af-packet=ens[^ ]*//g" /etc/systemd/system/suricata.service
-sed -i "s/\/etc\/suricata\/suricata.yaml /& $IFSTRING/" /etc/systemd/system/suricata.service
 waitForNet
 /usr/local/bin/suricata-update update-sources
 /usr/local/bin/suricata-update
@@ -216,6 +205,17 @@ sudo rm -f /etc/logstash/conf.d/suricata/15_kibana_filter.conf
 sudo ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf
 # Copy updated Suricata Service
 sudo cp /home/amadmin/box4s/Suricata/etc/systemd/system/suricata.service /etc/systemd/system/suricata.service
+echo "Setze Suricata interfaces"
+IFARRAY=()
+# Caveat: This assumes that the first interface is the management one and all portmirror interfaces follow!
+for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
+do
+	IFARRAY+=("$iface")
+	IFSTRING+="--af-packet=$iface "
+done
+sudo cp * / -R
+sed -i "s/--af-packet=ens[^ ]*//g" /etc/systemd/system/suricata.service
+sed -i "s/\/etc\/suricata\/suricata.yaml /& $IFSTRING/" /etc/systemd/system/suricata.service
 sudo systemctl daemon-reload
 # Restart suricata
 sudo systemctl restart suricata
@@ -228,6 +228,10 @@ IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | 
 IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
 echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
+source /etc/environment
+
+# Install postgresql client to interact with db
+sudo apt-get install postgresql-client
 
 # Starte den Dienst
 sudo systemctl start box4security
@@ -283,8 +287,8 @@ echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 # Set INT-IP as --allow-header-host
 sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/greenbone-security-assistant.service
 sudo systemctl daemon-reload
-#Ignore own INT_IP
 
+#Ignore own INT_IP
 echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 

@@ -28,6 +28,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * API als Schnittstelle zwischen WebApp und übrigen Teilen der BOX4s implementiert
 * Anlegen von Filtern auf Filterübersicht
 * Löschen einzelner oder aller Filter
+* Logging der Ausführungszeit der Cronjobs hinzugefügt
+* E-Mail Alert bei fehlgeschlagenem Cronjob 
 
 ### Changed
 * Web-Anwendung effizienter und übersichtlicher reentwickelt
@@ -47,6 +49,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Update-Übersicht zeigt nun auch Kurzbeschreibung und Release-Zeitpunkt der Updates
 * Styling der Update-Seite erneuert
 * Styling der Filter-Seite erneuert
+* E-Mailversand der Cronjobs reduziert
 
 ### Fixed
 * Fehlerhafte Installation des Score-Indizes behoben

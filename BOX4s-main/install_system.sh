@@ -101,7 +101,7 @@ sudo apt install -y zlib1g-dev libxml2-dev libxslt1-dev # TODO: even necessary?
 
 # Install VulnWhisperer
 waitForNet
-virtualenv python-pip python3-pip
+sudo apt-get install -y virtualenv python-pip python3-pip
 cd /opt/
 waitForNet
 git clone https://github.com/box4s/VulnWhisperer.git
@@ -188,7 +188,7 @@ ln -s ../general/dns_resolv.conf 21-dns_resolv.conf
 ln -s ../general/AM-special.conf 25-4s_Special.conf
 cd /home/amadmin/box4s
 waitForNet
-sudo apt install -y msmtp msmtp-mta landscape-common
+sudo apt install -y msmtp msmtp-mta landscape-common jq
 sudo mkdir /home/downloads
 cd /home/downloads
 sudo chmod -R 777 /home/downloads/*
