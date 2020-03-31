@@ -169,6 +169,30 @@ waitForNet
 sudo systemctl daemon-reload
 sudo systemctl start suricata
 sudo systemctl enable suricata
+
+# Kopiere den neuen Service an die richtige Stelle und enable den Service
+sudo cp /home/amadmin/box4s/System/etc/systemd/box4security.service /etc/systemd/system/box4security.service
+sudo systemctl daemon-reload
+sudo systemctl enable box4security.service
+
+# Login bei der Docker-Registry des GitLabs und Download der Container
+sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
+sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+
+# Erstelle das Volume für die Daten
+sudo mkdir /var/lib/box4s
+sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
+
+# Erstelle Volume für BOX4s Anwendungsdaten (/var/lib/box4s)
+sudo mkdir -p /var/lib/box4s
+sudo chown root:root /var/lib/box4s
+sudo chmod -R 777 /var/lib/box4s
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
+
+# Erstelle Volume für PostgreSQL
+sudo mkdir -p /var/lib/postgresql/data
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
+
 #Installation Dashboards
 echo "Install Dashboards"
 cd /home/amadmin/box4s
