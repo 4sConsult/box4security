@@ -114,7 +114,7 @@ sudo cp /home/amadmin/box4s/Logstash/etc/logstash/conf.d/suricata/20_4s_suricata
 sudo apt install -y openconnect jq
 
 # Hosts Datei aktualisieren
-sudo cp System/etc/hosts /etc/hosts
+sudo cp /home/amadmin/box4s/System/etc/hosts /etc/hosts
 
 
 # Service für automatische VPN-Verbindung einfügen
