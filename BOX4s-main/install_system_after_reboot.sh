@@ -227,40 +227,6 @@ sudo mkdir /var/www/kibana/ebpf -p
 sudo touch /var/www/kibana/ebpf/bypass_filter.bpf
 sudo chown suri:www-data /var/www/kibana/ebpf/bypass_filter.bpf
 sudo chmod 664 /var/www/kibana/ebpf/bypass_filter.bpf
-echo "CREATE TABLE blocks_by_bpffilter
-       (
-           src_ip inet,
-           src_port integer,
-           dst_ip inet,
-           dst_port integer,
-           proto  varchar(4)
-       )
-       WITH (
-           OIDS = FALSE
-       )
-       TABLESPACE pg_default;
-       ALTER TABLE blocks_by_bpffilter
-           OWNER to postgres;" | sudo -u postgres psql box4S_db
-echo "not (src host 127.0.0.1) and"  | sudo tee -a  /var/www/kibana/ebpf/bypass_filter.bpf
-echo "not (dst host 127.0.0.1) and"  | sudo tee -a  /var/www/kibana/ebpf/bypass_filter.bpf
-echo "INSERT INTO blocks_by_bpffilter VALUES ('127.0.0.1',0,'0.0.0.0',0,'');" | sudo -u postgres psql box4S_db
-echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'127.0.0.1',0,'');" | sudo -u postgres psql box4S_db
-echo "CREATE TABLE blocks_by_logstashfilter
-             (
-                 src_ip inet,
-                 src_port integer,
-                 dst_ip inet,
-                 dst_port integer,
-                 proto  varchar(4),
-                 signature_id varchar(10),
-                 signature varchar(256)
-             )
-             WITH (
-                 OIDS = FALSE
-             )
-             TABLESPACE pg_default;
-             ALTER TABLE blocks_by_logstashfilter
-                 OWNER to postgres;" | sudo -u postgres psql box4S_db
 sudo touch /var/www/kibana/ebpf/15_kibana_filter.conf
 sudo chown logstash:www-data /var/www/kibana/ebpf/15_kibana_filter.conf
 sudo chmod 0664 /var/www/kibana/ebpf/15_kibana_filter.conf
