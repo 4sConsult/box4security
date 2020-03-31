@@ -228,8 +228,6 @@ waitForNet
 
 #Enable Tools
 sudo systemctl enable dnsmasq
-sudo systemctl enable elasticsearch
-sudo systemctl enable kibana
 
 sudo bash -c 'crontab -l > /tmp/crontab.root'
 sudo bash -c 'echo SHELL=/bin/bash >> /tmp/crontab.root'
