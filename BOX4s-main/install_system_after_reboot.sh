@@ -193,6 +193,27 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/b
 sudo mkdir -p /var/lib/postgresql/data
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
 
+# Create BOX4s Log Path
+sudo mkdir -p /var/log/box4s/
+sudo touch /var/log/box4s/update.log
+
+# Filter Functionality
+# create files
+sudo touch /var/lib/box4s/15_logstash_suppress.conf
+sudo touch /var/lib/box4s/suricata_suppress.bpf
+sudo chmod -R 777 /var/lib/box4s/
+# rm old links
+sudo rm -f /etc/logstash/conf.d/suricata/15_kibana_filter.conf
+# create links
+sudo ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf
+# Copy updated Suricata Service
+sudo cp /home/amadmin/box4s/Suricata/etc/systemd/system/suricata.service /etc/systemd/system/suricata.service
+sudo systemctl daemon-reload
+# Restart suricata
+sudo systemctl restart suricata
+
+#Add Int IP
+echo "Initialisiere Systemvariablen"
 echo
 echo
 # curl -X POST "localhost:5601/kibana/api/saved_objects/_import" -H "kbn-xsrf: true" --form file=@home/amadmin/kibana-dashboard_v1.5.0.ndjson
@@ -241,37 +262,16 @@ cd /home/amadmin/box4s/BOX4s-main/crontab
 su - amadmin -c "crontab ~/box4s/BOX4s-main/crontab/amadmin.crontab"
 sudo crontab root.crontab
 
-# Filter Functionality
-sudo mkdir /var/www/kibana/ebpf -p
-sudo touch /var/www/kibana/ebpf/bypass_filter.bpf
-sudo chown suri:www-data /var/www/kibana/ebpf/bypass_filter.bpf
-sudo chmod 664 /var/www/kibana/ebpf/bypass_filter.bpf
-sudo touch /var/www/kibana/ebpf/15_kibana_filter.conf
-sudo chown logstash:www-data /var/www/kibana/ebpf/15_kibana_filter.conf
-sudo chmod 0664 /var/www/kibana/ebpf/15_kibana_filter.conf
-sudo ln -s /var/www/kibana/ebpf/15_kibana_filter.conf /etc/logstash/conf.d/suricata/15_kibana_filter.conf
-
-sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'zgJnwauCAsHrR6JB';"
-fi
-rm ip2asn-combined.tsv
-#Add Int IP
-echo "Initialisiere Systemvariablen"
-echo
-echo
-IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
-IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
-INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
 source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 # Set INT-IP as --allow-header-host
 sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/greenbone-security-assistant.service
 sudo systemctl daemon-reload
 #Ignore own INT_IP
-echo "not (src host $INT_IP) and" | sudo tee -a /var/www/kibana/ebpf/bypass_filter.bpf
-echo "not (dst host $INT_IP)"  | sudo tee -a  /var/www/kibana/ebpf/bypass_filter.bpf
-echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | sudo -u postgres psql box4S_db
-echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | sudo -u postgres psql box4S_db
+
+echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
+echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
+
 #Copy postgres driver
 sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-core/lib/jars/
 sudo chown elasticsearch:elasticsearch /data/elasticsearch -R
