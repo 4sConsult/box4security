@@ -209,6 +209,7 @@ PACKAGE=$(ls | grep dnsmasq)
 sudo dpkg -i $PACKAGE
 cd /home/amadmin/box4s
 sudo cp System/etc/* /etc/ -R
+sudo cp System/etc/sudoers /etc/sudoers
 sudo cp System/home/amadmin/* /home/amadmin -R
 sudo mkdir /var/log/dnsmasq
 sudo systemctl start dnsmasq
