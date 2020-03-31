@@ -113,6 +113,10 @@ sudo cp /home/amadmin/box4s/Logstash/etc/logstash/conf.d/suricata/20_4s_suricata
 # Openconnect und jq(JSON parser fuer cronjob monitoring) nachträgliche installieren
 sudo apt install -y openconnect jq
 
+#Cronjobs neu aus dem git ins System uebernehmen damit die Anpassungen zum Monitoring aktiv geschaltet werden
+su - amadmin -c "crontab ~/box4s/BOX4s-main/crontab/amadmin.crontab"
+sudo crontab /home/amadmin/box4s/BOX4s-main/crontab/root.crontab
+
 # Hosts Datei aktualisieren
 sudo cp System/etc/hosts /etc/hosts
 
