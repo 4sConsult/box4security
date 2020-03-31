@@ -149,16 +149,6 @@ cd /home/amadmin/box4s
 cd Heartbeat
 sudo cp * / -R
 
-#Install Kibana
-waitForNet
-sudo apt install -y kibana=7.5.0
-cd /home/amadmin/box4s
-cd Kibana
-sudo mkdir -p /var/log/kibana
-sudo cp * / -R
-sudo chown kibana:kibana /etc/kibana/ -R
-sudo chown kibana:kibana /var/log/kibana/ -R
-
 #Install logstash
 waitForNet
 sudo apt install -y logstash=1:7.5.0-1
