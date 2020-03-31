@@ -117,6 +117,10 @@ sudo apt install -y openconnect jq
 su - amadmin -c "crontab ~/box4s/BOX4s-main/crontab/amadmin.crontab"
 sudo crontab /home/amadmin/box4s/BOX4s-main/crontab/root.crontab
 
+#Speicherort für Cronjob Monitoring erstellen und ordner owner auf amadmin stellen, da sonst kein Zugriff
+sudo mkdir /var/log/cronchecker
+sudo chown amadmin:amadmin /var/log/cronchecker/
+
 # Hosts Datei aktualisieren
 sudo cp System/etc/hosts /etc/hosts
 
