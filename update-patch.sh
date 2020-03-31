@@ -34,31 +34,22 @@ sudo crontab root.crontab
 # Stoppe die aktuelle Elasticsearch- und Kibana-Instanz
 sudo service elasticsearch stop
 sudo service kibana stop
+sudo service nginx stop
+sudo service postgresql stop
 sudo systemctl disable elasticsearch.service
 sudo systemctl disable kibana.service
+sudo systemctl disable nginx.service
+sudo systemctl disable postgresql.service
 
 # Entferne Elasticsearch vom System
-sudo apt remove -y --purge elasticsearch kibana
+sudo apt remove -y --purge elasticsearch kibana nginx postgresql
 sudo apt autoremove -y
 
 # Vergib die passenden Rechte für den neuen Container auf die vorhandenen Daten
 sudo chmod 777 /data/elasticsearch -R
 
 # Docker installieren mit docker-compose
-# Uninstall old versions
-sudo apt remove -y docker docker-engine docker.io containerd runc
-sudo apt update
-# Install Docker Dependencies
-sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-# Install GPG Key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-# Add repository
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt-get update
-# Install
-sudo apt-get install docker-ce docker-ce-cli containerd.io
-
-
+sudo apt install -y docker.io
 sudo curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
@@ -72,6 +63,9 @@ sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJ
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Erstelle das Volume für die Daten
+sudo mkdir /var/lib/box4s
+sudo mkdir /var/lib/postgresql/data
+
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
 # Erstelle Volume für BOX4s Anwendungsdaten (/var/lib/box4s)
 sudo mkdir -p /var/lib/box4s
@@ -130,10 +124,16 @@ sudo systemctl daemon-reload
 sudo systemctl enable vpn.service
 sudo systemctl start vpn.service
 
+# Start des Services
+echo "Restarting BOX4s Service. Please wait."
+sudo systemctl restart box4security.service
+
 # Installation der neuen Dashboards
 # Zunächst prüfen, ob Kibana bereits vollständig hochgefahren ist
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
+
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
+
 
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Startseite/Startseite-Uebersicht.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Alarme.ndjson
@@ -157,10 +157,7 @@ cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 # Entferne /var/www (nach Deinstallation nginx unnötig)
 sudo rm -rf /var/www/
 
-# Start des Services
-echo "Restarting BOX4s Service. Please wait."
-sudo systemctl restart box4security.service
 # Waiting for healthy containers before continuation
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch >> /dev/null
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana >> /dev/null
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx >> /dev/null
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx
