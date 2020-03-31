@@ -141,7 +141,7 @@ waitForNet
 pip3 install suricata-update
 cd /home/amadmin/box4s
 cd Suricata
-
+echo "Aktualisiere Angriffspattern"
 waitForNet
 /usr/local/bin/suricata-update update-sources
 /usr/local/bin/suricata-update
@@ -303,12 +303,17 @@ echo "Installiere Elastic Curator"
 waitForNet
 pip3 install elasticsearch-curator --user
 
-echo "Initialisiere Schwachstellendatenbank und hole aktuelle Angriffspattern"
-waitForNet
-/home/amadmin/box4s/Scripts/System_Scripts/update_system.sh
+echo "Installiere Logstash Erweiterungen"
+/usr/share/logstash/bin/logstash-plugin remove logstash-codec-nmap
+/usr/share/logstash/bin/logstash-plugin install logstash-codec-nmap
+/usr/share/logstash/bin/logstash-plugin remove logstash-filter-json_encode
+/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode
+/usr/share/logstash/bin/logstash-plugin remove logstash-output-jdbc
+/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc
+/usr/share/logstash/bin/logstash-plugin remove logstash-filter-ip2location
+/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location
 
-
-sudo systemctl restart networking
+echo "Starte übrige Dienste"
 sudo systemctl enable heartbeat-elastic
 sudo systemctl enable suricata
 sudo systemctl enable logstash
@@ -319,4 +324,14 @@ sudo systemctl enable openvas-manager
 sudo systemctl enable greenbone-security-assistant
 sudo systemctl enable logstash
 sudo systemctl start logstash metricbeat filebeat openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
+
+echo "Initialisiere Schwachstellendatenbank"
+sudo openvas-feed-update --verbose --progress
+sudo greenbone-nvt-sync --verbose --progress
+sudo greenbone-certdata-sync --verbose --progress && sudo greenbone-scapdata-sync --verbose --progress
+sudo openvasmd --update --verbose --progress
+
+sudo systemctl restart greenbone-security-assistant
+
+#sudo systemctl restart networking
 echo "BOX4security installiert."
