@@ -142,17 +142,6 @@ pip3 install suricata-update
 cd /home/amadmin/box4s
 cd Suricata
 
-echo "Setze Suricata interfaces"
-IFARRAY=()
-# Caveat: This assumes that the first interface is the management one and all portmirror interfaces follow!
-for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
-do
-	IFARRAY+=("$iface")
-	IFSTRING+="--af-packet=$iface "
-done
-sudo cp * / -R
-sed -i "s/--af-packet=ens[^ ]*//g" /etc/systemd/system/suricata.service
-sed -i "s/\/etc\/suricata\/suricata.yaml /& $IFSTRING/" /etc/systemd/system/suricata.service
 waitForNet
 /usr/local/bin/suricata-update update-sources
 /usr/local/bin/suricata-update
@@ -216,6 +205,17 @@ sudo rm -f /etc/logstash/conf.d/suricata/15_kibana_filter.conf
 sudo ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf
 # Copy updated Suricata Service
 sudo cp /home/amadmin/box4s/Suricata/etc/systemd/system/suricata.service /etc/systemd/system/suricata.service
+echo "Setze Suricata interfaces"
+IFARRAY=()
+# Caveat: This assumes that the first interface is the management one and all portmirror interfaces follow!
+for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
+do
+	IFARRAY+=("$iface")
+	IFSTRING+="--af-packet=$iface "
+done
+sudo cp * / -R
+sed -i "s/--af-packet=ens[^ ]*//g" /etc/systemd/system/suricata.service
+sed -i "s/\/etc\/suricata\/suricata.yaml /& $IFSTRING/" /etc/systemd/system/suricata.service
 sudo systemctl daemon-reload
 # Restart suricata
 sudo systemctl restart suricata
