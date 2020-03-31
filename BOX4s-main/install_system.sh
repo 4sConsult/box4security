@@ -233,8 +233,8 @@ echo "Setze Interfaces"
 # Find dhcp and remove everything after
 sudo sed -i '/.*dhcp/q' /etc/network/interfaces
 # Set MGMT interface for dhcp section
-#TODO: Commando ip wrorg. Use: cat /proc/net/dev -> dhcp is set by ubuntu setup. Not necessary
-# TODO: Use: cat /proc/net/dev
+# [DF] TODO: Commando ip wrorg. Use: cat /proc/net/dev -> dhcp is set by ubuntu setup. Not necessary
+# [DF] TODO: Use: cat /proc/net/dev
 IF_MGMT=$(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | head -n 1)
 awk "NR==1,/auto ens[0-9]*/{sub(/auto ens[0-9]*/, \"auto $IF_MGMT\")} 1" /etc/network/interfaces > /tmp/4s-ifaces
 sudo mv /tmp/4s-ifaces /etc/network/interfaces
