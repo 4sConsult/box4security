@@ -207,6 +207,7 @@ sudo cp System/home/amadmin/* /home/amadmin -R
 sudo mkdir /var/log/dnsmasq
 sudo systemctl start dnsmasq
 sudo systemctl restart dnsmasq
+sudo systemctl enable dnsmasq
 waitForNet
 sudo apt install -y mc htop zsh vim libpcre3 libpcre3-dbg libpcre3-dev \
 build-essential autoconf automake libtool libpcap-dev libnet1-dev \
@@ -215,15 +216,6 @@ libcap-ng0 make libmagic-dev git-core libnetfilter-queue-dev \
 libnetfilter-queue1 libnfnetlink-dev libnfnetlink0 libluajit-5.1-dev \
 libhtp-dev libnss3-dev libnspr4-dev libjansson-dev libhyperscan-dev \
 libmaxminddb-dev rustc cargo
-waitForNet
-sudo apt install -y postgresql
-sudo systemctl enable postgresql
-sudo systemctl start postgresql
-echo "ALTER USER postgres WITH ENCRYPTED PASSWORD 'zgJnwauCAsHrR6JB';" | sudo -u postgres psql
-#Enable Tools
-sudo systemctl enable dnsmasq
-sudo systemctl enable elasticsearch
-sudo systemctl enable kibana
 
 sudo bash -c 'crontab -l > /tmp/crontab.root'
 sudo bash -c 'echo SHELL=/bin/bash >> /tmp/crontab.root'
