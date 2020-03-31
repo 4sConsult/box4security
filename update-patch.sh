@@ -20,11 +20,8 @@ sudo apt autoremove -y
 cd /opt/
 sudo git clone https://github.com/box4s/VulnWhisperer.git
 cd VulnWhisperer/
-sudo virtualenv venv
-source venv/bin/activate
 sudo pip install -r requirements.txt
-sudo python setup.py install --prefix /usr/local
-deactivate
+sudo python setup.py install
 
 echo "Install new Crontab"
 cd /home/amadmin/box4s/BOX4s-main/crontab

@@ -97,7 +97,7 @@ cd /home/amadmin/box4s
 cd OpenVAS
 sudo cp * / -R
 
-sudo apt install -y zlib1g-dev libxml2-dev libxslt1-dev # TODO: even necessary?
+sudo apt install -y zlib1g-dev libxml2-dev libxslt1-dev # dependencies vulnwhisperer
 
 # Install VulnWhisperer
 waitForNet
@@ -106,12 +106,8 @@ cd /opt/
 waitForNet
 git clone https://github.com/box4s/VulnWhisperer.git
 cd VulnWhisperer/
-virtualenv venv
-source venv/bin/activate
-waitForNet
 pip install -r requirements.txt
-sudo python setup.py install --prefix /usr/local
-deactivate
+python setup.py install
 
 waitForNet
 sudo apt -y install openjdk-8-jre apt-transport-https # at least logstash needs it
