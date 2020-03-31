@@ -141,6 +141,14 @@ curl -s -X POST "localhost:5601/api/saved_objects/_import?overwrite=true" -H "kb
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
 
+# Install DB Layout for FetchQC
+cd /home/amadmin/box4s/FetchQC/
+sudo python3 -m venv .venv
+source .venv/bin/activate
+sudo pip install -r requirements.txt
+alembic upgrade head
+deactivate
+
 # Start des Services
 echo "Restarting BOX4s Service. Please wait."
 sudo systemctl restart box4security.service
