@@ -133,6 +133,8 @@ sudo systemctl restart box4security.service
 
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
+# Kibana eine Chance geben wirklich ready zu sein - Warte 20 Sekunden
+sleep 20
 
 
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Startseite/Startseite-Uebersicht.ndjson
