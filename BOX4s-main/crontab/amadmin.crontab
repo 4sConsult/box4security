@@ -2,10 +2,10 @@ MAILTO=box@4sconsult.de
 # m h  dom mon dow   command
 
 # Check Disk Space Daily
-@daily  $BASEDIR/$GITDIR/Scripts/Automation/diskspacealert.sh | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Festplattenspeicher erschöpft"
+@daily  $BASEDIR/$GITDIR/Scripts/Automation/diskspacealert.sh && sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh disk_space SUCCESS || sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh disk_space FAILURE
 
 # Execute Curator Daily
-@daily $HOME/.local/bin/curator --config ~/curator.yml ~/actions.yml | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh box@4sconsult.de "Elastic Curator Log"
+@daily $HOME/.local/bin/curator --config ~/curator.yml ~/actions.yml && sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh curator SUCCESS || sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh curator FAILURE
 
 # Score calculation
-*/5 * * * * $BASEDIR/$GITDIR/Scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1 
+*/5 * * * * $BASEDIR/$GITDIR/Scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh score_calc SUCCESS || sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh score_calc FAILURE

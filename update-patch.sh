@@ -110,8 +110,8 @@ sudo systemctl restart suricata
 # Copy suricata filter conf (creates updated link_surpress_bpf links and updates logstash db)
 sudo cp /home/amadmin/box4s/Logstash/etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf /etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf
 
-# Openconnect nachträgliche installieren
-sudo apt install -y openconnect
+# Openconnect und jq(JSON parser fuer cronjob monitoring) nachträgliche installieren
+sudo apt install -y openconnect jq
 
 # Hosts Datei aktualisieren
 sudo cp System/etc/hosts /etc/hosts
