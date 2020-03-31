@@ -155,11 +155,8 @@ cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 
 # Install DB Layout for FetchQC
 cd /home/amadmin/box4s/FetchQC/
-sudo python3 -m venv .venv
-source .venv/bin/activate
 sudo pip install -r requirements.txt
 alembic upgrade head
-deactivate
 
 # Entferne /var/www (nach Deinstallation nginx unnötig)
 sudo rm -rf /var/www/

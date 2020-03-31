@@ -268,12 +268,8 @@ sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh db
 echo "Installing FetchQC"
 cd /home/amadmin/box4s
 cd FetchQC
-python3 -m venv .venv
-source .venv/bin/activate
-waitForNet
 pip install -r requirements.txt
 alembic upgrade head # Prepare DB
-deactivate
 
 # Insert Config for scan without bruteforce to openvas
 cd $BASEDIR$GITDIR/Scripts/Automation
