@@ -101,7 +101,7 @@ sudo apt install -y zlib1g-dev libxml2-dev libxslt1-dev # TODO: even necessary?
 
 # Install VulnWhisperer
 waitForNet
-virtualenv python-pip python3-pip
+sudo apt-get install -y virtualenv python-pip python3-pip
 cd /opt/
 waitForNet
 git clone https://github.com/box4s/VulnWhisperer.git
