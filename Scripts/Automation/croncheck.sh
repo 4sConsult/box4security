@@ -93,3 +93,4 @@ update_values $1 $2
 if [ -f "$tempfile" ];then
 
         rm "$tempfile"
+fi
