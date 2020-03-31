@@ -118,26 +118,10 @@ sudo cp * / -R
 waitForNet
 sudo apt -y install openjdk-8-jre
 
-# Install nginx
+# Remove Apache
 sudo systemctl stop apache2
 sudo apt remove -y apache2
 waitForNet
-sudo apt install -y nginx php7.3 php7.3-fpm php-pgsql
-cd /home/amadmin/box4s
-cd Nginx
-PHPVER=$(php -v | grep -Po '(PHP) \K([0-9]\.[0-9]+)') # e.g. 7.3
-sudo cp /lib/systemd/system/php$PHPVER-fpm.service /etc/systemd/system/
-sudo sed -i '/\[Service\]/a EnvironmentFile=\/etc\/environment' /etc/systemd/system/php$PHPVER-fpm.service
-sudo systemctl daemon-reload
-sudo sed -i 's/;clear_env = no/clear_env = no/g' /etc/php/$PHPVER/fpm/pool.d/www.conf
-sudo systemctl reload php$PHPVER-fpm.service
-sed -i "s/php[0-9]\.[0-9]-fpm/php$PHPVER-fpm/g" etc/nginx/sites-available/default
-sudo cp * / -R
-# Copy certificates over
-sudo mkdir -p /etc/nginx/certs
-sudo chown www-data:www-data /etc/nginx/certs
-sudo cp /home/amadmin/box4s/BOX4s-main/ssl/*.pem /etc/nginx/certs
-sudo chmod 500 /etc/nginx/certs/box4security.key.pem
 
 #Install Auditbeat
 waitForNet
