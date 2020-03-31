@@ -181,14 +181,7 @@ cd ..
 cd packetbeat
 ln -s ../general/dns_resolv.conf 21-dns_resolv.conf
 ln -s ../general/AM-special.conf 25-4s_Special.conf
-# Install System depedencies
-# Install suricata
-# Kernel necessary
-# Reboot required
-#sudo apt remove -yy -qq linux-image* linux-headers* linux-modules* amd64-microcode intel-microcode iucode-tool
 cd /home/amadmin/box4s
-sudo cp System/boot/* /boot/ -R
-sudo update-grub
 waitForNet
 sudo apt install -y msmtp msmtp-mta landscape-common
 sudo mkdir /home/downloads
