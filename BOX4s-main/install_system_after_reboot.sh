@@ -193,39 +193,34 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/b
 sudo mkdir -p /var/lib/postgresql/data
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
 
-#Installation Dashboards
-echo "Install Dashboards"
-cd /home/amadmin/box4s
-systemctl is-active --quiet elasticsearch
-if [ $? -ne 0 ]
-then
-  echo
-  echo
-  echo
-  echo "Elasticsearch not running. Restarting the service and waiting for 90s before continuing!!"
-  systemctl restart elasticsearch
-  sleep 90
-fi
-status_code=$(curl -XGET localhost:9200/_snapshot/kibana --write-out %{http_code} --silent --output /dev/null)
-if [[ "$status_code" -ne 200 ]] ; then
-	curl -XPUT localhost:9200/_snapshot/kibana -H "Content-Type: application/json" -d '{"type":"fs", "settings":{"location":"kibana"}}'
-fi
-sudo systemctl stop kibana
-curl -XDELETE localhost:9200/.kibana*
-cd /home/amadmin/box4s/Kibana/home/amadmin
-tar -xzf kibana.tar.gz
-sudo cp -r kibana /data/elasticsearch_backup/Snapshots/
-rm -r kibana
-SNAPNAME=$(curl -XGET localhost:9200/_snapshot/kibana/_all?pretty --silent | grep '"snapshot" :' | tail -n 1 | grep -Po ': "\K.*(?=")')
-curl -XPOST localhost:9200/_snapshot/kibana/$SNAPNAME/_restore
-sudo systemctl start kibana
-
-echo "Hole fetchqc"
 echo
 echo
 # curl -X POST "localhost:5601/kibana/api/saved_objects/_import" -H "kbn-xsrf: true" --form file=@home/amadmin/kibana-dashboard_v1.5.0.ndjson
 # Remove Cron entry
 echo "CREATE DATABASE \"box4S_db\" OWNER postgres;" | sudo -u postgres psql
+#Installation Dashboards
+echo "Install Dashboards"
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
+
+# Import BI Dashboards
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Scripts/Automation/score_calculation/BIDashboards.ndjson
+
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Startseite/Startseite-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Alarme.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-ASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-DNS.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-HTTP.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-ProtokolleUnDienste.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-SocialMedia.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-Datenfluesse.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Details.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
+
 cd /home/amadmin/box4s
 cd FetchQC
 python3 -m venv .venv
@@ -298,25 +293,6 @@ waitForNet
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
 cd /home/amadmin/box4s
-
-
-# Import BI Dashboards
-curl -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Scripts/Automation/score_calculation/BIDashboards.ndjson
-# Import / Overwrite Dashboards"
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Startseite/Startseite-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Alarme.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-ASN.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-DNS.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-HTTP.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-ProtokolleUnDienste.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-SocialMedia.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-Datenfluesse.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Details.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
 
 sudo systemctl restart networking
 sudo systemctl enable heartbeat-elastic
