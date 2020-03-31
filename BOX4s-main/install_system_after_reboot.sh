@@ -230,6 +230,9 @@ INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
 echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
 source /etc/environment
 
+# Install postgresql client to interact with db
+sudo apt-get install postgresql-client
+
 # Starte den Dienst
 sudo systemctl start box4security
 
@@ -284,8 +287,8 @@ echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 # Set INT-IP as --allow-header-host
 sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/greenbone-security-assistant.service
 sudo systemctl daemon-reload
-#Ignore own INT_IP
 
+#Ignore own INT_IP
 echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 
