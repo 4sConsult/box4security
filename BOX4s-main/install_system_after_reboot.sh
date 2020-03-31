@@ -246,6 +246,11 @@ sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh ki
 # Kibana eine Chance geben wirklich ready zu sein - Warte 20 Sekunden
 sleep 20
 
+# Install the scores index
+cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
+./install_index.sh
+cd /home/amadmin/box4s
+
 # Import BI Dashboards
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Scripts/Automation/score_calculation/BIDashboards.ndjson
 
@@ -302,11 +307,6 @@ echo "Initialisiere Schwachstellendatenbank und hole aktuelle Angriffspattern"
 waitForNet
 /home/amadmin/box4s/Scripts/System_Scripts/update_system.sh
 
-
-# Install the scores index
-cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
-./install_index.sh
-cd /home/amadmin/box4s
 
 sudo systemctl restart networking
 sudo systemctl enable heartbeat-elastic
