@@ -114,7 +114,12 @@ sudo python setup.py install --prefix /usr/local
 deactivate
 
 waitForNet
-sudo apt -y install openjdk-8-jre # at least logstash needs it
+sudo apt -y install openjdk-8-jre apt-transport-https # at least logstash needs it
+# Add Elastic signing KEY
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+# Add Elastic Repo
+echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+sudo apt-get update
 
 # Remove apache2 and nginx if exists
 sudo systemctl stop apache2 nginx
