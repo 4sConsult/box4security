@@ -154,8 +154,20 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
 
+# Install DB Layout for FetchQC
+cd /home/amadmin/box4s/FetchQC/
+sudo python3 -m venv .venv
+source .venv/bin/activate
+sudo pip install -r requirements.txt
+alembic upgrade head
+deactivate
+
 # Entferne /var/www (nach Deinstallation nginx unnötig)
 sudo rm -rf /var/www/
+
+# Start des Services
+echo "Restarting BOX4s Service. Please wait."
+sudo systemctl restart box4security.service
 
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
