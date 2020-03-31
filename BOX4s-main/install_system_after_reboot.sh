@@ -219,6 +219,17 @@ echo
 # curl -X POST "localhost:5601/kibana/api/saved_objects/_import" -H "kbn-xsrf: true" --form file=@home/amadmin/kibana-dashboard_v1.5.0.ndjson
 # Remove Cron entry
 echo "CREATE DATABASE \"box4S_db\" OWNER postgres;" | sudo -u postgres psql
+IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
+IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
+INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
+echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
+
+# Starte den Dienst
+sudo systemctl start box4security
+
+# Erlaube Scripts
+chmod +x -R $BASEDIR$GITDIR/Scripts
+
 #Installation Dashboards
 echo "Install Dashboards"
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
