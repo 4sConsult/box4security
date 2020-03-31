@@ -36,23 +36,20 @@ cd /home/amadmin/box4s
 
 sudo systemctl stop irqbalance
 sudo systemctl disable irqbalance
+
 echo "Installiere Suricata Deps"
-echo
-echo
 waitForNet
 sudo apt -y install clang llvm libelf-dev libc6-dev-i386 --no-install-recommends
 waitForNet
 sudo apt -y install python3-pip python3-venv
+
 #install suricata deps
 waitForNet
 sudo apt -y install libtool pkg-config libghc-bzlib-dev libghc-readline-dev ragel cmake libyaml-dev libboost-dev libjansson-dev libpcap-dev libcap-ng-dev libnspr4-dev libnss3-dev  libmagic-dev libluajit-5.1-dev libmaxminddb-dev liblz4-dev rustc cargo
 waitForNet
 sudo apt -y install libhyperscan5
+
 echo "Installiere PCRE"
-echo
-echo
-#Remove standard ubuntu kernel
-#sudo apt -y remove linux-generic linux-headers-generic linux-image-generic amd64-microcode iucode-tool intel-microcode libpcre16*
 sudo apt -y remove libpcre16* libpcre32*
 mkdir -p /home/amadmin/suricata-src
 cd /home/amadmin/suricata-src
@@ -72,9 +69,8 @@ cd pcre-8.43
             --disable-static                 &&
 make -j8
 make install
+
 echo "Installiere libbpf"
-echo
-echo
 cd /home/amadmin/suricata-src
 waitForNet
 git clone https://github.com/libbpf/libbpf.git
@@ -83,32 +79,28 @@ make -j8
 sudo make install
 sudo make install_headers
 sudo ldconfig
+
 echo "Installiere Suricata"
-echo
-echo
 cd /home/amadmin/suricata-src
 waitForNet
 git clone https://github.com/OISF/suricata.git --branch suricata-5.0.1 suricata-git
 cd suricata-git
+
 echo "Hole libhtp"
-echo
-echo
 sudo apt remove -y libhtp2
 waitForNet
 git clone https://github.com/OISF/libhtp.git -b 0.5.x libhtp-git
 cd libhtp-git
+
 echo "Installiere libhtp"
-echo
-echo
 ./autogen.sh
 ./configure
 make -j8
 sudo make install
 cd ..
 cd ..
+
 echo "Installiere Hyperscan"
-echo
-echo
 waitForNet
 git clone https://github.com/intel/hyperscan hyperscan-git
 cd hyperscan-git
@@ -119,9 +111,8 @@ make -j8
 make install
 echo "/usr/local/lib" | sudo tee --append /etc/ld.so.conf.d/usrlocal.conf
 sudo ldconfig
-echo "Installiere suricata"
-echo
-echo
+
+echo "Compile suricata"
 cd /home/amadmin/suricata-src/suricata-git
 ./autogen.sh
 ./configure \
@@ -130,8 +121,7 @@ cd /home/amadmin/suricata-src/suricata-git
 --enable-geoip --enable-gccprotect  --enable-luajit --enable-pie --enable-ebpf --enable-ebpf-build
 make clean
 make -j8
-echo
-echo
+
 echo "Install suricata"
 sudo make install
 sudo make install-conf
@@ -147,16 +137,12 @@ echo "#Box4S Classification" | sudo tee -a /etc/suricata/classification.config
 echo "config classification: foursconsult,BOX4security Custom Alerts,3" | sudo tee -a /etc/suricata/classification.config
 # Install suricata update
 cd ..
-echo "Installiere suricata update"
-echo
-echo
 waitForNet
 pip3 install suricata-update
 cd /home/amadmin/box4s
 cd Suricata
+
 echo "Setze Suricata interfaces"
-echo
-echo
 IFARRAY=()
 # Caveat: This assumes that the first interface is the management one and all portmirror interfaces follow!
 for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
@@ -185,9 +171,6 @@ sudo systemctl start suricata
 sudo systemctl enable suricata
 #Installation Dashboards
 echo "Install Dashboards"
-echo ""
-echo
-echo
 cd /home/amadmin/box4s
 systemctl is-active --quiet elasticsearch
 if [ $? -ne 0 ]
