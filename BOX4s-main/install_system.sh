@@ -225,10 +225,7 @@ libnetfilter-queue1 libnfnetlink-dev libnfnetlink0 libluajit-5.1-dev \
 libhtp-dev libnss3-dev libnspr4-dev libjansson-dev libhyperscan-dev \
 libmaxminddb-dev rustc cargo
 waitForNet
-sudo apt install -y postgresql
-sudo systemctl enable postgresql
-sudo systemctl start postgresql
-echo "ALTER USER postgres WITH ENCRYPTED PASSWORD 'zgJnwauCAsHrR6JB';" | sudo -u postgres psql
+
 #Enable Tools
 sudo systemctl enable dnsmasq
 sudo systemctl enable elasticsearch
