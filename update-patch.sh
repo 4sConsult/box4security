@@ -10,6 +10,27 @@ sudo cp System/home/amadmin/.msmtprc /home/amadmin/.msmtprc
 chown amadmin:amadmin /home/amadmin/.msmtprc
 sudo cp System/etc/msmtprc /etc/msmtprc
 
+# Stoppe und deinstalliere Nginx und PostgreSQL
+sudo systemctl stop nginx postgresql
+sudo systemctl disable nginx postgresql
+sudo apt remove -y --purge nginx postgresql
+sudo apt autoremove -y
+
+# Reinstall VulnWhisperer, but to /opt/
+cd /opt/
+sudo git clone https://github.com/box4s/VulnWhisperer.git
+cd VulnWhisperer/
+sudo virtualenv venv
+source venv/bin/activate
+sudo pip install -r requirements.txt
+sudo python setup.py install --prefix /usr/local
+deactivate
+
+echo "Install new Crontab"
+cd /home/amadmin/box4s/BOX4s-main/crontab
+sudo crontab root.crontab
+
+
 # Stoppe die aktuelle Elasticsearch- und Kibana-Instanz
 sudo service elasticsearch stop
 sudo service kibana stop
@@ -47,6 +68,9 @@ sudo mkdir /var/lib/postgresql/data
 
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
 # Erstelle Volume für BOX4s Anwendungsdaten (/var/lib/box4s)
+sudo mkdir -p /var/lib/box4s
+sudo chown root:root /var/lib/box4s
+sudo chmod -R 777 /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
 # Erstelle Volume für PostgreSQL
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
@@ -83,6 +107,9 @@ sudo systemctl daemon-reload
 # Restart suricata
 sudo systemctl restart suricata
 
+# Copy suricata filter conf (creates updated link_surpress_bpf links)
+sudo cp /home/amadmin/box4s/Logstash/etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf /etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf
+
 # Openconnect nachträgliche installieren
 sudo apt install -y openconnect
 
@@ -103,8 +130,10 @@ sudo systemctl restart box4security.service
 
 # Installation der neuen Dashboards
 # Zunächst prüfen, ob Kibana bereits vollständig hochgefahren ist
+
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
+
 
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Startseite/Startseite-Uebersicht.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Alarme.ndjson
@@ -124,6 +153,9 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 # Scores Index in vorheriger Version fehlerhaft gewesen
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 ./install_index.sh
+
+# Entferne /var/www (nach Deinstallation nginx unnötig)
+sudo rm -rf /var/www/
 
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch

@@ -103,7 +103,7 @@ sudo apt install -y net-tools
 #Install vulnWhisperer
 waitForNet
 sudo apt install -y  zlib1g-dev libxml2-dev libxslt1-dev virtualenv net-tools ifupdown python-pip python3-pip
-cd /home/amadmin/box4s
+cd /opt/
 waitForNet
 git clone https://github.com/box4s/VulnWhisperer.git
 cd VulnWhisperer/
