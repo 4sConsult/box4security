@@ -107,7 +107,7 @@ sudo systemctl daemon-reload
 # Restart suricata
 sudo systemctl restart suricata
 
-# Copy suricata filter conf (creates updated link_surpress_bpf links)
+# Copy suricata filter conf (creates updated link_surpress_bpf links and updates logstash db)
 sudo cp /home/amadmin/box4s/Logstash/etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf /etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf
 
 # Openconnect nachträgliche installieren
