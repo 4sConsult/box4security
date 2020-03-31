@@ -216,9 +216,6 @@ sudo systemctl restart suricata
 echo "Initialisiere Systemvariablen"
 echo
 echo
-# curl -X POST "localhost:5601/kibana/api/saved_objects/_import" -H "kbn-xsrf: true" --form file=@home/amadmin/kibana-dashboard_v1.5.0.ndjson
-# Remove Cron entry
-echo "CREATE DATABASE \"box4S_db\" OWNER postgres;" | sudo -u postgres psql
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
@@ -253,6 +250,8 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
 
+sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh db
+echo "Installing FetchQC"
 cd /home/amadmin/box4s
 cd FetchQC
 python3 -m venv .venv
@@ -261,8 +260,6 @@ waitForNet
 pip install -r requirements.txt
 alembic upgrade head # Prepare DB
 deactivate
-
-chmod +x -R $BASEDIR$GITDIR/Scripts
 
 # Insert Config for scan without bruteforce to openvas
 cd $BASEDIR$GITDIR/Scripts/Automation
@@ -285,20 +282,16 @@ echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | 
 
 #Copy postgres driver
 sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-core/lib/jars/
-sudo chown elasticsearch:elasticsearch /data/elasticsearch -R
 sudo chown suri:suri /data/suricata/ -R
-#Updating System with openvas and installing necessary logstash plugins
 
-echo
 echo "Installiere Elastic Curator"
+waitForNet
 pip3 install elasticsearch-curator --user
 
 echo "Initialisiere Schwachstellendatenbank und hole aktuelle Angriffspattern"
-echo
-echo
 waitForNet
 /home/amadmin/box4s/Scripts/System_Scripts/update_system.sh
-# apply network/interfaces
+
 
 # Install the scores index
 cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
