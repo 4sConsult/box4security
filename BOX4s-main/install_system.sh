@@ -73,8 +73,8 @@ cd /home/amadmin
 waitForNet
 git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git box4s -b $TAG
 
-sudo apt update
 waitForNet
+sudo apt update
 
 #Install Elasticsearch
 sudo mkdir /data/elasticsearch -p
