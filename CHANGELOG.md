@@ -5,6 +5,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Compatible with
 * Elastic Products 7.5.0
+* OpenVAS 9.0.3
 
 ### Added
 * Automatischer VPN-Verbindungsaufbau
