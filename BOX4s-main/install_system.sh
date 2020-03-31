@@ -83,11 +83,14 @@ waitForNet
 sudo apt install -y apt-transport-https
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
 waitForNet
-sudo apt update
-
-# Create Elasticsearch Folders
+sudo apt update && sudo apt install -y elasticsearch=7.5.0
 sudo mkdir /data/elasticsearch -p
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
+sudo chown elasticsearch:elasticsearch /data/elasticsearch_backup/ -R
+sudo chown elasticsearch:elasticsearch /data/elasticsearch/ -R
+cd /home/amadmin/box4s
+cd Elasticsearch
+sudo cp * / -R
 
 
 sudo apt install -y rpm nsis alien openvas=9.0.3
