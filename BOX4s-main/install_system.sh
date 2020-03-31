@@ -217,6 +217,7 @@ libnetfilter-queue1 libnfnetlink-dev libnfnetlink0 libluajit-5.1-dev \
 libhtp-dev libnss3-dev libnspr4-dev libjansson-dev libhyperscan-dev \
 libmaxminddb-dev rustc cargo
 
+# Prepare launch of script after reboot
 sudo bash -c 'crontab -l > /tmp/crontab.root'
 sudo bash -c 'echo SHELL=/bin/bash >> /tmp/crontab.root'
 ESCAPED_LOG_FILE=$(echo $LOG_FILE | sed 's/\//\\\//g')
