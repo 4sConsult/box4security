@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ui main text container">
+  <h1 class="ui header">BOX4Security - Updates<div class="sub header">Verfügbare Aktualisierungen</div></h1>
+  <div class="ui inverted section divider"></div>
+  <div class="section">
+    <div class="table">
+      <table id="tbl" class="ui celled structured table">
+        <thead>
+          <tr>
+            <th class="collapsing">Version</th>
+            <th class="collapsing">Kurzbeschreibung</th>
+            <th class="collapsing">Zeit</th>
+            <th class="center aligned collapsing">Update</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="ui modal">
+  <div class="header"></div>
+  <div class="content">
+    <p id=""></p>
+    <div class="ui icon message">
+      <i class="notched circle loading icon"></i>
+      <div class="content">
+        <div class="header">
+          Der Updatevorgang läuft..
+        </div>
+        <p>Das System wird aktualisiert. Bitte lassen Sie das Fenster geöffnet.</p>
+      </div>
+    </div>
+    <div class="ui segment">
+      <p id="logLines"><br> </p>
+    </div>
+    <a class="ui labeled icon button transition hidden" href="//{{request.host}}/update/log/download"><i class="icon green download"></i>Download Update-Log</a>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+  <script src="/static/compareversion.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    // helper function to fetch an API endpoint
+    function apiEndpoint(endpoint, method='GET', redirect='follow') {
+    return fetch(`//{{ request.host }}/${endpoint}`, {method: method, redirect: redirect})
+      .then((response) => {
+        return response.json()
+      })
+      .then(json => {
+        return json
+      })
+      .catch((err) => {
+        console.log('Fetch Error :-S', err);
+      });
+    }
+    const getEndpoint = async(endpoint, method) => {
+    const ret = await apiEndpoint(endpoint, method)
+    return ret
+    }
+  </script>
+  <script type="text/javascript">
+  $('div.item.active').removeClass('active');
+  $('#administration').addClass('active');
+  </script>
+  <script type="text/javascript">
+      // fetch all available releases and add to table
+      getEndpoint('ver/releases/').then((ret) => {
+        addToTable(ret);
+      });
+      async function addToTable(data) {
+        // Fetch current version from api
+        const currver = await getEndpoint('ver/');
+        let tbody = $(`#tbl tbody`);
+        // For each available version, populate fields and add to table
+        data.forEach((version, i) => {
+          let date = moment(version.date);
+          let ago = Math.abs(date.diff(moment(),'days'));
+          if(ago == 0) {
+            // Difference is less than 1 day, display hours
+            ago = Math.abs(date.diff(moment(),'hours'));
+            var strago = `vor ${ago} Stunden`;
+          } else {
+            var strago = `vor ${ago} Tagen`;
+          }
+          // Build row depending on if version is equal, higher or lower
+          switch (compareVersions(currver.version, version.version)) {
+            case 0:
+            // Versions are equal
+            var row = `<tr>
+              <td class="collapsing"><b>${version.version}</b></td>
+              <td class="collapsing">${version.message}</td>
+              <td class="collapsing">${strago}</td>
+              <td class="center aligned collapsing">
+                  <i class="green checkmark icon"></i>
+              </td>
+            </tr>`;
+              break;
+            case 1:
+              // Left version higher
+              var row = `<tr>
+                <td class="collapsing">${version.version}</td>
+                <td class="collapsing">${version.message}</td>
+                <td class="collapsing">${strago}</td>
+                <td class="center aligned collapsing">
+                    <i class="green checkmark icon"></i>
+                </td>
+              </tr>`;
+              break;
+            case -1:
+              // Right version higher
+              var row = `<tr>
+                <td class="collapsing">${version.version}</td>
+                <td class="collapsing">${version.message}</td>
+                <td class="collapsing">${strago}</td>
+                <td class="center aligned collapsing">`;
+                if(i == 0) {
+                  // most recent update
+                  row+=`<a data-version="${version.version}" class="ui icon green button">
+                    <i class="download icon"></i>
+                  </a>`
+                } else {
+                  // intermediate update
+                  row+=`<i class="chevron circle up icon"></i>`
+                }
+                row+=`</td>
+              </tr>`;
+              break;
+          }
+          // add row to table
+          tbody.append(row);
+        });
+        $('a.green.button').on('click', async (e) => {
+          // Launch update process to most selected version
+          selectedVersion = $(e.delegateTarget).data('version')
+          const resp = await fetch('//{{request.host}}/update/launch/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            body: JSON.stringify({target: selectedVersion})
+          });
+          if(resp.ok)
+          // endpoint gave 200 OK -> update was started
+          {
+            // disable button and change its look
+            $(e.delegateTarget).unbind('click').addClass('grey').removeClass('green').children('i').removeClass('downloads').addClass('notched circle loading');
+            updateRunner(selectedVersion);
+          } else {
+            // TODO: Failed to query for update
+          }
+        });
+      }
+    async function updateRunner(target) {
+      // Modify and show modal
+      var modal = $('.ui.modal');
+      modal.children('.header').text(`Update auf ${target}`);
+      modal.modal('show');
+
+      var running = true;
+      // while update process running
+      while (running) {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        getEndpoint('update/log/').then((rs) => {
+          modal.find('#logLines').html(rs.lines.join(' <br/>'));
+        });
+        const resStatus = await getEndpoint('update/status/');
+        if(resStatus){
+          // successfully received, else just query again in 1.5s
+          switch (resStatus.status) {
+            case "running":
+
+              break;
+            case "successful":
+              running = false;  // break out of while loop
+              {
+                // empty version table
+                $('#tbl').children('tbody').empty();
+                getEndpoint('ver/releases/').then((ret) => {
+                  addToTable(ret);
+                  // update version table
+                });
+                // Block to change modal
+                modal.children().find('.message .header').text('Update abgeschlossen.');
+                modal.children().find('.message i').addClass('checkmark').removeClass('notched circle loading');
+                modal.children().find('.message .content p').text('Update erfolgreich abgeschlossen. Sie können das Fenster nun schließen.');
+                modal.append('<i class="close icon"></i>')
+                modal.children('.content').find('a.ui.labeled').removeClass('transition hidden');
+              }
+
+              break;
+            case "failed":
+              running = false;  // break out of while loop
+              break;
+          }
+        }
+      }
+    }
+  </script>
+{% endblock %}

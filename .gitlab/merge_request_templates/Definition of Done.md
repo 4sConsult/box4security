@@ -9,7 +9,6 @@ Zum Verständnis: Ein Merge Request wird nicht als fertiggestellt angesehen, sol
 * [ ] Tests sind nach dem vier Augen-Prinzip durchgeführt und dokumentiert worden
 * [ ] Änderungen sind ausreichend dokumentiert
 * [ ] Alle Dashboards funktionieren nach den Tests
-* [ ] User Story ist im zugehörigen Epic als fertig markiert (falls vorhanden)
 
 #### Zusatzliche Notizen
 * ...

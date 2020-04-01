@@ -1,0 +1,85 @@
+version: '2.3'
+
+services:
+  elasticsearch:
+    build: elasticsearch/.
+    container_name: elasticsearch
+    restart: always
+    ports:
+     - 9200:9200
+    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:1.7"
+    volumes:
+     - data:/data
+  kibana:
+    build: kibana/.
+    container_name: kibana
+    restart: always
+    ports:
+     - 5601:5601
+    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:1.7"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    stop_signal: SIGKILL
+  web:
+    container_name: web
+    image: "docker-registry.am-gmbh.de/it-security/b4s/web:1.7"
+    build:
+      context: ./web
+      dockerfile: Dockerfile.prod
+    command: gunicorn --bind 0.0.0.0:5000 main:app
+    volumes:
+       - static_volume:/home/app/web/source/static
+       - /var/log/box4s/:/var/log/box4s/
+       - varlib_box4s/:/var/lib/box4s/
+    expose:
+      - 5000
+    # Add dockerhost IP to /etc/hosts in container for ssh
+    extra_hosts:
+      - "dockerhost:${INT_IP}"
+    env_file:
+      - ./.env.prod.web
+      - ../VERSION
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: "docker-registry.am-gmbh.de/it-security/b4s/db:1.7"
+    build:
+      context: ./db
+    volumes:
+      - varlib_postgresql/:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    env_file:
+      - ./.env.prod.db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  nginx:
+    container_name: nginx
+    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:1.7"
+    build:
+      context: ./nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - static_volume:/home/app/web/source/static
+      # certs (placed in host /etc/ folder by install script)
+      - /etc/nginx/certs:/etc/nginx/certs
+    depends_on:
+      - web
+      - kibana
+
+volumes:
+  # to persist data beyond container's life
+  static_volume:
+  data:
+    external: true
+  varlib_postgresql:
+    external: true
+  varlib_box4s:
+    external: true
