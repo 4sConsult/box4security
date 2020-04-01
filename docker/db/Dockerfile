@@ -1,5 +1,5 @@
 # vim:set ft=dockerfile:
-FROM postgres:latest
+FROM docker.io/library/postgres:l2.2
 
 # Official Postgres docker image will run .sql scripts found in this folder
 COPY sql/* /docker-entrypoint-initdb.d/
