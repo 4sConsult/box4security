@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.6.4.](x) - 2020-x-x
+## [1.7](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7) - 2020-04-01
 
 ### Compatible with
 * Elastic Products 7.5.0
@@ -24,16 +24,14 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dashboard "Übersicht" für den Bereich Schwachstellen hinzugefügt
 * Dashboard "Verlauf" für den Bereich Schwachstellen hinzugefügt
 * Dashboard "Schwachstellendetails" für den Bereich "Schwachstellen" hinzugefügt
-* WebApp als Dockeranwendung in Betrieb genommen
 * API als Schnittstelle zwischen WebApp und übrigen Teilen der BOX4s implementiert
 * Anlegen von Filtern auf Filterübersicht
 * Löschen einzelner oder aller Filter
-* Logging der Ausführungszeit der Cronjobs hinzugefügt
-* E-Mail Alert bei fehlgeschlagenem Cronjob 
+* E-Mail-Überwachung von Routineaufgaben
+* Download des Updatelogs möglich
 
 ### Changed
-* Web-Anwendung effizienter und übersichtlicher reentwickelt
-* Kibana-BasePath auf `/kibana` angepasst
+* Neuentwicklung WebApp für mehr Stabilität und Funktionalität
 * Dockerimage für Elasticsearch in Betrieb genommen
 * Dockerimage für Kibana in Betrieb genommen
 * Dockerimage für Nginx in Betrieb genommen
@@ -45,11 +43,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Die Dashboards im Bereich "Schwachstellen" zeigen standardmäßig immer Daten von den letzten 30 Tagen
 * Die Dashboards im Bereich "Netzwerk" zeigen standardmäßig immer Daten von den letzten 30 Tagen
 * Diverse Optimierungen in Funktionalität und Stabilität
-* Der Log des Updatescripts ist nun unter /var/log/box4s/update.log einsehbar
 * Update-Übersicht zeigt nun auch Kurzbeschreibung und Release-Zeitpunkt der Updates
 * Styling der Update-Seite erneuert
 * Styling der Filter-Seite erneuert
-* E-Mailversand der Cronjobs reduziert
+* Umbenennung des Menüpunktes `Administration` -> `Update`
 
 ### Fixed
 * Fehlerhafte Installation des Score-Indizes behoben
@@ -64,10 +61,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dashboard "Intrusion Detection" in dem Bereich SIEM entfernt
 * Dashboard "Schwachstellenübersicht" in dem Bereich Schwachstellen entfernt
 
-## [1.6.3](x) - 2020-03-18
+## [1.6.3](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.6.3) - 2020-03-18
 
 ### Compatible with
-* Elastic Products 7.3.0
+* Elastic Products 7.5.0
 
 ### Added
 * Master-Branch aus ursprünglichem GitLab in Version 1.6.2 übernommen
