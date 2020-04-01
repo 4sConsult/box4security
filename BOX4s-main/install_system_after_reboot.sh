@@ -318,12 +318,11 @@ sudo systemctl enable heartbeat-elastic
 sudo systemctl enable suricata
 sudo systemctl enable logstash
 sudo systemctl enable metricbeat
-sudo systemctl enable filebeat
 sudo systemctl enable openvas-scanner
 sudo systemctl enable openvas-manager
 sudo systemctl enable greenbone-security-assistant
 sudo systemctl enable logstash
-sudo systemctl start logstash metricbeat filebeat openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
+sudo systemctl start logstash metricbeat openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
 
 echo "Initialisiere Schwachstellendatenbank"
 sudo openvas-feed-update --verbose --progress
