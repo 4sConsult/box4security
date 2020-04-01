@@ -10,6 +10,10 @@ services:
     image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
     volumes:
      - data:/data
+  filebeat:
+    build: filebeat/.
+    container_name: filebeat
+    image: "docker-registry.am-gmbh.de/it-security/b4s/filebeat:dev"
   kibana:
     build: kibana/.
     container_name: kibana
