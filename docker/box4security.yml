@@ -7,7 +7,7 @@ services:
     restart: always
     ports:
      - 9200:9200
-    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:1.7"
     volumes:
      - data:/data
   kibana:
@@ -16,14 +16,14 @@ services:
     restart: always
     ports:
      - 5601:5601
-    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:1.7"
     depends_on:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
   web:
     container_name: web
-    image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/web:1.7"
     build:
       context: ./web
       dockerfile: Dockerfile.prod
@@ -44,7 +44,7 @@ services:
       - db
   db:
     container_name: db
-    image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/db:1.7"
     build:
       context: ./db
     volumes:
@@ -60,7 +60,7 @@ services:
       retries: 5
   nginx:
     container_name: nginx
-    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:1.7"
     build:
       context: ./nginx
     ports:
