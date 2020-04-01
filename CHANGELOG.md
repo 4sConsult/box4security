@@ -5,6 +5,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Compatible with
 * Elastic Products 7.5.0
+* OpenVAS 9.0.3
+* Suricata 5.0.1
 
 ### Added
 * Automatischer VPN-Verbindungsaufbau

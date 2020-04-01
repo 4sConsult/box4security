@@ -20,11 +20,8 @@ sudo apt autoremove -y
 cd /opt/
 sudo git clone https://github.com/box4s/VulnWhisperer.git
 cd VulnWhisperer/
-sudo virtualenv venv
-source venv/bin/activate
 sudo pip install -r requirements.txt
-sudo python setup.py install --prefix /usr/local
-deactivate
+sudo python setup.py install
 
 echo "Install new Crontab"
 cd /home/amadmin/box4s/BOX4s-main/crontab
@@ -107,7 +104,7 @@ sudo systemctl daemon-reload
 # Restart suricata
 sudo systemctl restart suricata
 
-# Copy suricata filter conf (creates updated link_surpress_bpf links)
+# Copy suricata filter conf (creates updated link_surpress_bpf links and updates logstash db)
 sudo cp /home/amadmin/box4s/Logstash/etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf /etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf
 
 # Openconnect und jq(JSON parser fuer cronjob monitoring) nachträgliche installieren
@@ -122,7 +119,7 @@ sudo mkdir /var/log/cronchecker
 sudo chown amadmin:amadmin /var/log/cronchecker/
 
 # Hosts Datei aktualisieren
-sudo cp System/etc/hosts /etc/hosts
+sudo cp /home/amadmin/box4s/System/etc/hosts /etc/hosts
 
 
 # Service für automatische VPN-Verbindung einfügen
@@ -141,6 +138,8 @@ sudo systemctl restart box4security.service
 
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
+# Kibana eine Chance geben wirklich ready zu sein - Warte 20 Sekunden
+sleep 20
 
 
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Startseite/Startseite-Uebersicht.ndjson
@@ -148,7 +147,7 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-ASN.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-DNS.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-HTTP.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-ProtokolleUnDienste.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-ProtokolleUndDienste.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-SocialMedia.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Uebersicht.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
@@ -164,11 +163,8 @@ cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
 
 # Install DB Layout for FetchQC
 cd /home/amadmin/box4s/FetchQC/
-sudo python3 -m venv .venv
-source .venv/bin/activate
 sudo pip install -r requirements.txt
 alembic upgrade head
-deactivate
 
 # Entferne /var/www (nach Deinstallation nginx unnötig)
 sudo rm -rf /var/www/
