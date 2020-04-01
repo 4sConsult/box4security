@@ -14,6 +14,6 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 ADD etc/ /root/etc/
 RUN cp /root/etc/logstash/* /etc/logstash/ -R
 
-#HEALTHCHECK --retries=10 CMD curl -s -XGET 'http://127.0.0.1:9200/_cat/health'
+HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
 USER logstash:logstash
 CMD ["/usr/share/logstash/bin/logstash"]
