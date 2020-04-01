@@ -6,7 +6,9 @@ RUN	apt update && \
 RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
 	echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
 	apt update && \
-	apt install -y logstash=7.5.0 && \
+	apt install -y logstash=7.6.1 && \
+  mkdir -p /var/log/logstash && \
+	chown logstash:logstash /var/log/logstash -R && \
 	rm -rf /var/lib/apt/lists/*
 
 ADD etc/ /root/etc/
