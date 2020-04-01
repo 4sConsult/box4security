@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.7](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7) - 2020-04-01
+## [1.7.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7) - 2020-04-01
 
 ### Compatible with
 * Elastic Products 7.5.0
