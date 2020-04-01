@@ -9,10 +9,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Suricata 5.0.1
 
 ### Added
-* Version von PostgreSQL festgelegt
+*
 
 ### Changed
-*
+* Version von PostgreSQL festgelegt
 
 ### Fixed
 *
