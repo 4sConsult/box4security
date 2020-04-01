@@ -1,6 +1,28 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [1.x](x) - 2020-xx-xx
+
+### Compatible with
+* Elastic Products 7.5.0
+* OpenVAS 9.0.3
+* Suricata 5.0.1
+
+### Added
+*
+
+### Changed
+*
+
+### Fixed
+*
+
+### Deprecated
+*
+
+### Removed
+*
+
 ## [1.7.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7) - 2020-04-01
 
 ### Compatible with
