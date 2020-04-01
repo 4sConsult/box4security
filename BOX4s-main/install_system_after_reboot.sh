@@ -231,7 +231,7 @@ echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
 source /etc/environment
 
 # Install postgresql client to interact with db
-sudo apt-get install postgresql-client
+sudo apt install -y postgresql-client
 
 # Starte den Dienst
 sudo systemctl start box4security
