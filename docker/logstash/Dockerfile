@@ -17,19 +17,12 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	mv /root/etc/* /etc/logstash/ && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/30-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
-	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/nmap/21-4s_Special.conf && \
-	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/nmap/22-dns_resolv.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/15-dns_resolv.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf && \
 	ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf && \
-	/usr/share/logstash/bin/logstash-plugin remove logstash-codec-nmap && \
-	/usr/share/logstash/bin/logstash-plugin install logstash-codec-nmap && \
-	/usr/share/logstash/bin/logstash-plugin remove logstash-filter-json_encode && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode && \
-	/usr/share/logstash/bin/logstash-plugin remove logstash-output-jdbc && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc && \
-	/usr/share/logstash/bin/logstash-plugin remove logstash-filter-ip2location && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location
 
 HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
