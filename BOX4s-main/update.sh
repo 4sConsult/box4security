@@ -17,6 +17,25 @@ function waitForNet() {
     sleep 15s
   done
 }
+function rollback() {
+  echo "Starte Rollback auf $1"
+
+  echo "Stelle Datenbank Backup wieder her"
+  sudo docker cp /var/lib/box4s/box4S_db_$1.tar db:/root/box4S_db.tar
+  sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
+
+  # Notify API that we're finished rolling back
+  curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-successful"}' > /dev/null
+  echo "VERSION=$PRIOR" > /home/amadmin/box4s/VERSION
+
+  # Prepare new update.sh for next update
+  sudo chown amadmin:amadmin $BASEDIR$GITDIR/BOX4s-main/update.sh
+  sudo chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
+
+  # Exit update with error code
+  exit 1
+}
+
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
 exec 1>/var/log/box4s/update.log && exec 2>>/var/log/box4s/update.log
 # Notify API that we're starting
@@ -50,9 +69,9 @@ do
    sudo $BASEDIR$GITDIR/update-patch.sh
    if  [[ ! $? -eq 0 ]]; then
      echo "Update auf $v fehlgeschlagen"
-     # Notify API that we've failed
-     curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"failed"}' > /dev/null
-     exit 1
+     # Notify API that we're starting to roll back
+     curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-started"}' > /dev/null
+     rollback $PRIOR
    fi
    # successfully updated version, the PRIOR is now this version
    PRIOR=$v
