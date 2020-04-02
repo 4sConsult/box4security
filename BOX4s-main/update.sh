@@ -58,6 +58,8 @@ do
    echo "Erstelle Datenbank Backup"
    sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_dump -F tar box4S_db > /root/box4S_db.tar"
    sudo docker cp db:/root/box4S_db.tar /var/lib/box4s/box4S_db_$PRIOR.tar
+   echo "Erstelle Backup der Kundenkonfiguration"
+   tar -C /etc -cvpf /var/lib/box4s/conf_backup_$PRIOR.tar box4s/
    echo "Installiere Version $v"
    cd $BASEDIR$GITDIR
    waitForNet gitlab.am-gmbh.de
