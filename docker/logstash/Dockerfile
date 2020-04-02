@@ -11,10 +11,11 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	apt install -y logstash=1:7.6.2-1 && \
 	mkdir -p /var/log/logstash && \
 	mkdir -p /etc/box4s && \
+	mkdir -p /usr/share/logstash/config/ && \
 	chown logstash:logstash /var/log/logstash -R && \
 	chown logstash:logstash /etc/box4s -R && \
 	rm -rf /var/lib/apt/lists/* && \
-	mv /root/etc/* /etc/logstash/ && \
+	mv /root/etc/* /usr/share/logstash/config/ && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/30-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
