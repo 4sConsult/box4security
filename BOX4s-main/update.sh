@@ -31,6 +31,16 @@ function rollback() {
   rsync -avz --delete box4s/ /etc/box4s
   rm -r box4s/
 
+  echo "Setze BOX4security Software auf Version $1 zurück"
+  cd /home/amadmin/box4s/
+  waitForNet gitlab.am-gmbh.de
+  git fetch
+  git checkout -f $1 >/dev/null 2>&1
+
+  echo "Starte BOX4security Software neu."
+  # restart box, causes download of the images of Version $1
+  sudo systemctl restart box4security
+
   # Notify API that we're finished rolling back
   curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-successful"}' > /dev/null
   echo "VERSION=$PRIOR" > /home/amadmin/box4s/VERSION
