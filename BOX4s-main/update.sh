@@ -24,6 +24,13 @@ function rollback() {
   sudo docker cp /var/lib/box4s/box4S_db_$1.tar db:/root/box4S_db.tar
   sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
 
+  echo "Stelle Kundenkonfiguration wieder her"
+  tar -C /var/lib/box4s/ -vxf /var/lib/box4s/conf_backup_$1.tar
+  # Restore /etc/box4s to state of box4s/ folder we got from unpacking the tar ball
+  cd /var/lib/box4s
+  rsync -avz --delete box4s/ /etc/box4s
+  rm -r box4s/
+
   # Notify API that we're finished rolling back
   curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-successful"}' > /dev/null
   echo "VERSION=$PRIOR" > /home/amadmin/box4s/VERSION
