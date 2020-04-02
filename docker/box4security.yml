@@ -26,6 +26,8 @@ services:
     container_name: logstash
     ports:
       - 9600:9600
+      - 5044:5044
+      - 5046:5046
     image: "docker-registry.am-gmbh.de/it-security/b4s/logstash:dev"
     volumes:
       - varlib_logstash:/var/lib/logstash/
