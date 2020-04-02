@@ -24,6 +24,8 @@ exec 1>/var/log/box4s/update.log && exec 2>>/var/log/box4s/update.log
 curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"running"}' > /dev/null
 sleep 2
 
+# Current version is the first "prior" version - get it from endpoint
+PRIOR=$(curl -sLk -XGET https://localhost/ver/ | jq -r .version)
 VERSIONS=()
 # Use Python Script to create array of versions that have to be installed
 # versions between current and the latest
@@ -50,7 +52,8 @@ do
      curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"failed"}' > /dev/null
      exit 1
    fi
-   # successfully updated version
+   # successfully updated version, the PRIOR is now this version
+   PRIOR=$v
 done
 echo "Update auf $TAG abgeschlossen."
 # set version in file
