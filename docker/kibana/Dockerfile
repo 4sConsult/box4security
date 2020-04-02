@@ -6,7 +6,7 @@ RUN	apt update && \
 RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
 	echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
 	apt update && \
-	apt install -y kibana=7.5.0 && \
+	apt install -y kibana=7.6.2 && \
 	mkdir -p /var/log/kibana && \
 	chown kibana:kibana /var/log/kibana -R && \
 	rm -rf /var/lib/apt/lists/*
