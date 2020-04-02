@@ -3,6 +3,8 @@ RUN	apt update && \
 	apt install -y curl wget apt-transport-https openjdk-11-jre gnupg && \
 	rm -rf /var/lib/apt/lists/*
 
+ADD	etc/ /root/etc/
+
 RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
 	echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
 	apt update && \
@@ -11,10 +13,8 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	mkdir -p /etc/box4s && \
 	chown logstash:logstash /var/log/logstash -R && \
 	chown logstash:logstash /etc/box4s -R && \
-	rm -rf /var/lib/apt/lists/*
-
-ADD	etc/ /root/etc/
-RUN	mv /root/etc/logstash/* /etc/logstash/ && \
+	rm -rf /var/lib/apt/lists/* && \
+	mv /root/etc/logstash/* /etc/logstash/ && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/30-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/nmap/21-4s_Special.conf && \
