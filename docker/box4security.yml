@@ -28,6 +28,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+    env_file:
+     - /etc/default/logstash
     ports:
       - 9600:9600
       - 5044:5044
@@ -37,7 +39,6 @@ services:
       - varlib_logstash:/var/lib/logstash/
       - /etc/box4s/logstash/:/etc/logstash/conf.d/general/
       - varlib_box4s:/var/lib/box4s/
-      - /etc/default/logstash:/etc/default/logstash
   web:
     container_name: web
     image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
