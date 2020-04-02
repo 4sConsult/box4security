@@ -13,17 +13,9 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	mkdir -p /etc/box4s && \
 	mkdir -p /usr/share/logstash/config/ && \
 	mkdir -p /etc/logstash/ && \
-	chown logstash:logstash /var/log/logstash -R && \
-	chown logstash:logstash /etc/box4s -R && \
-	rm -rf /var/lib/apt/lists/* && \
-	mv /root/etc/*.options /usr/share/logstash/config/ && \
-	mv /root/etc/*.properties /usr/share/logstash/config/ && \
-	mv /root/etc/*.yml /usr/share/logstash/config/ && \
-	mv /root/etc/BOX4s/ /etc/logstash/BOX4s/ && \
-	mv /root/etc/conf.d/ /etc/logstash/conf.d/ && \
-	mv /root/etc/templates/ /etc/logstash/templates/ && \
-	ls -liahr /etc/logstash/ && \
-	ls -liahr /usr/share/logstash/config/ && \
+	rm -rf /var/lib/apt/lists/*
+RUN	cp -r /root/etc/* /usr/share/logstash/config/ && \
+	cp -r /root/etc/* /etc/logstash/ && \
 	ln -s /usr/share/logstash/config/general/BOX4s-special.conf /usr/share/logstash/config/suricata/30-4s_Special.conf && \
 	ln -s /usr/share/logstash/config/general/BOX4s-special.conf /usr/share/logstash/config/filebeat/21-4s_Special.conf && \
 	ln -s /usr/share/logstash/config/general/BOX4s-special.conf /usr/share/logstash/config/openvas/15-4s_Special.conf && \
@@ -33,6 +25,8 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location
+	chown logstash:logstash /var/log/logstash -R && \
+	chown logstash:logstash /etc/logstash -R
 
 HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
 USER logstash:logstash
