@@ -14,8 +14,6 @@
 #
 # Elastic Search outputs
 #
-- pipeline.id: estransfer_nmap_output
-  path.config: "/etc/logstash/conf.d/estransfer/nmap_es_transfer.conf"
 - pipeline.id: estransfer_openvas_output
   path.config: "/etc/logstash/conf.d/estransfer/openvas_es_transfer.conf"
 - pipeline.id: estransfer_suricata_output
@@ -48,8 +46,6 @@
 - pipeline.id: openvas_filter
   path.config: "/etc/logstash/conf.d/openvas/*.conf"
   pipeline.workers: 1
-- pipeline.id: nmap_filter
-  path.config: "/etc/logstash/conf.d/nmap/*.conf"
 - pipeline.id: suricata_filter
   queue.type: memory
   pipeline.batch.delay: 150
@@ -97,20 +93,6 @@
      }
 
    else { file { path => "/var/log/logstash/logstash_debug"  } }
-   }
-
-
-
-- pipeline.id: nmap_input
-  config.string: |
-   input { http {
-          host => "127.0.0.1"
-          port => "5045"
-          codec => nmap
-          tags => [nmap]
-        }}
-   output {
-   pipeline { send_to => ["nmap_output"] }
    }
 
 - pipeline.id: winlogbeat_input
