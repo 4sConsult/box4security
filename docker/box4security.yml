@@ -29,7 +29,7 @@ services:
     image: "docker-registry.am-gmbh.de/it-security/b4s/logstash:dev"
     volumes:
       - varlib_logstash:/var/lib/logstash/
-      - etc_box4s:/etc/box4s/
+      - /etc/box4s/logstash/:/etc/logstash/conf.d/general/
       - varlib_box4s:/var/lib/box4s/
   web:
     container_name: web
