@@ -24,7 +24,7 @@ RUN	cp -r /root/etc/* /usr/share/logstash/config/ && \
 	ln -s /var/lib/box4s/15_logstash_suppress.conf /usr/share/logstash/config/suricata/15_logstash_suppress.conf && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc && \
-	/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location
+	/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location && \
 	chown logstash:logstash /var/log/logstash -R && \
 	chown logstash:logstash /etc/logstash -R
 
