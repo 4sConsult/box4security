@@ -18,8 +18,6 @@
   path.config: "/etc/logstash/conf.d/estransfer/nmap_es_transfer.conf"
 - pipeline.id: estransfer_openvas_output
   path.config: "/etc/logstash/conf.d/estransfer/openvas_es_transfer.conf"
-- pipeline.id: estranster_packetbeat_output
-  path.config: "/etc/logstash/conf.d/estransfer/packetbeat_es_transfer.conf"
 - pipeline.id: estransfer_suricata_output
   path.config: "/etc/logstash/conf.d/estransfer/suricata_es_transfer.conf"
 - pipeline.id: estransfer_heartbeat_output
@@ -130,7 +128,7 @@
         }}
    output {
    pipeline { send_to => ["winlogbeat_pipe"] }
-   }   
+   }
 
 
 # Available options:
