@@ -155,14 +155,6 @@ cd /home/amadmin/box4s
 cd Heartbeat
 sudo cp * / -R
 
-#Install logstash
-waitForNet
-sudo apt install -y logstash=1:7.5.0-1
-cd /home/amadmin/box4s
-cd Logstash
-sudo cp * / -R
-sudo chown logstash /etc/logstash/ -R
-sudo chown logstash /var/log/logstash/ -R
 echo "Erstelle Links"
 cd /etc/logstash/conf.d/
 cd suricata
