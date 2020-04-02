@@ -14,7 +14,7 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	chown logstash:logstash /var/log/logstash -R && \
 	chown logstash:logstash /etc/box4s -R && \
 	rm -rf /var/lib/apt/lists/* && \
-	mv /root/etc/logstash/* /etc/logstash/ && \
+	mv /root/etc/* /etc/logstash/ && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/30-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/nmap/21-4s_Special.conf && \
