@@ -55,9 +55,6 @@
   pipeline.batch.delay: 150
   queue.checkpoint.interval: 500
   path.config: "/etc/logstash/conf.d/suricata/*.conf"
-- pipeline.id: packetbeat_filter
-  queue.type: memory
-  path.config: "/etc/logstash/conf.d/packetbeat/*.conf"
 - pipeline.id: auditbeat_filter
   queue.type: memory
   path.config: "/etc/logstash/conf.d/auditbeat/*.conf"
@@ -83,9 +80,6 @@
              port => "5044"
           }}
    output {
-   if [@metadata][beat] == "packetbeat" {
-      pipeline { send_to => ["packetbeat_pipe"] }
-   }
    if [@metadata][beat] == "auditbeat" {
       pipeline { send_to => ["auditbeat_pipe"] }
    }
