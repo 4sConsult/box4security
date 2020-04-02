@@ -237,6 +237,7 @@ class UpdateStatus(Resource):
         # empty update state file
         f = open('/var/lib/box4s/.update.state', 'w')
         f.close()
+        return {}, 205
 
 
 class Alert(Resource):
