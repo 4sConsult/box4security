@@ -301,16 +301,6 @@ echo "Installiere Elastic Curator"
 waitForNet
 pip3 install elasticsearch-curator --user
 
-echo "Installiere Logstash Erweiterungen"
-/usr/share/logstash/bin/logstash-plugin remove logstash-codec-nmap
-/usr/share/logstash/bin/logstash-plugin install logstash-codec-nmap
-/usr/share/logstash/bin/logstash-plugin remove logstash-filter-json_encode
-/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode
-/usr/share/logstash/bin/logstash-plugin remove logstash-output-jdbc
-/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc
-/usr/share/logstash/bin/logstash-plugin remove logstash-filter-ip2location
-/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location
-
 echo "Starte übrige Dienste"
 sudo systemctl enable heartbeat-elastic
 sudo systemctl enable suricata
