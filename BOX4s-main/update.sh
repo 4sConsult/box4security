@@ -45,7 +45,6 @@ do
    git fetch
    git checkout -f $v >/dev/null 2>&1
    echo "Führe Updateanweisungen aus Version $v aus"
-   sleep 3
    sed -i "3s/.*/TAG=$v/g" $BASEDIR$GITDIR/update-patch.sh
    sudo chmod +x $BASEDIR$GITDIR/update-patch.sh
    sudo $BASEDIR$GITDIR/update-patch.sh
