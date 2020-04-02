@@ -21,7 +21,7 @@ RUN	cp -r /root/etc/* /usr/share/logstash/config/ && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/15-dns_resolv.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf && \
-	ln -s /var/lib/box4s/15_logstash_suppress.conf /usr/share/logstash/config/suricata/15_logstash_suppress.conf && \
+	ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location && \
