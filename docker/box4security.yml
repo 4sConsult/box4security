@@ -26,10 +26,11 @@ services:
     container_name: logstash
     ports:
       - 9600:9600
-    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/logstash:dev"
     volumes:
-      - varlib_logstash:/var/lib/logstash
-      - etc_box4s:/etc/box4s
+      - varlib_logstash:/var/lib/logstash/
+      - etc_box4s:/etc/box4s/
+      - varlib_box4s:/var/lib/box4s/
   web:
     container_name: web
     image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"

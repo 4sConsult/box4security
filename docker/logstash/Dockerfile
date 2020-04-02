@@ -21,7 +21,8 @@ RUN mv /root/etc/logstash/* /etc/logstash/ -R && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/nmap/22-dns_resolv.conf && \
 	ln -s /etc/logstash/conf.d/general/AM-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/15-dns_resolv.conf && \
-	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf && \
+	ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf
 
 HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
 USER logstash:logstash
