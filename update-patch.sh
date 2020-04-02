@@ -25,7 +25,6 @@ sudo chmod -R 777 /etc/box4s/
 
 # Volumes in Docker anlegen
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
-sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s --opt o=bind etc_box4s
 
 # Start des Services
 echo "Start BOX4s Service. Please wait."

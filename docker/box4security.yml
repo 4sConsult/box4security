@@ -95,5 +95,3 @@ volumes:
     external: true
   varlib_logstash:
     external: true
-  etc_box4s:
-    external: true
