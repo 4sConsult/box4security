@@ -16,12 +16,12 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	chown logstash:logstash /etc/box4s -R && \
 	rm -rf /var/lib/apt/lists/* && \
 	mv /root/etc/* /usr/share/logstash/config/ && \
-	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/30-4s_Special.conf && \
-	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
-	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
-	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/15-dns_resolv.conf && \
-	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf && \
-	ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf && \
+	ln -s /usr/share/logstash/config/general/BOX4s-special.conf /usr/share/logstash/config/suricata/30-4s_Special.conf && \
+	ln -s /usr/share/logstash/config/general/BOX4s-special.conf /usr/share/logstash/config/filebeat/21-4s_Special.conf && \
+	ln -s /usr/share/logstash/config/general/BOX4s-special.conf /usr/share/logstash/config/openvas/15-4s_Special.conf && \
+	ln -s /usr/share/logstash/config/general/dns_resolv.conf /usr/share/logstash/config/winlogbeat/15-dns_resolv.conf && \
+	ln -s /usr/share/logstash/config/general/dns_resolv.conf /usr/share/logstash/config/metricbeat/15-dns_resolv.conf && \
+	ln -s /var/lib/box4s/15_logstash_suppress.conf /usr/share/logstash/config/suricata/15_logstash_suppress.conf && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location
