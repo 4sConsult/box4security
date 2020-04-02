@@ -29,6 +29,7 @@ services:
     image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
     volumes:
       - varlib_logstash:/var/lib/logstash
+      - etc_box4s:/etc/box4s
   web:
     container_name: web
     image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
@@ -92,4 +93,6 @@ volumes:
   varlib_box4s:
     external: true
   varlib_logstash:
+    external: true
+  etc_box4s:
     external: true

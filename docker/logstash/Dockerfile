@@ -8,7 +8,9 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	apt update && \
 	apt install -y logstash=7.6.1 && \
   mkdir -p /var/log/logstash && \
+	mkdir -p /etc/box4s && \
 	chown logstash:logstash /var/log/logstash -R && \
+	chown logstash:logstash /etc/box4s -R && \
 	rm -rf /var/lib/apt/lists/*
 
 ADD etc/ /root/etc/

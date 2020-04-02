@@ -19,8 +19,13 @@ sudo mkdir /var/lib/logstash
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 
+sudo mkdir -p /etc/box4s/logstash
+sudo chown root:root /etc/box4s/
+sudo chmod -R 777 /etc/box4s/
+
 # Volumes in Docker anlegen
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
+sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s --opt o=bind etc_box4s
 
 # Start des Services
 echo "Start BOX4s Service. Please wait."
