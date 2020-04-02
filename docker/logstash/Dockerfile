@@ -12,7 +12,14 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	rm -rf /var/lib/apt/lists/*
 
 ADD etc/ /root/etc/
-RUN cp /root/etc/logstash/* /etc/logstash/ -R
+RUN mv /root/etc/logstash/* /etc/logstash/ -R && \
+	ln -s /etc/logstash/conf.d/general/AM-special.conf /etc/logstash/conf.d/suricata/30-4s_Special.conf && \
+	ln -s /etc/logstash/conf.d/general/AM-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
+	ln -s /etc/logstash/conf.d/general/AM-special.conf /etc/logstash/conf.d/nmap/21-4s_Special.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/nmap/22-dns_resolv.conf && \
+	ln -s /etc/logstash/conf.d/general/AM-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/15-dns_resolv.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf
 
 HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
 USER logstash:logstash
