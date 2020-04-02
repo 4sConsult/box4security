@@ -194,6 +194,31 @@
               }
 
               break;
+            case "rollback-running":
+              {
+                // System is rolling back, display it to the user
+                modal.children().find('.message .header').text('Automatisches Zurücksetzen auf letzte Version');
+                modal.children().find('.message i').addClass('undo loading').removeClass('notched circle');
+                modal.children().find('.message .content p').html('Das Update konnte nicht erfolgreich abgeschlossen werden.<br> Bitte lassen Sie dieses Fenster geöffnet. Das System setzt sich automatisch auf den zuletzt erfolgreich installierten Stand zurück.');
+              }
+              break;
+            case "rollback-successful":
+              running = false; // break out of while loop
+              {
+                // empty version table
+                $('#tbl').children('tbody').empty();
+                getEndpoint('ver/releases/').then((ret) => {
+                  addToTable(ret);
+                  // update version table
+                });
+                // Block to change modal
+                modal.children().find('.message .header').text('Zurücksetzen erfolgreich abgeschlossen.');
+                modal.children().find('.message i').addClass('green undo').removeClass('notched circle loading');
+                modal.children().find('.message .content p').text('Die BOX4security wurde auf die letzte erfolgreich installierte Version zurückgesetzt. Sie können das Fenster nun schließen.');
+                modal.append('<i class="close icon"></i>')
+                modal.children('.content').find('a.ui.labeled').removeClass('transition hidden');
+              }
+              break;
             case "failed":
               running = false;  // break out of while loop
               break;
