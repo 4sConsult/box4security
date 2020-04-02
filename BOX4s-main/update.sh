@@ -36,6 +36,9 @@ TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
 for v in "${VERSIONS[@]}"
 do
+   echo "Erstelle Datenbank Backup"
+   sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_dump box4S_db > /root/box4S_db.bak"
+   sudo docker cp db:/root/box4S_db.bak /var/lib/box4s/box4S_db_$PRIOR.pgsql.bak
    echo "Installiere Version $v"
    cd $BASEDIR$GITDIR
    waitForNet gitlab.am-gmbh.de
