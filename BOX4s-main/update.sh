@@ -89,7 +89,7 @@ do
    if  [[ ! $? -eq 0 ]]; then
      echo "Update auf $v fehlgeschlagen"
      # Notify API that we're starting to roll back
-     curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-started"}' > /dev/null
+     curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-running"}' > /dev/null
      rollback $PRIOR
    fi
    # successfully updated version, the PRIOR is now this version
