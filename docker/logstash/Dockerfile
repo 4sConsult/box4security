@@ -15,12 +15,18 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	mkdir -p /etc/logstash/ && \
 	rm -rf /var/lib/apt/lists/* && \
 	cp -r /root/etc/* /usr/share/logstash/config/ && \
-	cp -r /root/etc/* /etc/logstash/ && \
-	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/30-4s_Special.conf && \
+	cp -r /root/etc/* /etc/logstash/
+RUN ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/30-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/15-dns_resolv.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf && \
+	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/auditbeat/20-BeatClientIP.conf && \
+	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/auditbeat/30-preBOX4s.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/auditbeat/50-DNS_Resolv.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/auditbeat/40-BOX4sspecial.conf && \
+	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/auditbeat/20-BeatClientIP.conf && \
+	#ln -s ln -s /etc/logstash/conf.d/general/ /etc/logstash/conf.d/ && \
 	ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc && \
