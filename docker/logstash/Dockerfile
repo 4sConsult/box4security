@@ -29,5 +29,5 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	chown logstash:logstash /etc/logstash -R
 
 HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
-USER logstash:logstash
-CMD ["/usr/share/logstash/bin/logstash"]
+#USER logstash:logstash
+CMD ["/usr/share/logstash/bin/logstash" , "--path.settings", "/etc/logstash"]
