@@ -24,6 +24,10 @@ services:
   logstash:
     build: logstash/.
     container_name: logstash
+    restart: always
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
     ports:
       - 9600:9600
       - 5044:5044
