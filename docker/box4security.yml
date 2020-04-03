@@ -28,6 +28,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+      db:
+        condition: service_healthy
     env_file:
      - /etc/default/logstash
     ports:
