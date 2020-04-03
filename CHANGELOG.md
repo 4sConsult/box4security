@@ -13,6 +13,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Version von Nginx festgelegt
+* Dockerimage für Logstash in Betrieb genommen
 
 ### Fixed
 *
