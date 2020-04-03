@@ -21,6 +21,26 @@ services:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+  logstash:
+    build: logstash/.
+    container_name: logstash
+    restart: always
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    env_file:
+     - /etc/default/logstash
+    ports:
+      - 9600:9600
+      - 5044:5044
+      - 5046:5046
+    image: "docker-registry.am-gmbh.de/it-security/b4s/logstash:dev"
+    volumes:
+      - varlib_logstash:/var/lib/logstash/
+      - etcbox4s_logstash:/etc/logstash/conf.d/general/
+      - varlib_box4s:/var/lib/box4s/
   web:
     container_name: web
     image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
@@ -82,4 +102,8 @@ volumes:
   varlib_postgresql:
     external: true
   varlib_box4s:
+    external: true
+  varlib_logstash:
+    external: true
+  etcbox4s_logstash:
     external: true

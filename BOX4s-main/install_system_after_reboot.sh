@@ -190,6 +190,19 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/b
 sudo mkdir -p /var/lib/postgresql/data
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
 
+# Erstelle Voume für dynamische Box4s Konfigurationen
+sudo mkdir -p /etc/box4s/logstash
+sudo cp /home/amadmin/box4s/System/etc/box4s/logstash/* /etc/box4s/logstash/
+sudo chown root:root /etc/box4s/
+sudo chmod -R 777 /etc/box4s/
+sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
+
+# Erstelle Volume für Logstash
+sudo mkdir /var/lib/logstash
+sudo chown root:root /var/lib/logstash
+sudo chmod -R 777 /var/lib/logstash
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
+
 # Create BOX4s Log Path
 sudo mkdir -p /var/log/box4s/
 sudo touch /var/log/box4s/update.log
@@ -201,8 +214,6 @@ sudo touch /var/lib/box4s/suricata_suppress.bpf
 sudo chmod -R 777 /var/lib/box4s/
 # rm old links
 sudo rm -f /etc/logstash/conf.d/suricata/15_kibana_filter.conf
-# create links
-sudo ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf
 # Copy updated Suricata Service
 sudo cp /home/amadmin/box4s/Suricata/etc/systemd/system/suricata.service /etc/systemd/system/suricata.service
 echo "Setze Suricata interfaces"
@@ -295,35 +306,21 @@ sudo systemctl daemon-reload
 echo "INSERT INTO blocks_by_bpffilter VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 echo "INSERT INTO blocks_by_bpffilter VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 
-#Copy postgres driver
-sudo cp /etc/logstash/BOX4s/postgresql-42.2.8.jar /usr/share/logstash/logstash-core/lib/jars/
 sudo chown suri:suri /data/suricata/ -R
 
 echo "Installiere Elastic Curator"
 waitForNet
 pip3 install elasticsearch-curator --user
 
-echo "Installiere Logstash Erweiterungen"
-/usr/share/logstash/bin/logstash-plugin remove logstash-codec-nmap
-/usr/share/logstash/bin/logstash-plugin install logstash-codec-nmap
-/usr/share/logstash/bin/logstash-plugin remove logstash-filter-json_encode
-/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode
-/usr/share/logstash/bin/logstash-plugin remove logstash-output-jdbc
-/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc
-/usr/share/logstash/bin/logstash-plugin remove logstash-filter-ip2location
-/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location
-
 echo "Starte übrige Dienste"
 sudo systemctl enable heartbeat-elastic
 sudo systemctl enable suricata
-sudo systemctl enable logstash
 sudo systemctl enable metricbeat
 sudo systemctl enable filebeat
 sudo systemctl enable openvas-scanner
 sudo systemctl enable openvas-manager
 sudo systemctl enable greenbone-security-assistant
-sudo systemctl enable logstash
-sudo systemctl start logstash metricbeat filebeat openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
+sudo systemctl start metricbeat filebeat openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
 
 echo "Initialisiere Schwachstellendatenbank"
 sudo openvas-feed-update --verbose --progress
