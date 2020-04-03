@@ -16,7 +16,9 @@ sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.B
 systemctl restart suricata
 
 # Updating OpenVAS
-/usr/sbin/greenbone-nvt-sync --verbose --progress
-/usr/sbin/greenbone-certdata-sync --verbose --progress
-/usr/sbin/greenbone-scapdata-sync --verbose --progress
-/usr/sbin/openvasmd --update --verbose --progress
+sudo greenbone-scapdata-sync --verbose --progress
+sudo greenbone-certdata-sync --verbose --progress
+sudo openvas-feed-update --verbose --progress
+sudo greenbone-nvt-sync --verbose --progress
+sudo openvasmd --update --verbose --progress
+sudo openvasmd --rebuild
