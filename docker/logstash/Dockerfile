@@ -17,9 +17,13 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	cp -r /root/etc/* /usr/share/logstash/config/ && \
 	cp -r /root/etc/* /etc/logstash/ && \
 	# Filebeat
- 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/30-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
+	# Suricata
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/25-4s_Special.conf && \
+	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/suricata/30-preBOX4s.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/40-BOX4sspecial.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/suricata/50-DNS_Resolv.conf && \
 	# Auditbeat
 	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/auditbeat/20-BeatClientIP.conf && \
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/auditbeat/30-preBOX4s.conf && \
@@ -31,7 +35,7 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/metricbeat/30-preBOX4s.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/metricbeat/40-BOX4sspecial.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/50-DNS_Resolv.conf && \
-	# winlogbeat
+	# Winlogbeat
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/15-dns_resolv.conf && \
 	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/winlogbeat/20-BeatClientIP.conf && \
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/winlogbeat/30-preBOX4s.conf && \
@@ -42,7 +46,7 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/heartbeat/30-preBOX4s.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/heartbeat/40-BOX4sspecial.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/heartbeat/50-DNS_Resolv.conf && \
-	#ln -s ln -s /etc/logstash/conf.d/general/ /etc/logstash/conf.d/ && \
+	# Dynamic configuration for suricata
 	ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc && \
