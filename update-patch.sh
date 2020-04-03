@@ -10,9 +10,11 @@ sudo systemctl disable logstash
 sudo apt remove -y logstash
 sudo apt autoremove -y
 
-# Start des Services
-echo "Stop BOX4s Service. Please wait."
+# Stop des Services
+echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
+
+
 
 # Neue Volumes anlegen
 sudo chown root:root /var/lib/logstash
@@ -30,7 +32,7 @@ sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s
 sudo cp /home/amadmin/box4s/System/etc/box4s/logstash/* /etc/box4s/logstash/
 
 # Start des Services
-echo "Start BOX4s Service. Please wait."
+echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service
 
 # Waiting for healthy containers before continuation
