@@ -15,7 +15,6 @@ echo "Stop BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
 # Neue Volumes anlegen
-sudo mkdir /var/lib/logstash
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 
