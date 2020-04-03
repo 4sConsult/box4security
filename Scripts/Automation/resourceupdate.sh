@@ -13,7 +13,7 @@ sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.B
 
 # Updating Suricata Rules
 /usr/local/bin/suricata-update
-systemctl restart suricata
+sudo systemctl restart suricata
 
 # Updating OpenVAS
 sudo greenbone-scapdata-sync --verbose --progress
