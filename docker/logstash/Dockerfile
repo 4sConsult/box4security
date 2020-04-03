@@ -10,6 +10,7 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	apt update && \
 	apt install -y logstash=1:7.6.2-1 && \
 	wget -O /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar https://jdbc.postgresql.org/download/postgresql-42.2.8.jar && \
+	chmod +x /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
 	mkdir -p /var/log/logstash && \
 	mkdir -p /etc/box4s && \
 	mkdir -p /usr/share/logstash/config/ && \
