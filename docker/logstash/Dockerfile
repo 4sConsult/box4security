@@ -15,7 +15,6 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	mkdir -p /usr/share/logstash/config/ && \
 	mkdir -p /etc/logstash/ && \
 	rm -rf /var/lib/apt/lists/* && \
-	cp -r /root/etc/* /usr/share/logstash/config/ && \
 	cp -r /root/etc/* /etc/logstash/ && \
 	# Filebeat
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
