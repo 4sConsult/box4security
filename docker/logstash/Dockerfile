@@ -30,6 +30,10 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/metricbeat/30-preBOX4s.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/metricbeat/40-BOX4sspecial.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/50-DNS_Resolv.conf && \
+	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/winlogbeat/20-BeatClientIP.conf && \
+	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/winlogbeat/30-preBOX4s.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/winlogbeat/40-BOX4sspecial.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/50-DNS_Resolv.conf && \
 	#ln -s ln -s /etc/logstash/conf.d/general/ /etc/logstash/conf.d/ && \
 	ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf && \
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode && \
