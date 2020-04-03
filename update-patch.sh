@@ -34,6 +34,9 @@ sudo cp /home/amadmin/box4s/System/etc/box4s/logstash/* /etc/box4s/logstash/
 echo "Start BOX4s Service. Please wait."
 sudo systemctl start box4security.service
 
+# Starte Filebeat zur Sicherheit neu
+sudo systemctl restart filebeat.service
+
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh logstash
