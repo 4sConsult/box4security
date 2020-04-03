@@ -323,10 +323,12 @@ sudo systemctl enable greenbone-security-assistant
 sudo systemctl start metricbeat filebeat openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
 
 echo "Initialisiere Schwachstellendatenbank"
+sudo greenbone-scapdata-sync --verbose --progress
+sudo greenbone-certdata-sync --verbose --progress
 sudo openvas-feed-update --verbose --progress
 sudo greenbone-nvt-sync --verbose --progress
-sudo greenbone-certdata-sync --verbose --progress && sudo greenbone-scapdata-sync --verbose --progress
 sudo openvasmd --update --verbose --progress
+sudo openvasmd --rebuild
 
 sudo systemctl restart greenbone-security-assistant
 
