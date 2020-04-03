@@ -7,9 +7,8 @@ COPY sql/* /docker-entrypoint-initdb.d/
 # Initial IP2ASN setup
 RUN apt update && \
     apt install -y curl gzip && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN curl https://iptoasn.com/data/ip2asn-combined.tsv.gz -o /tmp/ip2asn-combined.tsv.gz &&\
+    rm -rf /var/lib/apt/lists/* && \
+    curl https://iptoasn.com/data/ip2asn-combined.tsv.gz -o /tmp/ip2asn-combined.tsv.gz && \
     gunzip -f /tmp/ip2asn-combined.tsv.gz
 
 # From official Postgres Image

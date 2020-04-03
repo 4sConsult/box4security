@@ -155,39 +155,6 @@ cd /home/amadmin/box4s
 cd Heartbeat
 sudo cp * / -R
 
-#Install logstash
-waitForNet
-sudo apt install -y logstash=1:7.5.0-1
-cd /home/amadmin/box4s
-cd Logstash
-sudo cp * / -R
-sudo chown logstash /etc/logstash/ -R
-sudo chown logstash /var/log/logstash/ -R
-echo "Erstelle Links"
-cd /etc/logstash/conf.d/
-cd suricata
-ln -s ../general/AM-special.conf  30-4s_Special.conf
-cd ..
-cd filebeat
-ln -s  ../general/AM-special.conf 21-4s_Special.conf
-cd ..
-cd nmap
-ln -s  ../general/AM-special.conf 21-4s_Special.conf
-ln -s ../general/dns_resolv.conf 22-dns_resolv.conf
-cd ..
-cd openvas
-ln -s ../general/AM-special.conf 15-4s_Special.conf
-cd ..
-cd winlogbeat
-ln -s ../general/dns_resolv.conf 15-dns_resolv.conf
-cd ..
-cd metricbeat
-ln -s ../general/dns_resolv.conf 15-dns_resolv.conf
-cd ..
-cd packetbeat
-ln -s ../general/dns_resolv.conf 21-dns_resolv.conf
-ln -s ../general/AM-special.conf 25-4s_Special.conf
-cd /home/amadmin/box4s
 waitForNet
 sudo apt install -y msmtp msmtp-mta landscape-common jq
 sudo mkdir /home/downloads
