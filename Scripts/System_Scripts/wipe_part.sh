@@ -20,14 +20,10 @@ then
     # fill data with encrypted zeros under rnadom key which is random data
 
     echo "Done wiping the partition.. Reinitializing file system.."
-    mkfs.ext4 /dev/sdb1
+    mkfs.ext4 $DEVICE
     mount -a
     mkdir -p /data/elasticsearch
-    chown elasticsearch:elasticsearch /data/elasticsearch
-    systemctl stop kibana
-    curl -X "DELETE" "http://localhost:9200/.kibana"
-    curl -X "POST" "http://localhost:9200/_snapshot/qc-am-dortmund/kibana_base_1/_restore?wait_for_completion=true"
-    systemctl start kibana
+    chown -R elasticsearch:elasticsearch /data/elasticsearch
     echo "Done."
     exit 0
 fi
