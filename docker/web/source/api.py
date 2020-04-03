@@ -51,7 +51,7 @@ def writeBPFFile():
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
         # read pw from $SSHPASS and login to dockerhost to execute restartSuricata
-        os.system(f'sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')
+        os.system('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')
 
 
 class BPF(Resource):
