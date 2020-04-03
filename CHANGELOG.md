@@ -4,7 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [1.x](x) - 2020-xx-xx
 
 ### Compatible with
-* Elastic Products 7.5.0
+* Elastic Products 7.6.2
 * OpenVAS 9.0.3
 * Suricata 5.0.1
 
@@ -12,8 +12,11 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 *
 
 ### Changed
+* Version von PostgreSQL festgelegt
 * Version von Nginx festgelegt
 * Dockerimage für Logstash in Betrieb genommen
+* Elasticsearch auf 7.6.2 aktualisiert
+* Kibana auf 7.6.2 aktualisiert
 
 ### Fixed
 *
