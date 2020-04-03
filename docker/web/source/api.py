@@ -252,3 +252,11 @@ class Alert(Resource):
 
     def delete(self):
         return {}, 501
+
+
+class Health(Resource):
+    """Health endpoint."""
+
+    def get(self):
+        """Return Healthy."""
+        return {'status': 'pass'}, 200

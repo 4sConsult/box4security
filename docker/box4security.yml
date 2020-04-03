@@ -54,6 +54,11 @@ services:
        - varlib_box4s/:/var/lib/box4s/
     expose:
       - 5000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/_health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     # Add dockerhost IP to /etc/hosts in container for ssh
     extra_hosts:
       - "dockerhost:${INT_IP}"
