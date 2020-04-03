@@ -190,6 +190,19 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/b
 sudo mkdir -p /var/lib/postgresql/data
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
 
+# Erstelle Voume für dynamische Box4s Konfigurationen
+sudo mkdir -p /etc/box4s/logstash
+sudo cp /home/amadmin/box4s/System/etc/box4s/logstash/* /etc/box4s/logstash/
+sudo chown root:root /etc/box4s/
+sudo chmod -R 777 /etc/box4s/
+sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
+
+# Erstelle Volume für Logstash
+sudo mkdir /var/lib/logstash
+sudo chown root:root /var/lib/logstash
+sudo chmod -R 777 /var/lib/logstash
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
+
 # Create BOX4s Log Path
 sudo mkdir -p /var/log/box4s/
 sudo touch /var/log/box4s/update.log
