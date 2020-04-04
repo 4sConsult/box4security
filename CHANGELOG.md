@@ -9,7 +9,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Suricata 5.0.1
 
 ### Added
-*
+* Automatischer Healthcheck für Weboberfläche hinzugefügt
 
 ### Changed
 * Version von PostgreSQL festgelegt

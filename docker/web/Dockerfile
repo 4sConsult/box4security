@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN apt update
-RUN apt install -y sshpass
+RUN apt install -y sshpass curl
 
 WORKDIR /usr/src/app
 RUN pip install --upgrade pip
