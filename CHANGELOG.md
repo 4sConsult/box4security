@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 * Automatischer Healthcheck für Weboberfläche hinzugefügt
+* Darstellung des Changelogs in Updatesektion der Weboberfläche
 
 ### Changed
 * Version von PostgreSQL festgelegt

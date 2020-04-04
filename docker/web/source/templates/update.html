@@ -9,7 +9,7 @@
         <thead>
           <tr>
             <th class="collapsing">Version</th>
-            <th class="collapsing">Kurzbeschreibung</th>
+            <th class="">Beschreibung</th>
             <th class="collapsing">Zeit</th>
             <th class="center aligned collapsing">Update</th>
           </tr>
@@ -42,6 +42,7 @@
 {% endblock %}
 {% block scripts %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.8.2/marked.min.js" integrity="sha256-6Om9HYjLO4iZmEyM/7oAv7GW1WzACqQ4PV51bTgnioI=" crossorigin="anonymous"></script>
   <script src="/static/compareversion.js" charset="utf-8"></script>
   <script type="text/javascript">
     // helper function to fetch an API endpoint
@@ -86,13 +87,26 @@
           } else {
             var strago = `vor ${ago} Tagen`;
           }
+          var description = `<td>
+              <div class="ui accordion">
+                <div class="title">
+                 <i class="dropdown icon"></i>
+                 ${version.message}
+                </div>
+                <div class="fluid content">
+                  <div class="ui divider"></div>`
+                 + marked(version.changelog) +
+               `</div>
+             </div>
+            </td>`;
           // Build row depending on if version is equal, higher or lower
           switch (compareVersions(currver.version, version.version)) {
+
             case 0:
             // Versions are equal
             var row = `<tr>
               <td class="collapsing"><b>${version.version}</b></td>
-              <td class="collapsing">${version.message}</td>
+              ${description}
               <td class="collapsing">${strago}</td>
               <td class="center aligned collapsing">
                   <i class="green checkmark icon"></i>
@@ -103,7 +117,7 @@
               // Left version higher
               var row = `<tr>
                 <td class="collapsing">${version.version}</td>
-                <td class="collapsing">${version.message}</td>
+                ${description}
                 <td class="collapsing">${strago}</td>
                 <td class="center aligned collapsing">
                     <i class="green checkmark icon"></i>
@@ -114,7 +128,7 @@
               // Right version higher
               var row = `<tr>
                 <td class="collapsing">${version.version}</td>
-                <td class="collapsing">${version.message}</td>
+                ${description}
                 <td class="collapsing">${strago}</td>
                 <td class="center aligned collapsing">`;
                 if(i == 0) {
@@ -133,6 +147,7 @@
           // add row to table
           tbody.append(row);
         });
+        $('.ui.accordion').accordion();
         $('a.green.button').on('click', async (e) => {
           // Launch update process to most selected version
           selectedVersion = $(e.delegateTarget).data('version')
