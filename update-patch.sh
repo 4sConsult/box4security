@@ -10,9 +10,18 @@ sudo systemctl disable logstash
 sudo apt remove -y logstash
 sudo apt autoremove -y
 
-# Start des Services
-echo "Stop BOX4s Service. Please wait."
+# Stop des Services
+echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
+
+# Download IP2Location DBs for the first time
+# IP2LOCATION Token
+IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
+cd /tmp/
+curl "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN
+curl "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB9LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN
+sudo mv IP2LOCATION-LITE-DB5.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.BIN
+sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 
 # Neue Volumes anlegen
 sudo chown root:root /var/lib/logstash
@@ -30,7 +39,7 @@ sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s
 sudo cp /home/amadmin/box4s/System/etc/box4s/logstash/* /etc/box4s/logstash/
 
 # Start des Services
-echo "Start BOX4s Service. Please wait."
+echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service
 
 # Waiting for healthy containers before continuation
