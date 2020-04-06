@@ -124,7 +124,7 @@ sudo apt purge -y apache2 nginx
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
 sudo chown root:root /etc/nginx/certs
-sudo cp /home/amadmin/box4s/BOX4s-main/ssl/*.pem /etc/nginx/certs
+sudo cp /home/amadmin/box4s/main/ssl/*.pem /etc/nginx/certs
 sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 
 #Install Auditbeat
@@ -181,7 +181,7 @@ libmaxminddb-dev rustc cargo
 sudo bash -c 'crontab -l > /tmp/crontab.root'
 sudo bash -c 'echo SHELL=/bin/bash >> /tmp/crontab.root'
 ESCAPED_LOG_FILE=$(echo $LOG_FILE | sed 's/\//\\\//g')
-cp /home/amadmin/box4s/BOX4s-main/install_system_after_reboot.sh /home/amadmin/
+cp /home/amadmin/box4s/main/install_system_after_reboot.sh /home/amadmin/
 sudo chmod +x /home/amadmin/install_system_after_reboot.sh
 sed -i '2s/.*$/LOG_FILE="'$ESCAPED_LOG_FILE'"/g' /home/amadmin/install_system_after_reboot.sh
 sed -i '3s/.*$/BRANCH="'$TAG'"/g' /home/amadmin/install_system_after_reboot.sh

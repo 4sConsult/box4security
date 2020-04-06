@@ -27,7 +27,7 @@ sleep 2
 VERSIONS=()
 # Use Python Script to create array of versions that have to be installed
 # versions between current and the latest
-cd $BASEDIR$GITDIR/BOX4s-main
+cd $BASEDIR$GITDIR/main
 waitForNet gitlab.am-gmbh.de
 mapfile -t VERSIONS < <(python3 update.py)
 TAG=${VERSIONS[-1]}
@@ -58,6 +58,6 @@ echo "VERSION=$TAG" > /home/amadmin/box4s/VERSION
 # Notify API that we're finished
 curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
 # Prepare new update.sh for next update
-sudo chown amadmin:amadmin $BASEDIR$GITDIR/BOX4s-main/update.sh
-sudo chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
+sudo chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
+sudo chmod +x $BASEDIR$GITDIR/main/update.sh
 exit $?

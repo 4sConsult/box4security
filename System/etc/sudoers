@@ -24,7 +24,7 @@ root	ALL=(ALL:ALL) ALL
 # Allow members of group sudo to execute any command
 %sudo	ALL=(ALL:ALL) ALL
 # Allow amadmin to execute restartSuricata as sudo without pw, has to come after sudo group
-amadmin ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/BOX4s-main/update.sh
+amadmin ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh
 # See sudoers(5) for more information on "#include" directives:
 
 #includedir /etc/sudoers.d

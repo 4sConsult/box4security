@@ -301,8 +301,8 @@ cd $BASEDIR$GITDIR/Scripts/Automation
 ./run-OpenVASinsertConf.sh
 
 echo "Install Crontab"
-cd /home/amadmin/box4s/BOX4s-main/crontab
-su - amadmin -c "crontab ~/box4s/BOX4s-main/crontab/amadmin.crontab"
+cd /home/amadmin/box4s/main/crontab
+su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
 sudo crontab root.crontab
 
 source /etc/environment
