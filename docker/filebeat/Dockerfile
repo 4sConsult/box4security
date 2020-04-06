@@ -12,5 +12,4 @@ RUN apt update && \
     chown filebeat:filebeat /var/lib/filebeat -R && \
     chown filebeat:filebeat /var/log/filebeat -R
 
-USER filebeat:filebeat
 CMD ["/usr/share/filebeat/bin/filebeat", "-e", "-c", "/etc/filebeat/filebeat.yml", "-path.home", "/usr/share/filebeat", "-path.config", "/etc/filebeat", "-path.data", "/var/lib/filebeat", "path.logs", "/var/log/filebeat"]
