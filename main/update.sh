@@ -29,7 +29,7 @@ VERSIONS=()
 # versions between current and the latest
 cd $BASEDIR$GITDIR/main
 waitForNet gitlab.am-gmbh.de
-mapfile -t VERSIONS < <(python3 update.py)
+mapfile -t VERSIONS < <(python3 /home/amadmin/box4s/scripts/Automation/versions.py)
 TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
 for v in "${VERSIONS[@]}"
