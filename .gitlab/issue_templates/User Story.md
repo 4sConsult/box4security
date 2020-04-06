@@ -1,4 +1,4 @@
-Als *‹Rolle›* möchte ich *‹Feature›* haben, damit ich *‹Aktion›* tun kann.
+Als Rolle möchte ich Feature haben, damit ich Aktion tun kann.
 
 ## Aufgaben
 Die folgenden Aufgaben müssen erledigt werden, um die User Story zu implementieren:
