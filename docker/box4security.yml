@@ -1,6 +1,10 @@
 version: '2.3'
 
 services:
+  baseimage:
+    build: baseimage/.
+    container_name: baseimage
+    image: "docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev"
   elasticsearch:
     build: elasticsearch/.
     container_name: elasticsearch
@@ -21,6 +25,13 @@ services:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+  metricbeat:
+    build: metricbeat/.
+    container_name: metricbeat
+    image: "docker-registry.am-gmbh.de/it-security/b4s/metricbeat:dev"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
   logstash:
     build: logstash/.
     container_name: logstash
@@ -41,6 +52,16 @@ services:
       - varlib_logstash:/var/lib/logstash/
       - etcbox4s_logstash:/etc/logstash/conf.d/general/
       - varlib_box4s:/var/lib/box4s/
+  filebeat:
+    build: filebeat/.
+    container_name: filebeat
+    depends_on:
+      logstash:
+        condition: service_healthy
+    image: "docker-registry.am-gmbh.de/it-security/b4s/filebeat:dev"
+    volumes:
+      - varlib_logstash:/var/lib/logstash/
+      - data:/data
   web:
     container_name: web
     image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
@@ -54,6 +75,11 @@ services:
        - varlib_box4s/:/var/lib/box4s/
     expose:
       - 5000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/_health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     # Add dockerhost IP to /etc/hosts in container for ssh
     extra_hosts:
       - "dockerhost:${INT_IP}"

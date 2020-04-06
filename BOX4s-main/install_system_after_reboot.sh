@@ -207,6 +207,15 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/l
 sudo mkdir -p /var/log/box4s/
 sudo touch /var/log/box4s/update.log
 
+# Download IP2Location DBs for the first time
+# IP2LOCATION Token
+IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
+cd /tmp/
+curl "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN
+curl "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB9LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN
+sudo mv IP2LOCATION-LITE-DB5.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.BIN
+sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
+
 # Filter Functionality
 # create files
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
@@ -315,12 +324,10 @@ pip3 install elasticsearch-curator --user
 echo "Starte übrige Dienste"
 sudo systemctl enable heartbeat-elastic
 sudo systemctl enable suricata
-sudo systemctl enable metricbeat
-sudo systemctl enable filebeat
 sudo systemctl enable openvas-scanner
 sudo systemctl enable openvas-manager
 sudo systemctl enable greenbone-security-assistant
-sudo systemctl start metricbeat filebeat openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
+sudo systemctl start openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
 
 echo "Initialisiere Schwachstellendatenbank"
 sudo greenbone-scapdata-sync --verbose --progress
