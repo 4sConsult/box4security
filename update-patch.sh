@@ -36,7 +36,7 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/l
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
 
 # Kopiere die Logstash-Konfigurationsdateien an den neuen Ort
-sudo cp /home/amadmin/box4s/System/etc/box4s/logstash/* /etc/box4s/logstash/
+sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
