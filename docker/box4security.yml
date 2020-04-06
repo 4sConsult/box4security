@@ -21,6 +21,13 @@ services:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+  metricbeat:
+    build: metricbeat/.
+    container_name: metricbeat
+    image: "docker-registry.am-gmbh.de/it-security/b4s/metricbeat:dev"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
   logstash:
     build: logstash/.
     container_name: logstash
