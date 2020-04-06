@@ -45,6 +45,8 @@ services:
         condition: service_healthy
     env_file:
      - /etc/default/logstash
+    environment:
+      - "ES_JAVA_OPTS=-Xms2g -Xmx8g"
     ports:
       - 9600:9600
       - 5044:5044
