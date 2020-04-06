@@ -5,9 +5,9 @@ TAG=""
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
 # Stoppe und deinstalliere Nginx und PostgreSQL
-sudo systemctl stop logstash auditbeat
-sudo systemctl disable logstash auditbeat
-sudo apt remove -y logstash auditbeat
+sudo systemctl stop logstash filebeat metricbeat auditbeat
+sudo systemctl disable logstash filebeat metricbeat auditbeat
+sudo apt remove -y logstash filebeat metricbeat auditbeat
 sudo apt autoremove -y
 
 # Stop des Services
@@ -47,6 +47,3 @@ sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh el
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh logstash
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx
-
-# Starte Filebeat zur Sicherheit neu
-sudo systemctl restart filebeat.service
