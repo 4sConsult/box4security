@@ -1,6 +1,10 @@
 version: '2.3'
 
 services:
+  baseimage:
+    build: baseimage/.
+    container_name: baseimage
+    image: "docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev"
   elasticsearch:
     build: elasticsearch/.
     container_name: elasticsearch
@@ -48,6 +52,16 @@ services:
       - varlib_logstash:/var/lib/logstash/
       - etcbox4s_logstash:/etc/logstash/conf.d/general/
       - varlib_box4s:/var/lib/box4s/
+  filebeat:
+    build: filebeat/.
+    container_name: filebeat
+    depends_on:
+      logstash:
+        condition: service_healthy
+    image: "docker-registry.am-gmbh.de/it-security/b4s/filebeat:dev"
+    volumes:
+      - varlib_logstash:/var/lib/logstash/
+      - data:/data
   web:
     container_name: web
     image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
