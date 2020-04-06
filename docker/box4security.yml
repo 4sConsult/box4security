@@ -14,6 +14,8 @@ services:
     image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
     volumes:
      - data:/data
+    environment:
+      - "ES_JAVA_OPTS=-Xms8g -Xmx8g"
   kibana:
     build: kibana/.
     container_name: kibana
