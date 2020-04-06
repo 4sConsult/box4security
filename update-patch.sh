@@ -10,6 +10,15 @@ sudo systemctl disable logstash filebeat metricbeat
 sudo apt remove -y logstash filebeat metricbeat
 sudo apt autoremove -y
 
+curl -XDELETE localhost:9200/.kibana
+curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
+{
+    "actions" : [
+        { "add" : { "index" : ".kibana_index_v3nighly_2", "alias" : ".kibana" } }
+    ]
+}
+'
+
 # Stop des Services
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
