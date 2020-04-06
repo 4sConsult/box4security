@@ -191,6 +191,7 @@ sudo crontab /tmp/crontab.root
 sudo rm /tmp/crontab.root
 echo "Setze Interfaces"
 # Find dhcp and remove everything after
+sudo cp /home/amadmin/box4s/main/etc/network/interfaces /etc/network/interfaces
 sudo sed -i '/.*dhcp/q' /etc/network/interfaces
 # Set MGMT interface for dhcp section
 # [DF] TODO: Commando ip wrorg. Use: cat /proc/net/dev -> dhcp is set by ubuntu setup. Not necessary
