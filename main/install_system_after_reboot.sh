@@ -162,13 +162,13 @@ sudo systemctl enable suricata
 # Service für automatische VPN-Verbindung einfügen
 sudo pkill -f openconnect # Send CTRL+C signal to all openconnect
 
-sudo cp /home/amadmin/box4s/System/etc/systemd/vpn.service /etc/systemd/system/vpn.service
+sudo cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
 sudo systemctl daemon-reload
 sudo systemctl enable vpn.service
 sudo systemctl start vpn.service
 
 # Kopiere den neuen Service an die richtige Stelle und enable den Service
-sudo cp /home/amadmin/box4s/System/etc/systemd/box4security.service /etc/systemd/system/box4security.service
+sudo cp /home/amadmin/box4s/main/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 sudo systemctl daemon-reload
 sudo systemctl enable box4security.service
 
