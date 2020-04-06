@@ -6,7 +6,7 @@ server.rewriteBasePath: true
 server.name: "box4security"
 elasticsearch.hosts: "http://elasticsearch:9200"
 xpack.canvas.enabled: true
-kibana.index: ".kibana_index_v3nighly"
+kibana.index: ".kibana"
 #server.ssl.enabled: True
 server.ssl.certificate: "/etc/kibana/kibana-selfsigned.crt"
 server.ssl.key: "/etc/kibana/kibana-selfsigned.key"
