@@ -53,7 +53,7 @@ auditbeat.modules:
     - login   # User logins, logouts, and system boots.
     - package # Installed, updated, and removed packages
     - process # Started and stopped processes
-    - socket  # Opened and closed sockets
+#    - socket  # Opened and closed sockets
     - user    # User information
 
   # How often datasets send state updates with the
@@ -175,7 +175,7 @@ processors:
 
 # Sets log level. The default log level is info.
 # Available log levels are: error, warning, info, debug
-logging.level: debug
+logging.level: info
 
 # At debug level, you ca
 # n selectively enable logging only for some components.
@@ -189,7 +189,7 @@ logging.level: debug
 # reporting is disabled by default.
 
 # Set to true to enable the monitoring reporter.
-monitoring.enabled: true
+#monitoring.enabled: true
 
 # Sets the UUID of the Elasticsearch cluster under which monitoring data for this
 # Auditbeat instance will appear in the Stack Monitoring UI. If output.elasticsearch
