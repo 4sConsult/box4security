@@ -24,6 +24,10 @@ services:
   auditbeat:
     build: auditbeat/.
     container_name: auditbeat
+    pid: "host"
+    cap_add:
+      - AUDIT_READ
+      - AUDIT_CONTROL
     depends_on:
       logstash:
         condition: service_healthy
