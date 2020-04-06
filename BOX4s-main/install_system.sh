@@ -134,13 +134,6 @@ cd /home/amadmin/box4s/
 cd Auditbeat/
 sudo cp * / -R
 
-#Install Metricbeat
-waitForNet
-sudo apt install -y metricbeat=7.5.0
-cd /home/amadmin/box4s
-cd Metricbeat
-sudo cp * / -R
-
 # Install Heartbeat
 waitForNet
 sudo apt install -y heartbeat-elastic=7.5.0

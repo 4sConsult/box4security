@@ -17,6 +17,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Version von Nginx festgelegt
 * Dockerimage für Logstash in Betrieb genommen
 * Dockerimage für Filebeat in Betrieb genommen
+* Dockerimage für Metricbeat in Betrieb genommen
 * Elasticsearch auf 7.6.2 aktualisiert
 * Kibana auf 7.6.2 aktualisiert
 
