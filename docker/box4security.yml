@@ -1,6 +1,10 @@
 version: '2.3'
 
 services:
+  baseimage:
+    build: baseimage/.
+    container_name: baseimage
+    image: "docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev"
   elasticsearch:
     build: elasticsearch/.
     container_name: elasticsearch
