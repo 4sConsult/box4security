@@ -43,7 +43,7 @@ echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service
 
 # Waiting for healthy containers before continuation
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh logstash
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx

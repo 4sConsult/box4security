@@ -3,7 +3,7 @@
 #$1 contains name of the cronjob
 #$2 contains variable to show cronjob failure/success
 #usage: replace name and cronjob:
-###################cronjob && sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh NAME SUCCESS || sh $BASEDIR/$GITDIR/Scripts/Automation/croncheck.sh NAME FAILURE
+###################cronjob && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh NAME SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh NAME FAILURE
 #
 #########Changable Variables################
 loglocation="/var/log/cronchecker"
@@ -37,14 +37,14 @@ alert()
 {
         #TODO: send email with boxname and error code(name of the cronjob, maybe also include output of sudo grep CRON /var/log/syslog)
         if [ $1 = "unexpected_error" ];then
-                echo "Unerwarteter Fehler beim Ausführen vom Cronjobchecker Script\nInput Cronjob: $1" | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh $email_reciever "Cronjob Skript endetete mit unerwartetem Fehler"
+                echo "Unerwarteter Fehler beim Ausführen vom Cronjobchecker Script\nInput Cronjob: $1" | $BASEDIR$GITDIR/scripts/System_Scripts/sendmail.sh $email_reciever "Cronjob Skript endetete mit unerwartetem Fehler"
         else
                 #try the job again, mark error but do not send email
                 #TODO: extract cronjob information
                 last_success=$(jq -r '.cronjobs[] | select(.title == "'$1'")| .run_last' "$logfile")
                 last_fail=$(jq -r '.cronjobs[] | select(.title == "'$1'")| .fail_last_prev' "$logfile")
 				loginfo=$(sudo grep "$1" /var/log/syslog)
-                echo "Fehler beim Ausführen von Cronjob $1\nFehler trat um $last_fail auf!\nLetzte Erfolgreiche Ausführung war um: $last_success\nLogs:\n\n$loginfo" | $BASEDIR$GITDIR/Scripts/System_Scripts/sendmail.sh $email_reciever "Cronjob Fehler für $1"
+                echo "Fehler beim Ausführen von Cronjob $1\nFehler trat um $last_fail auf!\nLetzte Erfolgreiche Ausführung war um: $last_success\nLogs:\n\n$loginfo" | $BASEDIR$GITDIR/scripts/System_Scripts/sendmail.sh $email_reciever "Cronjob Fehler für $1"
         fi
 }
 ###

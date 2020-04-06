@@ -1,6 +1,6 @@
 #!/bin/bash
 # Updating ASN
-/bin/bash $BASEDIR$GITDIR/Scripts/Automation/ASN_update.sh
+/bin/bash $BASEDIR$GITDIR/scripts/Automation/ASN_update.sh
 
 # Updating Geo-IP
 # IP2LOCATION Token

@@ -261,18 +261,18 @@ chmod +x -R $BASEDIR$GITDIR/Scripts
 
 #Installation Dashboards
 echo "Install Dashboards"
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
 # Kibana eine Chance geben wirklich ready zu sein - Warte 20 Sekunden
 sleep 20
 
 # Install the scores index
-cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
+cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh
 cd /home/amadmin/box4s
 
 # Import BI Dashboards
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Scripts/Automation/score_calculation/BIDashboards.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/scripts/Automation/score_calculation/BIDashboards.ndjson
 
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Startseite/Startseite-Uebersicht.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Alarme.ndjson
@@ -289,7 +289,7 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
 
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh db
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
 echo "Installing FetchQC"
 cd /home/amadmin/box4s
 cd FetchQC
@@ -297,7 +297,7 @@ pip install -r requirements.txt
 alembic upgrade head # Prepare DB
 
 # Insert Config for scan without bruteforce to openvas
-cd $BASEDIR$GITDIR/Scripts/Automation
+cd $BASEDIR$GITDIR/scripts/Automation
 ./run-OpenVASinsertConf.sh
 
 echo "Install Crontab"

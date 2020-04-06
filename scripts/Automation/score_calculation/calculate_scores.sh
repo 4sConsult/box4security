@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=$(echo "/home/amadmin/box4s/Scripts/Automation/score_calculation")
+DIR=$(echo "/home/amadmin/box4s/scripts/Automation/score_calculation")
 
 # Get the data for the alert score
 curl -s -H "Content-type: application/json" -X POST http://localhost:9200/_sql --data-binary @$DIR/alert_score.json > $DIR/alert_score_result.json
