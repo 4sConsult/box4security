@@ -47,6 +47,3 @@ sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh el
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh logstash
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
 sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx
-
-# Starte Filebeat zur Sicherheit neu
-sudo systemctl restart filebeat.service
