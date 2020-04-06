@@ -3,7 +3,7 @@ FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
 ADD etc/ /root/etc/
 
 RUN apt update && \
-	  apt install -y elasticsearch=7.6.2 && \
+	  apt install -y filebeat=7.6.2 && \
     rm -rf /var/lib/apt/lists/* && \
     cp /root/etc/* /etc/filebeat/ -R && \
     mkdir -p /var/log/filebeat && \
