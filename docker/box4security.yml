@@ -34,6 +34,8 @@ services:
         condition: service_healthy
     image: "docker-registry.am-gmbh.de/it-security/b4s/auditbeat:dev"
     restart: on-failure
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   logstash:
     build: logstash/.
     container_name: logstash
