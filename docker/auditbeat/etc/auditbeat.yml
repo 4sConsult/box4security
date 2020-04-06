@@ -14,9 +14,6 @@ auditbeat.modules:
   - /sbin
   - /usr/sbin
   - /etc
-  
-processors:
-  - add_cloud_metadata: ~
 
 - module: system
   datasets:
@@ -45,6 +42,9 @@ processors:
   # File patterns of the login record files.
   login.wtmp_file_pattern: /var/log/wtmp*
   login.btmp_file_pattern: /var/log/btmp*
+
+processors:
+  - add_cloud_metadata: ~
 
 output.logstash:
   hosts: ["logstash:5044"]
