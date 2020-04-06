@@ -19,13 +19,3 @@ Die folgenden Aufgaben müssen erledigt werden, um die User Story zu implementie
 | Zugehöriges Epic  | #      |
 
 `In dieser User Story wird zunächst keine Business Value gepflegt.`
-___
-## Folgendes Löschen
-### Eine gute User Story folgt dem "I-N-V-E-S-T-Prinzip"
-
-* **Independent** - Sollte unabhängig von den anderen sein
-* **Negotiable** - Sollte im Detail verhandelbar bleiben
-* **Valuable** - Sollte einen Mehrwert für die Funktionalität bieten und dem Benutzer einen sichtbaren und sinnvollen Fortschritt zeigen
-* **Estimatable** - Sollte Entwicklern die Möglichkeit geben den Aufwand einschätzen zu können
-* **Sizable** - Sollte innerhalb eines Sprint abarbeitbar sein
-* **Testable** - Sollte durch die Akzeptanzkriterien prüfbar sein
