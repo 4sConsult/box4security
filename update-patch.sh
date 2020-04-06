@@ -5,9 +5,9 @@ TAG=""
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
 # Stoppe und deinstalliere Nginx und PostgreSQL
-sudo systemctl stop logstash
-sudo systemctl disable logstash
-sudo apt remove -y logstash
+sudo systemctl stop logstash metricbeat
+sudo systemctl disable logstash metricbeat
+sudo apt remove -y logstash metricbeat
 sudo apt autoremove -y
 
 # Stop des Services
