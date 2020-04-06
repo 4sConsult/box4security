@@ -24,6 +24,7 @@ services:
   auditbeat:
     build: auditbeat/.
     container_name: auditbeat
+    user: root
     pid: "host"
     cap_add:
       - AUDIT_READ
@@ -32,6 +33,7 @@ services:
       logstash:
         condition: service_healthy
     image: "docker-registry.am-gmbh.de/it-security/b4s/auditbeat:dev"
+    restart: on-failure
   logstash:
     build: logstash/.
     container_name: logstash
