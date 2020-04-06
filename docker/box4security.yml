@@ -53,7 +53,7 @@ services:
         condition: service_healthy
     image: "docker-registry.am-gmbh.de/it-security/b4s/filebeat:dev"
     volumes:
-      
+      - varlib_logstash:/var/lib/logstash/
   web:
     container_name: web
     image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
