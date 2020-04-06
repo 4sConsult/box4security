@@ -2,7 +2,7 @@ FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
 
 ADD etc/ /root/etc
 
-RUN apt update &&
+RUN apt update && \
   apt install -y metricbeat=7.6.2 && \
   rm -rf /var/lib/apt/lists/* && \
   cp /root/etc/* /etc/metricbeat/ -R && \
