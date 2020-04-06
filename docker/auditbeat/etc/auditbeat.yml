@@ -2,46 +2,10 @@ auditbeat.modules:
 
 - module: auditd
   # Load audit rules from separate files. Same format as audit.rules(7).
-  audit_rule_files: [ '${path.config}/audit.rules.d/*.conf' ]
+  #audit_rule_files: [ '${path.config}/audit.rules.d/*.conf' ]
   audit_rules: |
     -w /etc/passwd -p wa -k identity
     -a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EPERM -k access
-
-- module: file_integrity
-  paths:
-  - /bin
-  - /usr/bin
-  - /sbin
-  - /usr/sbin
-  - /etc
-
-- module: system
-  datasets:
-    - package # Installed, updated, and removed packages
-
-  period: 2m # The frequency at which the datasets check for changes
-
-- module: system
-  datasets:
-    - host    # General host information, e.g. uptime, IPs
-    - login   # User logins, logouts, and system boots.
-    - process # Started and stopped processes
-    - socket  # Opened and closed sockets
-    - user    # User information
-
-  # How often datasets send state updates with the
-  # current state of the system (e.g. all currently
-  # running processes, all open sockets).
-  state.period: 12h
-
-  # Enabled by default. Auditbeat will read password fields in
-  # /etc/passwd and /etc/shadow and store a hash locally to
-  # detect any changes.
-  user.detect_password_changes: true
-
-  # File patterns of the login record files.
-  login.wtmp_file_pattern: /var/log/wtmp*
-  login.btmp_file_pattern: /var/log/btmp*
 
 processors:
   - add_cloud_metadata: ~
