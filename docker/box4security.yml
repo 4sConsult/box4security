@@ -28,11 +28,12 @@ services:
   auditbeat:
     build: auditbeat/.
     container_name: auditbeat
-    user: root
+    privileged: true
     pid: "host"
     cap_add:
       - AUDIT_READ
       - AUDIT_CONTROL
+      - NET_ADMIN
     depends_on:
       logstash:
         condition: service_healthy
@@ -40,6 +41,7 @@ services:
     restart: on-failure
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /sys:/sys
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
