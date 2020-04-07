@@ -22,6 +22,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Elasticsearch auf 7.6.2 aktualisiert
 * Kibana auf 7.6.2 aktualisiert
 * Maximaler Arbeitsspeicher des Systems wird berechnet und aufgeteilt
+* Projektstruktur grundlegend zugunsten verbesserter Übersichtichkeit geändert
 
 ### Fixed
 *
@@ -30,7 +31,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 *
 
 ### Removed
-*
+* Veraltete, sperrige Dateien entfernt um Speicherplatz und Netzwerkvolumen zu senken
 
 ## [1.7.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7) - 2020-04-01
 
