@@ -22,6 +22,7 @@ RUN apt update && \
     chown suri:suri /var/lib/suricata -R && \
     chown suri:suri /var/log/suricata -R && \
     chown suri:suri /var/run/suricata -R && \
+    chmod 777 /var/lib/suricata -R && \
     chmod +x /var/lib/suricata/scripts/update.sh && \
     oinkmaster -C /etc/suricata/oinkmaster.conf -o /var/lib/suricata/rules && \
     /var/lib/suricata/scripts/update.sh
