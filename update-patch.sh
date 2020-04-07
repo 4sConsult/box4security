@@ -26,16 +26,24 @@ sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 
 # Neue Volumes anlegen
+sudo mkdir -p /etc/box4s/suricata
+sudo mkdir -p /etc/box4s/logstash
+sudo mkdir -p /var/lib/suricata
+
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 
-sudo mkdir -p /etc/box4s/logstash
+sudo chown root:root /var/lib/suricata
+sudo chmod -R 777 /var/lib/suricata
+
 sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
 
 # Volumes in Docker anlegen
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/suricata/ --opt o=bind varlib_suricata
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
+sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/suricata/ --opt o=bind etcbox4s_suricata
 
 # Kopiere die Logstash-Konfigurationsdateien an den neuen Ort
 sudo cp /home/amadmin/box4s/System/etc/box4s/logstash/* /etc/box4s/logstash/
