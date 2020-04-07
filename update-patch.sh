@@ -23,6 +23,18 @@ curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
+# Setting memory values
+# the new environment files come from updating the repo
+# Ermittle ganzzahligen RAM in GB (abgerundet)
+MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+MEM=$(python -c "print($MEM/1024**2)")
+# Die Häfte davon soll Elasticsearch zur Verfügung stehen
+ESMEM=$(python -c "print($MEM*0.5)")
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/.env.es
+# 1/4 davon für Logstash
+LSMEM=$(python -c "print($MEM*0.25)")
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
+
 # Download IP2Location DBs for the first time
 # IP2LOCATION Token
 IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
