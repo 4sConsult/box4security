@@ -30,6 +30,10 @@ services:
     container_name: suricata
     restart: always
     image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:dev"
+    volumes:
+      - data:/data
+      - varlib_suricata:/var/lib/suricata
+      - etcbox4s_suricata:/etc/suricata/
   auditbeat:
     build: auditbeat/.
     container_name: auditbeat
