@@ -281,8 +281,7 @@ cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh
 cd /home/amadmin/box4s
 
-# Import BI Dashboards
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/scripts/Automation/score_calculation/BIDashboards.ndjson
+# Import Dashboards
 
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Startseite/Startseite-Uebersicht.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Alarme.ndjson
