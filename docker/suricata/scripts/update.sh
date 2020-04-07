@@ -12,6 +12,6 @@ suricata-update enable-source tgreen/hunting
 suricata-update
 
 # If this is not during install, reload the rules
-if [ -z "$1" ] then
-  suricatasc -c ruleset-reload-nonblocking
+if [ -z "$1" ]; then
+  suricatasc -c ruleset-reload-nonblocking;
 fi
