@@ -36,7 +36,8 @@ services:
       - SYS_NICE
     volumes:
       - data:/data
-      - varlib_suricata:/var/lib/suricata
+      - varlib_suricata:/var/lib/suricata/
+      - varlib_box4s:/var/lib/box4s/
       - etcbox4s_suricata:/etc/suricata/
   auditbeat:
     build: auditbeat/.
