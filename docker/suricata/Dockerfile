@@ -25,4 +25,4 @@ RUN groupadd suri && \
     chown suri:suri /var/log/suricata -R && \
     chown suri:suri /var/run/suricata -R && \
 
-CMD ["/usr/bin/suricata" "-c" "/etc/suricata/suricata.yaml"]
+CMD ["/usr/bin/suricata" "-c" "/etc/suricata/suricata.yaml", "-F" "/var/lib/box4s/suricata_suppress.bpf"]
