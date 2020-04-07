@@ -14,6 +14,9 @@ RUN mkdir -p /var/lib/suricata/scripts/ && \
     mkdir -p /var/lib/suricata/rules/ && \
     mkdir -p /var/log/suricata && \
     mkdir -p /var/run/suricata && \
+    mkdir -p /etc/suricata/ && \
+    mkdir -p /var/lib/box4s && \
+    touch /var/lib/box4s/suricata_suppress.bpf && \
     mv /root/etc/* /etc/suricata/ && \
     mv /root/scripts/* /var/lib/suricata/scripts/ && \
     mv /root/var_lib/* /var/lib/suricata/ && \
@@ -27,4 +30,5 @@ RUN mkdir -p /var/lib/suricata/scripts/ && \
     chmod +x /var/lib/suricata/scripts/update.sh && \
     /var/lib/suricata/scripts/update.sh install
 
-CMD ["/usr/bin/suricata" "-c" "/etc/suricata/suricata.yaml", "-F" "/var/lib/box4s/suricata_suppress.bpf"]
+# USER root
+CMD /usr/bin/suricata -vvv -c /etc/suricata/suricata.yaml -F /var/lib/box4s/suricata_suppress.bpf -i eth0
