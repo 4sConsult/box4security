@@ -88,6 +88,7 @@
         dataType: "json",
         timeout: 5000,
         success: (data) => {
+          $('#tbl-errormsg').prev().addClass('transition hidden');
           addToTable(data);
         },
         error: (jqXhr, textStatus, errorMessage) => {
