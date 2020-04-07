@@ -1909,8 +1909,8 @@ rule-files:
 ## Auxiliary configuration files.
 ##
 
-classification-file: /etc/suricata/classification.config
-reference-config-file: /etc/suricata/reference.config
+classification-file: /var/lib/suricata/rules/classification.config
+reference-config-file: /var/lib/suricata/rules/reference.config
 
 ##
 ## Include other configs
