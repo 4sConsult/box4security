@@ -11,6 +11,7 @@ RUN apt update && \
     apt install -y suricata oinkmaster && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/suricata/scripts/ && \
+    mkdir -p /var/lib/suricata/rules/ && \
     mkdir -p /var/log/suricata && \
     mkdir -p /var/run/suricata && \
     mv /root/etc/* /etc/suricata/ && \
