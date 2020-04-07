@@ -11,4 +11,7 @@ suricata-update enable-source etnetera/aggressive
 suricata-update enable-source tgreen/hunting
 suricata-update
 
-suricatasc -c ruleset-reload-nonblocking
+# If this is not during install, reload the rules
+if [ -z "$1" ] then
+  suricatasc -c ruleset-reload-nonblocking
+fi

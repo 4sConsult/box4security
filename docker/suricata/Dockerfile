@@ -25,6 +25,6 @@ RUN mkdir -p /var/lib/suricata/scripts/ && \
     chown suri:suri /var/run/suricata -R && \
     chmod 777 /var/lib/suricata/rules -R && \
     chmod +x /var/lib/suricata/scripts/update.sh && \
-    /var/lib/suricata/scripts/update.sh
+    /var/lib/suricata/scripts/update.sh install
 
 CMD ["/usr/bin/suricata" "-c" "/etc/suricata/suricata.yaml", "-F" "/var/lib/box4s/suricata_suppress.bpf"]
