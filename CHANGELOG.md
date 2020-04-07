@@ -23,7 +23,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Kibana auf 7.6.2 aktualisiert
 
 ### Fixed
-*
+* Kleine Fehler nicht-aufgelöster Referenzen in Dashboards beseitigt
 
 ### Deprecated
 *
