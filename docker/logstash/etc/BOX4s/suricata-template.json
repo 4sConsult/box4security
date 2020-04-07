@@ -13,18 +13,8 @@
   },
     "mappings": {
       "properties": {
-      "link" : {
-        "type": "object",
-        "properties": {
-            "surpress": {
-              "type" : "nested",
-                "properties": {
-                  "bpf" : {
-                    "type": "keyword"
-                  }
-                }
-              }
-            }
+      "link_suppress" : {
+        "type": "text",
       },
       "destination" : {
         "type": "object",
