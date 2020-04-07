@@ -18,6 +18,21 @@
         </tbody>
       </table>
     </div>
+    <div class="ui center aligned grid">
+      <div class="center aligned row">
+        <div class="one column">
+          <i class="large notched circle loading icon"></i>
+        </div>
+      </div>
+    </div>
+    <div id='tbl-errormsg' class="transition hidden ui icon negative message">
+      <i class="exclamation circle icon"></i>
+      <div class="content">
+        <div class="header">
+          Abfrage der verfügbaren Updates fehlgeschlagen
+        </div>
+      </div>
+  </div>
   </div>
 </div>
 <div class="ui modal">
@@ -69,9 +84,22 @@
   </script>
   <script type="text/javascript">
       // fetch all available releases and add to table
-      getEndpoint('ver/releases/').then((ret) => {
-        addToTable(ret);
-      });
+      $.ajax('//{{ request.host }}/ver/releases/', {
+        dataType: "json",
+        timeout: 5000,
+        success: (data) => {
+          addToTable(data);
+        },
+        error: (jqXhr, textStatus, errorMessage) => {
+          if(textStatus==="timeout"){
+            $('#tbl-errormsg').children('.content').append(`<p>Timeout beim Verbindungsaufbau zum Versionskontrollserver erreicht. Möglicherweise ist der VPN-Tunnel gestört.</p>`);
+          } else {
+            $('#tbl-errormsg').children('.content').append(`<p>Die Verbindung zum Versionskontrollserver konnte aus unbekanntem Grund nicht aufgebaut werden. Wir bitten um Entschuldigung.</p>`);
+          }
+          $('#tbl-errormsg').prev().addClass('transition hidden');
+          $('#tbl-errormsg').removeClass('transition hidden');
+        }
+      })
       async function addToTable(data) {
         // Fetch current version from api
         const currver = await getEndpoint('ver/');
