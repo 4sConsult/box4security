@@ -28,7 +28,8 @@ RUN mkdir -p /var/lib/suricata/scripts/ && \
     chown suri:suri /var/run/suricata -R && \
     chmod 777 /var/lib/suricata/rules -R && \
     chmod +x /var/lib/suricata/scripts/update.sh && \
+    chmod +x /var/lib/suricata/scripts/entry.sh && \
     /var/lib/suricata/scripts/update.sh install
 
-# USER root
-CMD /usr/bin/suricata -vvv -c /etc/suricata/suricata.yaml -F /var/lib/box4s/suricata_suppress.bpf -i eth0
+USER root
+ENTRYPOINT ["/var/lib/suricata/scripts/entry.sh"]

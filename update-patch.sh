@@ -38,6 +38,10 @@ sudo chmod -R 777 /var/lib/suricata
 sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
 
+# Interface für Suricata festlegen
+touch /etc/box4s/suricata/INTERFACE
+sudo ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | sudo tee -a /etc/box4s/suricata/INTERFACE
+
 # Volumes in Docker anlegen
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/suricata/ --opt o=bind varlib_suricata
