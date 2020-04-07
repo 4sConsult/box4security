@@ -9,8 +9,8 @@ RUN apt update && \
     add-apt-repository ppa:oisf/suricata-stable && \
     apt update && \
     apt install -y suricata oinkmaster && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /var/lib/suricata/scripts/ && \
+    rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /var/lib/suricata/scripts/ && \
     mkdir -p /var/lib/suricata/rules/ && \
     mkdir -p /var/log/suricata && \
     mkdir -p /var/run/suricata && \
