@@ -17,7 +17,7 @@ vars:
     #HOME_NET: "[10.0.0.0/8]"
     #HOME_NET: "[172.16.0.0/12]"
     #HOME_NET: "any"
-    INTERNAL_IP:   
+    INTERNAL_IP:
     EXTERNAL_NET: "!$HOME_NET"
     #EXTERNAL_NET: "any"
 
@@ -1911,7 +1911,6 @@ rule-files:
 
 classification-file: /etc/suricata/classification.config
 reference-config-file: /etc/suricata/reference.config
-# threshold-file: /etc/suricata/threshold.config
 
 ##
 ## Include other configs
