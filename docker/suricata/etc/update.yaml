@@ -1,1 +1,1 @@
-reload-command: suricatasc -c reload-rules
+reload-command: suricatasc -c ruleset-reload-nonblocking
