@@ -25,6 +25,11 @@ services:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+  suricata:
+    build: suricata/.
+    container_name: suricata
+    restart: always
+    image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:dev"
   auditbeat:
     build: auditbeat/.
     container_name: auditbeat
