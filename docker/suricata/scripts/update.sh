@@ -8,3 +8,5 @@ suricata-update enable-source sslbl/ssl-fp-blacklist
 suricata-update enable-source etnetera/aggressive
 suricata-update enable-source tgreen/hunting
 suricata-update
+
+suricatasc -c ruleset-reload-nonblocking
