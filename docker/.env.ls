@@ -1,1 +1,1 @@
-ES_JAVA_OPTS="-Xms4g -Xmx4g"
+ES_JAVA_OPTS=-Xms4g -Xmx4g
