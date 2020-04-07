@@ -5,6 +5,4 @@ RUN apt update && \
     add-apt-repository ppa:oisf/suricata-stable && \
     apt update && \
     apt install -y suricata && \
-    pip install suricata-update && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf /root/.cache/pip/*
