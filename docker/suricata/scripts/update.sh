@@ -8,5 +8,6 @@ suricata-update enable-source sslbl/ssl-fp-blacklist
 suricata-update enable-source etnetera/aggressive
 suricata-update enable-source tgreen/hunting
 suricata-update
+oinkmaster -C /etc/suricata/oinkmaster.conf -o /var/lib/suricata/rules
 
 suricatasc -c ruleset-reload-nonblocking
