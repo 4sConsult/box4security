@@ -38,7 +38,6 @@ services:
       - data:/data
       - varlib_suricata:/var/lib/suricata/
       - varlib_box4s:/var/lib/box4s/
-      - etcbox4s_suricata:/etc/suricata/
   auditbeat:
     build: auditbeat/.
     container_name: auditbeat
@@ -166,6 +165,4 @@ volumes:
   varlib_suricata:
     external: true
   etcbox4s_logstash:
-    external: true
-  etcbox4s_suricata:
     external: true
