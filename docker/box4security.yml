@@ -14,8 +14,8 @@ services:
     image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
     volumes:
      - data:/data
-    environment:
-      - "ES_JAVA_OPTS=-Xms8g -Xmx8g"
+    env_file:
+      - ./.env.es
   kibana:
     build: kibana/.
     container_name: kibana
@@ -45,8 +45,7 @@ services:
         condition: service_healthy
     env_file:
      - /etc/default/logstash
-    environment:
-      - "ES_JAVA_OPTS=-Xms2g -Xmx8g"
+     - ./.env.ls
     ports:
       - 9600:9600
       - 5044:5044
