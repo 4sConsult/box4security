@@ -4,6 +4,7 @@ from flask import request, render_template
 import requests
 import os
 import subprocess
+from requests.exceptions import Timeout, ConnectionError
 
 
 def tail(f, window=1):
@@ -168,20 +169,28 @@ class LSRs(Resource):
 
 
 class Version(Resource):
+    """API Resource for working with the current version."""
+
     def get(self):
-        # return currently installed version
+        """GET currently installed version."""
         CURRVER = os.getenv('VERSION')
         return {'version': CURRVER}
 
 
 class AvailableReleases(Resource):
+    """API Resource for working with all available releases."""
+
     def get(self):
-        # return available releases from gitlab
+        """GET: fetch and return all available releases with their relevant info from GitLab."""
         try:
             git = requests.get('https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags',
                                headers={'PRIVATE-TOKEN': os.getenv('GIT_TOKEN')}).json()
+        except Timeout:
+            abort(504, message="GitLab API Timeout")
+        except ConnectionError:
+            abort(503, message="GitLab API unreachable")
         except Exception:
-            abort(408, message="GitLab API Timeout")
+            abort(502, message="GitLab API Failure")
         else:
             # take only relevant info
             res = [{'version': tag['name'], 'message': tag['message'], 'date': tag['commit']['created_at'], 'changelog': tag['release']['description'] if tag['release'] else ''} for tag in git]
