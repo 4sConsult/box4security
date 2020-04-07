@@ -5,9 +5,9 @@ TAG=""
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
 # Stoppe und deinstalliere Nginx und PostgreSQL
-sudo systemctl stop logstash filebeat metricbeat
-sudo systemctl disable logstash filebeat metricbeat
-sudo apt remove -y logstash filebeat metricbeat
+sudo systemctl stop logstash filebeat metricbeat auditbeat auditd
+sudo systemctl disable logstash filebeat metricbeat auditbeat auditd
+sudo apt remove -y logstash filebeat metricbeat auditbeat
 sudo apt autoremove -y
 
 curl -XDELETE localhost:9200/.kibana
@@ -43,9 +43,11 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 # IP2LOCATION Token
 IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
 cd /tmp/
-curl "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN
-curl "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB9LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN
+curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN.zip
+curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
+sudo unzip -o IP2LOCATION-LITE-DB5.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.BIN
+sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 
 # Neue Volumes anlegen

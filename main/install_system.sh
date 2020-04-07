@@ -127,13 +127,6 @@ sudo chown root:root /etc/nginx/certs
 sudo cp /home/amadmin/box4s/main/ssl/*.pem /etc/nginx/certs
 sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 
-#Install Auditbeat
-waitForNet
-sudo apt install -y auditd auditbeat=7.5.0
-cd /home/amadmin/box4s/
-cd Auditbeat/
-sudo cp * / -R
-
 # Install Heartbeat
 waitForNet
 sudo apt install -y heartbeat-elastic=7.5.0

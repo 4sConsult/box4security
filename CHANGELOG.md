@@ -12,11 +12,14 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Automatischer Healthcheck für Weboberfläche hinzugefügt
 * Darstellung des Changelogs in Updatesektion der Weboberfläche
 * Anzeige des Links zum zukünftigen Unterdrücken eines Alarms auf dem "[SIEM] - Alarme" Dashboard
+* Ladestatus & Fehleranzeige bei Verbindung zu Versionskontrollserver
+
 
 ### Changed
 * Version von PostgreSQL festgelegt
 * Version von Nginx festgelegt
 * Dockerimage für Logstash in Betrieb genommen
+* Dockerimage für Auditbeat in Betrieb genommen
 * Dockerimage für Filebeat in Betrieb genommen
 * Dockerimage für Metricbeat in Betrieb genommen
 * Elasticsearch auf 7.6.2 aktualisiert
@@ -25,7 +28,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Projektstruktur grundlegend zugunsten verbesserter Übersichtichkeit geändert
 
 ### Fixed
-*
+* Kleine Fehler nicht-aufgelöster Referenzen in Dashboards beseitigt
 
 ### Deprecated
 *

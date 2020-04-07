@@ -1,0 +1,15 @@
+auditbeat.modules:
+
+- module: auditd
+  # Load audit rules from separate files. Same format as audit.rules(7).
+  #audit_rule_files: [ '${path.config}/audit.rules.d/*.conf' ]
+  audit_rules: |
+    -w /etc/passwd -p wa -k identity
+    -a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EPERM -k access
+
+processors:
+  - add_cloud_metadata: ~
+
+output.logstash:
+  hosts: ["logstash:5044"]
+logging.level: info
