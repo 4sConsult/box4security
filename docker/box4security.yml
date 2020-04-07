@@ -30,6 +30,10 @@ services:
     container_name: suricata
     restart: always
     image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:dev"
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - SYS_NICE
     volumes:
       - data:/data
       - varlib_suricata:/var/lib/suricata
