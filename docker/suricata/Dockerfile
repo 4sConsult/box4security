@@ -1,6 +1,8 @@
 FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
 
-RUN add-apt-repository ppa:oisf/suricata-stable && \
+RUN apt update && \
+    apt install -y software-properties-common && \
+    add-apt-repository ppa:oisf/suricata-stable && \
     apt update && \
     apt install -y suricata
 RUN apt install -y libbpf
