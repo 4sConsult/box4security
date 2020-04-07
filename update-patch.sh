@@ -19,6 +19,10 @@ curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
 }
 '
 
+# Install updated Dashboard and Index Pattern
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Alarme.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
+
 # Stop des Services
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
