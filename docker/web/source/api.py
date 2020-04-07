@@ -1,11 +1,8 @@
-from source import app, models, db
+from source import models, db
 from flask_restful import Resource, reqparse, abort
 from flask import request, render_template
 import requests
-import jinja2
 import os
-import json
-import io
 import subprocess
 
 
