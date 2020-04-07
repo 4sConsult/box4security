@@ -32,4 +32,5 @@ RUN mkdir -p /var/lib/suricata/scripts/ && \
     /var/lib/suricata/scripts/update.sh install
 
 USER root
-ENTRYPOINT ["/var/lib/suricata/scripts/entry.sh"]
+#ENTRYPOINT ["/var/lib/suricata/scripts/entry.sh"]
+CMD /usr/bin/suricata -vvv -c /etc/suricata/suricata.yaml -F /var/lib/box4s/suricata_suppress.bpf -i ens192
