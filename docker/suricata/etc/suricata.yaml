@@ -598,7 +598,7 @@ logging:
 ##
 ## See "Advanced Capture Options" below for more options, including NETMAP
 ## and PF_RING.
-##
+##"
 
 # Linux high speed capture support
 af-packet:
