@@ -172,9 +172,14 @@ class Version(Resource):
     """API Resource for working with the current version."""
 
     def get(self):
-        """GET currently installed version."""
+        """
+        GET currently installed version and environment.
+
+        version is a semantic version string
+        env specifies the environment: prod (default) or dev
+        """
         CURRVER = os.getenv('VERSION')
-        return {'version': CURRVER}
+        return {'version': CURRVER, 'env': os.getenv('BOX4s_ENV', 'production')}
 
 
 class AvailableReleases(Resource):
