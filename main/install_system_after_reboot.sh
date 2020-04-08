@@ -172,6 +172,8 @@ sudo cp /home/amadmin/box4s/main/etc/systemd/box4security.service /etc/systemd/s
 sudo systemctl daemon-reload
 sudo systemctl enable box4security.service
 
+# Sleep 5s to make sure the vpn is established
+sleep 5
 # Login bei der Docker-Registry des GitLabs und Download der Container
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
