@@ -172,6 +172,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable box4security.service
 
 # Login bei der Docker-Registry des GitLabs und Download der Container
+waitForNet docker-registry.am-gmbh.de
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
