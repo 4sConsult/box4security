@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# Installation Grundsystem. Dauer ca: 30min
-# Es muss eine Disk im Insteller auf /data angelegt werden
+# Es muss eine Disk im Installer auf /data angelegt werden
 # Der User amadmin muss eingerichtet und verwendet werden.
-# Installationspakete Basic Ubuntu Server, Postgresqsl
 LOG_FILE="/var/log/installScript.log"
 if [[ ! -w $LOG_FILE ]]; then
   LOG_FILE="/home/amadmin/installScript.log"
@@ -11,18 +9,19 @@ fi
 
 function testNet() {
   # Returns 0 for successful internet connection and dns resolution, 1 else
-  ping -q -c 1 -W 1 google.com >/dev/null;
+  ping -q -c 1 -W 1 $1 >/dev/null;
   return $?
 }
 
 function waitForNet() {
-  while ! testNet; do
+  # use argument or default value of google.com
+  HOST=${1:-"google.com"}
+  while ! testNet $HOST; do
     # while testNet returns non zero value
-    echo "No internet connectivity or dns resolution, sleeping for 15s"
+    echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s"
     sleep 15s
   done
 }
-
 
 waitForNet
 sudo apt install -y curl python3 git git-lfs openconnect
