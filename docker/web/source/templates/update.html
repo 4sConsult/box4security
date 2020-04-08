@@ -58,7 +58,7 @@
 {% block scripts %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.8.2/marked.min.js" integrity="sha256-6Om9HYjLO4iZmEyM/7oAv7GW1WzACqQ4PV51bTgnioI=" crossorigin="anonymous"></script>
-  <script src="/static/compareversion.js" charset="utf-8"></script>
+  <script src="/static/semver.js" charset="utf-8"></script>
   <script type="text/javascript">
     // helper function to fetch an API endpoint
     function apiEndpoint(endpoint, method='GET', redirect='follow') {
@@ -107,74 +107,76 @@
         let tbody = $(`#tbl tbody`);
         // For each available version, populate fields and add to table
         data.forEach((version, i) => {
-          let date = moment(version.date);
-          let ago = Math.abs(date.diff(moment(),'days'));
-          if(ago == 0) {
-            // Difference is less than 1 day, display hours
-            ago = Math.abs(date.diff(moment(),'hours'));
-            var strago = `vor ${ago} Stunden`;
-          } else {
-            var strago = `vor ${ago} Tagen`;
-          }
-          var description = `<td>
-              <div class="ui accordion">
-                <div class="title">
-                 <i class="dropdown icon"></i>
-                 ${version.message}
-                </div>
-                <div class="fluid content">
-                  <div class="ui divider"></div>`
-                 + marked(version.changelog) +
-               `</div>
-             </div>
-            </td>`;
-          // Build row depending on if version is equal, higher or lower
-          switch (compareVersions(currver.version, version.version)) {
+          if (! (new semver.SemVer(version.version).prerelease.length)) {
+            let date = moment(version.date);
+            let ago = Math.abs(date.diff(moment(),'days'));
+            if(ago == 0) {
+              // Difference is less than 1 day, display hours
+              ago = Math.abs(date.diff(moment(),'hours'));
+              var strago = `vor ${ago} Stunden`;
+            } else {
+              var strago = `vor ${ago} Tagen`;
+            }
+            var description = `<td>
+                <div class="ui accordion">
+                  <div class="title">
+                   <i class="dropdown icon"></i>
+                   ${version.message}
+                  </div>
+                  <div class="fluid content">
+                    <div class="ui divider"></div>`
+                   + marked(version.changelog) +
+                 `</div>
+               </div>
+              </td>`;
+            // Build row depending on if version is equal, higher or lower
+            switch (semver.compare(currver.version, version.version)) {
 
-            case 0:
-            // Versions are equal
-            var row = `<tr>
-              <td class="collapsing"><b>${version.version}</b></td>
-              ${description}
-              <td class="collapsing">${strago}</td>
-              <td class="center aligned collapsing">
-                  <i class="green checkmark icon"></i>
-              </td>
-            </tr>`;
-              break;
-            case 1:
-              // Left version higher
+              case 0:
+              // Versions are equal
               var row = `<tr>
-                <td class="collapsing">${version.version}</td>
+                <td class="collapsing"><b>${version.version}</b></td>
                 ${description}
                 <td class="collapsing">${strago}</td>
                 <td class="center aligned collapsing">
                     <i class="green checkmark icon"></i>
                 </td>
               </tr>`;
-              break;
-            case -1:
-              // Right version higher
-              var row = `<tr>
-                <td class="collapsing">${version.version}</td>
-                ${description}
-                <td class="collapsing">${strago}</td>
-                <td class="center aligned collapsing">`;
-                if(i == 0) {
-                  // most recent update
-                  row+=`<a data-version="${version.version}" class="ui icon green button">
-                    <i class="download icon"></i>
-                  </a>`
-                } else {
-                  // intermediate update
-                  row+=`<i class="chevron circle up icon"></i>`
-                }
-                row+=`</td>
-              </tr>`;
-              break;
+                break;
+              case 1:
+                // Left version higher
+                var row = `<tr>
+                  <td class="collapsing">${version.version}</td>
+                  ${description}
+                  <td class="collapsing">${strago}</td>
+                  <td class="center aligned collapsing">
+                      <i class="green checkmark icon"></i>
+                  </td>
+                </tr>`;
+                break;
+              case -1:
+                // Right version higher
+                var row = `<tr>
+                  <td class="collapsing">${version.version}</td>
+                  ${description}
+                  <td class="collapsing">${strago}</td>
+                  <td class="center aligned collapsing">`;
+                  if(i == 0) {
+                    // most recent update
+                    row+=`<a data-version="${version.version}" class="ui icon green button">
+                      <i class="download icon"></i>
+                    </a>`
+                  } else {
+                    // intermediate update
+                    row+=`<i class="chevron circle up icon"></i>`
+                  }
+                  row+=`</td>
+                </tr>`;
+                break;
+            }
+            // add row to table
+            tbody.append(row);
           }
-          // add row to table
-          tbody.append(row);
         });
         $('.ui.accordion').accordion();
         $('a.green.button').on('click', async (e) => {
