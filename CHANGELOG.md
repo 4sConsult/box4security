@@ -9,6 +9,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Suricata 5.0.1
 
 ### Added
+* Überwachung des Update-Prozess mit automatischem Rollback auf gesicherten Zustand bei Misserfolg
 * Automatischer Healthcheck für Weboberfläche hinzugefügt
 * Darstellung des Changelogs in Updatesektion der Weboberfläche
 * Anzeige des Links zum zukünftigen Unterdrücken eines Alarms auf dem "[SIEM] - Alarme" Dashboard
