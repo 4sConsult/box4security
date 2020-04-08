@@ -1,12 +1,10 @@
-from source import app, models, db
+from source import models, db
 from flask_restful import Resource, reqparse, abort
 from flask import request, render_template
 import requests
-import jinja2
 import os
-import json
-import io
 import subprocess
+from requests.exceptions import Timeout, ConnectionError
 
 
 def tail(f, window=1):
@@ -51,7 +49,7 @@ def writeBPFFile():
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
         # read pw from $SSHPASS and login to dockerhost to execute restartSuricata
-        os.system(f'sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')
+        os.system('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')
 
 
 class BPF(Resource):
@@ -171,20 +169,28 @@ class LSRs(Resource):
 
 
 class Version(Resource):
+    """API Resource for working with the current version."""
+
     def get(self):
-        # return currently installed version
+        """GET currently installed version."""
         CURRVER = os.getenv('VERSION')
         return {'version': CURRVER}
 
 
 class AvailableReleases(Resource):
+    """API Resource for working with all available releases."""
+
     def get(self):
-        # return available releases from gitlab
+        """GET: fetch and return all available releases with their relevant info from GitLab."""
         try:
             git = requests.get('https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags',
                                headers={'PRIVATE-TOKEN': os.getenv('GIT_TOKEN')}).json()
+        except Timeout:
+            abort(504, message="GitLab API Timeout")
+        except ConnectionError:
+            abort(503, message="GitLab API unreachable")
         except Exception:
-            abort(408, message="GitLab API Timeout")
+            abort(502, message="GitLab API Failure")
         else:
             # take only relevant info
             res = [{'version': tag['name'], 'message': tag['message'], 'date': tag['commit']['created_at'], 'changelog': tag['release']['description'] if tag['release'] else ''} for tag in git]
@@ -201,7 +207,7 @@ class LaunchUpdate(Resource):
     def post(self):
         # launch update.sh with target version
         # targetVersion = self.args['target']
-        subprocess.Popen('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/box4s/BOX4s-main/update.sh', shell=True)
+        subprocess.Popen('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/box4s/main/update.sh', shell=True)
         return {"message": "accepted"}, 200
 
 
@@ -237,6 +243,7 @@ class UpdateStatus(Resource):
         # empty update state file
         f = open('/var/lib/box4s/.update.state', 'w')
         f.close()
+        return {}, 205
 
 
 class Alert(Resource):
@@ -251,3 +258,11 @@ class Alert(Resource):
 
     def delete(self):
         return {}, 501
+
+
+class Health(Resource):
+    """Health endpoint."""
+
+    def get(self):
+        """Return Healthy."""
+        return {'status': 'pass'}, 200

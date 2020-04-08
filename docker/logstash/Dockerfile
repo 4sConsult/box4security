@@ -1,0 +1,64 @@
+FROM ubuntu:19.10
+RUN	apt update && \
+	apt install -y curl wget apt-transport-https openjdk-11-jre gnupg && \
+	rm -rf /var/lib/apt/lists/*
+
+ADD	etc/ /root/etc/
+
+RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
+	echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
+	apt update && \
+	apt install -y logstash=1:7.6.2-1 && \
+	wget -O /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar https://jdbc.postgresql.org/download/postgresql-42.2.8.jar && \
+	mkdir -p /var/log/logstash && \
+	mkdir -p /etc/box4s && \
+	mkdir -p /usr/share/logstash/config/ && \
+	mkdir -p /etc/logstash/ && \
+	rm -rf /var/lib/apt/lists/* && \
+	cp -r /root/etc/* /etc/logstash/ && \
+	# Filebeat
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
+	# OpenVAS
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
+	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/openvas/30-preBOX4s.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/40-BOX4sspecial.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/openvas/50-DNS_Resolv.conf && \
+	# Suricata
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/25-4s_Special.conf && \
+	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/suricata/30-preBOX4s.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/40-BOX4sspecial.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/suricata/50-DNS_Resolv.conf && \
+	# Auditbeat
+	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/auditbeat/20-BeatClientIP.conf && \
+	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/auditbeat/30-preBOX4s.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/auditbeat/40-BOX4sspecial.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/auditbeat/50-DNS_Resolv.conf && \
+	# Metricbeat
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf && \
+	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/metricbeat/20-BeatClientIP.conf && \
+	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/metricbeat/30-preBOX4s.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/metricbeat/40-BOX4sspecial.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/50-DNS_Resolv.conf && \
+	# Winlogbeat
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/15-dns_resolv.conf && \
+	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/winlogbeat/20-BeatClientIP.conf && \
+	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/winlogbeat/30-preBOX4s.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/winlogbeat/40-BOX4sspecial.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/50-DNS_Resolv.conf && \
+	# Heartbeat
+	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/heartbeat/20-BeatClientIP.conf && \
+	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/heartbeat/30-preBOX4s.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/heartbeat/40-BOX4sspecial.conf && \
+	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/heartbeat/50-DNS_Resolv.conf && \
+	# Dynamic configuration for suricata
+	ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf && \
+	/usr/share/logstash/bin/logstash-plugin install logstash-filter-json_encode && \
+	/usr/share/logstash/bin/logstash-plugin install logstash-output-jdbc && \
+	/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location && \
+	chown logstash:logstash /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
+	chown logstash:logstash /var/log/logstash -R && \
+	chown logstash:logstash /etc/logstash -R
+
+HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
+USER logstash:logstash
+CMD ["/usr/share/logstash/bin/logstash" , "--path.settings", "/etc/logstash"]

@@ -1,5 +1,5 @@
 from source import app, mail
-from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus
+from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health
 from source.config import Dashboards
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, redirect, url_for, abort, send_file
@@ -18,6 +18,7 @@ api.add_resource(AvailableReleases, '/ver/releases/')
 api.add_resource(LaunchUpdate, '/update/launch/')
 api.add_resource(UpdateLog, '/update/log/')
 api.add_resource(UpdateStatus, '/update/status/')
+api.add_resource(Health, '/_health')
 
 
 @app.route('/')
