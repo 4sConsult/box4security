@@ -126,9 +126,7 @@
                  {% if value == request.args.get("proto", default='') %}
                  selected="selected"
                  {% endif %}
-                 >
-                 {{value}}
-                 </option>
+                 >{{value}}</option>
               {% endfor %}
               </select>
             </div>
@@ -157,10 +155,9 @@
             </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 {% endblock %}
 {% block scripts %}
   <script type="text/javascript">
