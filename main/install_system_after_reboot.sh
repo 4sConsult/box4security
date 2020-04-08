@@ -255,7 +255,7 @@ echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
 source /etc/environment
 
 # Install postgresql client to interact with db
-sudo apt-get install -y postgresql-client
+sudo apt-get install -y postgresql-client-common postgresql-client 
 
 # Ermittle ganzzahligen RAM in GB (abgerundet)
 MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
