@@ -24,7 +24,7 @@ function waitForNet() {
 }
 
 waitForNet
-sudo apt install -y curl python3 git git-lfs openconnect
+sudo apt install -y curl python3 git git-lfs openconnect jq
 git lfs install
 if [[ "$*" == *skip-reboot* ]]
 then
@@ -32,44 +32,33 @@ then
 else
   REBOOT=true
 fi
-#SEARCH FOR BRANCHES THIS IS A DEVELOPMENT FUNCTION SO LET THE BRANCHES HERE!!!!!!!!!
-#
-#
-waitForNet
-if [ "$1" != "" ]; then
-TAG_COUNT=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/branches --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
-for((i=0; i<$TAG_COUNT; i++))
-do
-waitForNet
-TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/branches --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)[$i]['name'])")
-if [[ $TAG == $1 ]];then
-        echo "Tag $TAG gefunden"
-        break;
-fi
-done
+# Fetch all TAGS as names
+waitForNet gitlab.am-gmbh.de
+mapfile -t TAGS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq .[].name)
 
-if [[ $TAG != $1 ]];then
-echo "Tag $1 nicht gefunden"
-exit 1
-fi
-
+if [[ "$*" == *manual* ]]
+then
+  # --manual supplied => ask user which to install
+  echo "Verfügbare Tags:"
+  printf '%s\n' "${TAGS[@]}"
+  echo "Welcher soll installiert werden?"
+  read TAG
+  while [[ ! " ${TAGS[@]} " =~ " ${TAG} " ]]; do
+    echo "$TAG ist nicht in ${TAGS[@]}. Erneut probieren."
+    read TAG
+  done
 else
-  # Ermittle aktuellsten Tag
-  #
-  # Normal behavior search for tags.!!!!!!!!
-  #
-  #
-  waitForNet
-  TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['name'])")
+  # not manual, install most recent and valid tag
+  TAG=curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq '[.[] | select(.name | contains("-") | not)][0] | .name'
+  echo "Tag $TAG als aktuellsten, freigegebenen Tag gefunden."
 fi
-echo "Tag $TAG gefunden"
+
 # Redirect STDOUT to LOG_FILE
-# DO NOT PUT THIS higher in source code because no error messages are thrown than
 exec 1>$LOG_FILE && exec 2>$LOG_FILE
 
 
 cd /home/amadmin
-waitForNet
+waitForNet gitlab.am-gmbh.de
 git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git box4s -b $TAG
 
 waitForNet
