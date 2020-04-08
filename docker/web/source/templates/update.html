@@ -107,7 +107,7 @@
         let tbody = $(`#tbl tbody`);
         // For each available version, populate fields and add to table
         data.forEach((version, i) => {
-          if ((currver.env === 'dev') || ! (new semver.SemVer(version.version).prerelease.length)) {
+          if ((currver.env.toLowerCase() === 'dev') || ! (new semver.SemVer(version.version).prerelease.length)) {
             let date = moment(version.date);
             let ago = Math.abs(date.diff(moment(),'days'));
             if(ago == 0) {
