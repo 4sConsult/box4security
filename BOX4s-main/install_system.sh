@@ -34,7 +34,7 @@ else
 fi
 # Fetch all TAGS as names
 waitForNet gitlab.am-gmbh.de
-mapfile -t TAGS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq .[].name)
+mapfile -t TAGS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r .[].name)
 
 if [[ "$*" == *manual* ]]
 then
@@ -47,9 +47,10 @@ then
     echo "$TAG ist nicht in ${TAGS[@]}. Erneut probieren."
     read TAG
   done
+  echo "$TAG wird installiert."
 else
   # not manual, install most recent and valid tag
-  TAG=curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq '[.[] | select(.name | contains("-") | not)][0] | .name'
+  TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
   echo "Tag $TAG als aktuellsten, freigegebenen Tag gefunden."
 fi
 
