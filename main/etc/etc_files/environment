@@ -2,7 +2,7 @@ BASEDIR=/home/amadmin/
 GITDIR=/box4s/
 KUNDE="NEWSYSTEM"
 
-PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 BOX4SPATH="$BASEDIR$GITDIR"
 PYTHONPATH="/home/amadmin/.local/lib/python2.7/site-packages/"
 ES_TMPDIR=/tmp/elasticsearch
