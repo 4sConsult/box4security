@@ -32,9 +32,3 @@
   period: 5m
   metricsets:
     - uptime
-
-#- module: system
-#  period: 5m
-#  metricsets:
-#    - raid
-#  raid.mount_point: '/'
