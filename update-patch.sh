@@ -8,6 +8,7 @@ TAG=""
 sudo systemctl stop logstash filebeat metricbeat auditbeat auditd
 sudo systemctl disable logstash filebeat metricbeat auditbeat auditd
 sudo apt remove -y logstash filebeat metricbeat auditbeat
+sudo apt install -y postgresql-common postgresql-client
 sudo apt autoremove -y
 
 curl -XDELETE localhost:9200/.kibana
