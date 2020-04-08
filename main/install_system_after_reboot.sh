@@ -192,7 +192,7 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/p
 
 # Erstelle Voume für dynamische Box4s Konfigurationen
 sudo mkdir -p /etc/box4s/logstash
-sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
+sudo cp -R /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
