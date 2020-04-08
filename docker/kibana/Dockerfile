@@ -12,7 +12,6 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	rm -rf /var/lib/apt/lists/*
 
 ADD etc/ /root/etc/
-ADD home/ /root/home/
 RUN cp /root/etc/kibana/* /etc/kibana/ -R
 
 HEALTHCHECK --retries=10 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana/api/status'
