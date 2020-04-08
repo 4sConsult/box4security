@@ -5,17 +5,16 @@
 #
 function testNet() {
   # Returns 0 for successful internet connection and dns resolution, 1 else
-  if ping -q -c 1 -W 1 google.com >/dev/null; then
-  return 0
-else
-  return 1
-fi
+  ping -q -c 1 -W 1 $1 >/dev/null;
+  return $?
 }
 
 function waitForNet() {
-  while ! testNet; do
+  # use argument or default value of google.com
+  HOST=${1:-"google.com"}
+  while ! testNet $HOST; do
     # while testNet returns non zero value
-    echo "No internet connectivity or dns resolution, sleeping for 15s"
+    echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s"
     sleep 15s
   done
 }
@@ -175,6 +174,7 @@ sudo systemctl enable box4security.service
 # Sleep 5s to make sure the vpn is established
 sleep 5
 # Login bei der Docker-Registry des GitLabs und Download der Container
+waitForNet docker-registry.am-gmbh.de
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
