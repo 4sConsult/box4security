@@ -271,7 +271,7 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 sudo systemctl start box4security
 
 # Erlaube Scripts
-chmod +x -R $BASEDIR$GITDIR/Scripts
+chmod +x -R $BASEDIR$GITDIR/scripts
 
 #Installation Dashboards
 echo "Install Dashboards"
