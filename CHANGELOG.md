@@ -23,6 +23,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dockerimage für Filebeat in Betrieb genommen
 * Dockerimage für Metricbeat in Betrieb genommen
 * Dockerimage für Suricata in Betrieb genommen
+* Dockerimage für DNSmasq in Betrieb genommen
 * Elasticsearch auf 7.6.2 aktualisiert
 * Kibana auf 7.6.2 aktualisiert
 * Update nur noch auf freigegebene Releases möglich
