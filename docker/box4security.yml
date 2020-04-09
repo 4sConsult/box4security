@@ -43,8 +43,6 @@ services:
     restart: on-failure
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /sys/:/sys/
-      - /etc/:/etc/
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
