@@ -161,13 +161,6 @@ sudo systemctl start dnsmasq
 sudo systemctl restart dnsmasq
 sudo systemctl enable dnsmasq
 waitForNet
-sudo apt install -y mc htop zsh vim libpcre3 libpcre3-dbg libpcre3-dev \
-build-essential autoconf automake libtool libpcap-dev libnet1-dev \
-libyaml-0-2 libyaml-dev pkg-config zlib1g zlib1g-dev libcap-ng-dev \
-libcap-ng0 make libmagic-dev git-core libnetfilter-queue-dev \
-libnetfilter-queue1 libnfnetlink-dev libnfnetlink0 libluajit-5.1-dev \
-libhtp-dev libnss3-dev libnspr4-dev libjansson-dev libhyperscan-dev \
-libmaxminddb-dev rustc cargo
 
 # Prepare launch of script after reboot
 sudo bash -c 'crontab -l > /tmp/crontab.root'
