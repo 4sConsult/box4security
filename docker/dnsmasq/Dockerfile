@@ -8,5 +8,6 @@ RUN apk --no-cache add dnsmasq && \
 EXPOSE 53/tcp 53/udp
 
 RUN dnsmasq --test
-
+RUN adduser -D dnsmasq
+USER dnsmasq
 CMD ["dnsmasq"]
