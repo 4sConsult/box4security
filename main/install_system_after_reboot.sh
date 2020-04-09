@@ -179,7 +179,6 @@ sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJ
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Erstelle das Volume für die Daten
-sudo mkdir /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
 
 # Erstelle Volume für BOX4s Anwendungsdaten (/var/lib/box4s)
