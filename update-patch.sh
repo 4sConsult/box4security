@@ -68,6 +68,8 @@ sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
 # Migriere resolv.personal
 sudo cp /etc/resolv.personal /var/lib/box4s/resolv.personal
+# Entferne dnsmasq stuff
+# sudo apt download dnsmasq dns-root-data dnsmasq dnsmasq-base resolvconf dns-root-data dnsmasq-base
 
 # Set all updated machines to be "prod", "dev" setting must be made manually by updating the file.
 echo "BOX4s_ENV=prod" >> /home/amadmin/box4s/VERSION
