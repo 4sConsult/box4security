@@ -72,6 +72,9 @@ sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s
 # Kopiere die Logstash-Konfigurationsdateien an den neuen Ort
 sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
+IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
+sed -i "s/%IFACE%/$IFACE/g" /home/amadmin/box4s/docker/suricata/.env
+
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service
