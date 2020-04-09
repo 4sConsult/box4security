@@ -84,7 +84,7 @@ sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s
 sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
 waitForNet
-sudo apt install -y resolvconf
+sudo apt install -y resolvconf python3-venv
 sudo systemctl enable resolvconf
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 sudo systemctl start resolvconf
