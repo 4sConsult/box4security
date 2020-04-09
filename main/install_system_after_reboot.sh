@@ -69,7 +69,6 @@ sleep 5
 waitForNet "gitlab.am-gmbh.de"
 # Login bei der Docker-Registry des GitLabs und Download der Container
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
-sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Erstelle das Volume für die Daten
 sudo mkdir /var/lib/box4s
@@ -139,6 +138,9 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /
 # 1/4 davon für Logstash, abgerundet
 LSMEM=$(python -c "print(int($MEM*0.25))")
 sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
+
+# Pull die Images
+sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Starte den Dienst
 sudo systemctl start box4security
