@@ -100,7 +100,7 @@ echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service
 
 # Entferne dnsmasq stuff
-sudo apt remove -y dnsmasq dns-root-data dnsmasq-base
+sudo apt remove -y dnsmasq dns-root-data
 
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
