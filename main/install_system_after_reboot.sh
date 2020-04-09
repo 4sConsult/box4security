@@ -114,22 +114,6 @@ sudo touch /var/lib/box4s/suricata_suppress.bpf
 sudo chmod -R 777 /var/lib/box4s/
 # rm old links
 sudo rm -f /etc/logstash/conf.d/suricata/15_kibana_filter.conf
-# Copy updated Suricata Service
-sudo cp /home/amadmin/box4s/Suricata/etc/systemd/system/suricata.service /etc/systemd/system/suricata.service
-echo "Setze Suricata interfaces"
-IFARRAY=()
-# Caveat: This assumes that the first interface is the management one and all portmirror interfaces follow!
-for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
-do
-	IFARRAY+=("$iface")
-	IFSTRING+="--af-packet=$iface "
-done
-sudo cp * / -R
-sed -i "s/--af-packet=ens[^ ]*//g" /etc/systemd/system/suricata.service
-sed -i "s/\/etc\/suricata\/suricata.yaml /& $IFSTRING/" /etc/systemd/system/suricata.service
-sudo systemctl daemon-reload
-# Restart suricata
-sudo systemctl restart suricata
 
 #Add Int IP
 echo "Initialisiere Systemvariablen"
@@ -171,6 +155,9 @@ sleep 20
 cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh
 cd /home/amadmin/box4s
+
+# Update Suricata
+sudo docker exec suricata /root/scripts/update.sh
 
 # Import Dashboards
 
@@ -218,19 +205,16 @@ sudo systemctl daemon-reload
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 
-sudo chown suri:suri /data/suricata/ -R
-
 echo "Installiere Elastic Curator"
 waitForNet
 pip3 install elasticsearch-curator --user
 
 echo "Starte übrige Dienste"
 sudo systemctl enable heartbeat-elastic
-sudo systemctl enable suricata
 sudo systemctl enable openvas-scanner
 sudo systemctl enable openvas-manager
 sudo systemctl enable greenbone-security-assistant
-sudo systemctl start openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic suricata
+sudo systemctl start openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic
 
 echo "Initialisiere Schwachstellendatenbank"
 sudo greenbone-scapdata-sync --verbose --progress
