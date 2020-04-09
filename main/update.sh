@@ -25,25 +25,47 @@ function rollback() {
   sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
 
   echo "Stelle Kundenkonfiguration wieder her"
-  tar -C /var/lib/box4s/ -vxf /var/lib/box4s/conf_backup_$1.tar
+  tar -C /var/lib/box4s/ -vxf /var/lib/box4s/etc_box4s_$1.tar
   # Restore /etc/box4s to state of box4s/ folder we got from unpacking the tar ball
   cd /var/lib/box4s
   rsync -avz --delete box4s/ /etc/box4s
   rm -r box4s/
 
-  echo "Setze BOX4security Software auf Version $1 zurück"
   cd /home/amadmin/box4s/
   waitForNet gitlab.am-gmbh.de
   git fetch
   git checkout -f $1 >/dev/null 2>&1
 
+  echo "Setze Dienst auf Version $1 zurück"
+  cp /home/amadmin/box4s/main/etc/systemd/box4security.service /etc/systemd/system/box4security.service
+
+  echo "Setze VPN auf Version $1 zurück"
+  cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
+  sudo systemctl daemon-reload
+  sudo systemctl enable vpn.service
+  sudo systemctl enable box4security.service
+
+  echo "Starte VPN neu."
+  sudo systemctl restart vpn
+
+  # sleep to wait for established connection
+  sleep 8
+
+  echo "Setze BOX4security Software auf Version $1 zurück"
+  waitForNet docker-registry.am-gmbh.de
+  sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+
   echo "Starte BOX4security Software neu."
   # restart box, causes download of the images of Version $1
   sudo systemctl restart box4security
 
+
   # Notify API that we're finished rolling back
   curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-successful"}' > /dev/null
-  echo "VERSION=$PRIOR" > /home/amadmin/box4s/VERSION
+  # set version in file
+  echo "VERSION=$1" > /home/amadmin/box4s/VERSION
+  echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
+  echo "Wiederherstellung auf $1 abgeschlossen."
 
   # Prepare new update.sh for next update
   sudo chown amadmin:amadmin $BASEDIR$GITDIR/BOX4s-main/update.sh
@@ -51,6 +73,16 @@ function rollback() {
 
   # Exit update with error code
   exit 1
+}
+function backup() {
+  echo "Erstelle Backup vom aktuellen Stand: $1"
+  echo "Erstelle Datenbank Backup"
+  sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_dump -F tar box4S_db > /root/box4S_db.tar"
+  sudo docker cp db:/root/box4S_db.tar /var/lib/box4s/box4S_db_$PRIOR.tar
+
+  echo "Erstelle Backup der Kundenkonfiguration"
+  # Backing up /etc/box4s
+  tar -C /etc -cvpf /var/lib/box4s/etc_box4s_$PRIOR.tar box4s/
 }
 
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
@@ -74,11 +106,7 @@ TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
 for v in "${VERSIONS[@]}"
 do
-   echo "Erstelle Datenbank Backup"
-   sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_dump -F tar box4S_db > /root/box4S_db.tar"
-   sudo docker cp db:/root/box4S_db.tar /var/lib/box4s/box4S_db_$PRIOR.tar
-   echo "Erstelle Backup der Kundenkonfiguration"
-   tar -C /etc -cvpf /var/lib/box4s/conf_backup_$PRIOR.tar box4s/
+   backup $PRIOR
    echo "Installiere Version $v"
    cd $BASEDIR$GITDIR
    waitForNet gitlab.am-gmbh.de
