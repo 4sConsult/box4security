@@ -164,7 +164,7 @@ chmod +x -R $BASEDIR$GITDIR/scripts
 
 #Installation Dashboards
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-
+sleep 20
 # Install the scores index
 cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh
