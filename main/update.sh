@@ -21,8 +21,8 @@ function rollback() {
   echo "Starte Rollback auf $1"
 
   echo "Stelle Datenbank Backup wieder her"
-  sudo docker cp /var/lib/box4s/backup/box4S_db_$1.tar db:/root/box4S_db.tar
-  sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
+  docker cp /var/lib/box4s/backup/box4S_db_$1.tar db:/root/box4S_db.tar
+  docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
 
   echo "Stelle Kundenkonfiguration wieder her"
   tar -C /var/lib/box4s/ -vxf /var/lib/box4s/backup/etc_box4s_$1.tar
@@ -55,23 +55,25 @@ function rollback() {
 
   echo "Setze VPN auf Version $1 zurück"
   cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
-  sudo systemctl daemon-reload
-  sudo systemctl enable vpn.service
-  sudo systemctl enable box4security.service
+  systemctl daemon-reload
+  systemctl enable vpn.service
+  systemctl enable box4security.service
 
   echo "Starte VPN neu."
-  sudo systemctl restart vpn
+  systemctl restart vpn
 
   # sleep to wait for established connection
   sleep 8
 
   echo "Setze BOX4security Software auf Version $1 zurück"
   waitForNet docker-registry.am-gmbh.de
-  sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+  docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
   echo "Starte BOX4security Software neu."
   # restart box, causes download of the images of Version $1
-  sudo systemctl restart box4security
+  systemctl restart box4security
+
+  /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh web
 
   # Notify API that we're finished rolling back
   curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-successful"}' > /dev/null
@@ -81,33 +83,33 @@ function rollback() {
   echo "Wiederherstellung auf $1 abgeschlossen."
 
   # Prepare new update.sh for next update
-  sudo chown amadmin:amadmin $BASEDIR$GITDIR/BOX4s-main/update.sh
-  sudo chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
+  chown amadmin:amadmin $BASEDIR$GITDIR/BOX4s-main/update.sh
+  chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
 
   # Exit update with error code
   exit 1
 }
 function backup() {
-  sudo mkdir -p /var/lib/box4s/backup/
+  mkdir -p /var/lib/box4s/backup/
 
   echo "Erstelle Backup vom aktuellen Stand: $1"
   echo "Erstelle Datenbank Backup"
-  sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_dump -F tar box4S_db > /root/box4S_db.tar"
-  sudo docker cp db:/root/box4S_db.tar /var/lib/box4s/backup/box4S_db_$PRIOR.tar
+  docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_dump -F tar box4S_db > /root/box4S_db.tar"
+  docker cp db:/root/box4S_db.tar /var/lib/box4s/backup/box4S_db_$PRIOR.tar
 
   echo "Erstelle Backup der Kundenkonfiguration"
   # Backing up /etc/box4s
   tar -C /etc -cvpf /var/lib/box4s/backup/etc_box4s_$PRIOR.tar box4s/
 
   echo "Erstelle Backup von Systemkonfiguration"
-  sudo cp /etc/hosts /var/lib/box4s/backup/hosts
-  sudo cp /etc/environment /var/lib/box4s/backup/environment
-  sudo cp /etc/msmtprc /var/lib/box4s/backup/msmtprc
-  sudo cp /etc/sudoers /var/lib/box4s/backup/sudoers
-  sudo cp -R /etc/network /var/lib/box4s/backup/
-  sudo mkdir -p /var/lib/box4s/backup/ssl
-  sudo cp -R /etc/nginx/certs/* /var/lib/box4s/backup/ssl/
-  sudo rm -rf /var/lib/box4s/backup/ssl
+  cp /etc/hosts /var/lib/box4s/backup/hosts
+  cp /etc/environment /var/lib/box4s/backup/environment
+  cp /etc/msmtprc /var/lib/box4s/backup/msmtprc
+  cp /etc/sudoers /var/lib/box4s/backup/sudoers
+  cp -R /etc/network /var/lib/box4s/backup/
+  mkdir -p /var/lib/box4s/backup/ssl
+  cp -R /etc/nginx/certs/* /var/lib/box4s/backup/ssl/
+  rm -rf /var/lib/box4s/backup/ssl
 }
 
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
@@ -139,8 +141,8 @@ do
    git checkout -f $v >/dev/null 2>&1
    echo "Führe Updateanweisungen aus Version $v aus"
    sed -i "3s/.*/TAG=$v/g" $BASEDIR$GITDIR/update-patch.sh
-   sudo chmod +x $BASEDIR$GITDIR/update-patch.sh
-   sudo $BASEDIR$GITDIR/update-patch.sh
+   chmod +x $BASEDIR$GITDIR/update-patch.sh
+   $BASEDIR$GITDIR/update-patch.sh
    if  [[ ! $? -eq 0 ]]; then
      echo "Update auf $v fehlgeschlagen"
      # Notify API that we're starting to roll back
@@ -164,6 +166,6 @@ echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
 # Notify API that we're finished
 curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
 # Prepare new update.sh for next update
-sudo chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
-sudo chmod +x $BASEDIR$GITDIR/main/update.sh
+chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
+chmod +x $BASEDIR$GITDIR/main/update.sh
 exit 0
