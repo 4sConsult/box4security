@@ -1,10 +1,12 @@
 FROM alpine:latest
 
-ADD dnsmasq.conf
+ADD dnsmasq.conf /tmp/dnsmasq.conf
 
 RUN apk --no-cache add dnsmasq && \
-    cp dnsmasq.conf /etc/dnsmasq.conf
+    cp /tmp/dnsmasq.conf /etc/dnsmasq.conf
 
 EXPOSE 53/tcp 53/udp
+
+RUN dnsmasq --test
 
 CMD ["dnsmasq"]
