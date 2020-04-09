@@ -37,6 +37,16 @@ sudo systemctl disable irqbalance
 
 # Portmirror Interface für Suricata auslesen
 touch /home/amadmin/box4s/docker/suricata/.env
+#Add Int IP
+echo "Initialisiere Systemvariablen"
+echo
+echo
+IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
+IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
+INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
+echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
+source /etc/environment
+
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
 echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 
@@ -116,16 +126,6 @@ sudo touch /var/lib/box4s/suricata_suppress.bpf
 sudo chmod -R 777 /var/lib/box4s/
 # rm old links
 sudo rm -f /etc/logstash/conf.d/suricata/15_kibana_filter.conf
-
-#Add Int IP
-echo "Initialisiere Systemvariablen"
-echo
-echo
-IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
-IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
-INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
-source /etc/environment
 
 # Install postgresql client to interact with db
 sudo apt-get install -y postgresql-client-common postgresql-client
