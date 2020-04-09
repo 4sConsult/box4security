@@ -57,10 +57,7 @@ waitForNet
 sudo apt install -y resolvconf
 
 # DNSMASQ Setup
-sudo systemctl stop systemd-resolved
 sudo systemctl disable systemd-resolved
-sudo systemctl stop bind9
-sudo systemctl disable bind9
 
 # How to set a dns server in ubuntu 19.10 ;)
 sudo systemctl enable resolvconf
@@ -154,7 +151,7 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 
 # Pull die Images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
-
+sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 
