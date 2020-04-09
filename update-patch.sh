@@ -4,12 +4,17 @@ TAG=""
 ##
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
-# Stoppe und deinstalliere Nginx und PostgreSQL
+# Stoppe und deinstalliere überflüssige Services
 sudo systemctl stop logstash filebeat metricbeat auditbeat auditd suricata
 sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata
-sudo apt remove -y logstash filebeat metricbeat auditbeat
+sudo apt remove -y logstash filebeat metricbeat auditbeat suricata libhyperscan5
 sudo apt install -y postgresql-common postgresql-client
 sudo apt autoremove -y
+
+sudo rm -R /home/amadmin/suricata-src/
+sudo rm -R /usr/bin/suricata/
+sudo rm -R /etc/suricata/
+sudo rm /usr/local/lib/libhtp*
 
 curl -XDELETE localhost:9200/.kibana
 curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
@@ -73,7 +78,7 @@ sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s
 sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
-sed -i "s/%IFACE%/$IFACE/g" /home/amadmin/box4s/docker/suricata/.env
+echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
