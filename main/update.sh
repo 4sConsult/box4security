@@ -21,15 +21,29 @@ function rollback() {
   echo "Starte Rollback auf $1"
 
   echo "Stelle Datenbank Backup wieder her"
-  sudo docker cp /var/lib/box4s/box4S_db_$1.tar db:/root/box4S_db.tar
+  sudo docker cp /var/lib/box4s/backup/box4S_db_$1.tar db:/root/box4S_db.tar
   sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
 
   echo "Stelle Kundenkonfiguration wieder her"
-  tar -C /var/lib/box4s/ -vxf /var/lib/box4s/etc_box4s_$1.tar
+  tar -C /var/lib/box4s/ -vxf /var/lib/box4s/backup/etc_box4s_$1.tar
   # Restore /etc/box4s to state of box4s/ folder we got from unpacking the tar ball
-  cd /var/lib/box4s
+  cd /var/lib/box4s/backup
   rsync -avz --delete box4s/ /etc/box4s
   rm -r box4s/
+
+  echo "Stelle Systemkonfiguration wieder her"
+  cp /var/lib/box4s/backup/hosts /etc/hosts
+  rm -f /var/lib/box4s/backup/hosts
+  cp /var/lib/box4s/backup/environment /etc/environment
+  rm -f /var/lib/box4s/backup/environment
+  cp /var/lib/box4s/backup/msmtprc /etc/msmtprc
+  rm -f /var/lib/box4s/backup/msmtprc
+  cp /var/lib/box4s/backup/sudoers /etc/sudoers
+  rm -f /var/lib/box4s/backup/sudoers
+  cp -R /var/lib/box4s/backup/network/* /etc/network/
+  rm -rf /var/lib/box4s/backup/network/
+  cp -R /var/lib/box4s/backup/ssl/* /etc/nginx/certs/
+  rm -rf /var/lib/box4s/backup/ssl
 
   cd /home/amadmin/box4s/
   waitForNet gitlab.am-gmbh.de
@@ -59,7 +73,6 @@ function rollback() {
   # restart box, causes download of the images of Version $1
   sudo systemctl restart box4security
 
-
   # Notify API that we're finished rolling back
   curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-successful"}' > /dev/null
   # set version in file
@@ -75,14 +88,26 @@ function rollback() {
   exit 1
 }
 function backup() {
+  sudo mkdir -p /var/lib/box4s/backup/
+
   echo "Erstelle Backup vom aktuellen Stand: $1"
   echo "Erstelle Datenbank Backup"
   sudo docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_dump -F tar box4S_db > /root/box4S_db.tar"
-  sudo docker cp db:/root/box4S_db.tar /var/lib/box4s/box4S_db_$PRIOR.tar
+  sudo docker cp db:/root/box4S_db.tar /var/lib/box4s/backup/box4S_db_$PRIOR.tar
 
   echo "Erstelle Backup der Kundenkonfiguration"
   # Backing up /etc/box4s
-  tar -C /etc -cvpf /var/lib/box4s/etc_box4s_$PRIOR.tar box4s/
+  tar -C /etc -cvpf /var/lib/box4s/backup/etc_box4s_$PRIOR.tar box4s/
+
+  echo "Erstelle Backup von Systemkonfiguration"
+  sudo cp /etc/hosts /var/lib/box4s/backup/hosts
+  sudo cp /etc/environment /var/lib/box4s/backup/environment
+  sudo cp /etc/msmtprc /var/lib/box4s/backup/msmtprc
+  sudo cp /etc/sudoers /var/lib/box4s/backup/sudoers
+  sudo cp -R /etc/network /var/lib/box4s/backup/
+  sudo mkdir -p /var/lib/box4s/backup/ssl
+  sudo cp -R /etc/nginx/certs/* /var/lib/box4s/backup/ssl/
+  sudo rm -rf /var/lib/box4s/backup/ssl
 }
 
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
@@ -134,4 +159,4 @@ curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/
 # Prepare new update.sh for next update
 sudo chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
 sudo chmod +x $BASEDIR$GITDIR/main/update.sh
-exit $?
+exit 0
