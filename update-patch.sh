@@ -66,8 +66,11 @@ sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s
 # Kopiere die Logstash-Konfigurationsdateien an den neuen Ort
 sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
+# Migriere resolv.personal
+sudo cp /etc/resolv.personal /var/lib/box4s/resolv.personal
+
 # Set all updated machines to be "prod", "dev" setting must be made manually by updating the file.
-echo "BOX4s_ENV=prod" >> /home/amadmin/box4s/VERSION  
+echo "BOX4s_ENV=prod" >> /home/amadmin/box4s/VERSION
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
