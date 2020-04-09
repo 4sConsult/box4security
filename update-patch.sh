@@ -6,7 +6,7 @@ TAG=""
 
 # Stoppe und deinstalliere überflüssige Services
 sudo systemctl stop logstash filebeat metricbeat auditbeat auditd suricata
-sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata
+sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata dnsmasq
 sudo apt remove -y logstash filebeat metricbeat auditbeat suricata libhyperscan5
 sudo apt install -y postgresql-common postgresql-client
 sudo apt autoremove -y
