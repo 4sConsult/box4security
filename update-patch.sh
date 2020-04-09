@@ -66,10 +66,14 @@ sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s
 # Kopiere die Logstash-Konfigurationsdateien an den neuen Ort
 sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
+waitForNet
+sudo apt install -y resolvconf
+sudo systemctl enable resolvconf
+echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
+sudo systemctl start resolvconf
+sudo systemctl stop dnsmasq
 # Migriere resolv.personal
 sudo cp /etc/resolv.personal /var/lib/box4s/resolv.personal
-# Entferne dnsmasq stuff
-# sudo apt download dnsmasq dns-root-data dnsmasq dnsmasq-base resolvconf dns-root-data dnsmasq-base
 
 # Set all updated machines to be "prod", "dev" setting must be made manually by updating the file.
 echo "BOX4s_ENV=prod" >> /home/amadmin/box4s/VERSION
@@ -77,6 +81,9 @@ echo "BOX4s_ENV=prod" >> /home/amadmin/box4s/VERSION
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service
+
+# Entferne dnsmasq stuff
+sudo apt remove -y dnsmasq dns-root-data dnsmasq-base
 
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
