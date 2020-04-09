@@ -267,6 +267,13 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /
 LSMEM=$(python -c "print(int($MEM*0.25))")
 sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
 
+# DNSMASQ Setup
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
+sudo systemctl stop bind9
+sudo systemctl disable bind9
+sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
+
 # Starte den Dienst
 sudo systemctl start box4security
 
