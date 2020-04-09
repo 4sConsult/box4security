@@ -20,7 +20,6 @@ RUN apt update && \
     mv /root/etc/* /etc/suricata/ && \
     mv /root/var_lib/* /var/lib/suricata/ && \
     chmod 777 /var/lib/suricata/rules -R && \
-    chmod +x /var/lib/suricata/scripts/update.sh && \
     /root/scripts/update.sh install
 
 USER root
