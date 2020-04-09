@@ -53,6 +53,19 @@ echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 # Service für automatische VPN-Verbindung einfügen
 sudo pkill -f openconnect # Send CTRL+C signal to all openconnect
 
+waitForNet
+sudo apt install -y resolvconf
+
+# DNSMASQ Setup
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
+sudo systemctl stop bind9
+sudo systemctl disable bind9
+
+# How to set a dns server in ubuntu 19.10 ;)
+sudo systemctl enable resolvconf
+echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
+
 sudo cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
 sudo systemctl daemon-reload
 sudo systemctl enable vpn.service
@@ -72,7 +85,6 @@ waitForNet docker-registry.am-gmbh.de
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
 
 # Erstelle das Volume für die Daten
-sudo mkdir /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
 
 # Erstelle Volumes für Suricata
@@ -143,17 +155,6 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 # Pull die Images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
-# DNSMASQ Setup
-sudo systemctl stop systemd-resolved
-sudo systemctl disable systemd-resolved
-sudo systemctl stop bind9
-sudo systemctl disable bind9
-
-# How to set a dns server in ubuntu 19.10 ;)
-waitForNet
-sudo apt install -y resolvconf
-sudo systemctl enable resolvconf
-echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 
