@@ -33,6 +33,12 @@ function rollback() {
   cd /var/lib/box4s/backup
   rsync -avz --delete box4s/ /etc/box4s
   rm -r box4s/
+  cp /var/lib/box4s/backup/resolv.personal /var/lib/box4s/resolv.personal
+  rm -f /var/lib/box4s/backup/resolv.personal
+  cp /var/lib/box4s/backup/15_logstash_suppress.conf /var/lib/box4s/15_logstash_suppress.conf
+  cp /var/lib/box4s/backup/suricata_suppress.bpf /var/lib/box4s/suricata_suppress.bpf
+  rm -f /var/lib/box4s/backup/15_logstash_suppress.conf
+  rm -f /var/lib/box4s/backup/suricata_suppress.bpf
 
   echo "Stelle Systemkonfiguration wieder her"
   cp /var/lib/box4s/backup/hosts /etc/hosts
@@ -103,6 +109,9 @@ function backup() {
   echo "Erstelle Backup der Kundenkonfiguration"
   # Backing up /etc/box4s
   tar -C /etc -cvpf /var/lib/box4s/backup/etc_box4s_$PRIOR.tar box4s/
+  cp /var/lib/box4s/resolv.personal /var/lib/box4s/backup/resolv.personal
+  cp /var/lib/box4s/15_logstash_suppress.conf /var/lib/box4s/backup/15_logstash_suppress.conf
+  cp /var/lib/box4s/suricata_suppress.bpf /var/lib/box4s/backup/suricata_suppress.bpf
 
   echo "Erstelle Backup von Systemkonfiguration"
   cp /etc/hosts /var/lib/box4s/backup/hosts
@@ -112,7 +121,6 @@ function backup() {
   cp -R /etc/network /var/lib/box4s/backup/
   mkdir -p /var/lib/box4s/backup/ssl
   cp -R /etc/nginx/certs/* /var/lib/box4s/backup/ssl/
-  rm -rf /var/lib/box4s/backup/ssl
 }
 
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
