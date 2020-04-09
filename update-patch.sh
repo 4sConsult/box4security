@@ -84,6 +84,9 @@ echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service
 
+# Update Suricata
+sudo docker exec suricata /root/scripts/update.sh
+
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash
