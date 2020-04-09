@@ -32,132 +32,9 @@ fi
 exec 1>>$LOG_FILE && exec 2>>$LOG_FILE
 waitForNet
 pip3 install semver
-cd /home/amadmin/box4s
 
 sudo systemctl stop irqbalance
 sudo systemctl disable irqbalance
-
-echo "Installiere Suricata Deps"
-waitForNet
-sudo apt -y install clang llvm libelf-dev libc6-dev-i386 --no-install-recommends
-waitForNet
-sudo apt -y install python3-pip python3-venv
-
-#install suricata deps
-waitForNet
-sudo apt -y install libtool pkg-config libghc-bzlib-dev libghc-readline-dev ragel cmake libyaml-dev libboost-dev libjansson-dev libpcap-dev libcap-ng-dev libnspr4-dev libnss3-dev  libmagic-dev libluajit-5.1-dev libmaxminddb-dev liblz4-dev rustc cargo
-waitForNet
-sudo apt -y install libhyperscan5
-
-echo "Installiere PCRE"
-sudo apt -y remove libpcre16* libpcre32*
-mkdir -p /home/amadmin/suricata-src
-cd /home/amadmin/suricata-src
-waitForNet
-wget  https://ftp.pcre.org/pub/pcre/pcre-8.43.zip
-unzip pcre-8.43.zip
-rm pcre-8.43.zip
-cd pcre-8.43
-./configure --prefix=/usr                     \
-            --docdir=/usr/share/doc/pcre-8.43 \
-            --enable-unicode-properties       \
-            --enable-pcre16                   \
-            --enable-pcre32                   \
-            --enable-pcregrep-libz            \
-            --enable-pcregrep-libbz2          \
-            --enable-pcretest-libreadline     \
-            --disable-static                 &&
-make -j8
-make install
-
-echo "Installiere libbpf"
-cd /home/amadmin/suricata-src
-waitForNet
-git clone https://github.com/libbpf/libbpf.git
-cd libbpf/src/
-make -j8
-sudo make install
-sudo make install_headers
-sudo ldconfig
-
-echo "Installiere Suricata"
-cd /home/amadmin/suricata-src
-waitForNet
-git clone https://github.com/OISF/suricata.git --branch suricata-5.0.1 suricata-git
-cd suricata-git
-
-echo "Hole libhtp"
-sudo apt remove -y libhtp2
-waitForNet
-git clone https://github.com/OISF/libhtp.git -b 0.5.x libhtp-git
-cd libhtp-git
-
-echo "Installiere libhtp"
-./autogen.sh
-./configure
-make -j8
-sudo make install
-cd ..
-cd ..
-
-echo "Installiere Hyperscan"
-waitForNet
-git clone https://github.com/intel/hyperscan hyperscan-git
-cd hyperscan-git
-mkdir build
-cd build
-cmake -DBUILD_STATIC_AND_SHARED=1 ../
-make -j8
-make install
-echo "/usr/local/lib" | sudo tee --append /etc/ld.so.conf.d/usrlocal.conf
-sudo ldconfig
-
-echo "Compile suricata"
-cd /home/amadmin/suricata-src/suricata-git
-./autogen.sh
-./configure \
---prefix=/usr/ --sysconfdir=/etc/ --localstatedir=/var/ \
---enable-nfqueue --disable-gccmarch-native  --enable-non-bundled-htp --with-libhtp-includes=/usr/local/lib/ \
---enable-geoip --enable-gccprotect  --enable-luajit --enable-pie --enable-ebpf --enable-ebpf-build
-make clean
-make -j8
-
-echo "Install suricata"
-sudo make install
-sudo make install-conf
-sudo mkdir /data/suricata -p
-sudo groupadd suri
-sudo useradd suri -g suri
-sudo mkdir -p /var/log/suricata
-sudo mkdir -p /var/run/suricata
-sudo chown suri:suri /data/suricata
-sudo chown suri:suri /var/log/suricata
-sudo chown suri:suri /var/run/suricata
-echo "#Box4S Classification" | sudo tee -a /etc/suricata/classification.config
-echo "config classification: foursconsult,BOX4security Custom Alerts,3" | sudo tee -a /etc/suricata/classification.config
-# Install suricata update
-cd ..
-waitForNet
-pip3 install suricata-update
-cd /home/amadmin/box4s
-cd Suricata
-echo "Aktualisiere Angriffspattern"
-waitForNet
-/usr/local/bin/suricata-update update-sources
-/usr/local/bin/suricata-update
-/usr/local/bin/suricata-update enable-source et/open
-/usr/local/bin/suricata-update enable-source oisf/trafficid
-/usr/local/bin/suricata-update enable-source ptresearch/attackdetection
-/usr/local/bin/suricata-update enable-source sslbl/ssl-fp-blacklist
-#/usr/local/bin/suricata-update enable-source sslbl/ja3-fingerprints #need to be checked for necessary
-/usr/local/bin/suricata-update enable-source etnetera/aggressive
-/usr/local/bin/suricata-update enable-source tgreen/hunting
-/usr/local/bin/suricata-update
-
-
-sudo systemctl daemon-reload
-sudo systemctl start suricata
-sudo systemctl enable suricata
 
 # Service für automatische VPN-Verbindung einfügen
 sudo pkill -f openconnect # Send CTRL+C signal to all openconnect
@@ -181,6 +58,12 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 # Erstelle das Volume für die Daten
 sudo mkdir /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
+
+# Erstelle Volumes für Suricata
+sudo mkdir -p /var/lib/suricata
+sudo chown root:root /var/lib/suricata
+sudo chmod -R 777 /var/lib/suricata
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/suricata/ --opt o=bind varlib_suricata
 
 # Erstelle Volume für BOX4s Anwendungsdaten (/var/lib/box4s)
 sudo mkdir -p /var/lib/box4s
@@ -208,6 +91,10 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/l
 # Create BOX4s Log Path
 sudo mkdir -p /var/log/box4s/
 sudo touch /var/log/box4s/update.log
+
+# Portmirror Interface für Suricata auslesen
+IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
+echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 
 # Download IP2Location DBs for the first time
 # IP2LOCATION Token
