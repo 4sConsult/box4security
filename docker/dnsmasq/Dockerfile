@@ -9,4 +9,4 @@ EXPOSE 53/tcp 53/udp
 
 RUN dnsmasq --test
 USER dnsmasq
-CMD ["dnsmasq"]
+CMD ["dnsmasq", "-k"]
