@@ -125,9 +125,6 @@ sudo cp * / -R
 
 waitForNet
 sudo apt install -y msmtp msmtp-mta landscape-common jq
-sudo mkdir /home/downloads
-cd /home/downloads
-sudo chmod -R 777 /home/downloads/*
 
 cd /home/amadmin/box4s
 sudo cp main/etc/etc_files/* /etc/ -R
