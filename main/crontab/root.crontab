@@ -11,3 +11,6 @@ MAILTO=box@4sconsult.de
 
 # Start openvasmanager if not running
 */1 * * * * $BASEDIR/$GITDIR/scripts/Automation/startOpenVas.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh openvasmanager SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh openvasmanager FAILURE
+
+# Suricata update
+@daily docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update FAILURE

@@ -27,6 +27,21 @@ services:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+  suricata:
+    build: suricata/.
+    container_name: suricata
+    restart: always
+    image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:dev"
+    network_mode: "host"
+    env_file:
+      - suricata/.env
+    cap_add:
+      - NET_ADMIN
+      - SYS_NICE
+    volumes:
+      - data:/data
+      - varlib_suricata:/var/lib/suricata/
+      - varlib_box4s:/var/lib/box4s/
   auditbeat:
     build: auditbeat/.
     container_name: auditbeat
@@ -159,6 +174,8 @@ volumes:
   varlib_box4s:
     external: true
   varlib_logstash:
+    external: true
+  varlib_suricata:
     external: true
   etcbox4s_logstash:
     external: true
