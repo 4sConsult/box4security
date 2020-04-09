@@ -33,6 +33,8 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
+sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+
 # Setting memory values
 # the new environment files come from updating the repo
 # Ermittle ganzzahligen RAM in GB (abgerundet)
