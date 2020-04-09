@@ -8,11 +8,37 @@ TAG=""
 sudo systemctl stop logstash filebeat metricbeat auditbeat auditd suricata
 sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata
 sudo apt remove -y logstash filebeat metricbeat auditbeat
+sudo apt install -y postgresql-common postgresql-client
 sudo apt autoremove -y
+
+curl -XDELETE localhost:9200/.kibana
+curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
+{
+    "actions" : [
+        { "add" : { "index" : ".kibana_index_v3nighly_2", "alias" : ".kibana" } }
+    ]
+}
+'
+
+# Install updated Dashboard and Index Pattern
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Alarme.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
 
 # Stop des Services
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
+
+# Setting memory values
+# the new environment files come from updating the repo
+# Ermittle ganzzahligen RAM in GB (abgerundet)
+MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+MEM=$(python -c "print($MEM/1024.0**2)")
+# Die Häfte davon soll Elasticsearch zur Verfügung stehen, abgerundet
+ESMEM=$(python -c "print(int($MEM*0.5))")
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/.env.es
+# 1/4 davon für Logstash, abgerundet
+LSMEM=$(python -c "print(int($MEM*0.25))")
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
 
 # Download IP2Location DBs for the first time
 # IP2LOCATION Token
@@ -44,14 +70,14 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/s
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
 
 # Kopiere die Logstash-Konfigurationsdateien an den neuen Ort
-sudo cp /home/amadmin/box4s/System/etc/box4s/logstash/* /etc/box4s/logstash/
+sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service
 
 # Waiting for healthy containers before continuation
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh logstash
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx

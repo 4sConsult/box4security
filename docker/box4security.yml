@@ -14,6 +14,8 @@ services:
     image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
     volumes:
      - data:/data
+    env_file:
+      - ./.env.es
   kibana:
     build: kibana/.
     container_name: kibana
@@ -74,6 +76,7 @@ services:
         condition: service_healthy
     env_file:
      - /etc/default/logstash
+     - ./.env.ls
     ports:
       - 9600:9600
       - 5044:5044

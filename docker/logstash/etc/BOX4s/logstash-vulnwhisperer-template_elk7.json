@@ -8,6 +8,58 @@
       "@version": {
         "type": "keyword"
       },
+      "destination" : {
+        "type": "object",
+        "properties": {
+          "geo": {
+            "type" : "object",
+            "properties": {
+              "location" : {
+                "type": "geo_point"
+              }
+            }
+          }
+        }
+      },
+      "source" : {
+        "type": "object",
+        "properties": {
+          "geo": {
+            "type" : "object",
+            "properties": {
+              "location" : {
+                "type": "geo_point"
+              }
+            }
+          }
+        }
+      },
+      "server" : {
+        "type": "object",
+        "properties": {
+          "geo": {
+            "type" : "object",
+            "properties": {
+              "location" : {
+                "type": "geo_point"
+              }
+            }
+          }
+        }
+      },
+      "client" : {
+        "type": "object",
+        "properties": {
+          "geo": {
+            "type" : "object",
+            "properties": {
+              "location" : {
+                "type": "geo_point"
+              }
+            }
+          }
+        }
+      },
       "asset": {
         "type": "text",
         "norms": false,
@@ -25,7 +77,7 @@
         "type": "keyword"
       },
       "uniqueVul": {
-        "type": "keyword" 
+        "type": "keyword"
       },
       "isUnique": {
         "type": "boolean"

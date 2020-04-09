@@ -11,6 +11,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 * Automatischer Healthcheck für Weboberfläche hinzugefügt
 * Darstellung des Changelogs in Updatesektion der Weboberfläche
+* Anzeige des Links zum zukünftigen Unterdrücken eines Alarms auf dem "[SIEM] - Alarme" Dashboard
+* Ladestatus & Fehleranzeige bei Verbindung zu Versionskontrollserver
+
 
 ### Changed
 * Version von PostgreSQL festgelegt
@@ -21,15 +24,17 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dockerimage für Metricbeat in Betrieb genommen
 * Elasticsearch auf 7.6.2 aktualisiert
 * Kibana auf 7.6.2 aktualisiert
+* Maximaler Arbeitsspeicher des Systems wird berechnet und aufgeteilt
+* Projektstruktur grundlegend zugunsten verbesserter Übersichtichkeit geändert
 
 ### Fixed
-*
+* Kleine Fehler nicht-aufgelöster Referenzen in Dashboards beseitigt
 
 ### Deprecated
 *
 
 ### Removed
-*
+* Veraltete, sperrige Dateien entfernt um Speicherplatz und Netzwerkvolumen zu senken
 
 ## [1.7.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7) - 2020-04-01
 
