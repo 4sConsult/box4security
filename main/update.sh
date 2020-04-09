@@ -147,7 +147,14 @@ do
      curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-running"}' > /dev/null
      rollback $PRIOR
    fi
-   # successfully updated version, the PRIOR is now this version
+   # successfully updated version
+   # pack and store backup
+   tar -C /var/lib/box4s -cvpzf /var/lib/box4s/update_backup_$PRIOR.tar.gz backup/
+   # clear backup folder
+   rm -rf /var/lib/box4s/backup/*
+   # delete backups older than 3 months
+   find /var/lib/box4s/ -f -name "update_backup_*.tar.gz" -mtime +90 -delete
+   # the PRIOR is now the successfully installed version
    PRIOR=$v
 done
 echo "Update auf $TAG abgeschlossen."
