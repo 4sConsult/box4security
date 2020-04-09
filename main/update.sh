@@ -19,6 +19,9 @@ function waitForNet() {
 }
 function rollback() {
   echo "Starte Rollback auf $1"
+  echo "Reinstalliere deinstallierte Pakete"
+  # reinstalliere heute deinstallierte Pakete.
+  apt install -y $(grep Remove /var/log/apt/history.log -B3 | grep $(date "+%Y-%m-%d") -A3 | grep "Remove: " | sed -e 's|Remove: ||g' -e 's|([^)]*)||g' -e 's|:[^ ]* ||g' -e 's|,||g')
 
   echo "Stelle Datenbank Backup wieder her"
   docker cp /var/lib/box4s/backup/box4S_db_$1.tar db:/root/box4S_db.tar
