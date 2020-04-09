@@ -128,27 +128,11 @@ sudo apt install -y msmtp msmtp-mta landscape-common jq
 sudo mkdir /home/downloads
 cd /home/downloads
 sudo chmod -R 777 /home/downloads/*
-waitForNet
-sudo apt download dnsmasq dns-root-data dnsmasq dnsmasq-base resolvconf dns-root-data dnsmasq-base
-sudo systemctl stop systemd-resolved
-sudo systemctl disable systemd-resolved
-sudo systemctl stop bind9
-sudo systemctl disable bind9
-PACKAGE=$(ls | grep dns-root-data)
-sudo dpkg -i $PACKAGE
-PACKAGE=$(ls | grep resolvconf_)
-sudo dpkg -i $PACKAGE
-PACKAGE=$(ls | grep dnsmasq-base_)
-sudo dpkg -i $PACKAGE
-PACKAGE=$(ls | grep dnsmasq)
-sudo dpkg -i $PACKAGE
+
 cd /home/amadmin/box4s
 sudo cp main/etc/etc_files/* /etc/ -R
 sudo cp main/home/* /home/amadmin -R
-sudo mkdir /var/log/dnsmasq
-sudo systemctl start dnsmasq
-sudo systemctl restart dnsmasq
-sudo systemctl enable dnsmasq
+
 waitForNet
 sudo apt install -y mc htop zsh vim libpcre3 libpcre3-dbg libpcre3-dev \
 build-essential autoconf automake libtool libpcap-dev libnet1-dev \
