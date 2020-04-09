@@ -33,6 +33,8 @@ services:
     restart: always
     image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:dev"
     network_mode: "host"
+    env_file:
+      - suricata/.env
     cap_add:
       - NET_ADMIN
       - SYS_NICE
