@@ -36,6 +36,7 @@ sudo systemctl stop irqbalance
 sudo systemctl disable irqbalance
 
 # Portmirror Interface für Suricata auslesen
+touch /home/amadmin/box4s/docker/suricata/.env
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
 echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 
@@ -58,7 +59,7 @@ sleep 5
 waitForNet "gitlab.am-gmbh.de"
 # Login bei der Docker-Registry des GitLabs und Download der Container
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
-sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull -q
+sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Erstelle das Volume für die Daten
 sudo mkdir /var/lib/box4s
