@@ -11,6 +11,10 @@ sudo apt remove -y logstash filebeat metricbeat auditbeat suricata libhyperscan5
 sudo apt install -y postgresql-common postgresql-client
 sudo apt autoremove -y
 
+# Aktualisiere VPN Dienst
+sudo cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
+sudo systemctl daemon-reload
+
 sudo rm -R /home/amadmin/suricata-src/
 sudo rm -R /usr/bin/suricata/
 sudo rm -R /etc/suricata/
