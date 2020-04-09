@@ -35,6 +35,10 @@ pip3 install semver
 sudo systemctl stop irqbalance
 sudo systemctl disable irqbalance
 
+# Portmirror Interface für Suricata auslesen
+IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
+echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
+
 # Service für automatische VPN-Verbindung einfügen
 sudo pkill -f openconnect # Send CTRL+C signal to all openconnect
 
@@ -92,10 +96,6 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/l
 # Create BOX4s Log Path
 sudo mkdir -p /var/log/box4s/
 sudo touch /var/log/box4s/update.log
-
-# Portmirror Interface für Suricata auslesen
-IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
-echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 
 # Download IP2Location DBs for the first time
 # IP2LOCATION Token
