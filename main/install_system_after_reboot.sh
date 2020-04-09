@@ -272,6 +272,13 @@ sudo systemctl stop systemd-resolved
 sudo systemctl disable systemd-resolved
 sudo systemctl stop bind9
 sudo systemctl disable bind9
+
+# How to set a dns server in ubuntu 19.10 ;)
+waitForNet
+sudo apt install -y resolvconf
+sudo systemctl enable resolvconf
+echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
+sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 
 # Starte den Dienst
