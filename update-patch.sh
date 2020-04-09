@@ -82,6 +82,9 @@ sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
 echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 
+# Set all updated machines to be "prod", "dev" setting must be made manually by updating the file.
+echo "BOX4s_ENV=prod" >> /home/amadmin/box4s/VERSION  
+
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service

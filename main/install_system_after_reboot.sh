@@ -68,6 +68,7 @@ sleep 5
 
 waitForNet "gitlab.am-gmbh.de"
 # Login bei der Docker-Registry des GitLabs und Download der Container
+waitForNet docker-registry.am-gmbh.de
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
 
 # Erstelle das Volume für die Daten
