@@ -39,6 +39,8 @@ function rollback() {
   cp /var/lib/box4s/backup/suricata_suppress.bpf /var/lib/box4s/suricata_suppress.bpf
   rm -f /var/lib/box4s/backup/15_logstash_suppress.conf
   rm -f /var/lib/box4s/backup/suricata_suppress.bpf
+  cp /var/lib/box4s/backup/suricata.env /home/amadmin/box4s/docker/suricata/.env
+  rm -f /var/li/box4s/backup/suricata.env
 
   echo "Stelle Systemkonfiguration wieder her"
   cp /var/lib/box4s/backup/hosts /etc/hosts
@@ -79,7 +81,7 @@ function rollback() {
   docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
   echo "Starte BOX4security Software neu."
-  # restart box, causes download of the images of Version $1
+  # restart box, causes start of the images of Version $1
   systemctl restart box4security
 
   /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh web
@@ -112,6 +114,7 @@ function backup() {
   cp /var/lib/box4s/resolv.personal /var/lib/box4s/backup/resolv.personal
   cp /var/lib/box4s/15_logstash_suppress.conf /var/lib/box4s/backup/15_logstash_suppress.conf
   cp /var/lib/box4s/suricata_suppress.bpf /var/lib/box4s/backup/suricata_suppress.bpf
+  cp /home/amadmin/box4s/docker/suricata/.env /var/lib/box4s/backup/suricata.env
 
   echo "Erstelle Backup von Systemkonfiguration"
   cp /etc/hosts /var/lib/box4s/backup/hosts
