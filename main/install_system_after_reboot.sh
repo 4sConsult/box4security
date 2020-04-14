@@ -227,10 +227,11 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
 
 echo "Starte übrige Dienste"
+sudo systemctl enable heartbeat-elastic
 sudo systemctl enable openvas-scanner
 sudo systemctl enable openvas-manager
 sudo systemctl enable greenbone-security-assistant
-sudo systemctl start openvas-scanner openvas-manager greenbone-security-assistant
+sudo systemctl start openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic
 
 echo "Initialisiere Schwachstellendatenbank"
 sudo greenbone-scapdata-sync --verbose --progress
