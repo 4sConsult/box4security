@@ -41,9 +41,6 @@ function rollback() {
   rm -f /var/lib/box4s/backup/suricata_suppress.bpf
   cp /var/lib/box4s/backup/suricata.env /home/amadmin/box4s/docker/suricata/.env
   rm -f /var/lib/box4s/backup/suricata.env
-  cp /var/lib/box4s/backup/.env.es /home/amadmin/box4s/docker/.env.es
-  cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4s/docker/.env.ls
-  rm -f /var/lib/box4s/backup/.env.es /var/lib/box4s/backup/.env.ls
 
   echo "Stelle Systemkonfiguration wieder her"
   cp /var/lib/box4s/backup/hosts /etc/hosts
@@ -63,6 +60,11 @@ function rollback() {
   waitForNet gitlab.am-gmbh.de
   git fetch
   git checkout -f $1 >/dev/null 2>&1
+
+  # Rolling back jvm settings
+  cp /var/lib/box4s/backup/.env.es /home/amadmin/box4s/docker/.env.es
+  cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4s/docker/.env.ls
+  rm -f /var/lib/box4s/backup/.env.es /var/lib/box4s/backup/.env.ls
 
   echo "Setze Dienst auf Version $1 zurück"
   cp /home/amadmin/box4s/main/etc/systemd/box4security.service /etc/systemd/system/box4security.service
