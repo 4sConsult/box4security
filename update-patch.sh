@@ -4,7 +4,7 @@ TAG=""
 ##
 # Exit on every error
 set -e
-exit 0 #Testing update script, all good!
+exit 1 #Testing update script, all good!
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
 # Install FetchQC Dependencies as Python3
