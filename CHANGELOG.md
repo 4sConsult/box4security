@@ -28,7 +28,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Kibana auf 7.6.2 aktualisiert
 * Update nur noch auf freigegebene Releases möglich
 * Maximaler Arbeitsspeicher des Systems wird berechnet und aufgeteilt
-* Projektstruktur grundlegend zugunsten verbesserter Übersichtichkeit und Dateigröße geändert
+* Projektstruktur grundlegend zugunsten verbesserter Übersichtlichkeit und Dateigröße geändert
+* Betrachtungszeitraum der Dashboards festgelegt
 
 ### Fixed
 * Kleine Fehler nicht-aufgelöster Referenzen in Dashboards beseitigt
