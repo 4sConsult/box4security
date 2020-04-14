@@ -132,7 +132,7 @@ function backup() {
 }
 
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
-exec 1>/var/log/box4s/update.log && exec 2>>/var/log/box4s/update.log
+exec 1>/var/log/box4s/update.log && exec 2>&1
 # Notify API that we're starting
 # Follow redirects, accept invalid certificate and dont produce output
 curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"running"}' > /dev/null
