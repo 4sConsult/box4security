@@ -65,6 +65,13 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+  heartbeat:
+    build: heartbeat/.
+    container_name: heartbeat
+    image: "docker-registry.am-gmbh.de/it-security/b4s/heartbeat:dev"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
   logstash:
     build: logstash/.
     container_name: logstash

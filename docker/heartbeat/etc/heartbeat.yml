@@ -20,7 +20,7 @@ setup.template.settings:
 #-------------------------- Elasticsearch output ------------------------------
 #----------------------------- Logstash output --------------------------------
 output.logstash:
-  hosts: ["localhost:5044"]
+  hosts: ["logstash:5044"]
 #================================ Logging =====================================
 # Available log levels are: error, warning, info, debug
 logging.level: info
@@ -33,4 +33,4 @@ logging.files:
 #============================== Xpack Monitoring ===============================
 xpack.monitoring.enabled: true
 xpack.monitoring.elasticsearch:
-        hosts: ["localhost:9200"]
+        hosts: ["elasticsearch:9200"]
