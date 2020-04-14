@@ -94,8 +94,8 @@ function rollback() {
   echo "Wiederherstellung auf $1 abgeschlossen."
 
   # Prepare new update.sh for next update
-  chown amadmin:amadmin $BASEDIR$GITDIR/BOX4s-main/update.sh
-  chmod +x $BASEDIR$GITDIR/BOX4s-main/update.sh
+  chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
+  chmod +x $BASEDIR$GITDIR/main/update.sh
 
   # Exit update with error code
   exit 1
