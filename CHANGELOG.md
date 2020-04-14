@@ -9,7 +9,6 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Suricata 5.0.1
 
 ### Added
-<<<<<<< CHANGELOG.md
 * Überwachung des Update-Prozess mit automatischem Rollback auf gesicherten Zustand bei Misserfolg
 * Wazuh als Kibana-Plugin bereitgestellt
 * Wazuh-Manager als Dockercontainer bereitgestellt
