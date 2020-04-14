@@ -5,7 +5,8 @@ server.basePath: "/kibana"
 server.rewriteBasePath: true
 server.name: "box4security"
 elasticsearch.hosts: "http://elasticsearch:9200"
-xpack.canvas.enabled: true
+xpack.canvas.enabled: false
+#Canvas disabled for now since it crashes kibana with wazuh enabled
 kibana.index: ".kibana"
 #server.ssl.enabled: True
 server.ssl.certificate: "/etc/kibana/kibana-selfsigned.crt"

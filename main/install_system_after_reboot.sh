@@ -204,7 +204,8 @@ waitForNet
 pip3 install elasticsearch-curator --user
 
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
-sleep 30
+#wait for 6 minutes and 40 seconds until kibana and wazuh have started to insert patterns
+sleep 400
 # Import Dashboard
 echo "Installiere Dashboards"
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Startseite/Startseite-Uebersicht.ndjson
