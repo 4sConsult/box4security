@@ -2,13 +2,20 @@
 ##
 TAG=""
 ##
-# Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
+# Exit on every error
+set -e
 
+# Install FetchQC Dependencies as Python3
+cd /home/amadmin/box4s/FetchQC
+pip3 install -r requirements.txt
+
+# Install Postgres Client
+sudo apt install -y postgresql-common postgresql-client
 # Stoppe und deinstalliere überflüssige Services
 sudo systemctl stop logstash filebeat metricbeat auditbeat auditd suricata heartbeat-elastic
 sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata dnsmasq heartbeat-elastic
 sudo apt remove -y logstash filebeat metricbeat auditbeat suricata libhyperscan5 heartbeat-elastic
-sudo apt install -y postgresql-common postgresql-client
+sudo apt install -y postgresql-client
 sudo apt autoremove -y
 
 # Aktualisiere VPN Dienst

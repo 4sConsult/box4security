@@ -28,7 +28,7 @@ if [[ ! -w $LOG_FILE ]]; then
   LOG_FILE="/home/amadmin/installScript.log"
 fi
 # Redirect STDOUT to LOG_FILE
-exec 1>>$LOG_FILE && exec 2>>$LOG_FILE
+exec 1>>$LOG_FILE && exec 2>&1
 waitForNet
 pip3 install semver
 apt install -y python3-venv
@@ -138,7 +138,7 @@ sudo chmod -R 777 /var/lib/box4s/
 sudo rm -f /etc/logstash/conf.d/suricata/15_kibana_filter.conf
 
 # Install postgresql client to interact with db
-sudo apt-get install -y postgresql-client-common postgresql-client
+sudo apt-get install -y postgresql-client
 
 # Ermittle ganzzahligen RAM in GB (abgerundet)
 MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')

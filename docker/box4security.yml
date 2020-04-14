@@ -172,6 +172,9 @@ services:
       - 53:5353/udp
     volumes:
       - varlib_box4s:/var/lib/box4s/
+    extra_hosts:
+      - "gitlab.am-gmbh.de:10.30.5.4"
+      - "docker-registry.am-gmbh.de:10.30.5.4"
   wazuh:
     container_name: wazuh
     image: "docker-registry.am-gmbh.de/it-security/b4s/wazuh:dev"
@@ -184,7 +187,6 @@ services:
       - "1515:1515"
       - "514:514/udp"
       - "55000:55000"
-
 
 volumes:
   # to persist data beyond container's life
