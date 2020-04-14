@@ -4,9 +4,6 @@ TAG=""
 ##
 # Exit on every error
 set -e
-sleep 10
-exit 1 #Testing update script, all good!
-# Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
 # Install FetchQC Dependencies as Python3
 cd /home/amadmin/box4s/FetchQC
