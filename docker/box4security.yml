@@ -163,6 +163,9 @@ services:
       - 53:5353/udp
     volumes:
       - varlib_box4s:/var/lib/box4s/
+    extra_hosts:
+      - "gitlab.am-gmbh.de:10.30.5.4"
+      - "docker-registry.am-gmbh.de:10.30.5.4"
 
 volumes:
   # to persist data beyond container's life
