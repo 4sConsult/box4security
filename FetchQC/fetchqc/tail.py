@@ -120,11 +120,11 @@ def modDNS(networks, systems):
             db.session.commit()
     # Even with no DNS servers from DB and no DNS Servers entered,
     # the resolv.personal should be reset to empty file!!!!!
-    with open('/etc/resolv.personal', 'w') as fd_resolv:
+    with open('/var/lib/box4s/resolv.personal', 'w') as fd_resolv:
         for dns in dnsservers:
             fd_resolv.write('nameserver {ip}\n'.format(ip=dns.ip))
     fd_resolv.close()
-    print("DNS set in /etc/resolv.personal")
+    print("DNS set in /var/lib/box4s/resolv.personal")
 
 
 def modEnvironment(networks, systems):

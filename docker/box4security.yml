@@ -153,6 +153,16 @@ services:
     depends_on:
       - web
       - kibana
+  dnsmasq:
+    container_name: dnsmasq
+    image: "docker-registry.am-gmbh.de/it-security/b4s/dnsmasq:dev"
+    build:
+      context: ./dnsmasq
+    ports:
+      - 53:5353/tcp
+      - 53:5353/udp
+    volumes:
+      - varlib_box4s:/var/lib/box4s/
 
 volumes:
   # to persist data beyond container's life

@@ -6,10 +6,14 @@ TAG=""
 
 # Stoppe und deinstalliere überflüssige Services
 sudo systemctl stop logstash filebeat metricbeat auditbeat auditd suricata
-sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata
+sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata dnsmasq
 sudo apt remove -y logstash filebeat metricbeat auditbeat suricata libhyperscan5
 sudo apt install -y postgresql-common postgresql-client
 sudo apt autoremove -y
+
+# Aktualisiere VPN Dienst
+sudo cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
+sudo systemctl daemon-reload
 
 sudo rm -R /home/amadmin/suricata-src/
 sudo rm -R /usr/bin/suricata/
@@ -79,21 +83,33 @@ sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s
 # Kopiere die Logstash-Konfigurationsdateien an den neuen Ort
 sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
+waitForNet
+sudo apt install -y resolvconf python3-venv
+sudo systemctl enable resolvconf
+echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
+sudo systemctl start resolvconf
+sudo systemctl stop dnsmasq
+# Migriere resolv.personal
+sudo cp /etc/resolv.personal /var/lib/box4s/resolv.personal
+
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
 echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 
+
 # Set all updated machines to be "prod", "dev" setting must be made manually by updating the file.
-echo "BOX4s_ENV=prod" >> /home/amadmin/box4s/VERSION  
+echo "BOX4s_ENV=prod" >> /home/amadmin/box4s/VERSION
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl start box4security.service
 
-# Update Suricata
-sudo docker exec suricata /root/scripts/update.sh
+# Entferne dnsmasq stuff
+sudo apt remove -y dnsmasq
 
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+# Update Suricata
+sudo docker exec suricata /root/scripts/update.sh
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx
