@@ -81,6 +81,12 @@ sudo mv IP2LOCATION-LITE-DB5.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.BIN
 sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 
+# Install crontabs
+cd /home/amadmin/box4s/main/crontab
+su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
+sudo crontab root.crontab
+
+
 # Neue Volumes anlegen
 sudo mkdir -p /etc/box4s/logstash
 sudo mkdir -p /var/lib/suricata
