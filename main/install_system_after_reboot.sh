@@ -204,7 +204,8 @@ waitForNet
 pip3 install elasticsearch-curator --user
 
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
-sleep 30
+#wait for 6 minutes and 40 seconds until kibana and wazuh have started to insert patterns
+sleep 400
 # Import Dashboard
 echo "Installiere Dashboards"
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Startseite/Startseite-Uebersicht.ndjson
@@ -226,11 +227,10 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
 
 echo "Starte übrige Dienste"
-sudo systemctl enable heartbeat-elastic
 sudo systemctl enable openvas-scanner
 sudo systemctl enable openvas-manager
 sudo systemctl enable greenbone-security-assistant
-sudo systemctl start openvas-scanner openvas-manager greenbone-security-assistant heartbeat-elastic
+sudo systemctl start openvas-scanner openvas-manager greenbone-security-assistant
 
 echo "Initialisiere Schwachstellendatenbank"
 sudo greenbone-scapdata-sync --verbose --progress
