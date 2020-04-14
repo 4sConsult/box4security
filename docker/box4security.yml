@@ -20,6 +20,8 @@ services:
     build: kibana/.
     container_name: kibana
     restart: always
+    environment:
+     - INT_IP=${INT_IP}
     ports:
      - 5601:5601
     image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:dev"
@@ -62,6 +64,13 @@ services:
     build: metricbeat/.
     container_name: metricbeat
     image: "docker-registry.am-gmbh.de/it-security/b4s/metricbeat:dev"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+  heartbeat:
+    build: heartbeat/.
+    container_name: heartbeat
+    image: "docker-registry.am-gmbh.de/it-security/b4s/heartbeat:dev"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -166,6 +175,18 @@ services:
     extra_hosts:
       - "gitlab.am-gmbh.de:10.30.5.4"
       - "docker-registry.am-gmbh.de:10.30.5.4"
+  wazuh:
+    container_name: wazuh
+    image: "docker-registry.am-gmbh.de/it-security/b4s/wazuh:dev"
+    build:
+      context: ./wazuh
+    hostname: wazuh-manager
+    restart: always
+    ports:
+      - "1514:1514/udp"
+      - "1515:1515"
+      - "514:514/udp"
+      - "55000:55000"
 
 volumes:
   # to persist data beyond container's life

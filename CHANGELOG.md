@@ -9,7 +9,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Suricata 5.0.1
 
 ### Added
+<<<<<<< CHANGELOG.md
 * Überwachung des Update-Prozess mit automatischem Rollback auf gesicherten Zustand bei Misserfolg
+* Wazuh als Kibana-Plugin bereitgestellt
+* Wazuh-Manager als Dockercontainer bereitgestellt
 * Automatischer Healthcheck für Weboberfläche hinzugefügt
 * Darstellung des Changelogs in Updatesektion der Weboberfläche
 * Anzeige des Links zum zukünftigen Unterdrücken eines Alarms auf dem "[SIEM] - Alarme" Dashboard
@@ -25,6 +28,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dockerimage für Metricbeat in Betrieb genommen
 * Dockerimage für Suricata in Betrieb genommen
 * Dockerimage für DNSmasq in Betrieb genommen
+* Dockerimage für Heartbeat in Betrieb genommen
 * Elasticsearch auf 7.6.2 aktualisiert
 * Kibana auf 7.6.2 aktualisiert
 * Update nur noch auf freigegebene Releases möglich

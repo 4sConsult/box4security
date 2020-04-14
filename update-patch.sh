@@ -12,9 +12,10 @@ pip3 install -r requirements.txt
 # Install Postgres Client
 sudo apt install -y postgresql-common postgresql-client
 # Stoppe und deinstalliere überflüssige Services
-sudo systemctl stop logstash filebeat metricbeat auditbeat auditd suricata
-sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata dnsmasq
-sudo apt remove -y logstash filebeat metricbeat auditbeat suricata libhyperscan5
+sudo systemctl stop logstash filebeat metricbeat auditbeat auditd suricata heartbeat-elastic
+sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata dnsmasq heartbeat-elastic
+sudo apt remove -y logstash filebeat metricbeat auditbeat suricata libhyperscan5 heartbeat-elastic
+sudo apt install -y postgresql-client
 sudo apt autoremove -y
 
 # Aktualisiere VPN Dienst
@@ -132,3 +133,21 @@ sudo docker exec suricata /root/scripts/update.sh
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx
+
+#wait 6 minutes and 40 seconds until kibana is reachable and replace index patterns
+sleep 400
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Startseite/Startseite-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Alarme.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-ASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-HTTP.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-DNS.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-ProtokolleUndDienste.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEMocialMedia.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-Datenfluesse.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Details.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
+
