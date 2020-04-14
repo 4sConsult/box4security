@@ -179,7 +179,7 @@ do
    # clear backup folder
    rm -rf /var/lib/box4s/backup/*
    # delete backups older than 3 months
-   find /var/lib/box4s/ -f -name "update_backup_*.tar.gz" -mtime +90 -delete
+   find /var/lib/box4s/ -type f -name "update_backup_*.tar.gz" -mtime +90 -delete
    # the PRIOR is now the successfully installed version
    PRIOR=$v
 done
