@@ -93,7 +93,7 @@ function rollback() {
   systemctl restart box4security
 
   /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh web
-  sleep 5
+  sleep 15
   # Notify API that we're finished rolling back
   curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-successful"}' > /dev/null
   echo "Wiederherstellung auf $1 abgeschlossen."
