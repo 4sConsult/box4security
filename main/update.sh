@@ -28,10 +28,10 @@ function rollback() {
   docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
 
   echo "Stelle Kundenkonfiguration wieder her"
-  tar -C /var/lib/box4s/ -vxf /var/lib/box4s/backup/etc_box4s_$1.tar
+  tar -C /var/lib/box4s/backup/ -vxf /var/lib/box4s/backup/etc_box4s_$1.tar
   # Restore /etc/box4s to state of box4s/ folder we got from unpacking the tar ball
   cd /var/lib/box4s/backup
-  rsync -avz --delete box4s/ /etc/box4s
+  rsync -Iavz --delete box4s/ /etc/box4s
   rm -r box4s/
   cp /var/lib/box4s/backup/resolv.personal /var/lib/box4s/resolv.personal
   rm -f /var/lib/box4s/backup/resolv.personal
