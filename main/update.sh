@@ -40,7 +40,10 @@ function rollback() {
   rm -f /var/lib/box4s/backup/15_logstash_suppress.conf
   rm -f /var/lib/box4s/backup/suricata_suppress.bpf
   cp /var/lib/box4s/backup/suricata.env /home/amadmin/box4s/docker/suricata/.env
-  rm -f /var/li/box4s/backup/suricata.env
+  rm -f /var/lib/box4s/backup/suricata.env
+  cp /var/lib/box4s/backup/.env.es /home/amadmin/box4s/docker/.env.es
+  cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4s/docker/.env.ls
+  rm -f /var/lib/box4s/backup/.env.es /var/lib/box4s/backup/.env.ls
 
   echo "Stelle Systemkonfiguration wieder her"
   cp /var/lib/box4s/backup/hosts /etc/hosts
