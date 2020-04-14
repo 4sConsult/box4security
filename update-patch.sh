@@ -34,6 +34,7 @@ curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
     ]
 }
 '
+curl -s -X DELETE "localhost:9200/.kibana_2"
 
 # Install updated Dashboard and Index Pattern
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
