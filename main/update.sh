@@ -51,8 +51,8 @@ function rollback() {
   rm -f /var/lib/box4s/backup/msmtprc
   cp /var/lib/box4s/backup/sudoers /etc/sudoers
   rm -f /var/lib/box4s/backup/sudoers
-  cp -R /var/lib/box4s/backup/network/* /etc/network/
-  rm -rf /var/lib/box4s/backup/network/
+  cp /var/lib/box4s/backup/interfaces /etc/network/interfaces
+  rm -f /var/lib/box4s/backup/interfaces
   cp -R /var/lib/box4s/backup/ssl/* /etc/nginx/certs/
   rm -rf /var/lib/box4s/backup/ssl
 
@@ -121,7 +121,7 @@ function backup() {
   cp /etc/environment /var/lib/box4s/backup/environment
   cp /etc/msmtprc /var/lib/box4s/backup/msmtprc
   cp /etc/sudoers /var/lib/box4s/backup/sudoers
-  cp -R /etc/network /var/lib/box4s/backup/
+  cp /etc/network/interfaces /var/lib/box4s/backup/
   mkdir -p /var/lib/box4s/backup/ssl
   cp -R /etc/nginx/certs/* /var/lib/box4s/backup/ssl/
 }
