@@ -83,7 +83,7 @@ function rollback() {
 
   echo "Setze BOX4security Software auf Version $1 zurück"
   waitForNet docker-registry.am-gmbh.de
-  docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+  docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull -q
 
   echo "Starte BOX4security Software neu."
   # restart box, causes start of the images of Version $1
