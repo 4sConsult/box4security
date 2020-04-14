@@ -22,7 +22,7 @@ sudo cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn
 sudo systemctl daemon-reload
 
 sudo rm -R /home/amadmin/suricata-src/
-sudo rm -R /usr/bin/suricata/
+sudo rm -R /usr/bin/suricata
 sudo rm -R /etc/suricata/
 sudo rm /usr/local/lib/libhtp*
 
