@@ -31,7 +31,7 @@ fi
 exec 1>>$LOG_FILE && exec 2>&1
 waitForNet
 pip3 install semver
-apt install -y python3-venv
+apt install -y python3-venv unzip
 
 sudo systemctl stop irqbalance
 sudo systemctl disable irqbalance
