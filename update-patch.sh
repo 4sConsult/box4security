@@ -15,7 +15,6 @@ sudo apt install -y postgresql-common postgresql-client
 sudo systemctl stop logstash filebeat metricbeat auditbeat auditd suricata heartbeat-elastic
 sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata dnsmasq heartbeat-elastic
 sudo apt remove -y logstash filebeat metricbeat auditbeat suricata libhyperscan5 heartbeat-elastic
-sudo apt install -y postgresql-client
 sudo apt autoremove -y
 
 # Aktualisiere VPN Dienst
@@ -150,4 +149,3 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Details.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
-
