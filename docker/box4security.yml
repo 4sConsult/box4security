@@ -20,6 +20,8 @@ services:
     build: kibana/.
     container_name: kibana
     restart: always
+    environment:
+     - INT_IP=${INT_IP}
     ports:
      - 5601:5601
     image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:dev"
