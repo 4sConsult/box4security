@@ -28,7 +28,7 @@ if [[ ! -w $LOG_FILE ]]; then
   LOG_FILE="/home/amadmin/installScript.log"
 fi
 # Redirect STDOUT to LOG_FILE
-exec 1>>$LOG_FILE && exec 2>>$LOG_FILE
+exec 1>>$LOG_FILE && exec 2>&1
 waitForNet
 pip3 install semver
 apt install -y python3-venv

@@ -55,7 +55,7 @@ else
 fi
 
 # Redirect STDOUT to LOG_FILE
-exec 1>$LOG_FILE && exec 2>$LOG_FILE
+exec 1>>$LOG_FILE && exec 2>&1
 
 
 cd /home/amadmin
