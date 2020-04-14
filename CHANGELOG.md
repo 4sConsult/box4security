@@ -15,19 +15,22 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Anzeige des Links zum zukünftigen Unterdrücken eines Alarms auf dem "[SIEM] - Alarme" Dashboard
 * Ladestatus & Fehleranzeige bei Verbindung zu Versionskontrollserver
 
-
 ### Changed
+* Installationszeit der Box um 75% verkürzt
 * Version von PostgreSQL festgelegt
 * Version von Nginx festgelegt
 * Dockerimage für Logstash in Betrieb genommen
 * Dockerimage für Auditbeat in Betrieb genommen
 * Dockerimage für Filebeat in Betrieb genommen
 * Dockerimage für Metricbeat in Betrieb genommen
+* Dockerimage für Suricata in Betrieb genommen
+* Dockerimage für DNSmasq in Betrieb genommen
 * Elasticsearch auf 7.6.2 aktualisiert
 * Kibana auf 7.6.2 aktualisiert
 * Update nur noch auf freigegebene Releases möglich
 * Maximaler Arbeitsspeicher des Systems wird berechnet und aufgeteilt
-* Projektstruktur grundlegend zugunsten verbesserter Übersichtichkeit und Dateigröße geändert
+* Projektstruktur grundlegend zugunsten verbesserter Übersichtlichkeit und Dateigröße geändert
+* Betrachtungszeitraum der Dashboards festgelegt
 
 ### Fixed
 * Kleine Fehler nicht-aufgelöster Referenzen in Dashboards beseitigt
