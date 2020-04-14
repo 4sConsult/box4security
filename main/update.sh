@@ -101,6 +101,7 @@ function rollback() {
   # Prepare new update.sh for next update
   chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
   chmod +x $BASEDIR$GITDIR/main/update.sh
+  curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
 
   # Exit update with error code
   exit 1
@@ -192,4 +193,5 @@ curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/
 # Prepare new update.sh for next update
 chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
 chmod +x $BASEDIR$GITDIR/main/update.sh
+curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
 exit 0
