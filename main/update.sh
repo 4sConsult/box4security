@@ -86,6 +86,9 @@ function rollback() {
   docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull -q
 
   echo "Starte BOX4security Software neu."
+  # set version in file
+  echo "VERSION=$1" > /home/amadmin/box4s/VERSION
+  echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
   # restart box, causes start of the images of Version $1
   systemctl restart box4security
 
@@ -93,9 +96,6 @@ function rollback() {
   sleep 5
   # Notify API that we're finished rolling back
   curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-successful"}' > /dev/null
-  # set version in file
-  echo "VERSION=$1" > /home/amadmin/box4s/VERSION
-  echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
   echo "Wiederherstellung auf $1 abgeschlossen."
 
   # Prepare new update.sh for next update
