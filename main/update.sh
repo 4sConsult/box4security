@@ -152,12 +152,12 @@ do
    cd $BASEDIR$GITDIR
    waitForNet gitlab.am-gmbh.de
    git fetch
-   cp /home/amadmin/docker/.env.ls /var/lib/box4s/backup/.env.ls
-   cp /home/amadmin/docker/.env.es /var/lib/box4s/backup/.env.es
+   cp /home/amadmin/box4s/docker/.env.ls /var/lib/box4s/backup/.env.ls
+   cp /home/amadmin/box4s/docker/.env.es /var/lib/box4s/backup/.env.es
    git checkout -f $v >/dev/null 2>&1
    # Restore Memory Settings for JVM
-   cp /var/lib/box4s/backup/.env.ls /home/amadmin/docker/.env.ls
-   cp /var/lib/box4s/backup/.env.es /home/amadmin/docker/.env.es
+   cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4s/docker/.env.ls
+   cp /var/lib/box4s/backup/.env.es /home/amadmin/box4s/docker/.env.es
    echo "Führe Updateanweisungen aus Version $v aus"
    sed -i "3s/.*/TAG=$v/g" $BASEDIR$GITDIR/update-patch.sh
    chmod +x $BASEDIR$GITDIR/update-patch.sh
