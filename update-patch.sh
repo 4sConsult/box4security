@@ -4,7 +4,9 @@ TAG=""
 ##
 # Exit on every error
 set -e
-exit 1 #Testing update script, all good!
+sudo systemctl restart box4security
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+exit 0 #Testing update script, all good!
 # Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
 
 # Install FetchQC Dependencies as Python3
