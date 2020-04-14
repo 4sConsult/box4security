@@ -19,13 +19,19 @@ RUN     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key 
 USER kibana
 WORKDIR /usr/share/kibana
 RUN     ./bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-${WAZUH_APP_VERSION}.zip
-COPY optimize optimize/
+RUN     mkdir /usr/share/kibana/optimize/wazuh && \
+        mkdir /usr/share/kibana/optimize/wazuh/config
 
 USER root
+COPY ./entry.sh /entrypoint.sh
+RUN chown -f kibana:kibana /usr/share/kibana/optimize/wazuh/config
+RUN chmod +x /entrypoint.sh
+
 ADD etc/ /root/etc/
 RUN cp /root/etc/kibana/* /etc/kibana/ -R
 
 HEALTHCHECK --retries=50 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana/api/status'
 STOPSIGNAL SIGKILL
 USER kibana:kibana
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/share/kibana/bin/kibana"]
