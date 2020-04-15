@@ -9,6 +9,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Automatischer Healthcheck für Weboberfläche hinzugefügt
 * Darstellung des Changelogs in Updatesektion der Weboberfläche
 * Anzeige des Links zum zukünftigen Unterdrücken eines Alarms auf dem "[SIEM] - Alarme" Dashboard
+* Link zum Unterdrücken von Alarmen im Dashboard "[SIEM] - Alarme" verfügbar
 * Ladestatus & Fehleranzeige bei Verbindung zu Versionskontrollserver
 
 ### Changed
