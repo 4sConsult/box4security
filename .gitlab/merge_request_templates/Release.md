@@ -2,6 +2,7 @@
 - [ ] Prüfung der Installation
 - [ ] Prüfung des Updates von der vorherigen Version
 - [ ] Changelog überarbeiten
+- [ ] Release Message erzeugen
 - [ ] RC-Tag erstellen
 - [ ] Dockerimages neu erstellen
   - [ ] Images mit dem neuen RC-Tag taggen
