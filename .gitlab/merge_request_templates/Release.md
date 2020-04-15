@@ -3,6 +3,7 @@
 - [ ] Prüfung des Updates von der vorherigen Version
 - [ ] Changelog überarbeiten
 - [ ] Release Message erzeugen
+- [ ] Versionsnummer in [VERSION](VERSION) ändern
 - [ ] RC-Tag erstellen
 - [ ] Dockerimages neu erstellen
   - [ ] Images mit dem neuen RC-Tag taggen
@@ -20,3 +21,4 @@
 - [ ] Alte Branches löschen
 - [ ] Updateskript leeren
 - [ ] Dockerimage Tag zuletzt wieder auf `dev` setzen
+- [ ] Demo System aktualisieren
