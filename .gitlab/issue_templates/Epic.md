@@ -1,3 +1,7 @@
-__‹Grobe Beschreibung des Epics›__
+__Grobe Beschreibung des Epics__
 
-__‹Welchen Mehrwert bietet das Epic?›__
+__Welchen Mehrwert bietet das Epic?__
+
+### Zugehörige User Stories
+- [ ] [](#)
+- [ ] [](#)
