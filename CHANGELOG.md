@@ -1,16 +1,10 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.x](x) - 2020-xx-xx
-
-### Compatible with
-* Elastic Products 7.6.2
-* OpenVAS 9.0.3
-* Suricata 5.0.1
+## [1.7.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7.1) - 2020-04-15
 
 ### Added
-* Überwachung des Update-Prozess mit automatischem Rollback auf gesicherten Zustand bei Misserfolg
-* Wazuh als Kibana-Plugin bereitgestellt
+* Überwachung des Update-Prozesses mit automatischem Rollback auf gesicherten Zustand bei Misserfolg
 * Wazuh-Manager als Dockercontainer bereitgestellt
 * Automatischer Healthcheck für Weboberfläche hinzugefügt
 * Darstellung des Changelogs in Updatesektion der Weboberfläche
@@ -19,8 +13,6 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Installationszeit der Box um 75% verkürzt
-* Version von PostgreSQL festgelegt
-* Version von Nginx festgelegt
 * Dockerimage für Logstash in Betrieb genommen
 * Dockerimage für Auditbeat in Betrieb genommen
 * Dockerimage für Filebeat in Betrieb genommen
@@ -28,8 +20,6 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dockerimage für Suricata in Betrieb genommen
 * Dockerimage für DNSmasq in Betrieb genommen
 * Dockerimage für Heartbeat in Betrieb genommen
-* Elasticsearch auf 7.6.2 aktualisiert
-* Kibana auf 7.6.2 aktualisiert
 * Update nur noch auf freigegebene Releases möglich
 * Maximaler Arbeitsspeicher des Systems wird berechnet und aufgeteilt
 * Projektstruktur grundlegend zugunsten verbesserter Übersichtlichkeit und Dateigröße geändert
@@ -39,12 +29,13 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Kleine Fehler nicht-aufgelöster Referenzen in Dashboards beseitigt
 
 ### Deprecated
-*
+* Winlogbeat wird zukünftig durch Wazuh ersetzt und wird in zwei Releases nicht mehr verfügbar sein
+* Auditbeat wird zukünftig durch Wazuh ersetzt und wird in zwei Releases nicht mehr verfügbar sein
 
 ### Removed
 * Veraltete, sperrige Dateien entfernt um Speicherplatz und Netzwerkvolumen zu senken
 
-## [1.7.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7) - 2020-04-01
+## [1.7.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7.0) - 2020-04-01
 
 ### Compatible with
 * Elastic Products 7.5.0
