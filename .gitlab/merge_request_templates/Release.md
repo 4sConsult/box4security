@@ -16,3 +16,6 @@
 - [ ] Dockerimages mit der neuen Version taggen
 - [ ] Images in die Docker Registry pushen
 - [ ] Versionsnummer in [VERSION](VERSION) ändern
+- [ ] Alte Branches löschen
+- [ ] Updateskript leeren
+- [ ] Dockerimage Tag zuletzt wieder auf `dev` setzen
