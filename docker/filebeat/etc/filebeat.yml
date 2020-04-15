@@ -1,0 +1,49 @@
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/filebeat/index.html
+#=========================== Filebeat inputs =============================
+filebeat.inputs:
+- type: log
+  enabled: false
+- type: log
+  enabled: true
+  harvester_limit: 1
+  #close_eof: true
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.message_key: log
+  scan.sort: filename
+  paths:
+    - /var/lib/logstash/openvas/*.json
+  fields:
+    event.type: openvas
+
+- type: log
+  enabled: true
+  paths:
+    - /data/suricata/eve.json
+  fields:
+    event.type: suricata
+#============================= Filebeat modules ===============================
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+#==================== Elasticsearch template setting ==========================
+#================================ General =====================================
+#============================== Dashboards =====================================
+#============================== Kibana =====================================
+#============================= Elastic Cloud ==================================
+#================================ Outputs =====================================
+#-------------------------- Elasticsearch output ------------------------------
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+ hosts: ["logstash:5044"]
+#================================ Logging =====================================
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+#============================== Xpack Monitoring ===============================
+#xpack.monitoring.enabled: false

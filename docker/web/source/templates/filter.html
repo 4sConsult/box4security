@@ -126,9 +126,7 @@
                  {% if value == request.args.get("proto", default='') %}
                  selected="selected"
                  {% endif %}
-                 >
-                 {{value}}
-                 </option>
+                 >{{value}}</option>
               {% endfor %}
               </select>
             </div>
@@ -157,10 +155,9 @@
             </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 {% endblock %}
 {% block scripts %}
   <script type="text/javascript">
@@ -201,7 +198,7 @@
         <td class="collapsing">${rule.dst_port}</td>
         <td>${rule.proto}</td>`
         +
-          ( rule.signature ? `<td>${rule.signature}</td>` : '' )
+          ( rule.signature ? `<td>${rule.signature}</td>` : '<td></td>' )
         +`
         <td class="collapsing">
           <a data-rule-id="${rule.id}" class="ui icon red button">

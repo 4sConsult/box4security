@@ -120,11 +120,11 @@ def modDNS(networks, systems):
             db.session.commit()
     # Even with no DNS servers from DB and no DNS Servers entered,
     # the resolv.personal should be reset to empty file!!!!!
-    with open('/etc/resolv.personal', 'w') as fd_resolv:
+    with open('/var/lib/box4s/resolv.personal', 'w') as fd_resolv:
         for dns in dnsservers:
             fd_resolv.write('nameserver {ip}\n'.format(ip=dns.ip))
     fd_resolv.close()
-    print("DNS set in /etc/resolv.personal")
+    print("DNS set in /var/lib/box4s/resolv.personal")
 
 
 def modEnvironment(networks, systems):
@@ -161,7 +161,7 @@ def modGeneral(networks, systems):
     drop_systems_iplist += ['localhost', '127.0.0.1', '127.0.0.53']
     if os.getenv('INT_IP'):
         drop_systems_iplist.append(os.getenv('INT_IP'))
-    with open('/etc/logstash/conf.d/general/BOX4s-special.conf', 'r') as fd_4sspecial:
+    with open('/etc/box4s/logstash/BOX4s-special.conf', 'r') as fd_4sspecial:
         fd_4sspecial.seek(0)
         content = fd_4sspecial.read()
 
@@ -196,7 +196,7 @@ def modGeneral(networks, systems):
                 replaceIP += templateType.substitute(iplist=iplist, type=type)
 
         content = re.sub(r"# {! PLACEHOLDER IP !}", replaceIP, content)
-    with open('/etc/logstash/conf.d/general/BOX4s-special.conf', 'w', encoding='utf-8') as fd_4sspecial:
+    with open('/etc/box4s/logstash/BOX4s-special.conf', 'w', encoding='utf-8') as fd_4sspecial:
         fd_4sspecial.write(content)
     print("Changes written to BOX4s-special.conf")
 

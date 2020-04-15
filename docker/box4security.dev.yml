@@ -33,6 +33,11 @@ services:
       - ./web/.update.state:/var/lib/box4s/.update.state
     ports:
       - 5000:5000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/_health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     env_file:
       - ./.env.dev.web
       - ../VERSION
@@ -43,6 +48,8 @@ services:
     build:
       context: ./db
     container_name: db
+    ports:
+      - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:

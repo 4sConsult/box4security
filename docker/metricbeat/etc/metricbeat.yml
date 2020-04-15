@@ -1,0 +1,36 @@
+###################### Metricbeat Configuration Example #######################
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/metricbeat/index.html
+#==========================  Modules configuration ============================
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: true
+#==================== Elasticsearch template setting ==========================
+setup.template.settings:
+  index.number_of_shards: 1
+  index.codec: best_compression
+  #_source.enabled: false
+#================================ General =====================================
+#============================== Dashboards =====================================
+#============================== Kibana =====================================
+setup.kibana:
+#============================= Elastic Cloud ==================================
+#================================ Outputs =====================================
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+#----------------------------- Logstash output --------------------------------
+#================================ Processors =====================================
+processors:
+  - add_host_metadata: ~
+#================================ Logging =====================================
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/metricbeat
+  name: metricbeat
+  keepfiles: 7
+  permissions: 0644
+#============================== Xpack Monitoring ===============================
+monitoring.enabled: true
+#================================= Migration ==================================

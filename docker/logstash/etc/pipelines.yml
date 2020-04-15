@@ -1,0 +1,71 @@
+- pipeline.id: estransfer_openvas_output
+  path.config: "/etc/logstash/conf.d/estransfer/openvas_es_transfer.conf"
+- pipeline.id: estransfer_suricata_output
+  path.config: "/etc/logstash/conf.d/estransfer/suricata_es_transfer.conf"
+- pipeline.id: estransfer_heartbeat_output
+  path.config: "/etc/logstash/conf.d/estransfer/heartbeat_es_transfer.conf"
+- pipeline.id: estransfer_winlogbeat_output
+  path.config: "/etc/logstash/conf.d/estransfer/winlogbeat_es_transfer.conf"
+- pipeline.id: estransfer_auditbeat_output
+  path.config: "/etc/logstash/conf.d/estransfer/auditbeat_es_transfer.conf"
+- pipeline.id: estransfer_metricbeat_output
+  path.config: "/etc/logstash/conf.d/estransfer/metricbeat_es_transfer.conf"
+
+- pipeline.id: openvas_filter
+  path.config: "/etc/logstash/conf.d/openvas/*.conf"
+  pipeline.workers: 1
+- pipeline.id: suricata_filter
+  queue.type: memory
+  pipeline.batch.delay: 150
+  queue.checkpoint.interval: 500
+  path.config: "/etc/logstash/conf.d/suricata/*.conf"
+- pipeline.id: auditbeat_filter
+  queue.type: memory
+  path.config: "/etc/logstash/conf.d/auditbeat/*.conf"
+- pipeline.id: heartbeat_filter
+  path.config: "/etc/logstash/conf.d/heartbeat/*.conf"
+- pipeline.id: winlogbeat_filter
+  path.config: "/etc/logstash/conf.d/winlogbeat/*.conf"
+- pipeline.id: metricbeat_filter
+  path.config: "/etc/logstash/conf.d/metricbeat/*.conf"
+
+- pipeline.id: beats_input
+  queue.type: memory
+  queue.checkpoint.interval: 500
+  config.string: |
+   input { beats {
+             id => "input_beats"
+             client_inactivity_timeout => 180
+             host => "0.0.0.0"
+             port => "5044"
+          }}
+   output {
+   if [@metadata][beat] == "auditbeat" {
+      pipeline { send_to => ["auditbeat_pipe"] }
+   }
+   else if [@metadata][beat] == "heartbeat" {
+      pipeline { send_to => ["heartbeat_pipe"] }
+     }
+   else if [fields][event][type] == "suricata" {
+      pipeline { send_to => ["suricata_pipe"] }
+     }
+   else if [@metadata][beat] == "metricbeat" {
+      pipeline { send_to => ["metricbeat_pipe"] }
+     }
+    else if [fields][event][type] == "openvas" {
+      pipeline { send_to => ["openvas_pipe"] }
+     }
+
+   else { file { path => "/var/log/logstash/logstash_debug"  } }
+   }
+
+- pipeline.id: winlogbeat_input
+  config.string: |
+   input { beats {
+          host => "0.0.0.0"
+          port => "5046"
+          type => "wincli-log"
+        }}
+   output {
+   pipeline { send_to => ["winlogbeat_pipe"] }
+   }

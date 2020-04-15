@@ -1,29 +1,113 @@
 version: '2.3'
 
 services:
+  baseimage:
+    build: baseimage/.
+    container_name: baseimage
+    image: "docker-registry.am-gmbh.de/it-security/b4s/baseimage:1.7.1"
   elasticsearch:
     build: elasticsearch/.
     container_name: elasticsearch
     restart: always
     ports:
      - 9200:9200
-    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:1.7.0"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:1.7.1"
     volumes:
      - data:/data
+    env_file:
+      - ./.env.es
   kibana:
     build: kibana/.
     container_name: kibana
     restart: always
+    environment:
+     - INT_IP=${INT_IP}
     ports:
      - 5601:5601
-    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:1.7.0"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:1.7.1"
     depends_on:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+  suricata:
+    build: suricata/.
+    container_name: suricata
+    restart: always
+    image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:1.7.1"
+    network_mode: "host"
+    env_file:
+      - suricata/.env
+    cap_add:
+      - NET_ADMIN
+      - SYS_NICE
+    volumes:
+      - data:/data
+      - varlib_suricata:/var/lib/suricata/
+      - varlib_box4s:/var/lib/box4s/
+  auditbeat:
+    build: auditbeat/.
+    container_name: auditbeat
+    privileged: true
+    pid: "host"
+    cap_add:
+      - AUDIT_READ
+      - AUDIT_CONTROL
+      - NET_ADMIN
+    depends_on:
+      logstash:
+        condition: service_healthy
+    image: "docker-registry.am-gmbh.de/it-security/b4s/auditbeat:1.7.1"
+    restart: on-failure
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  metricbeat:
+    build: metricbeat/.
+    container_name: metricbeat
+    image: "docker-registry.am-gmbh.de/it-security/b4s/metricbeat:1.7.1"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+  heartbeat:
+    build: heartbeat/.
+    container_name: heartbeat
+    image: "docker-registry.am-gmbh.de/it-security/b4s/heartbeat:1.7.1"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+  logstash:
+    build: logstash/.
+    container_name: logstash
+    restart: always
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    env_file:
+     - /etc/default/logstash
+     - ./.env.ls
+    ports:
+      - 9600:9600
+      - 5044:5044
+      - 5046:5046
+    image: "docker-registry.am-gmbh.de/it-security/b4s/logstash:1.7.1"
+    volumes:
+      - varlib_logstash:/var/lib/logstash/
+      - etcbox4s_logstash:/etc/logstash/conf.d/general/
+      - varlib_box4s:/var/lib/box4s/
+  filebeat:
+    build: filebeat/.
+    container_name: filebeat
+    depends_on:
+      logstash:
+        condition: service_healthy
+    image: "docker-registry.am-gmbh.de/it-security/b4s/filebeat:1.7.1"
+    volumes:
+      - varlib_logstash:/var/lib/logstash/
+      - data:/data
   web:
     container_name: web
-    image: "docker-registry.am-gmbh.de/it-security/b4s/web:1.7.0"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/web:1.7.1"
     build:
       context: ./web
       dockerfile: Dockerfile.prod
@@ -34,6 +118,11 @@ services:
        - varlib_box4s/:/var/lib/box4s/
     expose:
       - 5000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/_health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     # Add dockerhost IP to /etc/hosts in container for ssh
     extra_hosts:
       - "dockerhost:${INT_IP}"
@@ -44,7 +133,7 @@ services:
       - db
   db:
     container_name: db
-    image: "docker-registry.am-gmbh.de/it-security/b4s/db:1.7.0"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/db:1.7.1"
     build:
       context: ./db
     volumes:
@@ -60,7 +149,7 @@ services:
       retries: 5
   nginx:
     container_name: nginx
-    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:1.7.0"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:1.7.1"
     build:
       context: ./nginx
     ports:
@@ -73,6 +162,31 @@ services:
     depends_on:
       - web
       - kibana
+  dnsmasq:
+    container_name: dnsmasq
+    image: "docker-registry.am-gmbh.de/it-security/b4s/dnsmasq:1.7.1"
+    build:
+      context: ./dnsmasq
+    ports:
+      - 53:5353/tcp
+      - 53:5353/udp
+    volumes:
+      - varlib_box4s:/var/lib/box4s/
+    extra_hosts:
+      - "gitlab.am-gmbh.de:10.30.5.4"
+      - "docker-registry.am-gmbh.de:10.30.5.4"
+  wazuh:
+    container_name: wazuh
+    image: "docker-registry.am-gmbh.de/it-security/b4s/wazuh:1.7.1"
+    build:
+      context: ./wazuh
+    hostname: wazuh-manager
+    restart: always
+    ports:
+      - "1514:1514/udp"
+      - "1515:1515"
+      - "514:514/udp"
+      - "55000:55000"
 
 volumes:
   # to persist data beyond container's life
@@ -82,4 +196,10 @@ volumes:
   varlib_postgresql:
     external: true
   varlib_box4s:
+    external: true
+  varlib_logstash:
+    external: true
+  varlib_suricata:
+    external: true
+  etcbox4s_logstash:
     external: true

@@ -2,14 +2,12 @@
  # Creates concatenated BPF rule set
  # for each rule from rules variable
  #}
-!(
 {% for rule in rules -%}
-{% if rule.src_ip != '0.0.0.0' %}src host {{ rule.src_ip }} {% endif -%}
+not {% if rule.src_ip != '0.0.0.0' %}src host {{ rule.src_ip }} {% endif -%}
 {% if rule.src_port != 0 %}src port {{ rule.src_port }} {% endif -%}
 {% if rule.dst_ip != '0.0.0.0' %}dst host {{ rule.dst_ip }} {% endif -%}
 {% if rule.dst_port != 0 %}dst port {{ rule.dst_port }} {% endif -%}
 {% if rule.dst_port != 0 %}dst port {{ rule.dst_port }} {% endif -%}
-{% if rule.proto != '' %}ip proto {{ rule.proto }} {% endif -%}
+{% if rule.proto.strip() %}ip proto {{ rule.proto }} {% endif -%}
 {% if not loop.last %} && {% endif %}
 {% endfor %}
-)

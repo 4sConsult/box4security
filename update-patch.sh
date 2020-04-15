@@ -2,178 +2,157 @@
 ##
 TAG=""
 ##
-# Tag kann durch die update.sh gesetzt werden, sollte der Tag hier benötigt werden.
+# Exit on every error
+set -e
 
-# Copy new E-Mail data
-cd /home/amadmin/box4s
-sudo cp System/home/amadmin/.msmtprc /home/amadmin/.msmtprc
-chown amadmin:amadmin /home/amadmin/.msmtprc
-sudo cp System/etc/msmtprc /etc/msmtprc
+# Install FetchQC Dependencies as Python3
+cd /home/amadmin/box4s/FetchQC
+pip3 install -r requirements.txt
 
-# Stoppe und deinstalliere Nginx und PostgreSQL
-sudo systemctl stop nginx postgresql
-sudo systemctl disable nginx postgresql
-sudo apt remove -y --purge nginx postgresql
+# Install Postgres Client
+sudo apt install -y postgresql-common postgresql-client
+# Stoppe und deinstalliere überflüssige Services
+sudo systemctl stop logstash filebeat metricbeat auditbeat auditd suricata heartbeat-elastic
+sudo systemctl disable logstash filebeat metricbeat auditbeat auditd suricata dnsmasq heartbeat-elastic
+sudo apt remove -y logstash filebeat metricbeat auditbeat suricata libhyperscan5 heartbeat-elastic
 sudo apt autoremove -y
 
-# Reinstall VulnWhisperer, but to /opt/
-cd /opt/
-sudo git clone https://github.com/box4s/VulnWhisperer.git
-cd VulnWhisperer/
-sudo pip install -r requirements.txt
-sudo python setup.py install
+# Aktualisiere VPN Dienst
+sudo cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
+sudo systemctl daemon-reload
 
-echo "Install new Crontab"
-cd /home/amadmin/box4s/BOX4s-main/crontab
+sudo rm -R /home/amadmin/suricata-src/
+sudo rm -R /usr/bin/suricata
+sudo rm -R /etc/suricata/
+sudo rm /usr/local/lib/libhtp*
+
+curl -XDELETE localhost:9200/.kibana
+curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
+{
+    "actions" : [
+        { "add" : { "index" : ".kibana_index_v3nighly_2", "alias" : ".kibana" } }
+    ]
+}
+'
+curl -s -X DELETE "localhost:9200/.kibana_2"
+
+# Install updated Dashboard and Index Pattern
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Startseite/Startseite-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Alarme.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-ASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-HTTP.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-DNS.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-ProtokolleUndDienste.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEMocialMedia.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-Datenfluesse.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Details.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
+
+# Stop des Services
+echo "Stopping BOX4s Service. Please wait."
+sudo systemctl stop box4security.service
+
+sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+
+# Setting memory values
+# the new environment files come from updating the repo
+# Ermittle ganzzahligen RAM in GB (abgerundet)
+MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+MEM=$(python -c "print($MEM/1024.0**2)")
+# Die Häfte davon soll Elasticsearch zur Verfügung stehen, abgerundet
+ESMEM=$(python -c "print(int($MEM*0.5))")
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/.env.es
+# 1/4 davon für Logstash, abgerundet
+LSMEM=$(python -c "print(int($MEM*0.25))")
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
+
+# Download IP2Location DBs for the first time
+# IP2LOCATION Token
+IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
+cd /tmp/
+curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN.zip
+curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
+sudo unzip -o IP2LOCATION-LITE-DB5.BIN.zip
+sudo mv IP2LOCATION-LITE-DB5.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.BIN
+sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
+sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
+
+# Install crontabs
+cd /home/amadmin/box4s/main/crontab
+su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
 sudo crontab root.crontab
 
 
-# Stoppe die aktuelle Elasticsearch- und Kibana-Instanz
-sudo service elasticsearch stop
-sudo service kibana stop
-sudo service nginx stop
-sudo service postgresql stop
-sudo systemctl disable elasticsearch.service
-sudo systemctl disable kibana.service
-sudo systemctl disable nginx.service
-sudo systemctl disable postgresql.service
+# Neue Volumes anlegen
+sudo mkdir -p /etc/box4s/logstash
+sudo mkdir -p /var/lib/suricata
 
-# Entferne Elasticsearch vom System
-sudo apt remove -y --purge elasticsearch kibana nginx postgresql
-sudo apt autoremove -y
+sudo chown root:root /var/lib/logstash
+sudo chmod -R 777 /var/lib/logstash
 
-# Vergib die passenden Rechte für den neuen Container auf die vorhandenen Daten
-sudo chmod 777 /data/elasticsearch -R
+sudo chown root:root /var/lib/suricata
+sudo chmod -R 777 /var/lib/suricata
 
-# Docker installieren mit docker-compose
-sudo apt install -y docker.io
-sudo curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+sudo chown root:root /etc/box4s/
+sudo chmod -R 777 /etc/box4s/
 
-# Kopiere den neuen Service an die richtige Stelle und enable den Service
-sudo cp /home/amadmin/box4s/System/etc/systemd/box4security.service /etc/systemd/system/box4security.service
-sudo systemctl daemon-reload
-sudo systemctl enable box4security.service
+# Volumes in Docker anlegen
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/suricata/ --opt o=bind varlib_suricata
+sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
 
-# Login bei der Docker-Registry des GitLabs und Download der Container
-sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
-sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+# Kopiere die Logstash-Konfigurationsdateien an den neuen Ort
+sudo cp /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
 
-# Erstelle das Volume für die Daten
-sudo mkdir /var/lib/box4s
-sudo mkdir /var/lib/postgresql/data
+waitForNet
+sudo apt install -y resolvconf python3-venv
+sudo systemctl enable resolvconf
+echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
+sudo systemctl start resolvconf
+sudo systemctl stop dnsmasq
+# Migriere resolv.personal
+sudo cp /etc/resolv.personal /var/lib/box4s/resolv.personal
 
-sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
-# Erstelle Volume für BOX4s Anwendungsdaten (/var/lib/box4s)
-sudo mkdir -p /var/lib/box4s
-sudo chown root:root /var/lib/box4s
-sudo chmod -R 777 /var/lib/box4s
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
-# Erstelle Volume für PostgreSQL
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
+IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
+echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 
 
-# Apply new sudoers (change path for restart suricata)
-sudo cp /home/amadmin/box4s/System/etc/sudoers /etc/sudoers
-sudo cp /home/amadmin/box4s/System/home/amadmin/restartSuricata.sh /home/amadmin/restartSuricata.sh
-sudo chmod +x /home/amadmin/restartSuricata.sh
-sudo chown amadmin:amadmin /home/amadmin/restartSuricata.sh
-
-# Install new Dependency for updatescript
-sudo pip3 install semver
-
-# Create BOX4s Log Path
-sudo mkdir -p /var/log/box4s/
-sudo touch /var/log/box4s/update.log
-
-# Create BOX4s lib Path
-sudo mkdir -p /var/lib/box4s/
-sudo touch /var/lib/box4s/.update.state
-
-# create
-sudo touch /var/lib/box4s/15_logstash_suppress.conf
-sudo touch /var/lib/box4s/suricata_suppress.bpf
-sudo chmod -R 777 /var/lib/box4s/
-# rm old links
-sudo rm /etc/logstash/conf.d/suricata/15_kibana_filter.conf
-# create links
-sudo ln -s /var/lib/box4s/15_logstash_suppress.conf /etc/logstash/conf.d/suricata/15_logstash_suppress.conf
-# Copy updated Suricata Service
-sudo cp /home/amadmin/box4s/Suricata/etc/systemd/system/suricata.service /etc/systemd/system/suricata.service
-sudo systemctl daemon-reload
-# Restart suricata
-sudo systemctl restart suricata
-
-# Copy suricata filter conf (creates updated link_surpress_bpf links and updates logstash db)
-sudo cp /home/amadmin/box4s/Logstash/etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf /etc/logstash/conf.d/suricata/20_4s_suricata_filter.conf
-
-# Openconnect und jq(JSON parser fuer cronjob monitoring) nachträgliche installieren
-sudo apt install -y openconnect jq
-
-#Cronjobs neu aus dem git ins System uebernehmen damit die Anpassungen zum Monitoring aktiv geschaltet werden
-su - amadmin -c "crontab ~/box4s/BOX4s-main/crontab/amadmin.crontab"
-sudo crontab /home/amadmin/box4s/BOX4s-main/crontab/root.crontab
-
-#Speicherort für Cronjob Monitoring erstellen und ordner owner auf amadmin stellen, da sonst kein Zugriff
-sudo mkdir /var/log/cronchecker
-sudo chown amadmin:amadmin /var/log/cronchecker/
-
-# Hosts Datei aktualisieren
-sudo cp /home/amadmin/box4s/System/etc/hosts /etc/hosts
-
-
-# Service für automatische VPN-Verbindung einfügen
-
-sudo cp /home/amadmin/box4s/System/etc/systemd/vpn.service /etc/systemd/system/vpn.service
-sudo systemctl daemon-reload
-sudo systemctl enable vpn.service
-sudo systemctl start vpn.service
+# Set all updated machines to be "prod", "dev" setting must be made manually by updating the file.
+echo "BOX4s_ENV=prod" >> /home/amadmin/box4s/VERSION
 
 # Start des Services
-echo "Restarting BOX4s Service. Please wait."
-sudo systemctl restart box4security.service
+echo "Starting BOX4s Service. Please wait."
+sudo systemctl start box4security.service
 
-# Installation der neuen Dashboards
-# Zunächst prüfen, ob Kibana bereits vollständig hochgefahren ist
-
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
-# Kibana eine Chance geben wirklich ready zu sein - Warte 20 Sekunden
-sleep 20
-
-
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Startseite/Startseite-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Alarme.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-ASN.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-DNS.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-HTTP.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-ProtokolleUndDienste.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-SocialMedia.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/SIEM/SIEM-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Netzwerk/Netzwerk-Datenfluesse.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Details.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/Dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
-
-# Scores Index in vorheriger Version fehlerhaft gewesen
-cd /home/amadmin/box4s/Scripts/Automation/score_calculation/
-./install_index.sh
-
-# Install DB Layout for FetchQC
-cd /home/amadmin/box4s/FetchQC/
-sudo pip install -r requirements.txt
-alembic upgrade head
-
-# Entferne /var/www (nach Deinstallation nginx unnötig)
-sudo rm -rf /var/www/
-
-# Start des Services
-echo "Restarting BOX4s Service. Please wait."
-sudo systemctl restart box4security.service
+# Entferne dnsmasq stuff
+sudo apt remove -y dnsmasq
 
 # Waiting for healthy containers before continuation
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh kibana
-sudo /home/amadmin/box4s/Scripts/System_Scripts/wait-for-healthy-container.sh nginx
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+# Update Suricata
+sudo docker exec suricata /root/scripts/update.sh
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx
+
+#wait 6 minutes and 40 seconds until kibana is reachable and replace index patterns
+sleep 400
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Startseite/Startseite-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Alarme.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-ASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-HTTP.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-DNS.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-ProtokolleUndDienste.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEMocialMedia.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-Datenfluesse.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Details.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
