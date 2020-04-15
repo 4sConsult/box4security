@@ -1,11 +1,11 @@
 #### Release Candidate Checkliste
 - [ ] Prüfung der Installation
 - [ ] Prüfung des Updates von der vorherigen Version
+- [ ] Changelog überarbeiten
 - [ ] RC-Tag erstellen
 - [ ] Dockerimages neu erstellen
   - [ ] Images mit dem neuen RC-Tag taggen
   - [ ] Images in die Docker Registry pushen
-- [ ] Changelog überarbeiten
 - [ ] Merges begutachten / schließen
 - [ ] Story Points berechnen
 - [ ] Sprint Goal prüfen
