@@ -93,7 +93,7 @@
         },
         error: (jqXhr, textStatus, errorMessage) => {
           if(textStatus==="timeout"){
-            $('#tbl-errormsg').children('.content').append(`<p>Zeitüberschreitung beim Verbindungsaufbau mit dem Updateserver. Die Verbindung wird automatisch erneut aufgebaut. Bitte führen Sie die Aktion zu einem späteren Zeitpunkt durch. Sollte dieser Fehler nicht behoben sein, bitte überprüfen Sie die VPN Verbindung.</p>`);
+            $('#tbl-errormsg').children('.content').append(`<p>Zeitüberschreitung beim Verbindungsaufbau mit dem Updateserver. Die Verbindung wird automatisch erneut aufgebaut. Bitte führen Sie die Aktion zu einem späteren Zeitpunkt durch. Bei fortlaufendem Auftreten dieses Fehlers ist die Überprüfung der VPN Verbindung empfohlen.</p>`);
           } else {
             $('#tbl-errormsg').children('.content').append(`<p>Fehler bei dem Verbindungsaufbau mit dem Updateserver. Die Verbindung wird automatisch erneut aufgebaut. Bitte führen Sie die Aktion zu einem späteren Zeitpunkt durch.</p>`);
           }
