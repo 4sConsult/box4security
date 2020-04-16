@@ -1,3 +1,4 @@
+"""Module for webapp API."""
 from source import models, db
 from flask_restful import Resource, reqparse, abort
 from flask import request, render_template
@@ -8,9 +9,7 @@ from requests.exceptions import Timeout, ConnectionError
 
 
 def tail(f, window=1):
-    """
-    Returns the last `window` lines of file `f` as a list of bytes.
-    """
+    """Return the last `window` lines of file `f` as a list of bytes."""
     # https://stackoverflow.com/a/48087596
     if window == 0:
         return b''
@@ -32,7 +31,7 @@ def tail(f, window=1):
 
 
 def writeLSRFile():
-    # Fetches all Logstash Rules from DB and writes to correct file
+    """Write all Logstash Rules from DB to correct file."""
     # TODO: check permissions / try error
     with open('/var/lib/box4s/15_logstash_suppress.conf', 'w') as f_logstash:
         rules = models.LogstashRule.query.all()
@@ -41,8 +40,7 @@ def writeLSRFile():
 
 
 def writeBPFFile():
-    # Fetches all BPF Rules from DB and writes to correct file
-    # Then restarts suricata
+    """Write all Suricata Rules from DB to correct file and restart Suricata."""
     # TODO: check permissions / Try error
     with open('/var/lib/box4s/suricata_suppress.bpf', 'w') as f_bpf:
         rules = models.BPFRule.query.all()
