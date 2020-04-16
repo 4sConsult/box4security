@@ -1,5 +1,5 @@
 """Module to provide all models."""
-from source import db, ma
+from source.extensions import db, ma
 from flask_user import UserMixin
 
 
