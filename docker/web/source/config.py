@@ -3,9 +3,12 @@ SQL_VERBOSE = False
 
 
 class Config(object):
+    """Config class for the Flask webapp."""
+
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite://")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    STATIC_FOLDER = f"{os.getenv('APP_FOLDER')}/project/static"
+    STATIC_FOLDER = "{}/project/static".format(os.getenv('APP_FOLDER'))
+
     SECRET_KEY = os.getenv("SECRET_KEY")
 
     # Mail
@@ -18,11 +21,14 @@ class Config(object):
 
 
 class Dashboard():
+    """Class representation of a Dashboard."""
+
     url = None
     name = None
     parent_id = None
 
     def __init__(self, url="", name="", parent_id=""):
+        """Construct with URL, name and parent."""
         self.url = url
         self.name = name
         self.parent_id = parent_id
