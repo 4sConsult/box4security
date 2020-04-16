@@ -1,6 +1,20 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [X.X.X] - 2020-04-29
+
+### Added
+
+### Changed
+* Neues Box4Security Logo in Website integriert
+
+### Fixed
+
+### Deprecated
+
+### Removed
+
+
 ## [1.7.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7.1) - 2020-04-15
 
 ### Added
