@@ -18,3 +18,4 @@ flask-mail==0.9.1
 requests==2.23.0
 flask-user==1.0.2.2
 alembic==1.4.2
+Flask-Migrate==2.5.3
