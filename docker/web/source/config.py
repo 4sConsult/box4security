@@ -3,7 +3,7 @@ import os
 SQL_VERBOSE = False
 
 
-class Config(object):
+class Config():
     """Config class for the Flask webapp."""
 
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite://")
