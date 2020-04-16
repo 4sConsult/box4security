@@ -21,4 +21,5 @@
 - [ ] Alte Branches löschen
 - [ ] Updateskript leeren
 - [ ] Dockerimage Tag zuletzt wieder auf `dev` setzen
+- [ ] Changelog für die neue Version anlegen
 - [ ] Demo System aktualisieren
