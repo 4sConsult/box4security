@@ -1,8 +1,36 @@
+"""Module to provide all models."""
 from source import db, ma
+from flask_user import UserMixin
+
+
+class User(db.Model, UserMixin):
+    u"""User class to handle authentication and authorization.
+
+    active: can login e.g. not banned
+    email_confirmed_at: Zeitstempel, an dem die E-Mail bestätigt wurde
+    roles: Liste der, dem User zugeorndeten Regeln
+    """
+
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
+
+    # User authentication information. The collation='NOCASE' is required
+    # to search case insensitively when USER_IFIND_MODE is 'nocase_collation'.
+    email = db.Column(db.String(255, collation='NOCASE'), nullable=False, unique=True)
+    email_confirmed_at = db.Column(db.DateTime())
+    username = db.Column(db.String(50), nullable=False, unique=True)
+    password = db.Column(db.String(255), nullable=False, server_default='')
+    # User information
+    first_name = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+    last_name = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+
+    # Define the relationship to Role via UserRoles
+    roles = db.relationship('Role', secondary='user_roles')
+
+
 # When in doubt, see:
 # https://rahmanfadhil.com/flask-rest-api/
-
-
 class BPFRule(db.Model):
     __tablename__ = 'blocks_by_bpffilter'
     id = db.Column(db.Integer, primary_key=True)
