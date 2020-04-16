@@ -28,6 +28,7 @@ class User(db.Model, UserMixin):
     # Define the relationship to Role via UserRoles
     # roles = db.relationship('Role', secondary='user_roles')
 
+
 # When in doubt, see:
 # https://rahmanfadhil.com/flask-rest-api/
 class BPFRule(db.Model):
