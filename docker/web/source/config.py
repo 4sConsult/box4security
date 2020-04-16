@@ -1,3 +1,4 @@
+"""Module handling webapp config."""
 import os
 SQL_VERBOSE = False
 
