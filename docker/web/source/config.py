@@ -12,6 +12,16 @@ class Config():
 
     SECRET_KEY = os.getenv("SECRET_KEY")
 
+    # representation name
+    USER_APP_NAME = "BOX4security"
+    # Don't require confirmation
+    USER_ENABLE_CONFIRM_EMAIL = False
+    # Allow logins by username
+    USER_ENABLE_USERNAME = True
+    # Nur eingeladene Registrierungen zugelassen
+    USER_REQUIRE_INVITATION = True
+    USER_LOGIN_TEMPLATE = 'user/login.html'
+
     # Mail
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")

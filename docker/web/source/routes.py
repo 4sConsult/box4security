@@ -3,6 +3,7 @@ from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, 
 from source.config import Dashboards
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, redirect, url_for, abort, send_file
+from flask_user import login_required
 from flask_mail import Message
 import os
 
@@ -32,12 +33,14 @@ def staticfiles(filename):
 
 
 @app.route('/faq', methods=['GET'])
+@login_required
 def faq():
     client = os.getenv('KUNDE', 'Standard')
     return render_template('faq.html', client=client)
 
 
 @app.route('/faq', methods=['POST'])
+@login_required
 def faq_mail():
     client = os.getenv('KUNDE', 'Default-Kunde')
 
