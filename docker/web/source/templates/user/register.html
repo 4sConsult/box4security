@@ -1,46 +1,74 @@
-{% extends 'flask_user/_public_base.html' %}
-
-{% block content %}
-{% from "flask_user/_macros.html" import render_field, render_submit_field %}
-<h1>{%trans%}Register{%endtrans%}</h1>
-
-<form action="" method="POST" novalidate formnovalidate class="form" role="form">
+{% extends 'user.html' %}
+{% block user %}
+{% from "user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
+<div class="ui middle aligned center aligned two column grid">
+  <div class="column">
+    <h2 class="ui foursgrey image header">
+      <div class="content">
+        Willkommen zur BOX4security
+      </div>
+    </h2>
+    <div class="ui success message">
+      <div class="header">
+        Bevor Sie fortfahren können, legen Sie bitte intial ein administratives Konto an.
+      </div>
+      <p>Nutzen Sie dazu eine E-Mailadresse innerhalb Ihres Zugriffs. Diese wird verwendet, um sich auf der Oberfläche anzumelden und das Passwort bei Verlust wiederherzustellen.</p>
+    </div>
+  <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
+    <div class="ui segment">
     {{ form.hidden_tag() }}
-
     {# Username or Email #}
-    {% set field = form.username if user_manager.USER_ENABLE_USERNAME else form.email %}
-    <div class="form-group {% if field.errors %}has-error{% endif %}">
-        {# Label on left, "Already registered? Sign in." on right #}
-        <div class="row">
-            <div class="col-xs-6">
-                <label for="{{ field.id }}" class="control-label">{{ field.label.text }}</label>
-            </div>
-            <div class="col-xs-6 text-right">
-                {% if user_manager.USER_ENABLE_REGISTER %}
-                    <a href="{{ url_for('user.login') }}" tabindex='290'>
-                        {%trans%}Already registered? Sign in.{%endtrans%}</a>
-                {% endif %}
-            </div>
+    {% set field = form.email %}
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="mail icon"></i>
+            <input type="email" id="{{ field.id }}" required="" name="{{ field.name }}" placeholder="E-Mail Adresse">
+          </div>
         </div>
-        {{ field(class_='form-control', tabindex=210) }}
         {% if field.errors %}
             {% for e in field.errors %}
-                <p class="help-block">{{ e }}</p>
+                <p class="ui orange message">{{ e }}</p>
             {% endfor %}
         {% endif %}
+        {% if user_manager.USER_ENABLE_EMAIL and user_manager.USER_ENABLE_USERNAME %}
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" id="{{ form.username.id }}" name="{{ form.username.name }}" placeholder="Benutzername">
+          </div>
+        </div>
+        {% if form.username.errors %}
+            {% for e in form.username.errors %}
+                <p class="ui orange message">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+        {% endif %}
+    <div class="field">
+      <div class="ui left icon input">
+        <i class="key icon"></i>
+        <input type="password" id="{{ form.password.id }}" required="" name="{{ form.password.name }}" placeholder="Passwort">
+      </div>
     </div>
-
-    {% if user_manager.USER_ENABLE_EMAIL and user_manager.USER_ENABLE_USERNAME %}
-        {{ render_field(form.email, tabindex=220) }}
+    {% if form.password.errors %}
+        {% for e in form.password.errors %}
+            <p class="ui orange message">{{ e }}</p>
+        {% endfor %}
     {% endif %}
-
-    {{ render_field(form.password, tabindex=230) }}
-
     {% if user_manager.USER_REQUIRE_RETYPE_PASSWORD %}
-        {{ render_field(form.retype_password, tabindex=240) }}
+    <div class="field">
+      <div class="ui left icon input">
+        <i class="key icon"></i>
+        <input type="password" id="{{ form.retype_password.id }}" required="" name="{{ form.retype_password.name }}" placeholder="Passwort wiederholen">
+      </div>
+    </div>
+    {% if form.retype_password.errors %}
+        {% for e in form.retype_password.errors %}
+            <p class="ui orange message">{{ e }}</p>
+        {% endfor %}
     {% endif %}
-
-    {{ render_submit_field(form.submit, tabindex=280) }}
+    {% endif %}
+    <button class="ui fluid large foursgrey-bg submit button">Registrieren</button>
+    </div>
 </form>
 
 {% endblock %}

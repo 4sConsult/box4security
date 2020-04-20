@@ -18,11 +18,11 @@ class Config():
     USER_ENABLE_CONFIRM_EMAIL = False
     # Allow logins by username
     USER_ENABLE_USERNAME = True
-    # Nur eingeladene Registrierungen zugelassen
-    USER_REQUIRE_INVITATION = True
+    USER_REQUIRE_INVITATION = False
     USER_LOGIN_TEMPLATE = 'user/login.html'
-
+    USER_RESET_PASSWORD_TEMPLATE = 'user/reset_password.html'
     USER_FORGOT_PASSWORD_TEMPLATE = 'user/forgot_password.html'
+    USER_REGISTER_TEMPLATE = 'user/register.html'
     # Mail
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
