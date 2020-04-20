@@ -4,6 +4,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [X.X.X] - 2020-04-29
 
 ### Added
+* Aufforderung zum Erstellen eines Administrationsusers nach Update auf diese oder Installation dieser Version eingeführt
+* Benutzerauthentifizierung eingeführt
+* Weboberfläche der BOX4s nur noch nach Benutzerauthentifizierung sichtbar
+* E-Mail-Benachrichtigung bei Ereignissen der Benutzerauthentifizierung eingeführt
 
 ### Changed
 * Neues Box4Security Logo in Website integriert
