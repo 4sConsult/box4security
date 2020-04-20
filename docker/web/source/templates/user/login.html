@@ -8,88 +8,50 @@
         Einloggen zum Fortfahren
       </div>
     </h2>
-    <form class="ui large form">
-      <div class="ui stacked segment">
-        <div class="field">
-          <div class="ui left icon input">
-            <i class="user icon"></i>
-            <input type="text" name="email" placeholder="E-mail address">
-          </div>
-        </div>
+    <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
+      {{ form.hidden_tag() }}
+      <div class="ui segment">
+        {# Username or Email #}
+        {% set field = form.username if user_manager.USER_ENABLE_USERNAME else form.email %}
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="user icon"></i>
+                <input type="text" id="username" name="username" placeholder="E-Mail Adresse od. Benutzername">
+              </div>
+            </div>
+            {% if form.username.errors %}
+                {% for e in form.username.errors %}
+                    <p class="ui orange message">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
         <div class="field">
           <div class="ui left icon input">
             <i class="lock icon"></i>
-            <input type="password" name="password" placeholder="Password">
+            <input type="password" name="password" id="password" placeholder="Passwort">
           </div>
         </div>
-        <div class="ui fluid large foursgrey-bg submit button">Login</div>
+        {% if form.password.errors %}
+            {% for e in form.password.errors %}
+                <p class="ui orange message">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+        {# Remember me #}
+        {% if user_manager.USER_ENABLE_REMEMBER_ME %}
+          {{ render_checkbox_field(form.remember_me, "Angemeldet bleiben", tabindex=130) }}
+        {% endif %}
+        {# Submit button #}
+        <button class="ui fluid large foursgrey-bg submit button">Login</button>
       </div>
 
       <div class="ui error message"></div>
     </form>
 
+    {% if user_manager.USER_ENABLE_FORGOT_PASSWORD %}
     <div class="ui message">
-      {% if user_manager.USER_ENABLE_FORGOT_PASSWORD %}
           <a href="{{ url_for('user.forgot_password') }}" tabindex='195'>
               {%trans%}Passwort vergessen?{%endtrans%}</a>
-      {% endif %}
     </div>
+    {% endif %}
   </div>
 </div>
-<h1>{%trans%}Login{%endtrans%}</h1>
-<form action="" method="POST" class="form" role="form">
-    {{ form.hidden_tag() }}
-
-    {# Username or Email field #}
-    {% set field = form.username if user_manager.USER_ENABLE_USERNAME else form.email %}
-    <div class="form-group {% if field.errors %}has-error{% endif %}">
-        {# Label on left, "New here? Register." on right #}
-        <div class="row">
-            <div class="col-xs-6">
-                <label for="{{ field.id }}" class="control-label">{{ field.label.text }}</label>
-            </div>
-            <div class="col-xs-6 text-right">
-                {% if user_manager.USER_ENABLE_REGISTER and not user_manager.USER_REQUIRE_INVITATION %}
-                    <a href="{{ url_for('user.register') }}" tabindex='190'>
-                        {%trans%}New here? Register.{%endtrans%}</a>
-                {% endif %}
-            </div>
-        </div>
-        {{ field(class_='form-control', tabindex=110) }}
-        {% if field.errors %}
-            {% for e in field.errors %}
-                <p class="help-block">{{ e }}</p>
-            {% endfor %}
-        {% endif %}
-    </div>
-
-    {# Password field #}
-    {% set field = form.password %}
-    <div class="form-group {% if field.errors %}has-error{% endif %}">
-        {# Label on left, "Forgot your Password?" on right #}
-        <div class="row">
-            <div class="col-xs-6">
-                <label for="{{ field.id }}" class="control-label">{{ field.label.text }}</label>
-            </div>
-            <div class="col-xs-6 text-right">
-
-            </div>
-        </div>
-        {{ field(class_='form-control', tabindex=120) }}
-        {% if field.errors %}
-            {% for e in field.errors %}
-                <p class="help-block">{{ e }}</p>
-            {% endfor %}
-        {% endif %}
-    </div>
-
-    {# Remember me #}
-    {% if user_manager.USER_ENABLE_REMEMBER_ME %}
-    {{ render_checkbox_field(login_form.remember_me, tabindex=130) }}
-    {% endif %}
-
-    {# Submit button #}
-    {{ render_submit_field(form.submit, tabindex=180) }}
-</form>
-
 {% endblock %}
