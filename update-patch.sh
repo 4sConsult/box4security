@@ -22,6 +22,11 @@ sudo chown root:root /var/lib/openvas
 sudo chmod -R 777 /var/lib/openvas
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
 
+# Remove old Services
+sudo systemctl stop openvas-scanner openvas-manager greenbone-security-assistant
+sudo systemctl disable openvas-scanner openvas-manager greenbone-security-assistant
+sudo apt remove -y --purge openvas
+
 
 ########################
 
