@@ -63,7 +63,16 @@
        </div>
        <div class="right menu">
          {% if current_user.is_authenticated %}
-         <div class="item"><i class="user icon"></i>{{current_user.username}}</div>
+         <a class="item"></a>
+         <div class="item">
+           <div class="ui dropdown pointing link item">
+             <i class="user icon"></i>{{ current_user.username if current_user.username else current_user.email }}
+             <i class="dropdown icon"></i>
+             <div class="menu">
+               <a class="item" href="{{url_for('user.logout')}}">Logout</a>
+             </div>
+           </div>
+         </div>
          {% else %}
          <a class="item" id="user" href="//{{request.host}}/user/sign-in"><i class="user icon"></i>Login</a>
          {% endif %}
