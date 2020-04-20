@@ -23,12 +23,14 @@ api.add_resource(Health, '/_health')
 
 
 @app.route('/')
+@login_required
 def index():
     """Return the start dashboard."""
     return catchall('start')
 
 
 @app.route("/static/<path:filename>")
+@login_required
 def staticfiles(filename):
     """Return a static file."""
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
@@ -77,24 +79,28 @@ def faq_mail():
 
 
 @app.route('/update', methods=['GET'])
+@login_required
 def update():
     """Return the update page."""
     return render_template("update.html")
 
 
 @app.route('/update', methods=['POST'])
+@login_required
 def update_post():
     """Return the update page."""
     return render_template("update.html")
 
 
 @app.route('/filter', methods=['GET'])
+@login_required
 def rules():
     """Return the filter page."""
     return render_template("filter.html")
 
 
 @app.route('/update/log/download', methods=['GET'])
+@login_required
 def updatelogdl():
     """Try to downlaod the update.log."""
     try:
@@ -106,6 +112,7 @@ def updatelogdl():
 # must be the last one (catchall)
 # let variable r hold the path
 @app.route('/<path:r>')
+@login_required
 def catchall(r):
     """Render a route not caught before."""
     dashboard = list(filter(lambda d: d.name == r, Dashboards))
