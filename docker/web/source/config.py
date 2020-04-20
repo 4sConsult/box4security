@@ -23,6 +23,7 @@ class Config():
     USER_RESET_PASSWORD_TEMPLATE = 'user/reset_password.html'
     USER_FORGOT_PASSWORD_TEMPLATE = 'user/forgot_password.html'
     USER_REGISTER_TEMPLATE = 'user/register.html'
+    USER_CHANGE_PASSWORD_TEMPLATE = 'user/change_password.html'
     # Mail
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
