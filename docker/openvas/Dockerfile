@@ -15,7 +15,7 @@ RUN chmod +x /root/start.sh
 RUN chmod +x /root/update.sh
 RUN service openvas-scanner stop && \
     service openvas-manager stop && \
-    service openvas-gsa stop && \
+    service greenbone-security-assistant stop && \
     service redis-server stop
 RUN cat /etc/systemd/system/openvas-scanner.service
 RUN cat /etc/systemd/system/openvas-manager.service
