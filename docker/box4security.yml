@@ -37,6 +37,7 @@ services:
       - 9392:9392
     volumes:
       - varlib_openvas:/var/lib/openvas
+    image: "docker-registry.am-gmbh.de/it-security/b4s/openvas:dev"
   suricata:
     build: suricata/.
     container_name: suricata
