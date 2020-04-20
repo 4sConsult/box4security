@@ -18,6 +18,6 @@ RUN sed -i 's/--listen=127.0.0.1/--listen=0.0.0.0/g' /lib/systemd/system/openvas
 RUN sed -i 's/--listen=127.0.0.1/--listen=0.0.0.0/g' /lib/systemd/system/greenbone-security-assistant.service
 RUN service openvas-manager restart && \
     service greenbone-security-assistant restart
-RUN openvas-check-setup
+#RUN openvas-check-setup
 
 CMD /root/start.sh
