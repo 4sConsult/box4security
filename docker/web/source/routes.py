@@ -24,17 +24,24 @@ api.add_resource(Health, '/_health')
 
 @app.route('/')
 def index():
+    """Return the start dashboard."""
     return catchall('start')
 
 
 @app.route("/static/<path:filename>")
 def staticfiles(filename):
+    """Return a static file."""
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
 
 
 @app.route('/faq', methods=['GET'])
 @login_required
 def faq():
+    """Return the FAQ page.
+
+    Environment variable KUNDE is the client company name and set to Standard if not existent.
+    The value is displayed in the contact form.
+    """
     client = os.getenv('KUNDE', 'Standard')
     return render_template('faq.html', client=client)
 
@@ -42,6 +49,13 @@ def faq():
 @app.route('/faq', methods=['POST'])
 @login_required
 def faq_mail():
+    """Handle the submitted contanct form and send via email.
+
+    Environment variable KUNDE is the client company name and set to Standard if not existent.
+    The value is displayed in the contact form.
+
+    The E-Mail is sent to a MS Teams Channel: 0972f9a3.4sconsult.de@emea.teams.ms
+    """
     client = os.getenv('KUNDE', 'Default-Kunde')
 
     # Build a subject or set default one of none given
@@ -64,21 +78,25 @@ def faq_mail():
 
 @app.route('/update', methods=['GET'])
 def update():
+    """Return the update page."""
     return render_template("update.html")
 
 
 @app.route('/update', methods=['POST'])
 def update_post():
+    """Return the update page."""
     return render_template("update.html")
 
 
 @app.route('/filter', methods=['GET'])
 def rules():
+    """Return the filter page."""
     return render_template("filter.html")
 
 
 @app.route('/update/log/download', methods=['GET'])
 def updatelogdl():
+    """Try to downlaod the update.log."""
     try:
         return send_file('/var/log/box4s/update.log', as_attachment=True, attachment_filename='update.log', mimetype='text/plain')
     except Exception:
@@ -89,6 +107,7 @@ def updatelogdl():
 # let variable r hold the path
 @app.route('/<path:r>')
 def catchall(r):
+    """Render a route not caught before."""
     dashboard = list(filter(lambda d: d.name == r, Dashboards))
     # if requested resource exists
     if dashboard:
