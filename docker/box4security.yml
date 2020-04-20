@@ -111,6 +111,7 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile.prod
+    command: python main.py db upgrade head
     command: gunicorn --bind 0.0.0.0:5000 main:app
     volumes:
        - static_volume:/home/app/web/source/static

@@ -26,6 +26,8 @@ services:
     build:
       context: ./web
     container_name: web
+    command: python main.py db upgrade head
+    command: python main.py run -h 0.0.0.0
     volumes:
       - ./web/:/usr/src/app/
       - ./web/update.log:/var/log/box4s/update.log

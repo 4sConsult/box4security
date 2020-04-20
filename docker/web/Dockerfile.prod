@@ -42,8 +42,6 @@ RUN mkdir -p /var/log/box4s/
 RUN chown -R app:app /var/log/box4s/
 RUN mkdir -p /var/lib/box4s
 RUN chown -R app:app /var/lib/box4s/
-RUN chmod +x docker-entrypoint.sh
 
 # change to the app user
 USER app
-ENTRYPOINT $APP_HOME/docker-entrypoint.sh
