@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
 
 ENV DEBIAN_FRONTEND=noninteractive
 
