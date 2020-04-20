@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="ui main text container">
+  {# One-time system messages called Flash messages #}
+  {% block flash_messages %}
+      {%- with messages = get_flashed_messages(with_categories=true) -%}
+          {% if messages %}
+              {% for category, message in messages %}
+                  <div class="ui message {{category}}">{{ message|safe }}</div>
+              {% endfor %}
+          {% endif %}
+      {%- endwith %}
+  {% endblock %}
+  {% block user %}{% endblock %}
+  <h1 class="ui header">BOX4Security - Benutzer</h1>
+  <div class="ui floating tiny message">
+    <p>
+      Sehen und bearbeiten Sie hier die Benutzer der BOX4security.
+    </p>
+  </div>
+  <div class="ui inverted section divider"></div>
+  <table id="tbl-bpf" class="ui celled single line small table">
+    <thead>
+      <tr>
+        <th class="collapsing">E-Mail-Adresse</th>
+        <th class="collapsing">Username</th>
+        <th class="collapsing">Name</th>
+        <th class="collapsing">E-Mail<br> bestätigt</th>
+        <th class="collapsing">Aktiv</th>
+        <th class="collapsing">Aktionen</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td class="collapsing">{{ u.email }}</td>
+        <td class="collapsing">{{ u.username }}</td>
+        <td class="collapsing">{{u.first_name}} {{u.last_name}}</td>
+        <td class="collapsing">
+          {% if u.email_confirmed_at %}
+            <i class="ui icon green check"></i>
+          {% else %}
+            <i class="ui icon red x"></i>
+          {% endif %}
+        </td>
+        <td class="collapsing">
+          {% if u.is_active %}
+            <i class="ui icon green check"></i>
+          {% else %}
+            <i class="ui icon red x"></i>
+          {% endif %}
+        </td>
+        <td class="collapsing">
+          <a data-user-id="{{ u.id }}" data-action="disable" class="ui icon grey button">
+            <i class="ban icon"></i>
+          </a>
+          <a data-user-id="{{ u.id }}" data-action="delete" class="ui icon red button">
+            <i class="trash alternate outline icon"></i>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <div class="ui tiny modal">
+    <i class="close icon"></i>
+    <div class="header">Benutzer hinzufügen</div>
+    <div class="content">
+      <form method="POST" class="ui form">
+         {{ userform.hidden_tag() }}
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="mail icon"></i>
+              <input type="email" id="{{ userform.email.id }}" required="" name="{{ userform.email.name }}" placeholder="E-Mail Adresse">
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="user icon"></i>
+              <input type="text" id="{{ userform.username.id }}" name="{{ userform.username.name }}" placeholder="Benutzername">
+            </div>
+          </div>
+          <div class="field">
+              <input type="text" id="{{ userform.first_name.id }}" name="{{ userform.first_name.name }}" placeholder="Vorname">
+          </div>
+          <div class="field">
+              <input type="text" id="{{ userform.last_name.id }}"name="{{ userform.last_name.name }}" placeholder="Nachname">
+          </div>
+          <div class="ui message">
+            Nach Anlegen des Benutzers wird ein Passwort zufällig gewählt und dem angelegten Nutzer per E-Mail zugesandt. Dieses sollte zeitig aktualisiert und die E-Mailadresse bestätigt werden.
+          </div>
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="email_copy" tabindex="0" class="hidden">
+              <label>Kopie der E-Mail an mich senden</label>
+            </div>
+          </div>
+          <button class="ui fluid large foursgrey-bg submit button" type="submit" name="button">Anlegen</button>
+      </form>
+    </div>
+  </div>
+  {% endblock %}
+  {% block scripts %}
+  <script type="text/javascript">
+  $('div.item.active').removeClass('active');
+  $('#administration').addClass('active');
+  $('.ui.checkbox').checkbox();
+  </script>
+  {% endblock %}

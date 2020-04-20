@@ -1,10 +1,12 @@
-from source import app, mail
+from source import app, mail, db
 from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health
+from source.models import User
 from source.config import Dashboards
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, abort, send_file
 from flask_user import login_required
 from flask_mail import Message
+from source.forms import AddUserForm
 import os
 
 api = Api(app)
@@ -46,6 +48,26 @@ def faq():
     """
     client = os.getenv('KUNDE', 'Standard')
     return render_template('faq.html', client=client)
+
+
+@app.route('/user', methods=['GET', 'POST'])
+@login_required
+def user():
+    """Display the user admin page.
+
+    Create will open the modal to add a user immediately.
+    """
+    create = False
+    adduser = AddUserForm(request.form)
+    if request.method == 'POST' and adduser.validate():
+        user = User()
+        adduser.populate_obj(user)  # Copies matching attributes from form onto user
+        db.session.add(user)
+        db.session.commit()
+        # TODO send emails
+    # TODO: Display errors to user who submits stuff -> flash?
+    users = User.query.all()
+    return render_template('user.html', users=users, userform=adduser, create=create)
 
 
 @app.route('/faq', methods=['POST'])
