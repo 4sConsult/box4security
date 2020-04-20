@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Starting redis ..."
-redis-server /etc/redis/redis.conf
+redis-server /etc/redis/redis-openvas.conf
 
 echo "Testing redis status ..."
 X="$(redis-cli ping)"
