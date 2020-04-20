@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ADD etc/ /etc/openvas/
 ADD etc/vuln_openvas.ini /usr/local/etc/
-ADD scripts/start.sh /root/start.sh
+ADD scripts/ /root/
 
 RUN apt update
 RUN apt install python openvas=9.0.3 -y -o Dpkg::Options::=--force-confnew && rm -rf /var/lib/apt/lists/*
