@@ -1,4 +1,5 @@
 #!/bin/bash
+
 echo "Starting openvas ..."
 service openvas-scanner start
 service openvas-manager start
