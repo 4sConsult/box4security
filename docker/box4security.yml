@@ -29,6 +29,14 @@ services:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+  openvas:
+    build: openvas/.
+    container_name: openvas
+    restart: always
+    ports:
+      - 9392:9392
+    volumes:
+      - varlib_openvas:/var/lib/openvas
   suricata:
     build: suricata/.
     container_name: suricata
@@ -200,6 +208,8 @@ volumes:
   varlib_logstash:
     external: true
   varlib_suricata:
+    external: true
+  varlib_openvas:
     external: true
   etcbox4s_logstash:
     external: true

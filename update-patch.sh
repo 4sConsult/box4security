@@ -16,7 +16,10 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 #########################
 
-
+sudo mkdir -p /var/lib/openvas
+sudo chown root:root /var/lib/openvas
+sudo chmod -R 777 /var/lib/openvas
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
 
 
 ########################
