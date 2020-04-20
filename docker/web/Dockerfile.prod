@@ -24,8 +24,10 @@ RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
 # Install sshpass
-RUN apt update
-RUN apt install -y sshpass curl
+RUN apt update \
+  && apt install -y sshpass curl \
+  && rm -rf /var/lib/apt/lists/*
+
 
 # copy and install from builder
 COPY --from=builder /usr/src/app/wheels /wheels
