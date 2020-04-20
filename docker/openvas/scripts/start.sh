@@ -11,9 +11,9 @@ while  [ "${X}" != "PONG" ]; do
 done
 
 echo "Starting openvas ..."
-systemctl restart openvas-scanner
-systemctl restart openvas-manager
-systemctl restart greenbone-security-assistant
+service openvas-scanner start
+service openvas-manager start
+service greenbone-security-assistant start
 
 echo "Reloading NVTs ..."
 openvasmd --rebuild
