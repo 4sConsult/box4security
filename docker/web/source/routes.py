@@ -2,7 +2,7 @@ from source import app, mail
 from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health
 from source.config import Dashboards
 from flask_restful import Api
-from flask import render_template, send_from_directory, request, redirect, url_for, abort, send_file
+from flask import render_template, send_from_directory, request, abort, send_file
 from flask_user import login_required
 from flask_mail import Message
 import os
