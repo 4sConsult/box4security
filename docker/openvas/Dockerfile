@@ -13,11 +13,14 @@ ADD etc/ /etc/openvas/
 ADD etc/vuln_openvas.ini /usr/local/etc/
 ADD scripts/ /root/
 
+RUN mkdir -p /var/run/redis
 RUN chmod +x /root/start.sh
 RUN chmod +x /root/update.sh
 RUN sed -i 's/--listen=127.0.0.1/--listen=0.0.0.0/g' /lib/systemd/system/openvas-manager.service
 RUN sed -i 's/--listen=127.0.0.1/--listen=0.0.0.0/g' /lib/systemd/system/greenbone-security-assistant.service
-RUN service openvas-manager restart && \
-    service greenbone-security-assistant restart
+RUN service openvas-manager stop && \
+    service openvas-scanner stop && \
+    service greenbone-security-assistant stop && \
+    service redis-server stop
 
 CMD /root/start.sh
