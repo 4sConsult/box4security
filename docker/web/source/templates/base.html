@@ -62,7 +62,11 @@
          </div>
        </div>
        <div class="right menu">
-          <a class="item" id="user"><i class="user icon"></i>Login</a>
+         {% if current_user.is_authenticated %}
+         <div class="item"><i class="user icon"></i>{{current_user.username}}</div>
+         {% else %}
+         <a class="item" id="user" href="//{{request.host}}/user/sign-in"><i class="user icon"></i>Login</a>
+         {% endif %}
           <a class="item"id="4smenu" href="https://www.4sconsult.de/" target="__blank"><img class="ui small image" src="/static/Box4S_Logo.png"></a>
        </div>
      </div>
