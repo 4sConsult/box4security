@@ -1,7 +1,7 @@
 FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
 
 ADD etc/ /etc/openvas/
-ADD etc/openvas.ini /usr/local/etc/
+ADD etc/vuln_openvas.ini /usr/local/etc/
 ADD scripts/start.sh /root/start.sh
 
 RUN apt update
