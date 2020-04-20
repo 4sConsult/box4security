@@ -18,7 +18,6 @@ RUN sed -i 's/--listen=127.0.0.1/--listen=0.0.0.0/g' /lib/systemd/system/openvas
 RUN sed -i 's/--listen=127.0.0.1/--listen=0.0.0.0/g' /lib/systemd/system/greenbone-security-assistant.service
 RUN service openvas-scanner stop && \
     service openvas-manager stop && \
-    service greenbone-security-assistant stop && \
-    service redis-server stop
+    service greenbone-security-assistant stop
 
 CMD /root/start.sh
