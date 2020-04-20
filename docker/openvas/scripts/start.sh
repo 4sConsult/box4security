@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Starting redis ..."
-redis-server /etc/openvas/redis-openvas.conf
+redis-server /etc/redis/redis-openvas.conf
 
 echo "Testing redis status ..."
 while [ ! -f /var/run/redis-openvas/redis-server.sock ]
