@@ -19,7 +19,7 @@
     </p>
   </div>
   <div class="ui inverted section divider"></div>
-  <table id="tbl-bpf" class="ui celled single line small table">
+  <table class="ui celled single line small table">
     <thead>
       <tr>
         <th class="collapsing">E-Mail-Adresse</th>
@@ -77,7 +77,7 @@
     </div>
   </div>
   </div>
-  <div class="ui tiny modal">
+  <div id="modal-add" class="ui tiny modal">
     <i class="close icon"></i>
     <div class="header">Benutzer hinzufügen</div>
     <div class="content">
@@ -128,20 +128,99 @@
       </form>
     </div>
   </div>
+  <div id="modal-edit" class="ui tiny modal">
+    <i class="close icon"></i>
+    <div class="header">Benutzer bearbeiten</div>
+    <div class="content">
+      <form method="" class="ui form">
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="mail icon"></i>
+              <input type="email" id="edit-{{ userform.email.id }}" required="" name="{{ userform.email.name }}" placeholder="E-Mail Adresse">
+            </div>
+          </div>
+          {% if userform.email.errors %}
+              {% for e in userform.email.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <div class="field">
+              <input type="text" id="edit-{{ userform.first_name.id }}" name="{{ userform.first_name.name }}" placeholder="Vorname">
+          </div>
+          {% if userform.last_name.errors %}
+          {% for e in userform.last_name.errors %}
+          <p class="ui orange message">{{ e }}</p>
+          {% endfor %}
+          {% endif %}
+          <div class="field">
+              <input type="text" id="edit-{{ userform.last_name.id }}"name="{{ userform.last_name.name }}" placeholder="Nachname">
+          </div>
+          {% if userform.last_name.errors %}
+              {% for e in userform.last_name.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" id="edit-email_confirmed" name="email_confirmed" tabindex="0" class="hidden">
+              <label>E-Mail bestätigt</label>
+            </div>
+          </div>
+          <!-- <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" id="edit-active" name="active" tabindex="0" class="hidden">
+              <label>Aktiv</label>
+            </div>
+          </div> -->
+          <button id="edit-submit" class="ui fluid large foursgrey-bg submit button" type="submit" name="button">Speichern</button>
+      </form>
+    </div>
+  </div>
   {% endblock %}
   {% block scripts %}
   <script type="text/javascript">
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
   $('.ui.checkbox').checkbox();
-  $('a._open').click(() => $('.ui.modal').modal('show'));
+  $('a._open').click(() => $('#modal-add').modal('show'));
   </script>
   {% if create %}
     <script type="text/javascript">
-      $('.ui.modal').modal('show');
+      $('#modal-add').modal('show');
     </script>
   {% endif %}
   <script type="text/javascript">
+    $(`#edit-submit`).on('click', (e) => {
+      e.preventDefault()
+      var data = {
+        'email': $('#edit-{{ userform.email.id }}').val(),
+        'first_name': $('#edit-{{ userform.first_name.id }}').val(),
+        'last_name': $('#edit-{{ userform.last_name.id }}').val(),
+        //'active': $('#edit-active').prop("checked"),
+        'email_confirmed': $('#edit-email_confirmed').prop("checked"),
+      }
+      fetch(`/api/user/${$('#edit-submit').data('user-id')}`,
+        {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data),
+        })
+      .then((response) => {
+        if(!response.ok){
+          var errormsg="";
+          console.log(response.status)
+          switch (response.status) {
+            case 404: errormsg = "Der zu bearbeitende Benutzer wurde nicht gefunden. Keine Änderungen wurden gespeichert."; break;
+            case 400: errormsg = "Die gestellte Anfrage enthielt für die Verarbeitung unverständliche Parameter."; break;
+            case 500: errormsg = "Die Änderungen am Benutzer konnten nicht in der Datenbank gespeichert werden."; break;
+          };
+          row = `<div class="ui red message">${errormsg}</div>`;
+          $(`#edit-submit`).before(row);
+        } else {
+          location.reload();
+        }
+      });
+    })
     $(`tbody tr td a` ).on('click', (e) => {
       switch ($(e.delegateTarget).data('action')) {
         case 'delete':
@@ -153,7 +232,19 @@
           };
           break;
         case 'edit':
-          break;
+          fetch(`/api/user/${$(e.delegateTarget).data('user-id')}`, {method: 'GET'})
+          .then((response) => {
+            return response.json()
+          }).then((u) => {
+            $('#edit-{{ userform.email.id }}').val(u.email);
+            $('#edit-{{ userform.last_name.id }}').val(u.last_name);
+            $('#edit-{{ userform.first_name.id }}').val(u.first_name);
+            //$('#edit-active').prop("checked", !!u.active);
+            $('#edit-email_confirmed').prop("checked", !!u.email_confirmed_at); // convert date to bool
+            $('#edit-submit').data('user-id', u.id);
+            $('#modal-edit').modal('show');
+          });
+        break;
         case 'disable':
           fetch(`/api/user/${$(e.delegateTarget).data('user-id')}/lock`, {method: 'POST'})
           .then(() => {

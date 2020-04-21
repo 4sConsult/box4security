@@ -7,7 +7,7 @@ import requests
 import os
 import subprocess
 from requests.exceptions import Timeout, ConnectionError
-
+from datetime import datetime
 
 def tail(f, window=1):
     """Return the last `window` lines of file `f` as a list of bytes."""
@@ -290,6 +290,39 @@ class APIUser(Resource):
             return '', 204
         else:
             abort(404, message="User with ID {} not found. Nothing deleted.".format(user_id))
+
+    def put(self, user_id):
+        """Update a user by ID."""
+
+        self.parser.add_argument('email', type=str)
+        self.parser.add_argument('first_name', type=str)
+        self.parser.add_argument('last_name', type=str)
+        self.parser.add_argument('active', type=bool)
+        self.parser.add_argument('email_confirmed', type=bool)
+
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+
+        user = models.User.query.get(user_id)
+        if not user:
+            abort(404, message="User with ID {} not found. Nothing changed.".format(user_id))
+        user.email = self.args['email']
+        user.first_name = self.args['first_name']
+        user.last_name = self.args['last_name']
+        # user.active = self.args['active']
+        # Toggling active for now is disabled. We have a button for that
+        # Else we have to work around administrators blocking themselves..
+        if self.args['email_confirmed']:
+            user.email_confirmed_at = datetime.now()
+        else:
+            user.email_confirmed_at = None
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            abort(500, message="Error while saving user to database.")
 
 
 class APIUserLock(Resource):
