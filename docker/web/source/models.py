@@ -62,6 +62,16 @@ class LSRSchema(ma.Schema):
         fields = ('id', 'src_ip', 'src_port', 'dst_ip', 'dst_port', 'proto', 'signature_id', 'signature')
 
 
+class UserSchema(ma.Schema):
+    """User Schema for API representation."""
+
+    class Meta:
+        """Define fields which will be available."""
+
+        fields = ('id', 'email', 'first_name', 'last_name', 'active', 'email_confirmed_at')
+
+
+USR = UserSchema()
 BPF = BPFSchema()
 LSR = LSRSchema()
 BPFs = BPFSchema(many=True)
