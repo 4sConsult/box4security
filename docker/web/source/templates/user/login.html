@@ -16,11 +16,11 @@
             <div class="field">
               <div class="ui left icon input">
                 <i class="user icon"></i>
-                <input type="text" id="username" name="username" placeholder="E-Mail Adresse od. Benutzername">
+                <input type="text" id="{{field.id}}" name="{{field.name}}" placeholder="E-Mail Adresse">
               </div>
             </div>
-            {% if form.username.errors %}
-                {% for e in form.username.errors %}
+            {% if field.errors %}
+                {% for e in field.errors %}
                     <p class="ui orange message">{{ e }}</p>
                 {% endfor %}
             {% endif %}
