@@ -49,13 +49,13 @@
           {% endif %}
         </td>
         <td class="collapsing">
-          <a data-user-id="{{ u.id }}" data-action="disable" class="ui icon grey button">
-            <i class="ban icon"></i>
-          </a>
           <a data-user-id="{{ u.id }}" data-action="edit" class="ui icon blue button">
             <i class="edit icon"></i>
           </a>
-          <a data-user-id="{{ u.id }}" data-action="delete" class="ui icon red button">
+          <a data-user-id="{{ u.id }}" data-action="disable" class="ui icon grey button {% if current_user.id == u.id %}disabled{%  endif %}">
+            <i class="ban icon"></i>
+          </a>
+          <a data-user-id="{{ u.id }}" data-action="delete" class="ui icon red button {% if current_user.id == u.id %}disabled{%  endif %}">
             <i class="trash alternate outline icon"></i>
           </a>
         </td>
@@ -137,5 +137,14 @@
       $('.ui.modal').modal('show');
     </script>
   {% endif %}
+  <script type="text/javascript">
+    $(`tbody tr td a` ).on('click', (e) => {
+      if (confirm(`Soll dieser Nutzer wirklich unwiderruflich GELÖSCHT werden?`)) {
+        fetch(`/api/user/${$(e.delegateTarget).data('user-id')}`, {method: 'DELETE'})
+        .then(() => {
+            $(e.delegateTarget).closest('tr').remove();
+        })
+      }
+    })
   </script>
   {% endblock %}

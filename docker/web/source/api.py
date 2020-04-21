@@ -1,6 +1,7 @@
 """Module for webapp API."""
 from source import models, db
 from flask_restful import Resource, reqparse, abort
+from flask_user import login_required
 from flask import request, render_template
 import requests
 import os
@@ -261,6 +262,27 @@ class Alert(Resource):
 
     def delete(self):
         return {}, 501
+
+
+class APIUser(Resource):
+    """BOX4s User Resource."""
+
+    method_decorators = [login_required]
+    def get(self, user_id):
+        return {}, 501
+
+    def post(self, user_id):
+        return {}, 501
+
+    def delete(self, user_id):
+        """Delete User by ID."""
+        user = models.User.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return '', 204
+        else:
+            abort(404, message="User with ID {} not found. Nothing deleted.".format(user_id))
 
 
 class Health(Resource):
