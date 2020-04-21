@@ -87,9 +87,17 @@ def user():
         user.password = hash
         db.session.add(user)
         db.session.commit()
-        userman.email_manager._render_and_send_email(user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
-        if adduser.email_copy:
-            userman.email_manager._render_and_send_email(current_user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
+        try:
+            userman.email_manager._render_and_send_email(user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
+            if adduser.email_copy:
+                userman.email_manager._render_and_send_email(current_user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
+            # send confirmation E-Mail
+            userman.email_manager.send_confirm_email_email(user, None)
+        except Exception:
+            # delete new User object if send fails
+            userman.db_manager.delete_object(user)
+            userman.db_manager.commit()
+            raise
     elif request.method == 'POST':
         create = True
     users = User.query.all()

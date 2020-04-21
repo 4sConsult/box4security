@@ -14,8 +14,8 @@ class Config():
 
     # representation name
     USER_APP_NAME = "BOX4security"
-    # Don't require confirmation
-    USER_ENABLE_CONFIRM_EMAIL = False
+    USER_ENABLE_CONFIRM_EMAIL = True
+    USER_ALLOW_LOGIN_WITHOUT_CONFIRMED_EMAIL = False
     # Allow logins by username
     USER_ENABLE_USERNAME = False
     USER_REQUIRE_INVITATION = False
@@ -25,6 +25,7 @@ class Config():
     USER_REGISTER_TEMPLATE = 'user/register.html'
     USER_CHANGE_PASSWORD_TEMPLATE = 'user/change_password.html'
     USER_INVITE_USER_EMAIL_TEMPLATE = 'user/emails/invite_user'
+    USER_AUTO_LOGIN_AFTER_CONFIRM = False
     # Mail
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
