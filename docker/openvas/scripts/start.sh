@@ -1,13 +1,14 @@
 #!/bin/bash
+echo "Starting Redis ..."
+# Making sure the needed directory is available
+mkdir -p /var/run/redis-openvas/
+redis-server /etc/redis/redis-openvas.conf
 
-while [ true ] ; do
-  echo "testing"
-  sleep 10
-done
+echo "Starting OpenVAS ..."
+openvas-start
 
-service openvas-manager restart
-service openvas-scanner restart
-service greenbone-security-assistant restart
+echo "Checking setup ..."
+openvas-check-setup
 
 echo "Reloading NVTs ..."
 openvasmd --rebuild
