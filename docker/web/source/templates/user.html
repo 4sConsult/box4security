@@ -52,6 +52,9 @@
           <a data-user-id="{{ u.id }}" data-action="disable" class="ui icon grey button">
             <i class="ban icon"></i>
           </a>
+          <a data-user-id="{{ u.id }}" data-action="edit" class="ui icon blue button">
+            <i class="edit icon"></i>
+          </a>
           <a data-user-id="{{ u.id }}" data-action="delete" class="ui icon red button">
             <i class="trash alternate outline icon"></i>
           </a>
@@ -60,6 +63,15 @@
       {% endfor %}
     </tbody>
   </table>
+  <div class="ui grid">
+    <div class="three column row">
+      <div class="right floated column">
+        <a class="ui right floated positive icon button _open">
+          <i class="plus icon"></i>
+        </a>
+      </div>
+    </div>
+  </div>
   </div>
   <div class="ui tiny modal">
     <i class="close icon"></i>
@@ -98,5 +110,6 @@
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
   $('.ui.checkbox').checkbox();
+  $('a._open').click(() => $('.ui.modal').modal('show'));
   </script>
   {% endblock %}
