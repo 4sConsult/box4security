@@ -102,7 +102,7 @@ def user():
             raise
     elif request.method == 'POST':
         create = True
-    users = User.query.all()
+    users = User.query.order_by(User.id.asc()).all()
     return render_template('user.html', users=users, userform=adduser, create=create)
 
 
