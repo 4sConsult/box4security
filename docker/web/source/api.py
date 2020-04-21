@@ -285,6 +285,21 @@ class APIUser(Resource):
             abort(404, message="User with ID {} not found. Nothing deleted.".format(user_id))
 
 
+class APIUserLock(Resource):
+    """BOX4s User Lock Resource."""
+
+    def post(self, user_id):
+        """Toggle User Lock status."""
+        user = models.User.query.get(user_id)
+        if user:
+            user.active = not user.active
+            db.session.add(user)
+            db.session.commit()
+            return {'user': user_id, 'is_active': user.is_active}, 200
+        else:
+            abort(404, message="User with ID {} not found. Nothing changed.".format(user_id))
+
+
 class Health(Resource):
     """Health endpoint."""
 

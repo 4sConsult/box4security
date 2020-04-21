@@ -42,7 +42,7 @@
           {% endif %}
         </td>
         <td class="collapsing">
-          {% if u.is_active %}
+          {% if u.active %}
             <i class="ui icon green check"></i>
           {% else %}
             <i class="ui icon red x"></i>
@@ -53,7 +53,11 @@
             <i class="edit icon"></i>
           </a>
           <a data-user-id="{{ u.id }}" data-action="disable" class="ui icon grey button {% if current_user.id == u.id %}disabled{%  endif %}">
-            <i class="ban icon"></i>
+            {% if u.active %}
+              <i class="lock icon"></i>
+            {% else %}
+              <i class="unlock icon"></i>
+            {% endif %}
           </a>
           <a data-user-id="{{ u.id }}" data-action="delete" class="ui icon red button {% if current_user.id == u.id %}disabled{%  endif %}">
             <i class="trash alternate outline icon"></i>
@@ -139,11 +143,23 @@
   {% endif %}
   <script type="text/javascript">
     $(`tbody tr td a` ).on('click', (e) => {
-      if (confirm(`Soll dieser Nutzer wirklich unwiderruflich GELÖSCHT werden?`)) {
-        fetch(`/api/user/${$(e.delegateTarget).data('user-id')}`, {method: 'DELETE'})
-        .then(() => {
-            $(e.delegateTarget).closest('tr').remove();
-        })
+      switch ($(e.delegateTarget).data('action')) {
+        case 'delete':
+          if (confirm(`Soll dieser Nutzer wirklich unwiderruflich GELÖSCHT werden?`)) {
+            fetch(`/api/user/${$(e.delegateTarget).data('user-id')}`, {method: 'DELETE'})
+            .then(() => {
+              $(e.delegateTarget).closest('tr').remove();
+            })
+          };
+          break;
+        case 'edit':
+          break;
+        case 'disable':
+          fetch(`/api/user/${$(e.delegateTarget).data('user-id')}/lock`, {method: 'POST'})
+          .then(() => {
+            location.reload();
+          })
+          break;
       }
     })
   </script>

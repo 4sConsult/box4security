@@ -1,5 +1,5 @@
 from source import app, mail, db, userman
-from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser
+from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.models import User
 from source.config import Dashboards
 from flask_restful import Api
@@ -43,6 +43,7 @@ api.add_resource(UpdateLog, '/update/log/')
 api.add_resource(UpdateStatus, '/update/status/')
 api.add_resource(Health, '/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
+api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 
 
 @app.route('/')
