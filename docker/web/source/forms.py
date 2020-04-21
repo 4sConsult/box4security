@@ -1,6 +1,6 @@
 from wtforms_alchemy import ModelForm
 from flask_wtf import FlaskForm
-from wtforms import TextField
+from wtforms import TextField, BooleanField
 from source.models import User
 
 
@@ -18,3 +18,4 @@ class AddUserForm(ModelForm, FlaskForm):
         exclude = ['active', 'email_confirmed_at', 'password']
     first_name = TextField(validators=[])
     last_name = TextField(validators=[])
+    email_copy = BooleanField()

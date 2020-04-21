@@ -1,13 +1,33 @@
-from source import app, mail, db
+from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health
 from source.models import User
 from source.config import Dashboards
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, abort, send_file
-from flask_user import login_required
+from flask_user import login_required, current_user
 from flask_mail import Message
 from source.forms import AddUserForm
 import os
+import string
+import secrets
+
+
+def generate_password():
+    """Generate a ten-character alphanumeric password
+
+    with at least one lowercase character,
+    at least one uppercase character,
+    and at least three digits
+    See: https://docs.python.org/3/library/secrets.html#recipes-and-best-practices
+    """
+
+    alphabet = string.ascii_letters + string.digits
+    while True:
+        password = ''.join(secrets.choice(alphabet) for i in range(10))
+        if (any(c.islower() for c in password) and any(c.isupper() for c in password) and sum(c.isdigit() for c in password) >= 3):
+            break
+    return password
+
 
 api = Api(app)
 
@@ -62,10 +82,16 @@ def user():
     if request.method == 'POST' and adduser.validate():
         user = User()
         adduser.populate_obj(user)  # Copies matching attributes from form onto user
+        rndpass = generate_password()
+        hash = userman.hash_password(rndpass)
+        user.password = hash
         db.session.add(user)
         db.session.commit()
-        # TODO send emails
-    # TODO: Display errors to user who submits stuff -> flash?
+        userman.email_manager._render_and_send_email(user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
+        if adduser.email_copy:
+            userman.email_manager._render_and_send_email(current_user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
+    elif request.method == 'POST':
+        create = True
     users = User.query.all()
     return render_template('user.html', users=users, userform=adduser, create=create)
 

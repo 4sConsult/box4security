@@ -85,12 +85,27 @@
               <input type="email" id="{{ userform.email.id }}" required="" name="{{ userform.email.name }}" placeholder="E-Mail Adresse">
             </div>
           </div>
+          {% if userform.email.errors %}
+              {% for e in userform.email.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
           <div class="field">
               <input type="text" id="{{ userform.first_name.id }}" name="{{ userform.first_name.name }}" placeholder="Vorname">
           </div>
+          {% if userform.last_name.errors %}
+          {% for e in userform.last_name.errors %}
+          <p class="ui orange message">{{ e }}</p>
+          {% endfor %}
+          {% endif %}
           <div class="field">
               <input type="text" id="{{ userform.last_name.id }}"name="{{ userform.last_name.name }}" placeholder="Nachname">
           </div>
+          {% if userform.last_name.errors %}
+              {% for e in userform.last_name.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
           <div class="ui message">
             Nach Anlegen des Benutzers wird ein Passwort zufällig gewählt und dem angelegten Nutzer per E-Mail zugesandt. Dieses sollte zeitig aktualisiert und die E-Mailadresse bestätigt werden.
           </div>
@@ -100,6 +115,11 @@
               <label>Kopie der E-Mail an mich senden</label>
             </div>
           </div>
+          {% if userform.email_copy.errors %}
+              {% for e in userform.email_copy.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
           <button class="ui fluid large foursgrey-bg submit button" type="submit" name="button">Anlegen</button>
       </form>
     </div>
@@ -111,5 +131,11 @@
   $('#administration').addClass('active');
   $('.ui.checkbox').checkbox();
   $('a._open').click(() => $('.ui.modal').modal('show'));
+  </script>
+  {% if create %}
+    <script type="text/javascript">
+      $('.ui.modal').modal('show');
+    </script>
+  {% endif %}
   </script>
   {% endblock %}
