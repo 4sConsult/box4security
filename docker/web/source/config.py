@@ -23,6 +23,7 @@ class Config():
     USER_RESET_PASSWORD_TEMPLATE = 'user/reset_password.html'
     USER_FORGOT_PASSWORD_TEMPLATE = 'user/forgot_password.html'
     USER_REGISTER_TEMPLATE = 'user/register.html'
+    USER_RESEND_CONFIRM_EMAIL_TEMPLATE = 'user/resend_confirm_email.html'
     USER_CHANGE_PASSWORD_TEMPLATE = 'user/change_password.html'
     USER_INVITE_USER_EMAIL_TEMPLATE = 'user/emails/invite_user'
     USER_AUTO_LOGIN_AFTER_CONFIRM = False
