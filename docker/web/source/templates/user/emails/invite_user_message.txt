@@ -1,9 +1,12 @@
-{% extends 'flask_user/emails/base_message.txt' %}
+{% extends 'user/emails/base_message.html' %}
 
 {% block message %}
-You have been invited to join {{ app_name }}.
+Ihnen wurde ein Account für die BOX4security angelegt.
 
-To register an account, please click on the link below:
-    {{ accept_invitation_link }}
+Verwenden Sie zum Login bitte:
+E-Mail: {{ user.email }}
+Passwort: {{ user_pass }}
 
+Bitte beachten Sie, dass sich bei dem Kennwort um ein automatisch generiertes Kennwort handelt. Sie sollten dieses so schnell wie möglich ändern.
+Eine Änderung ist hier möglich: {{ url_for('user.change_password',_external=True) }}
 {% endblock %}
