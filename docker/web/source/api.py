@@ -335,7 +335,7 @@ class APIUserLock(Resource):
             user.active = not user.active
             db.session.add(user)
             db.session.commit()
-            return {'user': user_id, 'is_active': user.is_active}, 200
+            return {'user': user_id, 'active': user.active}, 200
         else:
             abort(404, message="User with ID {} not found. Nothing changed.".format(user_id))
 
