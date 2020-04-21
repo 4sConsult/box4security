@@ -268,8 +268,15 @@ class APIUser(Resource):
     """BOX4s User Resource."""
 
     method_decorators = [login_required]
+
+    def __init__(self):
+        # Register Parser and argument for endpoint
+        self.parser = reqparse.RequestParser()
+
     def get(self, user_id):
-        return {}, 501
+        """Get a certain user and his information."""
+        u = models.User.query.get(user_id)
+        return models.USR.dump(u)
 
     def post(self, user_id):
         return {}, 501
