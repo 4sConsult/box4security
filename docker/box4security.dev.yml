@@ -26,8 +26,9 @@ services:
     build:
       context: ./web
     container_name: web
-    command: python main.py db upgrade head
-    command: python main.py run -h 0.0.0.0
+    command: >
+     bash -c "python main.py db upgrade head &&
+     python main.py run -h 0.0.0.0"
     volumes:
       - ./web/:/usr/src/app/
       - ./web/update.log:/var/log/box4s/update.log
@@ -43,7 +44,8 @@ services:
       - ./.env.dev.web
       - ../VERSION
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"
     build:
@@ -56,6 +58,11 @@ services:
     environment:
       - POSTGRES_PASSWORD=zgJnwauCAsHrR6JB
       - POSTGRES_DB=box4S_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   # to persist data beyond container's life
