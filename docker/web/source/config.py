@@ -17,7 +17,7 @@ class Config():
     # Don't require confirmation
     USER_ENABLE_CONFIRM_EMAIL = False
     # Allow logins by username
-    USER_ENABLE_USERNAME = True
+    USER_ENABLE_USERNAME = False
     USER_REQUIRE_INVITATION = False
     USER_LOGIN_TEMPLATE = 'user/login.html'
     USER_RESET_PASSWORD_TEMPLATE = 'user/reset_password.html'

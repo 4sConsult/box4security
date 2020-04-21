@@ -23,7 +23,6 @@
     <thead>
       <tr>
         <th class="collapsing">E-Mail-Adresse</th>
-        <th class="collapsing">Username</th>
         <th class="collapsing">Name</th>
         <th class="collapsing">E-Mail<br> bestätigt</th>
         <th class="collapsing">Aktiv</th>
@@ -34,7 +33,6 @@
       {% for u in users %}
       <tr>
         <td class="collapsing">{{ u.email }}</td>
-        <td class="collapsing">{{ u.username }}</td>
         <td class="collapsing">{{u.first_name}} {{u.last_name}}</td>
         <td class="collapsing">
           {% if u.email_confirmed_at %}
@@ -73,12 +71,6 @@
             <div class="ui left icon input">
               <i class="mail icon"></i>
               <input type="email" id="{{ userform.email.id }}" required="" name="{{ userform.email.name }}" placeholder="E-Mail Adresse">
-            </div>
-          </div>
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="user icon"></i>
-              <input type="text" id="{{ userform.username.id }}" name="{{ userform.username.name }}" placeholder="Benutzername">
             </div>
           </div>
           <div class="field">

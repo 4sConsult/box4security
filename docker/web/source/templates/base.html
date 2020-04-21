@@ -67,7 +67,7 @@
          <a class="item"></a>
          <div class="item">
            <div class="ui dropdown pointing link item">
-             <i class="user icon"></i>{{ current_user.username if current_user.username else current_user.email }}
+             <i class="user icon"></i>{{ current_user.email }}
              <i class="dropdown icon"></i>
              <div class="menu">
                <a class="item" href="{{url_for('user.logout')}}">Logout</a>

@@ -24,13 +24,11 @@ def upgrade():
         sa.Column('is_active', sa.Boolean(), server_default='1', nullable=False),
         sa.Column('email', sa.String(length=255), nullable=False),
         sa.Column('email_confirmed_at', sa.DateTime(), nullable=True),
-        sa.Column('username', sa.String(length=50), nullable=False),
         sa.Column('password', sa.String(length=255), server_default='', nullable=False),
         sa.Column('first_name', sa.String(length=100), server_default='', nullable=False),
         sa.Column('last_name', sa.String(length=100), server_default='', nullable=False),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('email'),
-        sa.UniqueConstraint('username')
     )
 
 

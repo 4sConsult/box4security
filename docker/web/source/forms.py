@@ -16,6 +16,5 @@ class AddUserForm(ModelForm, FlaskForm):
 
         model = User
         exclude = ['active', 'email_confirmed_at', 'password']
-    username = TextField(validators=[])
     first_name = TextField(validators=[])
     last_name = TextField(validators=[])
