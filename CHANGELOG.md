@@ -7,7 +7,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Aufforderung zum Erstellen eines Administrationsusers nach Update auf diese oder Installation dieser Version eingeführt
 * Benutzerauthentifizierung eingeführt
 * Weboberfläche der BOX4s nur noch nach Benutzerauthentifizierung sichtbar
+* Benutzerauthentifizierung für sensible API-Punkte erforderlich
 * E-Mail-Benachrichtigung bei Ereignissen der Benutzerauthentifizierung eingeführt
+* Benutzerverwaltung zum Anlegen, Bearbeiten und Löschen von Benutzern eingeführt
 
 ### Changed
 * Neues Box4Security Logo in Website integriert
