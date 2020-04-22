@@ -33,6 +33,8 @@ services:
     build: openvas/.
     container_name: openvas
     restart: always
+    args:
+     - INT_IP=${INT_IP}
     ports:
       - 9392:9392
     volumes:
