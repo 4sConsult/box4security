@@ -18,6 +18,10 @@ service openvas-manager start
 # Insert Config for scan without bruteforce to openvas
 /root/run-OpenVASinsertConf.sh
 
+echo "Creating user ..."
+openvasmd --create-user amadmin
+openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
+
 echo "Checking setup ..."
 openvas-check-setup
 
