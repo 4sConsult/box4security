@@ -46,7 +46,6 @@ services:
     container_name: vulnwhisperer
     volumes:
       - varlib_logstash:/var/lib/logstash/
-    network_mode: host
   suricata:
     build: suricata/.
     container_name: suricata
