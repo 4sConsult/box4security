@@ -23,7 +23,7 @@ def upgrade():
                    [
                        {'id': 1, 'name': 'Super Admin', 'description': 'Super Admin'},
                        {'id': 2, 'name': 'Filter', 'description': 'Sehen und Anlegen von Filtern'},
-                       {'id': 3, 'name': 'Updates', 'description': 'Starten von Updates'},
+                       {'id': 3, 'name': 'Updates', 'description': 'Ansehen und Starten von Updates'},
                        {'id': 4, 'name': 'User-Management', 'description': 'Bearbeiten und Anlegen von Benutzern'},
                        {'id': 5, 'name': 'FAQ', 'description': 'Ansicht FAQ und Benutzung 4sConsult Kontaktformular'},
                        {'id': 6, 'name': 'Dashboards-Master', 'description': 'Freigabe für alle Dashboards'},

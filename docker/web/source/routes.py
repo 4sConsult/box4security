@@ -4,7 +4,7 @@ from source.models import User
 from source.config import Dashboards
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, abort, send_file
-from flask_user import login_required, current_user
+from flask_user import login_required, current_user, roles_required
 from flask_mail import Message
 from source.forms import AddUserForm
 import os
@@ -13,14 +13,13 @@ import secrets
 
 
 def generate_password():
-    """Generate a ten-character alphanumeric password
+    """Generate a ten-character alphanumeric password.
 
     with at least one lowercase character,
     at least one uppercase character,
     and at least three digits
     See: https://docs.python.org/3/library/secrets.html#recipes-and-best-practices
     """
-
     alphabet = string.ascii_letters + string.digits
     while True:
         password = ''.join(secrets.choice(alphabet) for i in range(10))
@@ -62,9 +61,11 @@ def staticfiles(filename):
 
 @app.route('/faq', methods=['GET'])
 @login_required
+@roles_required(['Super Admin', 'FAQ'])
 def faq():
     """Return the FAQ page.
 
+    Required Role: FAQ OR Super Admin
     Environment variable KUNDE is the client company name and set to Standard if not existent.
     The value is displayed in the contact form.
     """
@@ -74,10 +75,12 @@ def faq():
 
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
+@roles_required(['Super Admin', 'User-Management'])
 def user():
     """Display the user admin page.
 
-    Create will open the modal to add a user immediately.
+    Required Role: User-Management OR Super Admin
+    `create` will open the modal to add a user immediately.
     """
     create = False
     adduser = AddUserForm(request.form)
@@ -108,6 +111,7 @@ def user():
 
 @app.route('/faq', methods=['POST'])
 @login_required
+@roles_required(['Super Admin', 'FAQ'])
 def faq_mail():
     """Handle the submitted contanct form and send via email.
 
@@ -138,6 +142,7 @@ def faq_mail():
 
 @app.route('/update', methods=['GET'])
 @login_required
+@roles_required(['Super Admin', 'Updates'])
 def update():
     """Return the update page."""
     return render_template("update.html")
@@ -145,6 +150,7 @@ def update():
 
 @app.route('/update', methods=['POST'])
 @login_required
+@roles_required(['Super Admin', 'Updates'])
 def update_post():
     """Return the update page."""
     return render_template("update.html")
@@ -152,6 +158,7 @@ def update_post():
 
 @app.route('/filter', methods=['GET'])
 @login_required
+@roles_required(['Super Admin', 'Filter'])
 def rules():
     """Return the filter page."""
     return render_template("filter.html")
@@ -159,6 +166,7 @@ def rules():
 
 @app.route('/update/log/download', methods=['GET'])
 @login_required
+@roles_required(['Super Admin', 'Updates'])
 def updatelogdl():
     """Try to downlaod the update.log."""
     try:
