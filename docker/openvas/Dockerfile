@@ -13,8 +13,7 @@ ADD scripts/ /root/
 
 RUN chmod +x /root/start.sh
 RUN chmod +x /root/update.sh
-RUN sed -i 's/--listen=127.0.0.1/--listen=0.0.0.0/g' /lib/systemd/system/openvas-manager.service
-RUN sed -i 's/--listen=127.0.0.1/--listen=0.0.0.0/g' /lib/systemd/system/greenbone-security-assistant.service
+RUN cp /etc/openvas/greenbone-security-assistant.service /etc/systemd/system/
 RUN service redis-server stop && \
     openvas-stop
 
