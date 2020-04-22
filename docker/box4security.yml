@@ -43,9 +43,6 @@ services:
   vulnwhisperer:
     image: "docker-registry.am-gmbh.de/it-security/b4s/vulnwhisperer:dev"
     container_name: vulnwhisperer
-    depends_on:
-      openvas:
-        condition: service_starting
     volumes:
       - varlib_logstash:/var/lib/logstash/
     network_mode: host
