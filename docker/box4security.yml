@@ -40,6 +40,15 @@ services:
     volumes:
       - varlib_openvas:/var/lib/openvas
     image: "docker-registry.am-gmbh.de/it-security/b4s/openvas:dev"
+  vulnwhisperer:
+    image: "docker-registry.am-gmbh.de/it-security/b4s/vulnwhisperer:dev"
+    container_name: vulnwhisperer
+    depends_on:
+      openvas:
+        condition: service_starting
+    volumes:
+      - varlib_logstash:/var/lib/logstash/
+    network_mode: host
   suricata:
     build: suricata/.
     container_name: suricata
