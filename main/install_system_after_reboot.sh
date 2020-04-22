@@ -173,6 +173,9 @@ cd /home/amadmin/box4s
 # Update Suricata
 sudo docker exec suricata /root/scripts/update.sh
 
+# Update OpenVAS
+sudo docker exec openvas /root/update.sh
+
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
 echo "Installing FetchQC"
 cd /home/amadmin/box4s
@@ -221,14 +224,6 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 
 # Installiere Suricata Index Pattern
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
-
-echo "Initialisiere Schwachstellendatenbank"
-sudo greenbone-scapdata-sync --verbose --progress
-sudo greenbone-certdata-sync --verbose --progress
-sudo openvas-feed-update --verbose --progress
-sudo greenbone-nvt-sync --verbose --progress
-sudo openvasmd --update --verbose --progress
-sudo openvasmd --rebuild
 
 #sudo systemctl restart networking
 echo "BOX4security installiert."
