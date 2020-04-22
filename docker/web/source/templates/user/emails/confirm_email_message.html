@@ -1,7 +1,7 @@
 {% extends 'flask_user/emails/base_message.html' %}
 
 {% block message %}
-<p>Vor der Nutzung von {{ app_name }} muss Ihre E-Mail-Adresse bestätigt werden.</p>
+<p>Vor der Nutzung der {{ app_name }} muss Ihre E-Mail-Adresse bestätigt werden.</p>
 
 <p>Wenn Sie diese Bestätigung initiiert haben, dann klicken Sie auf den nachstehenden Link:<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ confirm_email_link }}">E-Mail-Adresse bestätigen</a>.</p>
