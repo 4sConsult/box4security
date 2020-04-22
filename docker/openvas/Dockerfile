@@ -1,7 +1,6 @@
 FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
 
 ENV DEBIAN_FRONTEND=noninteractive
-ARG INT_IP
 
 ADD etc/ /etc/openvas/
 ADD etc/vuln_openvas.ini /usr/local/etc/
