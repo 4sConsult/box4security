@@ -25,7 +25,24 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(100), nullable=False, server_default='')
 
     # Define the relationship to Role via UserRoles
-    # roles = db.relationship('Role', secondary='user_roles')
+    roles = db.relationship('Role', secondary='user_role')
+
+
+class Role(db.Model):
+    """Role class for defining permissions."""
+
+    __tablename__ = 'role'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+
+class UserRole(db.Model):
+    """Association table for Users and Roles."""
+
+    __tablename__ = 'user_role'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE'))
 
 
 # When in doubt, see:
