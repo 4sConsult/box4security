@@ -5,6 +5,7 @@ from source.models import User
 
 
 class CreatorUserMan(UserManager):
+    """Extended UserManager class."""
 
     def login_view(self):
         """Extend default login view.
