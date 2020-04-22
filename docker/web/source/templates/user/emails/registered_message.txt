@@ -9,7 +9,7 @@ Für die Nutzung ist die Bestätigung Ihrer E-Mail-Adresse erforderlich.
 Wenn Sie diese Registrierung initiiert haben, dann klicken Sie auf den nachstehenden Link:
     {{ confirm_email_link }}
 
-Falls Sie diese Bestätigung nicht initiiert haben, können Sie diese E-Mail ignorieren.
+Falls Sie diese Registrierung nicht initiiert haben, können Sie diese E-Mail ignorieren.
 
 {%- endif %}
 {% endblock %}
