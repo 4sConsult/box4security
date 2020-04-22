@@ -180,10 +180,6 @@ cd FetchQC
 pip install -r requirements.txt
 alembic upgrade head # Prepare DB
 
-# Insert Config for scan without bruteforce to openvas
-cd $BASEDIR$GITDIR/scripts/Automation
-./run-OpenVASinsertConf.sh
-
 echo "Install Crontab"
 cd /home/amadmin/box4s/main/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
