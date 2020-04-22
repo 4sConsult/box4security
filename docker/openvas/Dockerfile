@@ -15,5 +15,6 @@ RUN apt update && \
     cp /lib/systemd/system/greenbone-security-assistant.service /etc/systemd/system/ && \
     service redis-server stop && \
     openvas-stop
+EXPOSE 9392
 
 CMD /root/start.sh
