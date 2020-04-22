@@ -30,12 +30,11 @@ services:
         condition: service_healthy
     stop_signal: SIGKILL
   openvas:
-    build:
-      context: openvas/.
-      args:
-       - INT_IP=${INT_IP}
+    build: openvas
     container_name: openvas
     restart: always
+    environment:
+      - INT_IP=${INT_IP}
     ports:
       - 9392:9392
     volumes:
