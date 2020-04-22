@@ -75,17 +75,6 @@ sudo mkdir /data/elasticsearch -p
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
 sudo chmod 777 /data/elasticsearch*
 
-# Install OpenVAS
-waitForNet
-sudo apt install -y rpm nsis alien openvas=9.0.3
-sudo openvasmd --create-user amadmin
-sudo openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
-sudo openvasmd --rebuild --progress
-
-cd /home/amadmin/box4s
-cd OpenVAS
-sudo cp * / -R
-
 sudo apt install -y zlib1g-dev libxml2-dev libxslt1-dev # dependencies vulnwhisperer
 
 # Install VulnWhisperer
