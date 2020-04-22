@@ -12,7 +12,8 @@ RUN apt update && \
     chmod +x /root/update.sh && \
     cp /lib/systemd/system/greenbone-security-assistant.service /etc/systemd/system/ && \
     service redis-server stop && \
-    openvas-stop
+    openvas-stop && \
+    pip install python-gvm
 EXPOSE 9392
 
 CMD /root/start.sh
