@@ -187,6 +187,11 @@ def catchall(r):
         # Since dashboard names are unique
         # this is a list of 1 item so we make it an object
         dashboard = dashboard[0]
-        return render_template('dashboard.html', dashboard=dashboard)
+        if not set(['Super Admin', dashboard.role]).isdisjoint([a.name for a in current_user.roles]):
+            # User is Super Admin or has the required dashboard role
+            return render_template('dashboard.html', dashboard=dashboard)
+        else:
+            # not permitted!
+            abort(403)
     else:
         abort(404)
