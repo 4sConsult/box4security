@@ -3,7 +3,6 @@ FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
 ENV DEBIAN_FRONTEND=noninteractive
 
 ADD etc/ /etc/openvas/
-ADD etc/vuln_openvas.ini /usr/local/etc/
 ADD scripts/ /root/
 
 RUN apt update && \
