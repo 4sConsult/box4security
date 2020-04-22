@@ -14,9 +14,9 @@ mkdir -p /var/run/redis-openvas/
 redis-server /etc/redis/redis-openvas.conf
 
 echo "Starting OpenVAS ..."
-systemctl start greenbone-security-assistant
-systemctl start openvas-scanner
-systemctl start openvas-manager
+service greenbone-security-assistant start
+service openvas-scanner start
+service openvas-manager start
 
 echo "Checking setup ..."
 openvas-check-setup
