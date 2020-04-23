@@ -5,7 +5,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
     apt install python python3-venv python-pip net-tools alien rpm nsis openvas=9.0.3 -y -o Dpkg::Options::=--force-confnew && \
     rm -rf /var/lib/apt/lists/* && \
-    cp /lib/systemd/system/greenbone-security-assistant.service /etc/systemd/system/ && \
     mkdir -p /usr/share/openvas/gsa/locale
 
 ADD etc/ /etc/openvas/
@@ -24,9 +23,9 @@ WORKDIR /opt/
 RUN apt update && \
     apt install -y git zlib1g-dev libxml2-dev libxslt1-dev && \
     apt-get install -y virtualenv python-pip python3-pip && \
-    git clone https://github.com/box4s/VulnWhisperer.git && \
-    cd VulnWhisperer/ && \
-    pip install -r requirements.txt && \
+    git clone https://github.com/box4s/VulnWhisperer.git
+WORKDIR /opt/VulnWhisperer/
+RUN pip install -r requirements.txt && \
     python setup.py install && \
     mkdir -p /var/lib/logstash/openvas && \
     mkdir -p /var/lib/logstash/database
