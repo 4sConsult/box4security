@@ -40,7 +40,7 @@ if "rows" in datastore:
         weighted = percent * weight
         alarmscore = alarmscore + w.weighted
 
-    if count < threshold && isZero != 1:
+    if count < threshold and isZero != 1:
         isZero = 0
     else:
         isZero = 1
