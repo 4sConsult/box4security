@@ -22,8 +22,8 @@
   <table class="ui celled single line small table">
     <thead>
       <tr>
-        <th class="collapsing">E-Mail-Adresse</th>
-        <th class="collapsing">Name</th>
+        <th class="">Name</th>
+        <th class="">Berechtigungen</th>
         <th class="collapsing">E-Mail<br> bestätigt</th>
         <th class="collapsing">Aktiv</th>
         <th class="collapsing">Aktionen</th>
@@ -32,9 +32,21 @@
     <tbody>
       {% for u in users %}
       <tr>
-        <td class="collapsing">{{ u.email }}</td>
-        <td class="collapsing">{{u.first_name}} {{u.last_name}}</td>
-        <td class="collapsing">
+        <td data-tooltip="{{ u.email }}" data-position="bottom center" class="">
+        {% if u.first_name|length + u.last_name|length > 24 %}
+          {% if u.last_name %}
+            {% if u.first_name %}
+              {{ u.first_name[0] }}.
+            {% endif %}
+              {{u.last_name}}
+          {%else%}
+            {{u.first_name}}
+          {% endif %}
+        {% else %}
+          {{u.first_name}} {{u.last_name}}
+        {% endif %}
+      </td>
+        <td class="">
             {% if u.roles|length > 1 %}
               <div data-tooltip="{{ u.roles[0].description }}" data-position="bottom center" class="ui basic label">{{ u.roles[0].name }}</div>
               <span class="ui foursgrey-bg image label" data-position="bottom center"
@@ -56,7 +68,7 @@
               <div data-tooltip="{{ u.roles[0].description}}" data-position="bottom center" class="ui basic label">{{ u.roles[0].name }}</div>
             {% endif %}
         </td>
-        <td class="">
+        <td class="collapsing">
           {% if u.email_confirmed_at %}
             <i class="ui icon green check"></i>
           {% else %}
@@ -71,17 +83,17 @@
           {% endif %}
         </td>
         <td class="collapsing">
-          <a data-user-id="{{ u.id }}" data-action="edit" class="ui icon blue button">
+          <a data-user-id="{{ u.id }}" data-action="edit" class="ui icon tiny blue button">
             <i class="edit icon"></i>
           </a>
-          <a data-user-id="{{ u.id }}" data-action="disable" class="ui icon grey button {% if current_user.id == u.id %}disabled{%  endif %}">
+          <a data-user-id="{{ u.id }}" data-action="disable" class="ui icon tiny grey button {% if current_user.id == u.id %}disabled{%  endif %}">
             {% if u.active %}
               <i class="lock icon"></i>
             {% else %}
               <i class="unlock icon"></i>
             {% endif %}
           </a>
-          <a data-user-id="{{ u.id }}" data-action="delete" class="ui icon red button {% if current_user.id == u.id %}disabled{%  endif %}">
+          <a data-user-id="{{ u.id }}" data-action="delete" class="ui icon tiny red button {% if current_user.id == u.id %}disabled{%  endif %}">
             <i class="trash alternate outline icon"></i>
           </a>
         </td>
