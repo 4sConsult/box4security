@@ -20,20 +20,36 @@ if "rows" in datastore:
         count = row[0]
         severity = row[1]
 
+#        if severity == 1:
+#                threshold = 300
+#                weight = 0.05
+#        if severity == 2:
+#                threshold = 150
+#                weight = 0.1
+#        if severity == 3:
+#                threshold = 10
+#                weight = 0.15
+#        if severity == 4:
+#                threshold = 3
+#                weight = 0.2
+#        if severity == 5:
+#                threshold = 1
+#                weight = 0.5
+
         if severity == 1:
-                threshold = 300
+                threshold = 2000
                 weight = 0.05
         if severity == 2:
-                threshold = 150
+                threshold = 1000
                 weight = 0.1
         if severity == 3:
-                threshold = 10
+                threshold = 600
                 weight = 0.15
         if severity == 4:
-                threshold = 3
+                threshold = 250
                 weight = 0.2
         if severity == 5:
-                threshold = 1
+                threshold = 100
                 weight = 0.5
 
         percent = count / threshold
