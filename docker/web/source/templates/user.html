@@ -288,8 +288,10 @@
         case 'delete':
           if (confirm(`Soll dieser Nutzer wirklich unwiderruflich GELÖSCHT werden?`)) {
             fetch(`/api/user/${$(e.delegateTarget).data('user-id')}`, {method: 'DELETE'})
-            .then(() => {
-              $(e.delegateTarget).closest('tr').remove();
+            .then((response) => {
+              if(response.ok){
+                $(e.delegateTarget).closest('tr').remove();
+              }
             })
           };
           break;

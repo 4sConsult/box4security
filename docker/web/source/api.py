@@ -273,6 +273,7 @@ class APIUser(Resource):
         # Register Parser and argument for endpoint
         self.parser = reqparse.RequestParser()
 
+    @roles_required(['Super Admin', 'User-Management'])
     def get(self, user_id):
         """Get a certain user and his information."""
         u = models.User.query.get(user_id)
@@ -283,9 +284,23 @@ class APIUser(Resource):
 
     @roles_required(['Super Admin', 'User-Management'])
     def delete(self, user_id):
-        """Delete User by ID."""
+        """Delete User by ID.
+
+        Perform checks:
+        a) User must be Super Admin or User Manager
+        b) User cannot delete himself
+        c) Only Super Admins can delete Super Admin accounts
+        """
+        if current_user.id == user_id:
+            abort(400, message="Users cannot delete their own accounts.")
+
         user = models.User.query.get(user_id)
         if user:
+            if models.Role.query.get(1) in user.roles:
+                # Trying to delete a Super Admin => current user has to be Super Admin
+                if models.Role.query.get(1) not in current_user.roles:
+                    abort(403, message="Only Super Admins can delete other Super Admin accounts.")
+                    
             db.session.delete(user)
             db.session.commit()
             return '', 204
