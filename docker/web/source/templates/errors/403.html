@@ -1,0 +1,24 @@
+{% extends "errors/error_base.html" %}
+{% block content %}
+<div class="ui middle aligned three column centered grid" style="height: 100%;">
+  <div class="row">
+    <div class="center center aligned middle column">
+        <div class="ui segment">
+          <img class="ui centered large image" src="/static/Box4S_Logo.png">
+          <div class="ui divider"></div>
+          <h1 class="ui center header aligned foursgrey">Zugriff verboten</h1>
+          <p class="ui center aligned">Sie sind nicht berechtigt, diese Seite aufzurufen.</p>
+          <button class="ui labeled small foursgrey-bg icon button">
+            <i class="left arrow icon"></i>
+            Zurück
+          </button>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$('.ui.button').on('click', () => {window.history.back()})
+</script>
+{% endblock %}
