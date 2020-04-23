@@ -5,8 +5,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
     apt install python python3-venv python-pip net-tools alien rpm nsis openvas=9.0.3 -y -o Dpkg::Options::=--force-confnew && rm -rf /var/lib/apt/lists/* && \
     cp /lib/systemd/system/greenbone-security-assistant.service /etc/systemd/system/ && \
-    service redis-server stop && \
-    openvas-stop && \
     mkdir -p /usr/share/openvas/gsa/locale
 
 ADD etc/ /etc/openvas/
@@ -17,7 +15,9 @@ RUN chmod +x /root/run-OpenVASinsertConf.sh && \
     chmod +x /root/start.sh && \
     chmod +x /root/update.sh && \
     chmod +x /root/vulnwhisp.sh && \
-    /root/run-OpenVASinsertConf.sh
+    /root/run-OpenVASinsertConf.sh && \
+    service redis-server stop && \
+    openvas-stop
 
 WORKDIR /opt/
 RUN apt update && \
