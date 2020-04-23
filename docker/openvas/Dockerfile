@@ -11,11 +11,24 @@ RUN apt update && \
 
 ADD etc/ /etc/openvas/
 ADD scripts/ /root/
+ADD etc/vuln_openvas.ini /opt/VulnWhisperer/vulnwhisperer.ini
 
 RUN chmod +x /root/run-OpenVASinsertConf.sh && \
     chmod +x /root/start.sh && \
     chmod +x /root/update.sh && \
+    chmod +x /root/vulnwhisp.sh && \
     /root/run-OpenVASinsertConf.sh
+
+WORKDIR /opt/
+RUN apt update && \
+    apt install -y zlib1g-dev libxml2-dev libxslt1-dev && \
+    apt-get install -y virtualenv python-pip python3-pip && \
+    git clone https://github.com/box4s/VulnWhisperer.git && \
+    cd VulnWhisperer/ && \
+    pip install -r requirements.txt && \
+    python setup.py install && \
+    mkdir -p /var/lib/logstash/openvas && \
+    mkdir -p /var/lib/logstash/database
 
 EXPOSE 9392
 

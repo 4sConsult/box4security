@@ -39,12 +39,6 @@ services:
     volumes:
       - varlib_openvas:/var/lib/openvas
     image: "docker-registry.am-gmbh.de/it-security/b4s/openvas:dev"
-  vulnwhisperer:
-    image: "docker-registry.am-gmbh.de/it-security/b4s/vulnwhisperer:dev"
-    build: vulnwhisperer
-    container_name: vulnwhisperer
-    volumes:
-      - varlib_logstash:/var/lib/logstash/
   suricata:
     build: suricata/.
     container_name: suricata

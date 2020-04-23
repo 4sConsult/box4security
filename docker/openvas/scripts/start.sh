@@ -11,7 +11,7 @@ redis-server /etc/redis/redis-openvas.conf
 
 echo "Starting OpenVAS Manager ..."
 /usr/sbin/openvasmd --create-user amadmin
-/usr/sbin/openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab6
+/usr/sbin/openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
 /usr/sbin/openvasmd --rebuild --progress
 /usr/sbin/openvasmd --listen=127.0.0.1 --port=9390 --database=/var/lib/openvas/mgr/tasks.db
 
