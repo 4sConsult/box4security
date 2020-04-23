@@ -35,6 +35,28 @@
         <td class="collapsing">{{ u.email }}</td>
         <td class="collapsing">{{u.first_name}} {{u.last_name}}</td>
         <td class="collapsing">
+            {% if u.roles|length > 1 %}
+              <div data-tooltip="{{ u.roles[0].description }}" data-position="bottom center" class="ui basic label">{{ u.roles[0].name }}</div>
+              <span class="ui foursgrey-bg image label" data-position="bottom center"
+                data-html="
+                  <div class='content'>
+                    <div class='ui list'>
+                      {% for r in u.roles %}
+                      <div class='item'>
+                        <div class='header'>{{r.name}}</div>
+                        {{ r.description }}
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                ">
+                + {{u.roles|length-1}}
+              </span>
+            {% elif u.roles|length == 1 %}
+              <div data-tooltip="{{ u.roles[0].description}}" data-position="bottom center" class="ui basic label">{{ u.roles[0].name }}</div>
+            {% endif %}
+        </td>
+        <td class="">
           {% if u.email_confirmed_at %}
             <i class="ui icon green check"></i>
           {% else %}
@@ -196,6 +218,7 @@
   $('#administration').addClass('active');
   $('.ui.checkbox').checkbox();
   $('a._open').click(() => $('#modal-add').modal('show'));
+  $('.ui.image.label.foursgrey-bg').popup();
   </script>
   {% if create %}
     <script type="text/javascript">
