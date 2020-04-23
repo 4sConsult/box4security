@@ -271,6 +271,7 @@
         if(!response.ok){
           var errormsg="";
           switch (response.status) {
+            case 403: errormsg = "Sie dürfen diese Aktion nicht ausführen. Nur Super Admins können andere Super Admins ernennen."; break;
             case 404: errormsg = "Der zu bearbeitende Benutzer wurde nicht gefunden. Keine Änderungen wurden gespeichert."; break;
             case 400: errormsg = "Die gestellte Anfrage enthielt für die Verarbeitung unverständliche Parameter."; break;
             case 500: errormsg = "Die Änderungen am Benutzer konnten nicht in der Datenbank gespeichert werden."; break;

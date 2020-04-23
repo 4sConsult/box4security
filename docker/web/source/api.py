@@ -1,7 +1,7 @@
 """Module for webapp API."""
 from source import models, db
 from flask_restful import Resource, reqparse, abort
-from flask_user import login_required
+from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
 import requests
 import os
@@ -291,6 +291,7 @@ class APIUser(Resource):
         else:
             abort(404, message="User with ID {} not found. Nothing deleted.".format(user_id))
 
+    @roles_required(['Super Admin', 'User-Management'])
     def put(self, user_id):
         """Update a user by ID."""
         self.parser.add_argument('email', type=str)
@@ -304,6 +305,22 @@ class APIUser(Resource):
             self.args = self.parser.parse_args()
         except Exception:
             abort(400, message="Bad Request. Failed parsing arguments.")
+
+        if not self.args['roles']:
+            # Create empty array so checks work better
+            self.args['roles'] = []
+
+        if 1 in self.args['roles']:
+            # Trying to set Super Admin
+            # User has to be Super Admin himself
+            if 'Super Admin' not in [a.name for a in current_user.roles]:
+                # User is not Super admin
+                abort(403, message="Not authorized to set Super Admin role.")
+        elif user_id == current_user.id and 'Super Admin' in [a.name for a in current_user.roles]:
+            # User is Super Admin
+            # User tries to remove his Super Admin (may be by accident?)
+            # Shouldn't be allowed, so we add it back to the array.
+            self.args['roles'].append(1)
 
         user = models.User.query.get(user_id)
         if not user:
@@ -322,7 +339,7 @@ class APIUser(Resource):
         try:
             db.session.add(user)
             db.session.commit()
-        except Exception as e:
+        except Exception:
             abort(500, message="Error while saving user to database.")
 
 
