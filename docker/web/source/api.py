@@ -203,21 +203,26 @@ class AvailableReleases(Resource):
 
 class LaunchUpdate(Resource):
     def __init__(self):
-        # Register Parser and argument for endpoint
+        """Register Parser and argument for endpoint.
+
+        `target` is the target version for the update.
+        """
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('target', type=str)
         self.args = self.parser.parse_args()
-
+        
+    @roles_required(['Super-Admin', 'Updates'])
     def post(self):
-        # launch update.sh with target version
+        """Launch update.sh."""
         # targetVersion = self.args['target']
         subprocess.Popen('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/box4s/main/update.sh', shell=True)
         return {"message": "accepted"}, 200
 
 
+@roles_required(['Super-Admin', 'Updates'])
 class UpdateLog(Resource):
     def get(self):
-        # Return last 15 lines of updatelog file
+        """Return last 15 lines of updatelog file."""
         with open('/var/log/box4s/update.log', 'rb') as f:
             lastLines = tail(f, 15).decode('utf-8').splitlines()
             return {'lines': lastLines}, 200
@@ -225,18 +230,18 @@ class UpdateLog(Resource):
 
 class UpdateStatus(Resource):
     def __init__(self):
-        # Argument parser
+        """Initialize Request Parser."""
         self.parser = reqparse.RequestParser()
 
     def get(self):
-        # return status of update
+        """Get update status."""
         with open('/var/lib/box4s/.update.state', 'r') as f:
             # Remove whitespaces and newlines from line
             status = f.readline().strip().rstrip()
             return {'status': status}, 200
 
     def post(self):
-        # set new status of update
+        """Set new update status."""
         self.parser.add_argument('status', type=str)
         self.args = self.parser.parse_args()
         with open('/var/lib/box4s/.update.state', 'w') as f:
@@ -244,7 +249,7 @@ class UpdateStatus(Resource):
             return {}, 200
 
     def delete(self):
-        # empty update state file
+        """Empty update state file."""
         f = open('/var/lib/box4s/.update.state', 'w')
         f.close()
         return {}, 205
@@ -270,7 +275,7 @@ class APIUser(Resource):
     method_decorators = [login_required]
 
     def __init__(self):
-        # Register Parser and argument for endpoint
+        """Register Parser and argument for endpoint."""
         self.parser = reqparse.RequestParser()
 
     @roles_required(['Super Admin', 'User-Management'])
@@ -300,7 +305,7 @@ class APIUser(Resource):
                 # Trying to delete a Super Admin => current user has to be Super Admin
                 if models.Role.query.get(1) not in current_user.roles:
                     abort(403, message="Only Super Admins can delete other Super Admin accounts.")
-                    
+
             db.session.delete(user)
             db.session.commit()
             return '', 204
