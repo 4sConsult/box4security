@@ -3,7 +3,8 @@ FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && \
-    apt install python python3-venv python-pip net-tools alien rpm nsis openvas=9.0.3 -y -o Dpkg::Options::=--force-confnew && rm -rf /var/lib/apt/lists/* && \
+    apt install python python3-venv python-pip net-tools alien rpm nsis openvas=9.0.3 -y -o Dpkg::Options::=--force-confnew && \
+    rm -rf /var/lib/apt/lists/* && \
     cp /lib/systemd/system/greenbone-security-assistant.service /etc/systemd/system/ && \
     mkdir -p /usr/share/openvas/gsa/locale
 
@@ -21,7 +22,7 @@ RUN chmod +x /root/run-OpenVASinsertConf.sh && \
 
 WORKDIR /opt/
 RUN apt update && \
-    apt install -y zlib1g-dev libxml2-dev libxslt1-dev && \
+    apt install -y git zlib1g-dev libxml2-dev libxslt1-dev && \
     apt-get install -y virtualenv python-pip python3-pip && \
     git clone https://github.com/box4s/VulnWhisperer.git && \
     cd VulnWhisperer/ && \
