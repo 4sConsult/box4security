@@ -253,7 +253,7 @@
           row = `<div class="ui red message">${errormsg}</div>`;
           $(`#edit-submit`).before(row);
         } else {
-          location.reload();
+          window.location = window.location.href;
         }
       });
     })
