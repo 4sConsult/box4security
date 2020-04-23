@@ -24,6 +24,3 @@ openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
 
 echo "Checking setup ..."
 openvas-check-setup
-
-echo "Reloading NVTs ..."
-openvasmd --rebuild
