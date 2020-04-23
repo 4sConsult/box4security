@@ -32,6 +32,7 @@ services:
   openvas:
     build: openvas
     container_name: openvas
+    restart: always
     environment:
       - INT_IP=${INT_IP}
     ports:
