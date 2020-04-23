@@ -75,18 +75,6 @@ sudo mkdir /data/elasticsearch -p
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
 sudo chmod 777 /data/elasticsearch*
 
-sudo apt install -y zlib1g-dev libxml2-dev libxslt1-dev # dependencies vulnwhisperer
-
-# Install VulnWhisperer
-waitForNet
-sudo apt-get install -y virtualenv python-pip python3-pip
-cd /opt/
-waitForNet
-git clone https://github.com/box4s/VulnWhisperer.git
-cd VulnWhisperer/
-pip install -r requirements.txt
-python setup.py install
-
 waitForNet
 sudo apt -y install openjdk-8-jre apt-transport-https # at least logstash needs it
 # Add Elastic signing KEY
