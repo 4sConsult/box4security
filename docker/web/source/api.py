@@ -261,8 +261,9 @@ class LaunchUpdate(Resource):
         return {"message": "accepted"}, 200
 
 
-@roles_required(['Super-Admin', 'Updates'])
 class UpdateLog(Resource):
+
+    @roles_required(['Super-Admin', 'Updates'])
     def get(self):
         """Return last 15 lines of updatelog file."""
         with open('/var/log/box4s/update.log', 'rb') as f:
