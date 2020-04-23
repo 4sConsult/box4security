@@ -14,4 +14,5 @@ echo "Starting OpenVAS Scanner ..."
 /usr/sbin/openvassd --unix-socket=/var/run/openvassd.sock
 
 echo "Starting Greenbone Security Assistant ..."
+mkdir -p /usr/share/openvas/gsa/locale
 /usr/sbin/gsad --foreground --listen=0.0.0.0 --port=9392 --mlisten=127.0.0.1 --mport=9390 --no-redirect --allow-header-host $INT_IP

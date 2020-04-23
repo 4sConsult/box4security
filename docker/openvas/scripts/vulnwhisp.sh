@@ -1,2 +1,2 @@
 #!/bin/bash
-vuln_whisperer -c /opt/VulnWhisperer/vulnwhisperer.ini -s openvas -F -d
+vuln_whisperer -c /etc/vulnwhisperer/vulnwhisperer.ini -s openvas -F

@@ -1,34 +1,26 @@
 FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
 
 ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt update && \
-    apt install python python3-venv python-pip net-tools alien rpm nsis openvas=9.0.3 -y -o Dpkg::Options::=--force-confnew && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /usr/share/openvas/gsa/locale
-
+ADD etc/vuln_openvas.ini /etc/vulnwhisperer/vulnwhisperer.ini
 ADD etc/ /etc/openvas/
 ADD scripts/ /root/
 
-RUN chmod +x /root/run-OpenVASinsertConf.sh && \
-    chmod +x /root/start.sh && \
-    chmod +x /root/update.sh && \
-    chmod +x /root/vulnwhisp.sh && \
-    /root/run-OpenVASinsertConf.sh && \
-    service redis-server stop && \
-    openvas-stop
-
-WORKDIR /opt/
 RUN apt update && \
-    apt install -y git zlib1g-dev libxml2-dev libxslt1-dev && \
-    apt-get install -y virtualenv && \
-    git clone https://github.com/box4s/VulnWhisperer.git
+    apt install git zlib1g-dev libxml2-dev libxslt1-dev virtualenv python python3-venv python-pip net-tools alien rpm nsis openvas=9.0.3 -y -o Dpkg::Options::=--force-confnew && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /var/lib/logstash/openvas && \
+    mkdir -p /var/lib/logstash/database
+    git clone https://github.com/box4s/VulnWhisperer.git /opt/VulnWhisperer/
 WORKDIR /opt/VulnWhisperer/
 RUN pip install -r requirements.txt && \
     python setup.py install && \
-    mkdir -p /var/lib/logstash/openvas && \
-    mkdir -p /var/lib/logstash/database
-ADD etc/vuln_openvas.ini /opt/VulnWhisperer/vulnwhisperer.ini
+    chmod +x /root/insertconfig.sh && \
+    chmod +x /root/start.sh && \
+    chmod +x /root/update.sh && \
+    chmod +x /root/vulnwhisp.sh && \
+    /root/insertconfig.sh && \
+    service redis-server stop && \
+    openvas-stop
 
 EXPOSE 9392
 
