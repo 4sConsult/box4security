@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Benutzerauthentifizierung für sensible API-Punkte erforderlich
 * E-Mail-Benachrichtigung bei Ereignissen der Benutzerauthentifizierung eingeführt
 * Benutzerverwaltung zum Anlegen, Bearbeiten und Löschen von Benutzern eingeführt
+* Rollenkonzept eingeführt
 
 ### Changed
 * Neues Box4Security Logo in Website integriert
