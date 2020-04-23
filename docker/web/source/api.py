@@ -9,6 +9,7 @@ import subprocess
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 
+
 def tail(f, window=1):
     """Return the last `window` lines of file `f` as a list of bytes."""
     # https://stackoverflow.com/a/48087596
@@ -52,20 +53,30 @@ def writeBPFFile():
 
 
 class BPF(Resource):
+    """API Resource for a single BPF Rule."""
+
+    @roles_required(['Super-Admin', 'Filter'])
     def get(self, rule_id):
+        """Get a single BPF Rule by id."""
         rule = models.BPFRule.query.get(rule_id)
         if rule:
             return models.BPF.dump(rule)
         else:
             abort(404, message="BPF Rule with ID {} not found".format(rule_id))
 
+    @roles_required(['Super-Admin', 'Filter'])
     def post(self):
+        """Deny updating BPF Rule."""
         abort(405, message="Cannot update or post directly to a rule ID.")
 
+    @roles_required(['Super-Admin', 'Filter'])
     def put(self):
+        """Deny updating BPF Rule."""
         abort(405, message="Cannot update or post directly to a rule ID.")
 
+    @roles_required(['Super-Admin', 'Filter'])
     def delete(self, rule_id):
+        """Delete a single BPF Rule by id."""
         rule = models.BPFRule.query.get(rule_id)
         if rule:
             db.session.delete(rule)
@@ -78,14 +89,22 @@ class BPF(Resource):
 
 
 class BPFs(Resource):
+    """API Resource for a set of BPF Rules."""
+
+    @roles_required(['Super-Admin', 'Filter'])
     def get(self):
+        """Return all BPF Rules."""
         rules = models.BPFRule.query.all()
         return models.BPFs.dump(rules)
 
+    @roles_required(['Super-Admin', 'Filter'])
     def post(self):
+        """Implement a new BPF Rule by redirecting to PUT."""
         return self.put()
 
+    @roles_required(['Super-Admin', 'Filter'])
     def put(self):
+        """Implement a new BPF Rule."""
         d = request.json
         newRule = models.BPFRule(
             src_ip=d['src_ip'],
@@ -101,7 +120,9 @@ class BPFs(Resource):
         writeBPFFile()
         return models.BPF.dump(newRule)
 
+    @roles_required(['Super-Admin', 'Filter'])
     def delete(self):
+        """Delete all BPF Rules from database."""
         models.BPFRule.query.delete()
         db.session.commit()
         writeBPFFile()
