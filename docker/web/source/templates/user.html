@@ -208,6 +208,19 @@
               {% endfor %}
           {% endif %}
           <div class="field">
+            <select id="edit-{{ userform.roles.id }}" name="{{userform.roles.name}}" multiple="" class="ui dropdown">
+              <option value="">Berechtigungen</option>
+              {% for value in userform.roles.choices %}
+                <option value="{{value[0]}}">{{value[1]}}</option>
+              {% endfor %}
+              </select>
+          </div>
+          {% if userform.roles.errors %}
+              {% for e in userform.roles.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <div class="field">
             <div class="ui toggle checkbox">
               <input type="checkbox" id="edit-email_confirmed" name="email_confirmed" tabindex="0" class="hidden">
               <label>E-Mail bestätigt</label>
@@ -246,6 +259,7 @@
         'last_name': $('#edit-{{ userform.last_name.id }}').val(),
         //'active': $('#edit-active').prop("checked"),
         'email_confirmed': $('#edit-email_confirmed').prop("checked"),
+        'roles': $('#edit-{{userform.roles.id}}').val(),
       }
       fetch(`/api/user/${$('#edit-submit').data('user-id')}`,
         {
@@ -256,7 +270,6 @@
       .then((response) => {
         if(!response.ok){
           var errormsg="";
-          console.log(response.status)
           switch (response.status) {
             case 404: errormsg = "Der zu bearbeitende Benutzer wurde nicht gefunden. Keine Änderungen wurden gespeichert."; break;
             case 400: errormsg = "Die gestellte Anfrage enthielt für die Verarbeitung unverständliche Parameter."; break;
@@ -287,6 +300,10 @@
             $('#edit-{{ userform.email.id }}').val(u.email);
             $('#edit-{{ userform.last_name.id }}').val(u.last_name);
             $('#edit-{{ userform.first_name.id }}').val(u.first_name);
+            $('#edit-{{ userform.roles.id }}').dropdown('clear');
+            u.roles.forEach((role, i) => {
+              $(`#edit-{{ userform.roles.id }}`).dropdown('set selected', role.id);
+            });
             //$('#edit-active').prop("checked", !!u.active);
             $('#edit-email_confirmed').prop("checked", !!u.email_confirmed_at); // convert date to bool
             $('#edit-submit').data('user-id', u.id);

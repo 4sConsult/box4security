@@ -293,12 +293,12 @@ class APIUser(Resource):
 
     def put(self, user_id):
         """Update a user by ID."""
-
         self.parser.add_argument('email', type=str)
         self.parser.add_argument('first_name', type=str)
         self.parser.add_argument('last_name', type=str)
         self.parser.add_argument('active', type=bool)
         self.parser.add_argument('email_confirmed', type=bool)
+        self.parser.add_argument('roles', type=int, action='append')
 
         try:
             self.args = self.parser.parse_args()
@@ -311,6 +311,7 @@ class APIUser(Resource):
         user.email = self.args['email']
         user.first_name = self.args['first_name']
         user.last_name = self.args['last_name']
+        user.roles = [models.Role.query.get(rid) for rid in self.args['roles']]
         # user.active = self.args['active']
         # Toggling active for now is disabled. We have a button for that
         # Else we have to work around administrators blocking themselves..

@@ -1,5 +1,6 @@
 """Module to provide all models."""
 from source.extensions import db, ma
+from marshmallow import fields
 from flask_user import UserMixin
 
 
@@ -84,13 +85,24 @@ class LSRSchema(ma.Schema):
         fields = ('id', 'src_ip', 'src_port', 'dst_ip', 'dst_port', 'proto', 'signature_id', 'signature')
 
 
-class UserSchema(ma.Schema):
-    """User Schema for API representation."""
+class RoleSchema(ma.Schema):
+    """Role Schema for API representation."""
 
     class Meta:
         """Define fields which will be available."""
 
-        fields = ('id', 'email', 'first_name', 'last_name', 'active', 'email_confirmed_at')
+        fields = ('id', 'name', 'description')
+
+
+class UserSchema(ma.Schema):
+    """User Schema for API representation."""
+
+    roles = fields.Nested(RoleSchema, many=True)
+
+    class Meta:
+        """Define fields which will be available."""
+
+        fields = ('id', 'email', 'first_name', 'last_name', 'active', 'email_confirmed_at', 'roles')
 
 
 USR = UserSchema()
