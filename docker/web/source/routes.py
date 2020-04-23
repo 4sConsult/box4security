@@ -2,6 +2,7 @@ from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.models import User, Role
 from source.config import Dashboards
+import source.error
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, abort, send_file
 from flask_user import login_required, current_user, roles_required
