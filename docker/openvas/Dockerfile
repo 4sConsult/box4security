@@ -15,8 +15,7 @@ ADD scripts/ /root/
 RUN chmod +x /root/run-OpenVASinsertConf.sh && \
     chmod +x /root/start.sh && \
     chmod +x /root/update.sh && \
-    openvasmd --create-user amadmin && \
-    openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab6
+    /root/run-OpenVASinsertConf.sh
 
 EXPOSE 9392
 
