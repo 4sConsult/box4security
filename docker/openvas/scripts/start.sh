@@ -13,12 +13,12 @@ redis-server /etc/redis/redis-openvas.conf
 # Takes time, but its the safer way and we dont bother the image building with it.
 # Probably does not take too long, when it happened alreay and the files are saved
 # on the docker volume.
-openvas-start
-openvas-setup
-openvas-scaptdata-sync
-openvas-certdata-sync
-openvas-check-setup
-openvas-stop
+#openvas-start
+#openvas-setup
+#openvas-scaptdata-sync
+#openvas-certdata-sync
+#openvas-check-setup
+#openvas-stop
 echo "Creating user ..."
 openvasmd --create-user amadmin
 openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
