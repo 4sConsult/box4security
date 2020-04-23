@@ -53,7 +53,7 @@ class Dashboard():
 
 
 Dashboards = [
-    Dashboard(name='start', url='/kibana/app/kibana#/dashboard/8d13ea50-3de1-11ea-bbd4-bb7e0278945f?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now%2Fd,to:now%2Fd))&_a=(fullScreenMode:!t)', parent_id='#start', role=''),
+    Dashboard(name='start', url='/kibana/app/kibana#/dashboard/8d13ea50-3de1-11ea-bbd4-bb7e0278945f?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now%2Fd,to:now%2Fd))&_a=(fullScreenMode:!t)', parent_id='#start', role='Startseite'),
     Dashboard(name='siem-overview', url='/kibana/app/kibana#/dashboard/90203990-3dd9-11ea-bbd4-bb7e0278945f?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now%2Fd,to:now%2Fd))&_a=(fullScreenMode:!t)', parent_id='#siem', role='SIEM'),
     Dashboard(name='siem-alerts', url='/kibana/app/kibana#/dashboard/a7bfd050-ce1d-11e9-943f-fdbfa2556276?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now%2Fd,to:now%2Fd))&_a=(fullScreenMode:!t)', parent_id='#siem', role='SIEM'),
     Dashboard(name='siem-asn', url='/kibana/app/kibana#/dashboard/9391fd20-ce4e-11e9-943f-fdbfa2556276?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now%2Fd,to:now%2Fd))&_a=(fullScreenMode:!t)', parent_id='#siem', role='SIEM'),
