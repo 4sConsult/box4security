@@ -74,6 +74,8 @@ def faq():
     return render_template('faq.html', client=client)
 
 
+@app.route('/super admin')
+@app.route('/user-management')
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 @roles_required(['Super Admin', 'User-Management'])
@@ -143,6 +145,7 @@ def faq_mail():
     return render_template('faq.html', client=client, mailsent=True)
 
 
+@app.route('/updates')
 @app.route('/update', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Updates'])
@@ -180,6 +183,12 @@ def updatelogdl():
 
 # must be the last one (catchall)
 # let variable r hold the path
+# Redirects for permission pages from 403
+@app.route('/dashboards-master', defaults={'r': 'start'})
+@app.route('/schwachstellen', defaults={'r': 'vuln-overview'})
+@app.route('/siem', defaults={'r': 'siem-overview'})
+@app.route('/netzwerk', defaults={'r': 'network-overview'})
+@app.route('/startseite', defaults={'r': 'start'})
 @app.route('/<path:r>')
 @login_required
 def catchall(r):
