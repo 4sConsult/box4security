@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Changed
 * Neues Box4Security Logo in Website integriert
 * Nachricht bei nicht erfolgreicher Verbindung mit Update Server angepasst
+* Dockerimage für OpenVAS in Betrieb genommen
 
 ### Fixed
 
