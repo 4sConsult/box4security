@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Nachricht bei nicht erfolgreicher Verbindung mit Update Server angepasst
 
 ### Fixed
+* Problem behoben, das bei dem Einpflegen von Filtern Suricata nicht neustarten ließ
 
 ### Deprecated
 
