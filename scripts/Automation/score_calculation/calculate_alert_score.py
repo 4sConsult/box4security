@@ -6,81 +6,48 @@ file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/alert_scor
 # Load content into a json datastore
 datastore = json.load(file)
 
-class AlertWeighting:
-    def __init__(self, count, severity):
-        self.count = count
-        self.severity = severity
-        self.weighting = 0
-        self.threshold = 0
-        self.fullfillment = 0
-        self.weightingPercent = 0
-        self.calculation = 0
-
-    def calcThreshold(self):
-        if self.severity == 1:
-                self.threshold = 300
-        if self.severity == 2:
-                self.threshold = 150
-        if self.severity == 3:
-                self.threshold = 10
-        if self.severity == 4:
-                self.threshold = 3
-        if self.severity == 5:
-                self.threshold = 1
-
-    def calcWeighting(self, sumCount):
-        self.weighting = pow(self.severity * sumCount, 2) / sumCount
-	return self.weighting
-
-    def calcWeightingPercent(self, maxWeighting):
-        self.weightingPercent = self.weighting / maxWeighting
-	return self.weightingPercent
-
-    def calcFullfillment(self):
-        if (1 - self.count / self.weighting) >= 0:
-		self.fullfillment = 1 - self.count / self.weighting
-	else:
-		self.fullfillment = 0
-	return self.fullfillment
-
-    def calcCalculation(self):
-        self.calculation = self.fullfillment * self.weightingPercent
-	return self.calculation
-
-sumCount = 0
-maxWeighting = 0
-sumCalculation = 0
-sumWeightingPercent = 0
 alarmscore = 0
-weightings = []
+count = 0
+severity = 0
+weight = 0
+threshold = 0
+percent = 0
+weighted = 0
+isZero = 0
 
 if "rows" in datastore:
     for row in datastore["rows"]:
-    	w = AlertWeighting(row[0], row[1])
-    	w.calcThreshold()
-    	weightings.append(w)
+        count = row[0]
+        severity = row[1]
 
-    for w in weightings:
-    	sumCount += w.count
+        if severity == 1:
+                threshold = 300
+                weight = 0.05
+        if severity == 2:
+                threshold = 150
+                weight = 0.1
+        if severity == 3:
+                threshold = 10
+                weight = 0.15
+        if severity == 4:
+                threshold = 3
+                weight = 0.2
+        if severity == 5:
+                threshold = 1
+                weight = 0.5
 
-    for w in weightings:
-    	w.calcWeighting(sumCount)
+        percent = count / threshold
+        weighted = percent * weight
+        alarmscore = alarmscore + w.weighted
 
-    for w in weightings:
-    	if w.weighting >= maxWeighting:
-            maxWeighting = w.weighting
-
-    for w in weightings:
-    	w.calcWeightingPercent(maxWeighting)
-    	w.calcFullfillment()
-    	w.calcCalculation()
-
-    for w in weightings:
-    	sumCalculation += w.calculation
-    	sumWeightingPercent += w.weightingPercent
-
-    alarmscore = (1 - (sumCalculation / sumWeightingPercent)) * 100
+    if count < threshold && isZero != 1:
+        isZero = 0
+    else:
+        isZero = 1
 else:
     alarmscore = 100
-print(alarmscore)
 
+if isZero == 0:
+    print(alarmscore)
+else:
+    print(0)
