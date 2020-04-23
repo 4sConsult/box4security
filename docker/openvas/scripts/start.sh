@@ -9,16 +9,9 @@ echo "Starting Redis ..."
 mkdir -p /var/run/redis-openvas/
 redis-server /etc/redis/redis-openvas.conf
 
-echo "Creating user ..."
-openvasmd --create-user amadmin
-openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
 service openvas-manager restart
 service openvas-scanner restart
 service greenbone-security-assistant restart
 
 # Insert Config for scan without bruteforce to openvas
 /root/run-OpenVASinsertConf.sh
-
-service openvas-manager restart
-service openvas-scanner restart
-service greenbone-security-assistant restart
