@@ -28,6 +28,7 @@ class Config():
     USER_INVITE_USER_EMAIL_TEMPLATE = 'user/emails/invite_user'
     USER_AUTO_LOGIN_AFTER_CONFIRM = False
     USER_UNAUTHORIZED_ENDPOINT = 'forbidden'
+    USER_AFTER_LOGIN_ENDPOINT = ''
     # Mail
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
