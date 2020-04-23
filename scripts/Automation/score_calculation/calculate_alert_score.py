@@ -61,7 +61,7 @@ if "rows" in datastore:
     else:
         isZero = 1
 
-    print(count + " " + severity + " " + threshold + " " + weight + " " + weighted + " " + alarmscore + " " + isZero)
+    print(str(count) + " " + str(severity) + " " + str(threshold) + " " + str(weight) + " " + str(weighted) + " " + str(alarmscore) + " " + str(isZero))
 else:
     alarmscore = 100
 
