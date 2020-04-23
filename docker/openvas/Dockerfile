@@ -18,7 +18,6 @@ RUN pip install -r requirements.txt && \
     chmod +x /root/start.sh && \
     chmod +x /root/update.sh && \
     chmod +x /root/vulnwhisp.sh && \
-    /root/insertconfig.sh && \
     service redis-server stop && \
     openvas-stop
 
