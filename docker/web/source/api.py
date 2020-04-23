@@ -109,20 +109,30 @@ class BPFs(Resource):
 
 
 class LSR(Resource):
+    """API Resource for a single Logstash Rule."""
+
+    @roles_required(['Super-Admin', 'Filter'])
     def get(self, rule_id):
+        """Get a single Logstash Rule by id."""
         rule = models.LogstashRule.query.get(rule_id)
         if rule:
             return models.LSR.dump(rule)
         else:
             abort(404, message="Logstash Rule with ID {} not found".format(rule_id))
 
+    @roles_required(['Super-Admin', 'Filter'])
     def post(self):
+        """Deny updating Logstash Rule."""
         abort(405, message="Cannot update or post directly to a rule ID.")
 
+    @roles_required(['Super-Admin', 'Filter'])
     def put(self):
+        """Deny updating Logstash Rule."""
         abort(405, message="Cannot update or post directly to a rule ID.")
 
+    @roles_required(['Super-Admin', 'Filter'])
     def delete(self, rule_id):
+        """Delete Logstash Rule by id."""
         rule = models.LogstashRule.query.get(rule_id)
         if rule:
             db.session.delete(rule)
@@ -135,14 +145,22 @@ class LSR(Resource):
 
 
 class LSRs(Resource):
+    """API Resource for a set of Logstash Rules."""
+
+    @roles_required(['Super-Admin', 'Filter'])
     def get(self):
+        """Return all Logstash Rules."""
         rules = models.LogstashRule.query.all()
         return models.LSRs.dump(rules)
 
+    @roles_required(['Super-Admin', 'Filter'])
     def post(self):
+        """Implement new Logstash Rule by redirecting to PUT."""
         return self.put()
 
+    @roles_required(['Super-Admin', 'Filter'])
     def put(self):
+        """Implement new Logstash Rule."""
         d = request.json
         newRule = models.LogstashRule(
             src_ip=d['src_ip'],
@@ -160,7 +178,9 @@ class LSRs(Resource):
         writeLSRFile()
         return models.LSR.dump(newRule)
 
+    @roles_required(['Super-Admin', 'Filter'])
     def delete(self):
+        """Delete all Logstash Rules from database."""
         models.LogstashRule.query.delete()
         db.session.commit()
         writeLSRFile()
@@ -184,6 +204,7 @@ class Version(Resource):
 class AvailableReleases(Resource):
     """API Resource for working with all available releases."""
 
+    @roles_required(['Super-Admin', 'Updates'])
     def get(self):
         """GET: fetch and return all available releases with their relevant info from GitLab."""
         try:
@@ -210,7 +231,7 @@ class LaunchUpdate(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('target', type=str)
         self.args = self.parser.parse_args()
-        
+
     @roles_required(['Super-Admin', 'Updates'])
     def post(self):
         """Launch update.sh."""
