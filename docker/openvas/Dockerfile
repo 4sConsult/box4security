@@ -13,7 +13,7 @@ ADD scripts/ /root/
 
 RUN chmod +x /root/run-OpenVASinsertConf.sh && \
     chmod +x /root/start.sh && \
-    chmod +x /root/update.sh && \
+    chmod +x /root/update.sh
 
 EXPOSE 9392
 
