@@ -9,9 +9,9 @@ echo "Starting Redis ..."
 mkdir -p /var/run/redis-openvas/
 redis-server /etc/redis/redis-openvas.conf
 
-service openvas-manager restart
-service openvas-scanner restart
-service greenbone-security-assistant restart
+service openvas-manager start
+service openvas-scanner start
+service greenbone-security-assistant start
 
 # Insert Config for scan without bruteforce to openvas
 /root/run-OpenVASinsertConf.sh
