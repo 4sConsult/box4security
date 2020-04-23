@@ -1,7 +1,7 @@
 from flask import Flask
 from source.config import Config
-from source.models import User
 from source.extensions import db, ma, mail, migrate
+from source.models import User
 from source.creator import CreatorUserMan
 
 app = Flask(__name__)

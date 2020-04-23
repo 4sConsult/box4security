@@ -1,6 +1,6 @@
 from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
-from source.models import User
+from source.models import User, Role
 from source.config import Dashboards
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, abort, send_file
@@ -84,9 +84,11 @@ def user():
     """
     create = False
     adduser = AddUserForm(request.form)
+    adduser.roles.choices = [(r.id, r.description) for r in Role.query.order_by('id')]
     if request.method == 'POST' and adduser.validate():
         user = User()
         adduser.populate_obj(user)  # Copies matching attributes from form onto user
+        user.roles = [Role.query.get(rid) for rid in user.roles]  # Get actual role objects from their IDs
         rndpass = generate_password()
         hash = userman.hash_password(rndpass)
         user.password = hash

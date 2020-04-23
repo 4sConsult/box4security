@@ -110,6 +110,19 @@
                   <p class="ui orange message">{{ e }}</p>
               {% endfor %}
           {% endif %}
+          <div class="field">
+            <select name="{{userform.roles.name}}" multiple="" class="ui dropdown">
+              <option value="">Berechtigungen</option>
+              {% for value in userform.roles.choices %}
+                <option value="{{value[0]}}">{{value[1]}}</option>
+              {% endfor %}
+              </select>
+          </div>
+          {% if userform.roles.errors %}
+              {% for e in userform.roles.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
           <div class="ui message">
             Nach Anlegen des Benutzers wird ein Passwort zufällig gewählt und dem angelegten Nutzer per E-Mail zugesandt. Dieses sollte zeitig aktualisiert und die E-Mailadresse bestätigt werden.
           </div>
