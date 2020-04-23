@@ -281,6 +281,7 @@ class APIUser(Resource):
     def post(self, user_id):
         return {}, 501
 
+    @roles_required(['Super Admin', 'User-Management'])
     def delete(self, user_id):
         """Delete User by ID."""
         user = models.User.query.get(user_id)
@@ -346,10 +347,27 @@ class APIUser(Resource):
 class APIUserLock(Resource):
     """BOX4s User Lock Resource."""
 
+    @roles_required(['Super Admin', 'User-Management'])
     def post(self, user_id):
-        """Toggle User Lock status."""
+        """Toggle User Lock status.
+
+        Perform checks:
+        a) User must be Super Admin or User Manager
+        b) User cannot lock/unlock himself
+        c) Only Super Admins can lock/unlock Super Admin accounts
+        """
         user = models.User.query.get(user_id)
         if user:
+            if current_user.id == user.id:
+                # User is trying to disable himself => not allowed.
+                abort(400, message="Users cannot lock/unlock their own accounts.")
+            if models.Role.query.get(1) in user.roles:
+                # User is trying to disable a Super Admin => he has to be Super Admin
+                if models.Role.query.get(1) not in current_user.roles:
+                    # He is not Super Admin
+                    abort(403, message="Only Super Admins can lock/unlock Super Admin accounts.")
+
+            # All checks passed => toggle active attribute
             user.active = not user.active
             db.session.add(user)
             db.session.commit()
