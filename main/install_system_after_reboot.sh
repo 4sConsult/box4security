@@ -227,3 +227,7 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 
 #sudo systemctl restart networking
 echo "BOX4security installiert."
+
+# Lets update both openvas and suricata
+sudo docker exec suricata /root/scripts/update.sh > /dev/null
+sudo docker exec openvas /root/update.sh > /dev/null
