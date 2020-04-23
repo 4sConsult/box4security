@@ -6,7 +6,8 @@ RUN apt update && \
     apt install python python3-venv python-pip net-tools alien rpm nsis openvas=9.0.3 -y -o Dpkg::Options::=--force-confnew && rm -rf /var/lib/apt/lists/* && \
     cp /lib/systemd/system/greenbone-security-assistant.service /etc/systemd/system/ && \
     service redis-server stop && \
-    openvas-stop
+    openvas-stop && \
+    mkdir -p /usr/share/openvas/gsa/locale
 
 ADD etc/ /etc/openvas/
 ADD scripts/ /root/
