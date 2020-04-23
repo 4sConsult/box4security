@@ -83,17 +83,17 @@
           {% endif %}
         </td>
         <td class="collapsing">
-          <a data-user-id="{{ u.id }}" data-action="edit" class="ui icon tiny blue button">
+          <a data-user-id="{{ u.id }}" data-tooltip="Nutzer bearbeiten" data-position="bottom center" data-action="edit" class="ui icon tiny blue button">
             <i class="edit icon"></i>
           </a>
-          <a data-user-id="{{ u.id }}" data-action="disable" class="ui icon tiny grey button {% if current_user.id == u.id %}disabled{%  endif %}">
+          <a data-user-id="{{ u.id }}" data-tooltip="Nutzer {% if not u.active %}ent{%endif%}sperren" data-position="bottom center" data-action="disable" class="ui icon tiny grey button {% if current_user.id == u.id %}disabled{%  endif %}">
             {% if u.active %}
               <i class="lock icon"></i>
             {% else %}
               <i class="unlock icon"></i>
             {% endif %}
           </a>
-          <a data-user-id="{{ u.id }}" data-action="delete" class="ui icon tiny red button {% if current_user.id == u.id %}disabled{%  endif %}">
+          <a data-user-id="{{ u.id }}" data-tooltip="Nutzer löschen" data-position="bottom center" data-action="delete" class="ui icon tiny red button {% if current_user.id == u.id %}disabled{%  endif %}">
             <i class="trash alternate outline icon"></i>
           </a>
         </td>
