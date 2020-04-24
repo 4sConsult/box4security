@@ -4,6 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [X.X.X] - 2020-04-29
 
 ### Added
+* Endgerätmonitoring durch Wazuh in Webapp eingepflegt
 
 ### Changed
 * Neues Box4Security Logo in Website integriert
