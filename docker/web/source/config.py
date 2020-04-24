@@ -42,5 +42,5 @@ Dashboards = [
     Dashboard(name='network-overview', url='/kibana/app/kibana#/dashboard/dc847fd0-3dd9-11ea-bbd4-bb7e0278945f?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30d,to:now))&_a=(fullScreenMode:!t)', parent_id='#net'),
     Dashboard(name='network-streams', url='/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30d,to:now))&_a=(fullScreenMode:!t)', parent_id='#net'),
     Dashboard(name='network-asn', url='/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30d,to:now))&_a=(fullScreenMode:!t)', parent_id='#net'),
-    Dashboard(name='wazuh', url='/kibana/app/wazuh#?embed=true', parent_id='#siem')
+    Dashboard(name='wazuh', url='/kibana/app/wazuh#?embed=true', parent_id='#siem'),
 ]
