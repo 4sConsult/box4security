@@ -10,8 +10,8 @@ curl -s -H "Content-type: application/json" -X POST http://localhost:9200/_sql -
 
 # Calculate the alertscore and post it to elasticsearch
 EPOCHTIMESTAMP=$(($(date +%s%N)/1000000))
-ALERTSCORE=$(python $DIR/calculate_alert_score.py)
-VULNSCORE=$(python $DIR/calculate_vuln_score.py)
+ALERTSCORE=$(python3 $DIR/calculate_alert_score.py)
+VULNSCORE=$(python3 $DIR/calculate_vuln_score.py)
 ITSECSCORE=$(echo "scale=2; ($ALERTSCORE + $VULNSCORE) / 2" | bc)
 
 cp $DIR/res/insert_template.json $DIR/insert_alert_score.json
