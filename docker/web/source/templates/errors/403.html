@@ -28,7 +28,7 @@
           {% endif %}
           <br>
           <div class="ui buttons">
-            <button class="ui labeled small foursgrey-bg icon button">
+            <button class="ui left labeled small foursgrey-bg icon button">
                 <i class="left arrow icon"></i>
                 Zurück
             </button>
@@ -46,13 +46,16 @@
 </div>
 {% endblock %}
 {% block scripts %}
+<script type="text/javascript">
+  $('.ui.button.left.labeled').on('click', () => {window.history.back()})
+</script>
 {% if current_user %}
   <script type="text/javascript">
-  $('.ui.button').on('click', () => {window.location="{{url_for('user.logout')}}"})
+  $('.ui.button.right.labeled').on('click', () => {window.location="{{url_for('user.logout')}}"})
   </script>
   {% else %}
   <script type="text/javascript">
-  $('.ui.button').on('click', () => {window.history.back()})
+  $('.ui.button.right.labeled').on('click', () => {window.history.back()})
   </script>
 {% endif %}
 
