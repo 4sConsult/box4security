@@ -44,6 +44,14 @@ if "rows" in datastore:
             isZero = 0
         else:
             isZero = 1
+
+        print(count)
+        print(severity)
+        print(weight)
+        print(threshold)
+        print(percent)
+        print(weighted)
+        print(isZero)
 else:
     alarmscore = 100
 
