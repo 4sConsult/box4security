@@ -34,7 +34,7 @@ cp $DIR/res/insert_template.json $DIR/insert_itsec_score.json
 sed -i 's/%1/itsec_score/g' $DIR/insert_itsec_score.json
 sed -i "s/%2/$ITSECSCORE/g" $DIR/insert_itsec_score.json
 sed -i "s/%3/$EPOCHTIMESTAMP/g" $DIR/insert_itsec_score.json
-#curl -s -H "Content-type: application/json" -X POST http://localhost:9200/scores/_doc --data-binary @$DIR/insert_itsec_score.json
+curl -s -H "Content-type: application/json" -X POST http://localhost:9200/scores/_doc --data-binary @$DIR/insert_itsec_score.json
 
 # Delete all temp data
 rm $DIR/alert_score_result.json
