@@ -42,11 +42,4 @@ class CreatorUserMan(UserManager):
             return super().login_view()
         else:
             # First time, offer registration
-            super().register_view()
-            print('hereiam')
-            # After registration, set Super Admin role
-            sa = User.query.all().first()
-            sa.roles.append(Role.query.get(1))
-            db.session.add(sa)
-            db.session.commit()
-            return redirect(url_for('user.login'))
+            return super().register_view()
