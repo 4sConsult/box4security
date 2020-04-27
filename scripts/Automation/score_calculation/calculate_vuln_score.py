@@ -6,91 +6,49 @@ file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/vuln_score
 # Load content into a json datastore
 datastore = json.load(file)
 
-class VulnWeighting:
-    def __init__(self, count, severity):
-        self.count = count
-        self.severity = severity
-        self.severityRounded = 0
-        self.weighting = 0
-        self.threshold = 0
-        self.fullfillment = 0
-        self.weightingPercent = 0
-        self.calculation = 0
-
-    def calcThreshold(self):
-        if self.severity < 2.5:
-                self.threshold = 1000
-        if self.severity < 5:
-                self.threshold = 20
-        if self.severity < 7.5:
-                self.threshold = 10
-        if self.severity >= 7.5:
-                self.threshold = 2
-
-    def calcThresholdRounded(self):
-        if self.threshold == 1000:
-            self.severityRounded = 2.5
-        if self.threshold == 20:
-            self.severityRounded = 5
-        if self.threshold == 10:
-            self.severityRounded = 7.5
-        if self.threshold == 2:
-            self.severityRounded = 10
-
-    def calcWeighting(self, sumCount):
-        self.weighting = pow(self.severityRounded * sumCount, 2) / sumCount
-        return self.weighting
-
-    def calcWeightingPercent(self, maxWeighting):
-        self.weightingPercent = self.weighting / maxWeighting
-        return self.weightingPercent
-
-    def calcFullfillment(self):
-        if (1 - self.count / self.weighting) >= 0:
-                self.fullfillment = 1 - self.count / self.weighting
-        else:
-                self.fullfillment = 0
-        return self.fullfillment
-
-    def calcCalculation(self):
-        self.calculation = self.fullfillment * self.weightingPercent
-        return self.calculation
-
-sumCount = 0
-maxWeighting = 0
-sumCalculation = 0
-sumWeightingPercent = 0
-vulnscore = 0
-weightings = []
+vulnscore = 0.0
+count = 0.0
+severity = 0.0
+weight = 0.0
+threshold = 0.0
+percent = 0.0
+weighted = 0.0
+isZero = 0
 
 if "rows" in datastore:
     for row in datastore["rows"]:
-    	w = VulnWeighting(row[0], row[1])
-    	w.calcThreshold()
-    	w.calcThresholdRounded()
-    	weightings.append(w)
+        count = row[0]
+        severity = row[1]
 
-    for w in weightings:
-    	sumCount += w.count
+        if severity < 2.5:
+                severity = 2.5
+                threshold = 5000
+                weight = 0.05
+        if severity < 5:
+                severity = 5
+                threshold = 2500
+                weight = 0.1
+        if severity < 7.5:
+                severity = 7.5
+                threshold = 500
+                weight = 0.15
+        if severity >= 7.5:
+                severity = 10
+                threshold = 100
+                weight = 0.2
 
-    for w in weightings:
-    	w.calcWeighting(sumCount)
+        percent = count / threshold
+        weighted = percent * weight
+        vulnscore = vulnscore + weighted
 
-    for w in weightings:
-    	if w.weighting >= maxWeighting:
-            maxWeighting = w.weighting
-
-    for w in weightings:
-    	w.calcWeightingPercent(maxWeighting)
-    	w.calcFullfillment()
-    	w.calcCalculation()
-
-    for w in weightings:
-    	sumCalculation += w.calculation
-    	sumWeightingPercent += w.weightingPercent
-
-    vulnscore = (1 - (sumCalculation / sumWeightingPercent)) * 100
+        if count < threshold and isZero != 1:
+            isZero = 0
+        else:
+            isZero = 1
 else:
     vulnscore = 100
-print(vulnscore)
 
+if isZero == 0:
+    print(vulnscore)
+else:
+    print(0)
