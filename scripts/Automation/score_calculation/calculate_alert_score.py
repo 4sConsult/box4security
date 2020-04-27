@@ -60,7 +60,7 @@ if "rows" in datastore:
             isZero = 0
         else:
             isZero = 1
-
+        print("==== Debug ====")
         print(str(count))
         print(str(severity))
         print(str(threshold))
@@ -69,6 +69,7 @@ if "rows" in datastore:
         print(str(weighted))
         print(str(alarmscore))
         print(str(isZero))
+        print("===============")
 else:
     alarmscore = 100
 
