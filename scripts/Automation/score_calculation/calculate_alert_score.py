@@ -56,13 +56,9 @@ if "rows" in datastore:
         else:
             isZero = 1
 
-        # If no threshold exceeds, print the score readable
-        if isZero == 0:
-            print((1 - alarmscore) * 100)
-        # If the threshold exceeds, the value must be 0
-        else:
-            print(0)
-
-# If the result doesn't contain any results, there seem to be no alarms. Great!
+# If no threshold exceeds, print the score readable
+if isZero == 0:
+    print((1 - alarmscore) * 100)
+# If the threshold exceeds, the value must be 0
 else:
-    alarmscore = 100
+    print(0)

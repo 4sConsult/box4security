@@ -57,14 +57,9 @@ if "rows" in datastore:
         else:
             isZero = 1
 
-        # If no threshold exceeds, print the score readable
-        if isZero == 0:
-            print((1 - vulnscore) * 100)
-        # If the threshold exceeds, the value must be 0
-        else:
-            print(0)
-
-# If the result doesn't contain any results, there seem to be no vulnerabilities. Great!
+# If no threshold exceeds, print the score readable
+if isZero == 0:
+    print((1 - vulnscore) * 100)
+# If the threshold exceeds, the value must be 0
 else:
-    vulnscore = 100
-    print(vulnscore)
+    print(0)
