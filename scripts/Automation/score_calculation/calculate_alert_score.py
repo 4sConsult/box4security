@@ -20,36 +20,20 @@ if "rows" in datastore:
         count = row[0]
         severity = row[1]
 
-#        if severity == 1:
-#                threshold = 300
-#                weight = 0.05
-#        if severity == 2:
-#                threshold = 150
-#                weight = 0.1
-#        if severity == 3:
-#                threshold = 10
-#                weight = 0.15
-#        if severity == 4:
-#                threshold = 3
-#                weight = 0.2
-#        if severity == 5:
-#                threshold = 1
-#                weight = 0.5
-
         if severity == 1:
-                threshold = 2000
+                threshold = 5000
                 weight = 0.05
         if severity == 2:
-                threshold = 1000
+                threshold = 2500
                 weight = 0.1
         if severity == 3:
-                threshold = 600
+                threshold = 500
                 weight = 0.15
         if severity == 4:
-                threshold = 250
+                threshold = 100
                 weight = 0.2
         if severity == 5:
-                threshold = 100
+                threshold = 30
                 weight = 0.5
 
         percent = count / threshold
@@ -60,16 +44,6 @@ if "rows" in datastore:
             isZero = 0
         else:
             isZero = 1
-        print("==== Debug ====")
-        print(str(count))
-        print(str(severity))
-        print(str(threshold))
-        print(str(weight))
-        print(str(percent))
-        print(str(weighted))
-        print(str(alarmscore))
-        print(str(isZero))
-        print("===============")
 else:
     alarmscore = 100
 
