@@ -8,6 +8,10 @@ set -e
 #########################
 # Updates hier einfügen #
 
+# Force remove FetchQC alembic in favor of Web App alembic
+PGPASSWORD=zgJnwauCAsHrR6JB psql -h localhost -U postgres box4S_db -c "DROP TABLE alembic_version;"
+
+
 # Stop des Services
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
