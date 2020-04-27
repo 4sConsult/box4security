@@ -19,16 +19,26 @@ class Config():
     # Allow logins by username
     USER_ENABLE_USERNAME = False
     USER_REQUIRE_INVITATION = False
-    USER_LOGIN_TEMPLATE = 'user/login.html'
-    USER_RESET_PASSWORD_TEMPLATE = 'user/reset_password.html'
-    USER_FORGOT_PASSWORD_TEMPLATE = 'user/forgot_password.html'
-    USER_REGISTER_TEMPLATE = 'user/register.html'
-    USER_RESEND_CONFIRM_EMAIL_TEMPLATE = 'user/resend_confirm_email.html'
-    USER_CHANGE_PASSWORD_TEMPLATE = 'user/change_password.html'
-    USER_INVITE_USER_EMAIL_TEMPLATE = 'user/emails/invite_user'
     USER_AUTO_LOGIN_AFTER_CONFIRM = False
     USER_UNAUTHORIZED_ENDPOINT = 'forbidden'
     USER_AFTER_LOGIN_ENDPOINT = ''
+
+    # View Templates
+    USER_REGISTER_TEMPLATE = 'user/register.html'
+    USER_LOGIN_TEMPLATE = 'user/login.html'
+    USER_RESET_PASSWORD_TEMPLATE = 'user/reset_password.html'
+    USER_FORGOT_PASSWORD_TEMPLATE = 'user/forgot_password.html'
+    USER_CHANGE_PASSWORD_TEMPLATE = 'user/change_password.html'
+    USER_RESEND_CONFIRM_EMAIL_TEMPLATE = 'user/resend_confirm_email.html'
+
+    # E-Mail templates
+    USER_CONFIRM_EMAIL_TEMPLATE = 'user/emails/confirm_email'
+    USER_INVITE_USER_EMAIL_TEMPLATE = 'user/emails/invite_user'
+    USER_PASSWORD_CHANGED_EMAIL_TEMPLATE = 'user/emails/password_changed'
+    USER_REGISTERED_EMAIL_TEMPLATE = 'user/emails/registered'
+    USER_RESET_PASSWORD_EMAIL_TEMPLATE = 'user/emails/reset_password'
+    USER_USERNAME_CHANGED_EMAIL_TEMPLATE = 'user/emails/username_changed'
+
     # Mail
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
@@ -71,4 +81,3 @@ Dashboards = [
     Dashboard(name='network-asn', url='/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30d,to:now))&_a=(fullScreenMode:!t)', parent_id='#net', role='Netzwerk'),
     Dashboard(name='wazuh', url='/kibana/app/wazuh#?embed=true', parent_id='#siem', role='SIEM'),
 ]
-
