@@ -9,6 +9,6 @@ transform = EtreeTransform()
 with Gmp(conn, transform=transform) as gmp:
     # Login
     gmp.authenticate('amadmin', '27d55284-90c8-4cc6-9a3e-01763bdab69a')
-    with open('/home/amadmin/box4s/scripts/Automation/4s-OpenVAS.xml', 'r') as fxml:
+    with open('/etc/openvas/4s-OpenVAS.xml', 'r') as fxml:
         xml_string = fxml.read()
         gmp.import_config(xml_string)
