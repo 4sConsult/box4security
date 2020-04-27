@@ -16,7 +16,8 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 #########################
 
-
+# Delete old index with possibly wrong data. Lets start clean!
+/home/amadmin/box4s/scripts/Automation/score_calculation/install_index.sh
 
 
 ########################
