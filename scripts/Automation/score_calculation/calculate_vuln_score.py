@@ -49,6 +49,6 @@ else:
     vulnscore = 100
 
 if isZero == 0:
-    print(vulnscore)
+    print((1 - vulnscore) * 100)
 else:
     print(0)
