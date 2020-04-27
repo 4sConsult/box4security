@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     {% block head %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha256-9mbkOfVho3ZPXfM7W8sV2SndrGDuh7wuyLjtsWeTI1Q=" crossorigin="anonymous" />
-    <link rel="stylesheet" type="text/css" href="static/box4s.css">
+    <link rel="stylesheet" type="text/css" href="/static/box4s.css">
     <title>BOX4Security</title>
     {% endblock %}
   </head>
@@ -25,6 +25,7 @@
              <a class="item" href="/siem-http">HTTP</a>
              <a class="item" href="/siem-dns">DNS</a>
              <a class="item" href="/siem-proto">Protokolle & Dienste</a>
+             <a class="item" href="/wazuh">Endgeräte</a>
              <a class="item" href="/siem-social-media">Social Media (Alpha)</a>
            </div>
          </div>
@@ -56,12 +57,30 @@
            <i class="dropdown icon"></i>
            <div class="menu">
              <a class="item" href="/faq">FAQ</a>
+             <a class="item" href="/user">Benutzer</a>
              <a class="item" href="/filter">Filter</a>
              <a class="item" href="/update">Updates</a>
            </div>
          </div>
        </div>
-  	   <a class="item right image" id="4smenu" href="https://www.4sconsult.de/" target="__blank"><img class="ui small image" src="/static/Box4S_Logo.png"></a>
+       <div class="right menu">
+         {% if current_user.is_authenticated %}
+         <a class="item"></a>
+         <div class="item">
+           <div class="ui dropdown pointing link item">
+             <i class="user icon"></i>{%if current_user.last_name %}{{ current_user.first_name }} {{current_user.last_name}} {% else %} {{ current_user.email }} {% endif %}
+             <i class="dropdown icon"></i>
+             <div class="menu">
+               <a class="item" href="{{url_for('user.logout')}}">Logout</a>
+               <a class="item" href="{{url_for('user.change_password')}}">Passwort ändern</a>
+             </div>
+           </div>
+         </div>
+         {% else %}
+         <a class="item" id="user" href="//{{request.host}}/user/sign-in"><i class="user icon"></i>Login</a>
+         {% endif %}
+          <a class="item"id="4smenu" href="https://www.4sconsult.de/" target="__blank"><img class="ui small image" src="/static/Box4S_Logo.png"></a>
+       </div>
      </div>
     {% block content %}
     {% endblock %}

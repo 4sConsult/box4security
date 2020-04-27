@@ -1,0 +1,20 @@
+{% extends 'user/emails/base_message.html' %}
+{% block message %}
+Ihnen wurde ein Account für die BOX4security angelegt.
+<br>
+Verwenden Sie zum <a href="{{ url_for('user.login', _external=True) }}">Einloggen</a> bitte: <br>
+<table>
+  <tr>
+    <td><b>E-Mail:</b></td>
+    <td>{{ user.email }}</td>
+  </tr>
+  <tr>
+    <td><b>Passwort:</b></td>
+    <td> {{ user_pass }}</td>
+  </tr>
+</table>
+<br>
+
+Bitte beachten Sie, dass sich bei dem Kennwort um ein automatisch generiertes Kennwort handelt. Sie sollten dieses so schnell wie möglich ändern.
+Eine Änderung ist hier möglich: <a href="{{ url_for('user.change_password', _external=True) }}">BOX4security: Passwort ändern</a>
+{% endblock %}

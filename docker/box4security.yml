@@ -29,6 +29,17 @@ services:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+  openvas:
+    build: openvas
+    container_name: openvas
+    restart: always
+    environment:
+      - INT_IP=${INT_IP}
+    ports:
+      - 9392:9392
+    volumes:
+      - varlib_openvas:/var/lib/openvas
+    image: "docker-registry.am-gmbh.de/it-security/b4s/openvas:dev"
   suricata:
     build: suricata/.
     container_name: suricata
@@ -111,7 +122,9 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile.prod
-    command: gunicorn --bind 0.0.0.0:5000 main:app
+    command: >
+     bash -c "python main.py db upgrade head &&
+     gunicorn --bind 0.0.0.0:5000 main:app"
     volumes:
        - static_volume:/home/app/web/source/static
        - /var/log/box4s/:/var/log/box4s/
@@ -130,7 +143,8 @@ services:
       - ./.env.prod.web
       - ../VERSION
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     container_name: db
     image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"
@@ -162,6 +176,7 @@ services:
     depends_on:
       - web
       - kibana
+
   dnsmasq:
     container_name: dnsmasq
     image: "docker-registry.am-gmbh.de/it-security/b4s/dnsmasq:dev"
@@ -200,6 +215,8 @@ volumes:
   varlib_logstash:
     external: true
   varlib_suricata:
+    external: true
+  varlib_openvas:
     external: true
   etcbox4s_logstash:
     external: true

@@ -8,6 +8,13 @@ set -e
 #########################
 # Updates hier einfügen #
 
+# Force remove FetchQC alembic in favor of Web App alembic
+PGPASSWORD=zgJnwauCAsHrR6JB psql -h localhost -U postgres box4S_db -c "DROP TABLE alembic_version;"
+
+# Delete old index with possibly wrong data. Lets start clean!
+/home/amadmin/box4s/scripts/Automation/score_calculation/install_index.sh
+
+
 # Stop des Services
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
@@ -16,8 +23,16 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 #########################
 
-# Delete old index with possibly wrong data. Lets start clean!
-/home/amadmin/box4s/scripts/Automation/score_calculation/install_index.sh
+# Create the new Docker Volume
+sudo mkdir -p /var/lib/openvas
+sudo chown root:root /var/lib/openvas
+sudo chmod -R 777 /var/lib/openvas
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
+
+# Remove old Services
+sudo systemctl stop openvas-scanner openvas-manager greenbone-security-assistant redis-server
+sudo systemctl disable openvas-scanner openvas-manager greenbone-security-assistant redis-server
+sudo apt remove -y --purge openvas
 
 
 ########################

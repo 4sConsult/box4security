@@ -1,0 +1,12 @@
+{% extends 'user/emails/base_message.html' %}
+
+{% block message %}
+Ihnen wurde ein Account für die BOX4security angelegt.
+
+Verwenden Sie zum Login bitte:
+E-Mail: {{ user.email }}
+Passwort: {{ user_pass }}
+
+Bitte beachten Sie, dass es sich bei dem Kennwort um ein automatisch generiertes Kennwort handelt. Sie sollten dieses so schnell wie möglich ändern.
+Eine Änderung ist hier möglich: {{ url_for('user.change_password',_external=True) }}
+{% endblock %}

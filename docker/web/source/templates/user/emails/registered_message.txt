@@ -1,0 +1,15 @@
+{% extends 'user/emails/base_message.txt' %}
+
+{% block message %}
+Vielen Dank für Ihre Registrierung für die {{ app_name }}.
+
+{% if confirm_email_link -%}
+Für die Nutzung ist die Bestätigung Ihrer E-Mail-Adresse erforderlich.
+
+Wenn Sie diese Registrierung initiiert haben, dann klicken Sie auf den nachstehenden Link:
+    {{ confirm_email_link }}
+
+Falls Sie diese Registrierung nicht initiiert haben, können Sie diese E-Mail ignorieren.
+
+{%- endif %}
+{% endblock %}

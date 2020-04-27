@@ -173,16 +173,15 @@ cd /home/amadmin/box4s
 # Update Suricata
 sudo docker exec suricata /root/scripts/update.sh
 
+# Update OpenVAS
+sudo docker exec openvas /root/update.sh
+
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
 echo "Installing FetchQC"
 cd /home/amadmin/box4s
 cd FetchQC
 pip install -r requirements.txt
 alembic upgrade head # Prepare DB
-
-# Insert Config for scan without bruteforce to openvas
-cd $BASEDIR$GITDIR/scripts/Automation
-./run-OpenVASinsertConf.sh
 
 echo "Install Crontab"
 cd /home/amadmin/box4s/main/crontab
@@ -214,7 +213,7 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-DNS.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-HTTP.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-ProtokolleUndDienste.ndjson
-curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEMocialMedia.ndjson
+curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-SocialMedia.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Uebersicht.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
@@ -226,21 +225,9 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 # Installiere Suricata Index Pattern
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
 
-echo "Starte übrige Dienste"
-sudo systemctl enable openvas-scanner
-sudo systemctl enable openvas-manager
-sudo systemctl enable greenbone-security-assistant
-sudo systemctl start openvas-scanner openvas-manager greenbone-security-assistant
-
-echo "Initialisiere Schwachstellendatenbank"
-sudo greenbone-scapdata-sync --verbose --progress
-sudo greenbone-certdata-sync --verbose --progress
-sudo openvas-feed-update --verbose --progress
-sudo greenbone-nvt-sync --verbose --progress
-sudo openvasmd --update --verbose --progress
-sudo openvasmd --rebuild
-
-sudo systemctl restart greenbone-security-assistant
-
 #sudo systemctl restart networking
 echo "BOX4security installiert."
+
+# Lets update both openvas and suricata
+sudo docker exec suricata /root/scripts/update.sh > /dev/null
+sudo docker exec openvas /root/update.sh > /dev/null
