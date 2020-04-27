@@ -1,11 +1,11 @@
 {% extends 'flask_user/emails/base_message.html' %}
 
 {% block message %}
-<p>You will need to confirm your email to start using {{ app_name }}.</p>
+<p>Vor der Nutzung der {{ app_name }} muss Ihre E-Mail-Adresse bestätigt werden.</p>
 
-<p>If you initiated this confirmation, please click on the link below:<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ confirm_email_link }}">Confirm your email</a>.</p>
+<p>Wenn Sie diese Bestätigung initiiert haben, dann klicken Sie auf den nachstehenden Link:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ confirm_email_link }}">E-Mail-Adresse bestätigen</a>.</p>
 
-<p>If you did not initiate this confirmation, you may safely ignore this email.</p>
+<p>Falls Sie diese Bestätigung nicht initiiert haben, können Sie diese E-Mail ignorieren.</p>
 
 {% endblock %}
