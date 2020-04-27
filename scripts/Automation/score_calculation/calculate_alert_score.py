@@ -6,13 +6,13 @@ file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/alert_scor
 # Load content into a json datastore
 datastore = json.load(file)
 
-alarmscore = 0
-count = 0
-severity = 0
-weight = 0
-threshold = 0
-percent = 0
-weighted = 0
+alarmscore = 0.0
+count = 0.0
+severity = 0.0
+weight = 0.0
+threshold = 0.0
+percent = 0.0
+weighted = 0.0
 isZero = 0
 
 if "rows" in datastore:
