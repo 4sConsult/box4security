@@ -111,7 +111,9 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile.prod
-    command: gunicorn --bind 0.0.0.0:5000 main:app
+    command: >
+     bash -c "python main.py db upgrade head &&
+     gunicorn --bind 0.0.0.0:5000 main:app"
     volumes:
        - static_volume:/home/app/web/source/static
        - /var/log/box4s/:/var/log/box4s/
@@ -130,7 +132,8 @@ services:
       - ./.env.prod.web
       - ../VERSION
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     container_name: db
     image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"

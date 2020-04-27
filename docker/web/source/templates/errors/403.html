@@ -1,0 +1,59 @@
+{% extends "errors/error_base.html" %}
+{% block content %}
+<div class="ui middle aligned three column centered grid" style="height: 100%;">
+  <div class="row">
+    <div class="center center aligned middle column">
+        <div class="ui segment">
+          <img class="ui centered large image" src="/static/Box4S_Logo.png">
+          <div class="ui divider"></div>
+          <h1 class="ui center header aligned foursgrey">Zugriff verboten</h1>
+          <p class="ui center aligned">Sie sind nicht berechtigt, diese Seite aufzurufen.</p>
+          {% if current_user and current_user.roles%}
+          <p class="">Ihre Berechtigungen:</p>
+                <div class="ui two link cards">
+                    {% for r in current_user.roles %}
+                    {% set role_url = r.name|lower|urlencode %}
+                    <a class="ui card" href=//{{request.host}}/{{role_url}}>
+                      <div class="content">
+                      <div class="header">
+                        {{r.name}}
+                      </div>
+                      <div class="description">
+                        {{r.description}}
+                      </div>
+                    </div>
+                  </a>
+                  {% endfor %}
+                </div>
+          {% endif %}
+          <br>
+          <div class="ui buttons">
+            <button class="ui labeled small foursgrey-bg icon button">
+                <i class="left arrow icon"></i>
+                Zurück
+            </button>
+              {% if current_user %}
+            <button class="ui right labeled small foursgrey-bg icon button">
+                <i class="sign-out icon"></i>
+                Logout
+            </button>
+            {% endif %}
+        </div>
+
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{% if current_user %}
+  <script type="text/javascript">
+  $('.ui.button').on('click', () => {window.location="{{url_for('user.logout')}}"})
+  </script>
+  {% else %}
+  <script type="text/javascript">
+  $('.ui.button').on('click', () => {window.history.back()})
+  </script>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="ui main text container">
+  {# One-time system messages called Flash messages #}
+  {% block flash_messages %}
+      {%- with messages = get_flashed_messages(with_categories=true) -%}
+          {% if messages %}
+              {% for category, message in messages %}
+                  <div class="ui message {{category}}">{{ message|safe }}</div>
+              {% endfor %}
+          {% endif %}
+      {%- endwith %}
+  {% endblock %}
+  {% block user %}{% endblock %}
+  <h1 class="ui header">BOX4Security - Benutzer</h1>
+  <div class="ui floating tiny message">
+    <p>
+      Sehen und bearbeiten Sie hier die Benutzer der BOX4security.
+    </p>
+  </div>
+  <div class="ui inverted section divider"></div>
+  <table class="ui celled single line small table">
+    <thead>
+      <tr>
+        <th class="">Benutzer</th>
+        <th class="">Berechtigungen</th>
+        <th class="collapsing">E-Mail<br> bestätigt</th>
+        <th class="collapsing">Aktiv</th>
+        <th class="collapsing">Aktionen</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td data-tooltip="{{ u.email }}" data-position="bottom center" class="">
+        {% if not u.last_name %}
+          {{u.email}}
+        {% else %}
+          {% if u.first_name|length + u.last_name|length > 24 %}
+            {% if u.last_name %}
+              {% if u.first_name %}
+                {{ u.first_name[0] }}.
+              {% endif %}
+                {{u.last_name}}
+            {%else%}
+              {{u.first_name}}
+            {% endif %}
+          {% else %}
+            {{u.first_name}} {{u.last_name}}
+          {% endif %}
+        {% endif %}
+      </td>
+        <td class="">
+            {% if u.roles|length > 1 %}
+              <div data-tooltip="{{ u.roles[0].description }}" data-position="bottom center" class="ui basic label">{{ u.roles[0].name }}</div>
+              <span class="ui foursgrey-bg image label" data-position="bottom center"
+                data-html="
+                  <div class='content'>
+                    <div class='ui list'>
+                      {% for r in u.roles %}
+                      <div class='item'>
+                        <div class='header'>{{r.name}}</div>
+                        {{ r.description }}
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                ">
+                + {{u.roles|length-1}}
+              </span>
+            {% elif u.roles|length == 1 %}
+              <div data-tooltip="{{ u.roles[0].description}}" data-position="bottom center" class="ui basic label">{{ u.roles[0].name }}</div>
+            {% endif %}
+        </td>
+        <td class="collapsing">
+          {% if u.email_confirmed_at %}
+            <i class="ui icon green check"></i>
+          {% else %}
+            <i class="ui icon red x"></i>
+          {% endif %}
+        </td>
+        <td class="collapsing">
+          {% if u.active %}
+            <i class="ui icon green check"></i>
+          {% else %}
+            <i class="ui icon red x"></i>
+          {% endif %}
+        </td>
+        <td class="collapsing">
+          <a data-user-id="{{ u.id }}" data-tooltip="Nutzer bearbeiten" data-position="bottom center" data-action="edit" class="ui icon tiny blue button">
+            <i class="edit icon"></i>
+          </a>
+          <a data-user-id="{{ u.id }}" data-tooltip="Nutzer {% if not u.active %}ent{%endif%}sperren" data-position="bottom center" data-action="disable" class="ui icon tiny grey button {% if current_user.id == u.id %}disabled{%  endif %}">
+            {% if u.active %}
+              <i class="lock icon"></i>
+            {% else %}
+              <i class="unlock icon"></i>
+            {% endif %}
+          </a>
+          <a data-user-id="{{ u.id }}" data-tooltip="Nutzer löschen" data-position="bottom center" data-action="delete" class="ui icon tiny red button {% if current_user.id == u.id %}disabled{%  endif %}">
+            <i class="trash alternate outline icon"></i>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="ui grid">
+    <div class="three column row">
+      <div class="right floated column">
+        <a class="ui right floated positive icon button _open">
+          <i class="plus icon"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div id="modal-add" class="ui tiny modal">
+    <i class="close icon"></i>
+    <div class="header">Benutzer hinzufügen</div>
+    <div class="content">
+      <form method="POST" class="ui form">
+         {{ userform.hidden_tag() }}
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="mail icon"></i>
+              <input type="email" id="{{ userform.email.id }}" required="" name="{{ userform.email.name }}" placeholder="E-Mail Adresse">
+            </div>
+          </div>
+          {% if userform.email.errors %}
+              {% for e in userform.email.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <div class="field">
+              <input type="text" id="{{ userform.first_name.id }}" name="{{ userform.first_name.name }}" placeholder="Vorname">
+          </div>
+          {% if userform.last_name.errors %}
+          {% for e in userform.last_name.errors %}
+          <p class="ui orange message">{{ e }}</p>
+          {% endfor %}
+          {% endif %}
+          <div class="field">
+              <input type="text" id="{{ userform.last_name.id }}"name="{{ userform.last_name.name }}" placeholder="Nachname">
+          </div>
+          {% if userform.last_name.errors %}
+              {% for e in userform.last_name.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <div class="field">
+            <select name="{{userform.roles.name}}" multiple="" class="ui dropdown">
+              <option value="">Berechtigungen</option>
+              {% for value in userform.roles.choices %}
+                <option value="{{value[0]}}">{{value[1]}}</option>
+              {% endfor %}
+              </select>
+          </div>
+          {% if userform.roles.errors %}
+              {% for e in userform.roles.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <div class="ui message">
+            Nach Anlegen des Benutzers wird ein Passwort zufällig gewählt und dem angelegten Nutzer per E-Mail zugesandt. Dieses sollte zeitig aktualisiert und die E-Mailadresse bestätigt werden.
+          </div>
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="email_copy" tabindex="0" class="hidden">
+              <label>Kopie der E-Mail an mich senden</label>
+            </div>
+          </div>
+          {% if userform.email_copy.errors %}
+              {% for e in userform.email_copy.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <button class="ui fluid large foursgrey-bg submit button" type="submit" name="button">Anlegen</button>
+      </form>
+    </div>
+  </div>
+  <div id="modal-edit" class="ui tiny modal">
+    <i class="close icon"></i>
+    <div class="header">Benutzer bearbeiten</div>
+    <div class="content">
+      <form method="" class="ui form">
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="mail icon"></i>
+              <input type="email" id="edit-{{ userform.email.id }}" required="" name="{{ userform.email.name }}" placeholder="E-Mail Adresse">
+            </div>
+          </div>
+          {% if userform.email.errors %}
+              {% for e in userform.email.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <div class="field">
+              <input type="text" id="edit-{{ userform.first_name.id }}" name="{{ userform.first_name.name }}" placeholder="Vorname">
+          </div>
+          {% if userform.last_name.errors %}
+          {% for e in userform.last_name.errors %}
+          <p class="ui orange message">{{ e }}</p>
+          {% endfor %}
+          {% endif %}
+          <div class="field">
+              <input type="text" id="edit-{{ userform.last_name.id }}"name="{{ userform.last_name.name }}" placeholder="Nachname">
+          </div>
+          {% if userform.last_name.errors %}
+              {% for e in userform.last_name.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <div class="field">
+            <select id="edit-{{ userform.roles.id }}" name="{{userform.roles.name}}" multiple="" class="ui dropdown">
+              <option value="">Berechtigungen</option>
+              {% for value in userform.roles.choices %}
+                <option value="{{value[0]}}">{{value[1]}}</option>
+              {% endfor %}
+              </select>
+          </div>
+          {% if userform.roles.errors %}
+              {% for e in userform.roles.errors %}
+                  <p class="ui orange message">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" id="edit-email_confirmed" name="email_confirmed" tabindex="0" class="hidden">
+              <label>E-Mail bestätigt</label>
+            </div>
+          </div>
+          <!-- <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" id="edit-active" name="active" tabindex="0" class="hidden">
+              <label>Aktiv</label>
+            </div>
+          </div> -->
+          <button id="edit-submit" class="ui fluid large foursgrey-bg submit button" type="submit" name="button">Speichern</button>
+      </form>
+    </div>
+  </div>
+  {% endblock %}
+  {% block scripts %}
+  <script type="text/javascript">
+  $('div.item.active').removeClass('active');
+  $('#administration').addClass('active');
+  $('.ui.checkbox').checkbox();
+  $('a._open').click(() => $('#modal-add').modal('show'));
+  $('.ui.image.label.foursgrey-bg').popup();
+  </script>
+  {% if create %}
+    <script type="text/javascript">
+      $('#modal-add').modal('show');
+    </script>
+  {% endif %}
+  <script type="text/javascript">
+    $(`#edit-submit`).on('click', (e) => {
+      e.preventDefault()
+      var data = {
+        'email': $('#edit-{{ userform.email.id }}').val(),
+        'first_name': $('#edit-{{ userform.first_name.id }}').val(),
+        'last_name': $('#edit-{{ userform.last_name.id }}').val(),
+        //'active': $('#edit-active').prop("checked"),
+        'email_confirmed': $('#edit-email_confirmed').prop("checked"),
+        'roles': $('#edit-{{userform.roles.id}}').val(),
+      }
+      fetch(`/api/user/${$('#edit-submit').data('user-id')}`,
+        {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data),
+        })
+      .then((response) => {
+        if(!response.ok){
+          var errormsg="";
+          switch (response.status) {
+            case 403: errormsg = "Sie dürfen diese Aktion nicht ausführen. Nur Super Admins können andere Super Admins ernennen."; break;
+            case 404: errormsg = "Der zu bearbeitende Benutzer wurde nicht gefunden. Keine Änderungen wurden gespeichert."; break;
+            case 400: errormsg = "Die gestellte Anfrage enthielt für die Verarbeitung unverständliche Parameter."; break;
+            case 500: errormsg = "Die Änderungen am Benutzer konnten nicht in der Datenbank gespeichert werden."; break;
+          };
+          row = `<div class="ui red message">${errormsg}</div>`;
+          $(`#edit-submit`).before(row);
+        } else {
+          window.location = window.location.href;
+        }
+      });
+    })
+    $(`tbody tr td a` ).on('click', (e) => {
+      switch ($(e.delegateTarget).data('action')) {
+        case 'delete':
+          if (confirm(`Soll dieser Nutzer wirklich unwiderruflich GELÖSCHT werden?`)) {
+            fetch(`/api/user/${$(e.delegateTarget).data('user-id')}`, {method: 'DELETE'})
+            .then((response) => {
+              if(response.ok){
+                $(e.delegateTarget).closest('tr').remove();
+              }
+            })
+          };
+          break;
+        case 'edit':
+          fetch(`/api/user/${$(e.delegateTarget).data('user-id')}`, {method: 'GET'})
+          .then((response) => {
+            return response.json()
+          }).then((u) => {
+            $('#edit-{{ userform.email.id }}').val(u.email);
+            $('#edit-{{ userform.last_name.id }}').val(u.last_name);
+            $('#edit-{{ userform.first_name.id }}').val(u.first_name);
+            $('#edit-{{ userform.roles.id }}').dropdown('clear');
+            u.roles.forEach((role, i) => {
+              $(`#edit-{{ userform.roles.id }}`).dropdown('set selected', role.id);
+            });
+            //$('#edit-active').prop("checked", !!u.active);
+            $('#edit-email_confirmed').prop("checked", !!u.email_confirmed_at); // convert date to bool
+            $('#edit-submit').data('user-id', u.id);
+            $('#modal-edit').modal('show');
+          });
+        break;
+        case 'disable':
+          fetch(`/api/user/${$(e.delegateTarget).data('user-id')}/lock`, {method: 'POST'})
+          .then(() => {
+            location.reload();
+          })
+          break;
+      }
+    })
+  </script>
+  {% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'user_base.html' %}
+{% block user %}
+{% from "user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
+<div class="ui middle aligned center aligned three column grid">
+  <div class="column">
+    <h2 class="ui foursgrey image header">
+      <div class="content">
+        Einloggen zum Fortfahren
+      </div>
+    </h2>
+    <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
+      {{ form.hidden_tag() }}
+      <div class="ui segment">
+        {# Username or Email #}
+        {% set field = form.username if user_manager.USER_ENABLE_USERNAME else form.email %}
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="user icon"></i>
+                <input type="text" id="{{field.id}}" name="{{field.name}}" placeholder="E-Mail Adresse">
+              </div>
+            </div>
+            {% if field.errors %}
+                {% for e in field.errors %}
+                    <p class="ui orange message">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" id="password" placeholder="Passwort">
+          </div>
+        </div>
+        {% if form.password.errors %}
+            {% for e in form.password.errors %}
+                <p class="ui orange message">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+        {# Remember me #}
+        {% if user_manager.USER_ENABLE_REMEMBER_ME %}
+          {{ render_checkbox_field(form.remember_me, "Angemeldet bleiben", tabindex=130) }}
+        {% endif %}
+        {# Submit button #}
+        <button class="ui fluid large foursgrey-bg submit button">Login</button>
+      </div>
+
+      <div class="ui error message"></div>
+    </form>
+
+    {% if user_manager.USER_ENABLE_FORGOT_PASSWORD %}
+    <div class="ui message">
+          <a href="{{ url_for('user.forgot_password') }}" tabindex='195'>
+              {%trans%}Passwort vergessen?{%endtrans%}</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
