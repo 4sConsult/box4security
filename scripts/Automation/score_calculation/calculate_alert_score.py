@@ -56,19 +56,19 @@ if "rows" in datastore:
         weighted = percent * weight
         alarmscore = alarmscore + weighted
 
-    if count < threshold and isZero != 1:
-        isZero = 0
-    else:
-        isZero = 1
+        if count < threshold and isZero != 1:
+            isZero = 0
+        else:
+            isZero = 1
 
-    print(str(count))
-    print(str(severity))
-    print(str(threshold))
-    print(str(weight))
-    print(str(percent))
-    print(str(weighted))
-    print(str(alarmscore))
-    print(str(isZero))
+        print(str(count))
+        print(str(severity))
+        print(str(threshold))
+        print(str(weight))
+        print(str(percent))
+        print(str(weighted))
+        print(str(alarmscore))
+        print(str(isZero))
 else:
     alarmscore = 100
 
