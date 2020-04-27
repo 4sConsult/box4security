@@ -176,6 +176,9 @@ services:
     depends_on:
       - web
       - kibana
+    environment:
+      - INT_IP=${INT_IP}
+
   dnsmasq:
     container_name: dnsmasq
     image: "docker-registry.am-gmbh.de/it-security/b4s/dnsmasq:dev"
