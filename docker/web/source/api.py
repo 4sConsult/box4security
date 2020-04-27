@@ -225,7 +225,6 @@ class Version(Resource):
 class AvailableReleases(Resource):
     """API Resource for working with all available releases."""
 
-    @roles_required(['Super-Admin', 'Updates'])
     def get(self):
         """GET: fetch and return all available releases with their relevant info from GitLab."""
         try:
