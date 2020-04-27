@@ -6,6 +6,7 @@ file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/alert_scor
 # Load content into a json datastore
 datastore = json.load(file)
 
+# Init all the values as floats, so i will definitely be precise enough
 alarmscore = 0.0
 count = 0.0
 severity = 0.0
@@ -15,11 +16,13 @@ percent = 0.0
 weighted = 0.0
 isZero = 0
 
+# If the result contains values, for each row ...
 if "rows" in datastore:
     for row in datastore["rows"]:
         count = row[0]
         severity = row[1]
 
+        # ... detemine the threshold value and the weight the severity has, ...
         if severity == 1:
                 threshold = 5000
                 weight = 0.05
@@ -36,18 +39,30 @@ if "rows" in datastore:
                 threshold = 30
                 weight = 0.5
 
+        # ... calculate what the ratio between the vuln count and the threshold is, ...
         percent = count / threshold
+
+        # ... calculate the weighted value ...
         weighted = percent * weight
+
+        # ... and finally add the weighted score to the overall score.
         alarmscore = alarmscore + weighted
 
+        # If the count exceeds the threshold the score must be 0.
+        # As this is a for-loop it can happen, that the first iteration will make `isZero` = 1,
+        # but the next will make it 0 again. To prevent that, the state will be check evertime.
         if count < threshold and isZero != 1:
             isZero = 0
         else:
             isZero = 1
+
+        # If no threshold exceeds, print the score readable
+        if isZero == 0:
+            print((1 - alarmscore) * 100)
+        # If the threshold exceeds, the value must be 0
+        else:
+            print(0)
+
+# If the result doesn't contain any results, there seem to be no alarms. Great!
 else:
     alarmscore = 100
-
-if isZero == 0:
-    print((1 - alarmscore) * 100)
-else:
-    print(0)
