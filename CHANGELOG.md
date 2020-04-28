@@ -24,6 +24,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Deprecated
 * Ursprüngliches Initialisierungsskript für automatische Einrichtung wird in zwei Releases nicht mehr unterstützt
+* Winlogbeat wird zukünftig durch Wazuh ersetzt und wird in einem Release nicht mehr verfügbar sein
+* Auditbeat wird zukünftig durch Wazuh ersetzt und wird in einem Release nicht mehr verfügbar sein
 
 ### Removed
 
