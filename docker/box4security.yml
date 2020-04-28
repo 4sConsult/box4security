@@ -4,14 +4,14 @@ services:
   baseimage:
     build: baseimage/.
     container_name: baseimage
-    image: "docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/baseimage:1.8.0-rc"
   elasticsearch:
     build: elasticsearch/.
     container_name: elasticsearch
     restart: always
     ports:
      - 9200:9200
-    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:1.8.0-rc"
     volumes:
      - data:/data
     env_file:
@@ -24,7 +24,7 @@ services:
      - INT_IP=${INT_IP}
     ports:
      - 5601:5601
-    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:1.8.0-rc"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -39,12 +39,12 @@ services:
       - 9392:9392
     volumes:
       - varlib_openvas:/var/lib/openvas
-    image: "docker-registry.am-gmbh.de/it-security/b4s/openvas:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/openvas:1.8.0-rc"
   suricata:
     build: suricata/.
     container_name: suricata
     restart: always
-    image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:1.8.0-rc"
     network_mode: "host"
     env_file:
       - suricata/.env
@@ -67,21 +67,21 @@ services:
     depends_on:
       logstash:
         condition: service_healthy
-    image: "docker-registry.am-gmbh.de/it-security/b4s/auditbeat:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/auditbeat:1.8.0-rc"
     restart: on-failure
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
-    image: "docker-registry.am-gmbh.de/it-security/b4s/metricbeat:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/metricbeat:1.8.0-rc"
     depends_on:
       elasticsearch:
         condition: service_healthy
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat
-    image: "docker-registry.am-gmbh.de/it-security/b4s/heartbeat:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/heartbeat:1.8.0-rc"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -101,7 +101,7 @@ services:
       - 9600:9600
       - 5044:5044
       - 5046:5046
-    image: "docker-registry.am-gmbh.de/it-security/b4s/logstash:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/logstash:1.8.0-rc"
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - etcbox4s_logstash:/etc/logstash/conf.d/general/
@@ -112,13 +112,13 @@ services:
     depends_on:
       logstash:
         condition: service_healthy
-    image: "docker-registry.am-gmbh.de/it-security/b4s/filebeat:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/filebeat:1.8.0-rc"
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - data:/data
   web:
     container_name: web
-    image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/web:1.8.0-rc"
     build:
       context: ./web
       dockerfile: Dockerfile.prod
@@ -149,7 +149,7 @@ services:
         condition: service_healthy
   db:
     container_name: db
-    image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/db:1.8.0-rc"
     build:
       context: ./db
     volumes:
@@ -165,7 +165,7 @@ services:
       retries: 5
   nginx:
     container_name: nginx
-    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:1.8.0-rc"
     build:
       context: ./nginx
     ports:
@@ -181,7 +181,7 @@ services:
 
   dnsmasq:
     container_name: dnsmasq
-    image: "docker-registry.am-gmbh.de/it-security/b4s/dnsmasq:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/dnsmasq:1.8.0-rc"
     build:
       context: ./dnsmasq
     ports:
@@ -194,7 +194,7 @@ services:
       - "docker-registry.am-gmbh.de:10.30.5.4"
   wazuh:
     container_name: wazuh
-    image: "docker-registry.am-gmbh.de/it-security/b4s/wazuh:dev"
+    image: "docker-registry.am-gmbh.de/it-security/b4s/wazuh:1.8.0-rc"
     build:
       context: ./wazuh
     hostname: wazuh-manager
