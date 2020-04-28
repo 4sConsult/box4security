@@ -114,10 +114,12 @@
             <div class="ui dimmer">
               <div class="ui active loader"></div>
             </div>
+            {% if not client %}
             <div class="field">
               <label>Unternehmen</label>
-              <input type="text" name="company" value="{{ client }}" readonly>
+              <input type="text" name="company" placeholder="Ihr Unternehmen" required>
             </div>
+            {% endif %}
 
             <div class="field">
               <label>Ihre E-Mail-Adresse</label>

@@ -70,7 +70,7 @@ def faq():
     Environment variable KUNDE is the client company name and set to Standard if not existent.
     The value is displayed in the contact form.
     """
-    client = os.getenv('KUNDE', 'Standard')
+    client = os.getenv('KUNDE')
     return render_template('faq.html', client=client)
 
 
@@ -120,12 +120,16 @@ def user():
 def faq_mail():
     """Handle the submitted contanct form and send via email.
 
-    Environment variable KUNDE is the client company name and set to Standard if not existent.
+    Environment variable KUNDE is the client company name.
+    If there is no $KUNDE variable it is shown to the value from the user form.
+    If even there it is not defined it is set to "Undefinierter Kunde" for the email.
     The value is displayed in the contact form.
 
     The E-Mail is sent to a MS Teams Channel: 0972f9a3.4sconsult.de@emea.teams.ms
     """
-    client = os.getenv('KUNDE', 'Default-Kunde')
+    client = os.getenv('KUNDE')
+    if not client:
+        client = request.values.get('company', 'Undefinierter Kunde')
 
     # Build a subject or set default one of none given
     subject = "[{}] {}".format(client, request.values.get('subject') or 'BOX4Security FAQ-Kontaktformular')
@@ -141,7 +145,7 @@ def faq_mail():
     msg = Message(subject=subject, recipients=['0972f9a3.4sconsult.de@emea.teams.ms'], body=body)
     msg.msgId = msg.msgId.split('@')[0] + '@4sconsult.de'  # shorter msgID so microsoft likes it
     mail.send(msg)
-
+    client = os.getenv('KUNDE', '')  # Reset client variable
     return render_template('faq.html', client=client, mailsent=True)
 
 
