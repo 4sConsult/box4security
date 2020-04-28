@@ -114,6 +114,12 @@ sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
 
+# Erstelle Volume für Openvas
+sudo mkdir -p /var/lib/openvas
+sudo chown root:root /var/lib/openvas
+sudo chmod -R 777 /var/lib/openvas
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
+
 # Create BOX4s Log Path
 sudo mkdir -p /var/log/box4s/
 sudo touch /var/log/box4s/update.log
