@@ -21,7 +21,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Problem behoben, das bei dem Einpflegen von Filtern Suricata nicht neustarten ließ
-* Problem behoben, dass die Scores falsch berechnete
+* Problem behoben, das die Scores falsch berechnete
 
 ### Deprecated
 
