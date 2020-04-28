@@ -176,12 +176,6 @@ cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh
 cd /home/amadmin/box4s
 
-# Update Suricata
-sudo docker exec suricata /root/scripts/update.sh
-
-# Update OpenVAS
-sudo docker exec openvas /root/update.sh
-
 # sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
 # echo "Installing FetchQC"
 # cd /home/amadmin/box4s
