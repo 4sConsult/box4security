@@ -12,7 +12,9 @@ set -e
 PGPASSWORD=zgJnwauCAsHrR6JB psql -h localhost -U postgres box4S_db -c "DROP TABLE alembic_version;"
 
 # Delete old index with possibly wrong data. Lets start clean!
-/home/amadmin/box4s/scripts/Automation/score_calculation/install_index.sh
+cd /home/amadmin/box4s/scripts/Automation/score_calculation/
+./install_index.sh
+cd ~/box4s/
 
 
 # Stop des Services
