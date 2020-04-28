@@ -23,6 +23,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Problem behoben, das die Scores falsch berechnete
 
 ### Deprecated
+* Ursprüngliches Initialisierungsskript für automatische Einrichtung wird in zwei Releases nicht mehr unterstützt
 
 ### Removed
 
