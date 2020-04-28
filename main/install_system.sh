@@ -24,7 +24,7 @@ function waitForNet() {
 }
 
 waitForNet
-sudo apt install -y curl python python3 git git-lfs openconnect jq
+sudo apt install -y curl python python3 python3-pip git git-lfs openconnect jq
 git lfs install
 if [[ "$*" == *skip-reboot* ]]
 then
