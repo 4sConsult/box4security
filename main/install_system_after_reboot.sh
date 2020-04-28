@@ -176,12 +176,12 @@ sudo docker exec suricata /root/scripts/update.sh
 # Update OpenVAS
 sudo docker exec openvas /root/update.sh
 
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
-echo "Installing FetchQC"
-cd /home/amadmin/box4s
-cd FetchQC
-pip install -r requirements.txt
-alembic upgrade head # Prepare DB
+# sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
+# echo "Installing FetchQC"
+# cd /home/amadmin/box4s
+# cd FetchQC
+# pip install -r requirements.txt
+# alembic upgrade head # Prepare DB
 
 echo "Install Crontab"
 cd /home/amadmin/box4s/main/crontab
