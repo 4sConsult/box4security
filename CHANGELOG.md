@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.8] - 2020-04-29
+## [1.8.0] - 2020-04-29
 
 ### Added
 * Aufforderung zum Erstellen eines Administrationsusers nach Update auf diese oder Installation dieser Version eingeführt
@@ -11,7 +11,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * E-Mail-Benachrichtigung bei Ereignissen der Benutzerauthentifizierung eingeführt
 * Benutzerverwaltung zum Anlegen, Bearbeiten und Löschen von Benutzern eingeführt
 * Rollenkonzept eingeführt
-* Endgerätmonitoring durch Wazuh in Webapp eingepflegt
+* Endgerätemonitoring durch Wazuh in Webapp eingepflegt
 
 ### Changed
 * Neues Box4Security Logo in Website integriert
