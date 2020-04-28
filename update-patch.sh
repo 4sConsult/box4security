@@ -42,7 +42,7 @@ cd ~/box4s/
 sudo systemctl stop openvas-scanner openvas-manager greenbone-security-assistant redis-server
 sudo systemctl disable openvas-scanner openvas-manager greenbone-security-assistant redis-server
 sudo apt remove -y --purge openvas
-
+sudo apt autoremove -y
 
 ########################
 
