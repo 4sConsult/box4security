@@ -142,12 +142,12 @@ sudo apt-get install -y postgresql-client
 
 # Ermittle ganzzahligen RAM in GB (abgerundet)
 MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-MEM=$(python -c "print($MEM/1024.0**2)")
+MEM=$(python3 -c "print($MEM/1024.0**2)")
 # Die Häfte davon soll Elasticsearch zur Verfügung stehen, abgerundet
-ESMEM=$(python -c "print(int($MEM*0.5))")
+ESMEM=$(python3 -c "print(int($MEM*0.5))")
 sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/.env.es
 # 1/4 davon für Logstash, abgerundet
-LSMEM=$(python -c "print(int($MEM*0.25))")
+LSMEM=$(python3 -c "print(int($MEM*0.25))")
 sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
 
 # Pull die Images
