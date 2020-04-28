@@ -13,7 +13,6 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Rollenkonzept eingeführt
 * Endgerätmonitoring durch Wazuh in Webapp eingepflegt
 
-
 ### Changed
 * Neues Box4Security Logo in Website integriert
 * Nachricht bei nicht erfolgreicher Verbindung mit Update Server angepasst
