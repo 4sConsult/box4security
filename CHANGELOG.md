@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.8.0] - 2020-04-29
+## [1.8.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.0) - 2020-04-29
 
 ### Added
 * Aufforderung zum Erstellen eines Administrationsusers nach Update auf diese oder Installation dieser Version eingeführt
