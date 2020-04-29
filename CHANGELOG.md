@@ -7,6 +7,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 
+* Dashboards werden embedded und nicht im Kibana Vollbild angezeigt
+* Embedden der Dashboards ermöglicht das setzen von Filtern am Anfang jedes Dashboards
+
 ### Fixed
 
 ### Deprecated
