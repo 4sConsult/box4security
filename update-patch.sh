@@ -36,7 +36,6 @@ su - amadmin -c "crontab -r"
 su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
 sudo crontab -r
 sudo crontab root.crontab
-cd ~/box4s/
 
 # Remove old Services
 sudo systemctl stop openvas-scanner openvas-manager greenbone-security-assistant redis-server
