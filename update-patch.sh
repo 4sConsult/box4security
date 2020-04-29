@@ -38,8 +38,8 @@ sudo crontab -r
 sudo crontab root.crontab
 
 # Remove old Services
-sudo systemctl stop openvas-scanner openvas-manager greenbone-security-assistant redis-server
-sudo systemctl disable openvas-scanner openvas-manager greenbone-security-assistant redis-server
+sudo systemctl stop openvas-scanner openvas-manager greenbone-security-assistant redis-server || echo ""
+sudo systemctl disable openvas-scanner openvas-manager greenbone-security-assistant redis-server || echo ""
 sudo apt remove -y --purge openvas
 sudo apt autoremove -y
 
