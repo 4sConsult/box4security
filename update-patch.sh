@@ -54,6 +54,6 @@ sudo systemctl restart box4security.service
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 # Update Suricata
 sudo docker exec suricata /root/scripts/update.sh
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash || sleep 30
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx
