@@ -56,4 +56,4 @@ sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh el
 sudo docker exec suricata /root/scripts/update.sh
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || sleep 30
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx || sleep 30
