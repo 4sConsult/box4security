@@ -1,0 +1,10 @@
+{% if user.first_name and user.last_name -%}
+Sehr geehrte*r {{user.first_name}} {{user.last_name}},
+{% else -%}
+Guten Tag,
+{% endif %}
+{% block message %}
+{% endblock %}
+
+Mit freundlichen Grüßen,
+4sConsult GmbH

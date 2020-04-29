@@ -114,6 +114,12 @@ sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
 
+# Erstelle Volume für Openvas
+sudo mkdir -p /var/lib/openvas
+sudo chown root:root /var/lib/openvas
+sudo chmod -R 777 /var/lib/openvas
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
+
 # Create BOX4s Log Path
 sudo mkdir -p /var/log/box4s/
 sudo touch /var/log/box4s/update.log
@@ -142,12 +148,12 @@ sudo apt-get install -y postgresql-client
 
 # Ermittle ganzzahligen RAM in GB (abgerundet)
 MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-MEM=$(python -c "print($MEM/1024.0**2)")
+MEM=$(python3 -c "print($MEM/1024.0**2)")
 # Die Häfte davon soll Elasticsearch zur Verfügung stehen, abgerundet
-ESMEM=$(python -c "print(int($MEM*0.5))")
+ESMEM=$(python3 -c "print(int($MEM*0.5))")
 sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/.env.es
 # 1/4 davon für Logstash, abgerundet
-LSMEM=$(python -c "print(int($MEM*0.25))")
+LSMEM=$(python3 -c "print(int($MEM*0.25))")
 sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
 
 # Pull die Images
@@ -170,19 +176,12 @@ cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh
 cd /home/amadmin/box4s
 
-# Update Suricata
-sudo docker exec suricata /root/scripts/update.sh
-
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
-echo "Installing FetchQC"
-cd /home/amadmin/box4s
-cd FetchQC
-pip install -r requirements.txt
-alembic upgrade head # Prepare DB
-
-# Insert Config for scan without bruteforce to openvas
-cd $BASEDIR$GITDIR/scripts/Automation
-./run-OpenVASinsertConf.sh
+# sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
+# echo "Installing FetchQC"
+# cd /home/amadmin/box4s
+# cd FetchQC
+# pip install -r requirements.txt
+# alembic upgrade head # Prepare DB
 
 echo "Install Crontab"
 cd /home/amadmin/box4s/main/crontab
@@ -191,11 +190,10 @@ sudo crontab root.crontab
 
 source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
-# Set INT-IP as --allow-header-host
-sed -ie "s/--allow-header-host [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/--allow-header-host $INT_IP/g" /etc/systemd/system/greenbone-security-assistant.service
 sudo systemctl daemon-reload
 
 #Ignore own INT_IP
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 
@@ -214,7 +212,7 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-DNS.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-HTTP.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-ProtokolleUndDienste.ndjson
-curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEMocialMedia.ndjson
+curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-SocialMedia.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Uebersicht.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
@@ -226,21 +224,9 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 # Installiere Suricata Index Pattern
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
 
-echo "Starte übrige Dienste"
-sudo systemctl enable openvas-scanner
-sudo systemctl enable openvas-manager
-sudo systemctl enable greenbone-security-assistant
-sudo systemctl start openvas-scanner openvas-manager greenbone-security-assistant
-
-echo "Initialisiere Schwachstellendatenbank"
-sudo greenbone-scapdata-sync --verbose --progress
-sudo greenbone-certdata-sync --verbose --progress
-sudo openvas-feed-update --verbose --progress
-sudo greenbone-nvt-sync --verbose --progress
-sudo openvasmd --update --verbose --progress
-sudo openvasmd --rebuild
-
-sudo systemctl restart greenbone-security-assistant
-
 #sudo systemctl restart networking
 echo "BOX4security installiert."
+
+# Lets update both openvas and suricata
+sudo docker exec suricata /root/scripts/update.sh > /dev/null
+sudo docker exec openvas /root/update.sh > /dev/null

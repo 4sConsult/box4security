@@ -9,7 +9,7 @@
 loglocation="/var/log/cronchecker"
 logfile="$loglocation/cronjobchecker.json"
 tempfile="$loglocation/cronjobchecker.json.tmp"
-email_reciever="0972f9a3.4sconsult.de@emea.teams.ms"
+email_reciever="box@4sconsult.de"
 ########################################
 timestamp=$(date +%d-%m-%Y_%H-%M-%S)
 initialize()

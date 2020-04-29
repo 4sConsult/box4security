@@ -1,0 +1,10 @@
+{% extends 'user/emails/base_message.txt' %}
+
+{% block message %}
+Ihr Benutzername wurde geändert.
+
+Wenn Sie die Änderung Ihres Benutzernamens nicht initiiert haben, bitte melden Sie sich an (mit Ihrer E-Mail-Adresse) und ändern Sie Ihr Passwort.
+    {{ url_for('user.login', _external=True) }}
+{% endblock %}
+
+

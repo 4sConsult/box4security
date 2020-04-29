@@ -1,0 +1,3 @@
+{% extends 'user/emails/base_subject.txt' %}
+
+{% block subject %}Ihr Benutzername wurde geändert{% endblock %}

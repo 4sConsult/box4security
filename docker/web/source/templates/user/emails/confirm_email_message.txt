@@ -1,0 +1,10 @@
+{% extends 'user/emails/base_message.txt' %}
+
+{% block message %}
+Vor der Nutzung der {{ app_name }} muss Ihre E-Mail-Adresse bestätigt werden.
+
+Wenn Sie diese Bestätigung initiiert haben, dann klicken Sie auf den nachstehenden Link:
+    {{ confirm_email_link }}
+
+Falls Sie diese Bestätigung nicht initiiert haben, können Sie diese E-Mail ignorieren.
+{% endblock %}

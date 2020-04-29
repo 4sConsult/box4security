@@ -1,6 +1,35 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [1.8.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.0) - 2020-04-29
+
+### Added
+* Aufforderung zum Erstellen eines Administrationsusers nach Update auf diese oder Installation dieser Version eingeführt
+* Benutzerauthentifizierung eingeführt
+* Weboberfläche der BOX4s nur noch nach Benutzerauthentifizierung sichtbar
+* Benutzerauthentifizierung für sensible API-Punkte erforderlich
+* E-Mail-Benachrichtigung bei Ereignissen der Benutzerauthentifizierung eingeführt
+* Benutzerverwaltung zum Anlegen, Bearbeiten und Löschen von Benutzern eingeführt
+* Rollenkonzept eingeführt
+* Endgerätemonitoring durch Wazuh in Webapp eingepflegt
+
+### Changed
+* Neues Box4Security Logo in Website integriert
+* Nachricht bei nicht erfolgreicher Verbindung mit Update Server angepasst
+* Dockerimage für OpenVAS in Betrieb genommen
+
+### Fixed
+* Problem behoben, das bei dem Einpflegen von Filtern Suricata nicht neustarten ließ
+* Problem behoben, das die Scores falsch berechnete
+
+### Deprecated
+* Ursprüngliches Initialisierungsskript für automatische Einrichtung wird in zwei Releases nicht mehr unterstützt
+* Winlogbeat wird zukünftig durch Wazuh ersetzt und wird in einem Release nicht mehr verfügbar sein
+* Auditbeat wird zukünftig durch Wazuh ersetzt und wird in einem Release nicht mehr verfügbar sein
+
+### Removed
+
+
 ## [1.7.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7.1) - 2020-04-15
 
 ### Added

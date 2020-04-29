@@ -24,7 +24,7 @@ function waitForNet() {
 }
 
 waitForNet
-sudo apt install -y curl python3 git git-lfs openconnect jq
+sudo apt install -y curl python python-pip python3 python3-pip git git-lfs openconnect jq
 git lfs install
 if [[ "$*" == *skip-reboot* ]]
 then
@@ -74,29 +74,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo mkdir /data/elasticsearch -p
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
 sudo chmod 777 /data/elasticsearch*
-
-# Install OpenVAS
-waitForNet
-sudo apt install -y rpm nsis alien openvas=9.0.3
-sudo openvasmd --create-user amadmin
-sudo openvasmd --user=amadmin --new-password=27d55284-90c8-4cc6-9a3e-01763bdab69a
-sudo openvasmd --rebuild --progress
-
-cd /home/amadmin/box4s
-cd OpenVAS
-sudo cp * / -R
-
-sudo apt install -y zlib1g-dev libxml2-dev libxslt1-dev # dependencies vulnwhisperer
-
-# Install VulnWhisperer
-waitForNet
-sudo apt-get install -y virtualenv python-pip python3-pip
-cd /opt/
-waitForNet
-git clone https://github.com/box4s/VulnWhisperer.git
-cd VulnWhisperer/
-pip install -r requirements.txt
-python setup.py install
 
 waitForNet
 sudo apt -y install openjdk-8-jre apt-transport-https # at least logstash needs it

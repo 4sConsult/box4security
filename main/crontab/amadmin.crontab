@@ -8,4 +8,4 @@ MAILTO=box@4sconsult.de
 @daily $HOME/.local/bin/curator --config ~/curator.yml ~/actions.yml
 
 # Score calculation
-*/5 * * * * $BASEDIR/$GITDIR/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1
+*/15 * * * * $BASEDIR/$GITDIR/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1
