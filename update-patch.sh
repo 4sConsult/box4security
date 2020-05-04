@@ -9,8 +9,8 @@ set -e
 # Updates hier einfügen #
 
 # Force remove FetchQC alembic in favor of Web App alembic
-PGPASSWORD=zgJnwauCAsHrR6JB psql -h localhost -U postgres box4S_db -c "DROP TABLE IF EXISTS alembic_version;"
 
+PGPASSWORD=zgJnwauCAsHrR6JB psql -h localhost -U postgres box4S_db -c "DROP TABLE IF EXISTS alembic_version;"
 # Delete old index with possibly wrong data. Lets start clean!
 cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh

@@ -1,18 +1,6 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [x.x.x](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/x.x.x) - 2020-xx-xx
-
-### Added
-
-### Changed
-
-### Fixed
-
-### Deprecated
-
-### Removed
-
 ## [1.8.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.0) - 2020-04-29
 
 ### Added
