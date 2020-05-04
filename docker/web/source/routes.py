@@ -198,15 +198,30 @@ def authenticate():
         # Perform regex matching on the original url to determine resource:
         if re.match(r'^/kibana.*$', original_uri):
             # URI starts with /kibana
-            # Allow Super Admins
-            if "Super Admin" in [a.name for a in current_user.roles]:
-                return "", 200
-            # Allow any other Dashboard Role
-            elif not set(['Startseite', 'Dashboards-Master', 'SIEM', 'Schwachstellen', 'Netzwerk']).isdisjoint([a.name for a in current_user.roles]):
-                return "", 200
-            # Requirements not met => Deny.
+            # Check if this is a dashboard queried or another resource:
+            dashboard = list(filter(lambda d: d.url == original_uri, Dashboards))
+            if dashboard:
+                # Since dashboard urls are unique
+                # this is a list of 1 item so we make it an object
+                dashboard = dashboard[0]
+                # Check if current user is permitted
+                if not set(['Super Admin', 'Dashboards-Master', dashboard.role]).isdisjoint([a.name for a in current_user.roles]):
+                    # User is Super Admin or has the required dashboard role
+                    return "", 200
+                else:
+                    # User is not permitted to see request this dashbaord
+                    abort(403)
             else:
-                abort(403)
+                # Another resource, allow.
+                # Allow Super Admins
+                if "Super Admin" in [a.name for a in current_user.roles]:
+                    return "", 200
+                # Allow any other Dashboard Role
+                elif not set(['Startseite', 'Dashboards-Master', 'SIEM', 'Schwachstellen', 'Netzwerk']).isdisjoint([a.name for a in current_user.roles]):
+                    return "", 200
+                # Requirements not met => Deny.
+                else:
+                    abort(403)
     else:
         abort(401)
 
