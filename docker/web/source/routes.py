@@ -1,3 +1,4 @@
+"""Module to handle all webapp routes."""
 from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.models import User, Role
@@ -9,6 +10,7 @@ from flask_user import login_required, current_user, roles_required
 from flask_mail import Message
 from source.forms import AddUserForm
 import os
+import re
 import string
 import secrets
 
@@ -184,6 +186,29 @@ def updatelogdl():
     except Exception:
         return "", 501
 
+
+@app.route('/auth')
+def authenticate():
+    """Authenticate against the webapp."""
+    original_uri = request.headers.get('X-Original-URI')
+    # Check if user is authenticated and active:
+    if current_user.is_authenticated:
+        if not current_user.active:
+            abort(403)
+        # Perform regex matching on the original url to determine resource:
+        if re.match(r'^/kibana.*$', original_uri):
+            # URI starts with /kibana
+            # Allow Super Admins
+            if "Super Admin" in [a.name for a in current_user.roles]:
+                return "", 200
+            # Allow any other Dashboard Role
+            elif not set(['Startseite', 'Dashboards-Master', 'SIEM', 'Schwachstellen', 'Netzwerk']).isdisjoint([a.name for a in current_user.roles]):
+                return "", 200
+            # Requirements not met => Deny.
+            else:
+                abort(403)
+    else:
+        abort(401)
 
 # must be the last one (catchall)
 # let variable r hold the path
