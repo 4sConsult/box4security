@@ -105,7 +105,7 @@ echo "### Installing apt-fast"
 # Lets install all dependencies
 waitForNet
 echo "### Installing all dependencies"
-sudo apt install -y curl python python-pip python3 python3-pip git git-lfs openconnect jq
+sudo apt-fast install -y curl python python-pip python3 python3-pip git git-lfs openconnect jq
 git lfs install
 
 # Fetch all TAGS as names
