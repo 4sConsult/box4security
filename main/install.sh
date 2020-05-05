@@ -133,7 +133,7 @@ sudo touch /var/log/box4s/update.log
 # Remove services, that might be present, but are not needed
 echo "### Removing some services"
 sudo systemctl disable apache2 nginx systemd-resolved
-sudo systemctl stop apache2 nginx systemd-resolved
+sudo systemctl stop systemd-resolved
 sudo apt-fast purge -y apache2 nginx
 
 # Lets install apt-fast for quick package installation
