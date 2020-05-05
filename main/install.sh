@@ -121,16 +121,16 @@ echo "10.30.5.4 gitlab.am-gmbh.de" >> /etc/hosts
 echo "10.30.5.4 docker-registry.am-gmbh.de" >> /etc/hosts
 touch /etc/systemd/system/vpn.service
 echo "$VPNSERVICE" >> /etc/systemd/system/vpn.service
-chmod 755 /etc/systemd/system/vpn.service
-systemctl daemon-reload
-systemctl enable vpn.service
-systemctl start vpn.service
+sudo chmod 755 /etc/systemd/system/vpn.service
+sudo systemctl daemon-reload
+sudo systemctl enable vpn.service
+sudo systemctl start vpn.service
 
 echo "### Setting up the environment"
 # Create the user 'amadmin' only if he does not exist
 # The used password is known to the whole dev-team
-id -u amadmin &>/dev/null || useradd -m -p '$1$6FDIJC1B$g5bKC2Rfn5ad5Q3btK0Ud0' -s /bin/bash amadmin
-usermod -aG sudo amadmin
+id -u amadmin &>/dev/null || sudo useradd -m -p '$1$6FDIJC1B$g5bKC2Rfn5ad5Q3btK0Ud0' -s /bin/bash amadmin
+sudo usermod -aG sudo amadmin
 echo "amadmin ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
 
 # Create the /data directory if it does not exist and make it readable
