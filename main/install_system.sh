@@ -36,7 +36,7 @@ function banner {
 }
 
 # Do we have root?
-function fuGOT_ROOT {
+function gotRoot {
   echo
   echo -n "### Checking for root: "
   if [ "$(whoami)" != "root" ];
