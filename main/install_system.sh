@@ -7,6 +7,34 @@ if [[ ! -w $LOG_FILE ]]; then
   LOG_FILE="/home/amadmin/installScript.log"
 fi
 
+export DEBIAN_FRONTEND=noninteractive
+
+##################################################
+#                                                #
+#                   Functions                    #
+#                                                #
+##################################################
+
+# This needs toilet to be installed
+function banner {
+  toilet -f ivrit "$1"
+}
+
+# Do we have root?
+function fuGOT_ROOT {
+  echo
+  echo -n "### Checking for root: "
+  if [ "$(whoami)" != "root" ];
+    then
+      echo "[ NOT OK ]"
+      echo "### Please run as root."
+      echo "### Example: sudo $0"
+      exit
+    else
+      echo "[ OK ]"
+  fi
+}
+
 function testNet() {
   # Returns 0 for successful internet connection and dns resolution, 1 else
   ping -q -c 1 -W 1 $1 >/dev/null;
@@ -22,6 +50,13 @@ function waitForNet() {
     sleep 15s
   done
 }
+
+
+##################################################
+#                                                #
+#                  Dependencies                  #
+#                                                #
+##################################################
 
 waitForNet
 sudo apt install -y curl python python-pip python3 python3-pip git git-lfs openconnect jq
