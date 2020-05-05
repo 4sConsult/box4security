@@ -2,9 +2,21 @@
 
 # Es muss eine Disk im Installer auf /data angelegt werden
 # Der User amadmin muss eingerichtet und verwendet werden.
+
+# Log file to use
 LOG_FILE="/var/log/installScript.log"
 if [[ ! -w $LOG_FILE ]]; then
   LOG_FILE="/home/amadmin/installScript.log"
+fi
+
+export DEBIAN_FRONTEND=noninteractive
+
+# If the reboot should be skipped, skip it!
+if [[ "$*" == *skip-reboot* ]]
+then
+  REBOOT=false
+else
+  REBOOT=true
 fi
 
 # Little help text to display if something goes wrong
@@ -66,55 +78,36 @@ function waitForNet() {
   done
 }
 
-function fuCHECKPACKAGES {
-  export DEBIAN_FRONTEND=noninteractive
-  # Make sure dependencies for apt-fast are installed
-  myCURL=$(which curl)
-  myWGET=$(which wget)
-  mySUDO=$(which sudo)
-  if [ "$myCURL" == "" ] || [ "$myWGET" == "" ] || [ "$mySUDO" == "" ]
-    then
-      echo "### Installing deps for apt-fast"
-      apt -y update
-      apt -y install curl wget sudo
-  fi
-  echo "### Installing apt-fast"
-  /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
-  echo -n "### Checking for installer dependencies: "
-  local myPACKAGES="$1"
-  for myDEPS in $myPACKAGES;
-    do
-      myOK=$(dpkg -s $myDEPS 2>&1 | grep -w ok | awk '{ print $3 }' | head -n 1)
-      if [ "$myOK" != "ok" ];
-        then
-          echo "[ NOW INSTALLING ]"
-          apt-fast update -y
-          apt-fast install -y $myPACKAGES
-          break
-      fi
-  done
-  if [ "$myOK" = "ok" ];
-    then
-      echo "[ OK ]"
-  fi
-}
-
-
 ##################################################
 #                                                #
 # Dependencies                                   #
 #                                                #
 ##################################################
 
+# Lets make sure some basic tools are available
+CURL=$(which curl)
+WGET=$(which wget)
+SUDO=$(which sudo)
+TOILET=$(which toilet)
+if [ "$CURL" == "" ] || [ "$WGET" == "" ] || [ "$SUDO" == "" ] || [ "$TOILET" == "" ]
+  then
+    waitForNet
+    echo "### Installing deps for apt-fast"
+    apt -y update
+    apt -y install curl wget sudo toilet
+fi
+
+# Lets install apt-fast for quick package installation
 waitForNet
+echo "### Installing apt-fast"
+/bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
+
+# Lets install all dependencies
+waitForNet
+echo "### Installing all dependencies"
 sudo apt install -y curl python python-pip python3 python3-pip git git-lfs openconnect jq
 git lfs install
-if [[ "$*" == *skip-reboot* ]]
-then
-  REBOOT=false
-else
-  REBOOT=true
-fi
+
 # Fetch all TAGS as names
 waitForNet gitlab.am-gmbh.de
 mapfile -t TAGS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r .[].name)
