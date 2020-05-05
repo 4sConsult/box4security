@@ -431,7 +431,8 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 
 toilet -f ivrit 'Ready!' | boxes -d cat -a hc -p h8 | lolcat
 
-echo "### Continue to update the tools"
+echo "### Continue cleaning up and updating the tools"
+sudo apt-fast autoremove -y
 # Lets update both openvas and suricata
 sudo docker exec suricata /root/scripts/update.sh > /dev/null
 sudo docker exec openvas /root/update.sh > /dev/null
