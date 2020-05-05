@@ -44,6 +44,18 @@ ExecStart=/bin/sh -c 'echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on
 WantedBy=multi-user.target
 "
 
+# Are we root?
+echo -n "### Checking for root: "
+if [ "$(whoami)" != "root" ];
+  then
+    echo "[ NOT OK ]"
+    echo "### Please run as root."
+    echo "$HELP"
+    exit
+  else
+    echo "[ OK ]"
+fi
+
 ##################################################
 #                                                #
 # Functions                                      #
@@ -53,21 +65,6 @@ WantedBy=multi-user.target
 # This needs toilet to be installed
 function banner {
   toilet -f ivrit "$1"
-}
-
-# Do we have root?
-function gotRoot {
-  echo
-  echo -n "### Checking for root: "
-  if [ "$(whoami)" != "root" ];
-    then
-      echo "[ NOT OK ]"
-      echo "### Please run as root."
-      echo "$HELP"
-      exit
-    else
-      echo "[ OK ]"
-  fi
 }
 
 function testNet() {
