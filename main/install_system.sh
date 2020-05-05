@@ -1,12 +1,9 @@
 #!/bin/bash
 
-# Es muss eine Disk im Installer auf /data angelegt werden
-# Der User amadmin muss eingerichtet und verwendet werden.
-
 # Log file to use
-LOG_FILE="/var/log/installScript.log"
+LOG_FILE="/var/log/installscript.log"
 if [[ ! -w $LOG_FILE ]]; then
-  LOG_FILE="/home/amadmin/installScript.log"
+  LOG_FILE="/home/amadmin/installscript.log"
 fi
 
 # Please no interaction
