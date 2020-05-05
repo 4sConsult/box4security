@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 container_name=$1
 shift
 timeout=$1
