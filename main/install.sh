@@ -15,12 +15,14 @@ HELP="\
 ###########################################
 ### Box4s Installer                     ###
 ###########################################
+
 Disclaimer:
 This script will install the Box4Security on this system.
 By running the script you know what you are doing:
 1. Your box will get new packages
 2. A new folder called '/data' will be created in your root directory
 3. A new sudo user called 'amadmin' will be created on this system
+
 ########################################
 Usage:
         sudo $0
@@ -44,18 +46,6 @@ ExecStart=/bin/sh -c 'echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on
 [Install]
 WantedBy=multi-user.target
 "
-
-# Are we root?
-echo -n "### Checking for root: "
-if [ "$(whoami)" != "root" ];
-  then
-    echo "[ NOT OK ]"
-    echo "### Please run as root."
-    echo "$HELP"
-    exit
-  else
-    echo "[ OK ]"
-fi
 
 ##################################################
 #                                                #
@@ -84,6 +74,11 @@ function waitForNet() {
   done
 }
 
+function printHelp() {
+  toilet -f ivrit 'Box4Security' | boxes -d cat -a hc -p h8 | lolcat
+  echo "$HELP"
+}
+
 # Lets make sure some basic tools are available
 CURL=$(which curl)
 WGET=$(which wget)
@@ -103,6 +98,19 @@ fi
 #                                                #
 ##################################################
 banner "Installing dependencies ..."
+
+# Are we root?
+echo -n "### Checking for root: "
+if [ "$(whoami)" != "root" ];
+  then
+    echo "[ NOT OK ]"
+    echo "### Please run as root."
+    printHelp
+    exit
+  else
+    echo "[ OK ]"
+fi
+
 
 echo "### Setting up VPN-Connection"
 echo "10.30.5.4 gitlab.am-gmbh.de" >> /etc/hosts
@@ -357,11 +365,11 @@ sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 
 echo "### Make scripts executable"
-chmod +x -R $BASEDIR$GITDIR/scripts
+chmod +x -R /home/amadmin/box4s/scripts
 
 ##################################################
 #                                                #
-# Box4s s tart                                   #
+# Box4s start                                    #
 #                                                #
 ##################################################
 banner "Start Box4Security ..."
