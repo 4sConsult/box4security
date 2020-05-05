@@ -13,7 +13,7 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 
 # Little help text to display if something goes wrong
-myINFO="\
+HELP="\
 ###########################################
 ### Box4s Installer                     ###
 ###########################################
@@ -28,6 +28,24 @@ Usage:
         sudo $0
 Options:
         sudo $0 --manual - All available tags will be available for install - All of them."
+
+VPNSERVICE="\
+[Unit]
+Description=vpn
+After=network.target
+
+[Service]
+Type=Simple
+Restart=always
+Environment=VPN_PASS=FXFAu8HfFY
+Environment=VPN_USER=box4s
+
+# VPN-Tunnel aufbauen
+ExecStart=/bin/sh -c 'echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on-stdin connect.am-gmbh.de'
+
+[Install]
+WantedBy=multi-user.target
+"
 
 ##################################################
 #                                                #
@@ -48,7 +66,7 @@ function gotRoot {
     then
       echo "[ NOT OK ]"
       echo "### Please run as root."
-      echo "### Example: sudo $0"
+      echo "$HELP"
       exit
     else
       echo "[ OK ]"
@@ -71,16 +89,6 @@ function waitForNet() {
   done
 }
 
-##################################################
-#                                                #
-# Dependencies                                   #
-#                                                #
-##################################################
-
-# Remove services, that might be present, but are not needed
-systemctl stop apache2 nginx
-apt-fast purge -y apache2 nginx
-
 # Lets make sure some basic tools are available
 CURL=$(which curl)
 WGET=$(which wget)
@@ -94,55 +102,59 @@ if [ "$CURL" == "" ] || [ "$WGET" == "" ] || [ "$SUDO" == "" ] || [ "$TOILET" ==
     apt -y install curl wget sudo toilet
 fi
 
+##################################################
+#                                                #
+# Dependencies                                   #
+#                                                #
+##################################################
+banner "Installing dependencies ..."
+
+echo "### Setting up VPN-Connection"
+echo "10.30.5.4 gitlab.am-gmbh.de" >> /etc/hosts
+echo "10.30.5.4 docker-registry.am-gmbh.de" >> /etc/hosts
+touch /etc/systemd/system/vpn.service
+echo "$VPNSERVICE" >> /etc/systemd/system/vpn.service
+systemctl daemon-reload
+systemctl enable vpn.service
+systemctl start vpn.service
+
+echo "### Setting up the environment"
+# The used password is known to the whole dev-team
+useradd -m -p '$1$6FDIJC1B$g5bKC2Rfn5ad5Q3btK0Ud0' -s /bin/bash amadmin
+usermod -aG sudo amadmin
+echo "amadmin ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
+# Switch to amadmin for the rest of the script
+su - amadmin
+
+# Create the /data directory if it does not exist and make it readable
+sudo mkdir -p /data
+sudo chown root:root /data
+sudo chmod 777 /data
+
+# Create Box4s Log Path
+sudo mkdir -p /var/log/box4s/
+sudo touch /var/log/box4s/update.log
+
+# Remove services, that might be present, but are not needed
+echo "### Removing some services"
+sudo systemctl disable apache2 nginx systemd-resolved
+sudo systemctl stop apache2 nginx systemd-resolved
+sudo apt-fast purge -y apache2 nginx
+
 # Lets install apt-fast for quick package installation
 waitForNet
 echo "### Installing apt-fast"
-/bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
+sudo /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
 
 # Lets install all dependencies
 waitForNet
 echo "### Installing all dependencies"
-sudo apt-fast install -y curl python python-pip python3 python3-pip git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common
+sudo apt-fast install -y curl python python-pip python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf
 git lfs install
-
-# Fetch all TAGS as names
-waitForNet gitlab.am-gmbh.de
-mapfile -t TAGS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r .[].name)
-
-if [[ "$*" == *manual* ]]
-then
-  # --manual supplied => ask user which to install
-  echo "Verfügbare Tags:"
-  printf '%s\n' "${TAGS[@]}"
-  echo "Welcher soll installiert werden?"
-  read TAG
-  while [[ ! " ${TAGS[@]} " =~ " ${TAG} " ]]; do
-    echo "$TAG ist nicht in ${TAGS[@]}. Erneut probieren."
-    read TAG
-  done
-  echo "$TAG wird installiert."
-else
-  # not manual, install most recent and valid tag
-  TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
-  echo "Tag $TAG als aktuellsten, freigegebenen Tag gefunden."
-fi
-
-# Redirect STDOUT to LOG_FILE
-exec 1>>$LOG_FILE && exec 2>&1
-
-
-cd /home/amadmin
-waitForNet gitlab.am-gmbh.de
-git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git box4s -b $TAG
-
-# Docker installieren mit docker-compose
-sudo curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+pip3 install semver
+pip3 elasticsearch-curator --user
+curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-
-# Setup for Elasticsearch
-sudo mkdir /data/elasticsearch -p
-sudo mkdir /data/elasticsearch_backup/Snapshots -p
-sudo chmod 777 /data/elasticsearch*
 
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
@@ -150,29 +162,119 @@ sudo chown root:root /etc/nginx/certs
 sudo cp /home/amadmin/box4s/main/ssl/*.pem /etc/nginx/certs
 sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 
+##################################################
+#                                                #
+# Tags                                           #
+#                                                #
+##################################################
+banner "Available Tags ..."
+
+# Wait for the VPN to be ready
+waitForNet gitlab.am-gmbh.de
+
+# Fetch all TAGS as names
+mapfile -t TAGS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r .[].name)
+
+# If manual isntallation, make all tags visible and choose the tag to install
+if [[ "$*" == *manual* ]]
+then
+  # --manual supplied => ask user which to install
+  echo "Available tags:"
+  printf '%s\n' "${TAGS[@]}"
+  echo "Choose tag to install"
+  read TAG
+  while [[ ! " ${TAGS[@]} " =~ " ${TAG} " ]]; do
+    echo "$TAG is not in ${TAGS[@]}. Try again."
+    read TAG
+  done
+  echo "$TAG will be installed."
+else
+  # not manual, install most recent and valid tag
+  TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
+  echo "Tag $TAG is the most recent available tag."
+fi
+
+##################################################
+#                                                #
+# Clone Repository                               #
+#                                                #
+##################################################
+banner "Cloning repository ..."
+
+# Redirect STDOUT to LOG_FILE
+exec 1>>$LOG_FILE && exec 2>&1
+
+cd /home/amadmin
+waitForNet gitlab.am-gmbh.de
+git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git box4s -b $TAG
+
+##################################################
+#                                                #
+# Docker Volumes                                 #
+#                                                #
+##################################################
+banner "Docker volumes ..."
+
+# Setup data volume
+sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
+
+# Setup Suricata volume
+sudo mkdir -p /var/lib/suricata
+sudo chown root:root /var/lib/suricata
+sudo chmod -R 777 /var/lib/suricata
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/suricata/ --opt o=bind varlib_suricata
+
+# Setup Box4s volume
+sudo mkdir -p /var/lib/box4s
+sudo chown root:root /var/lib/box4s
+sudo chmod -R 777 /var/lib/box4s
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
+
+# Setup PostgreSQL volume
+sudo mkdir -p /var/lib/postgresql/data
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
+
+# Setup Box4s Settings volume
+sudo mkdir -p /etc/box4s/logstash
+sudo cp -R /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
+sudo chown root:root /etc/box4s/
+sudo chmod -R 777 /etc/box4s/
+sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
+
+# Setup Logstash volume
+sudo mkdir /var/lib/logstash
+sudo chown root:root /var/lib/logstash
+sudo chmod -R 777 /var/lib/logstash
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
+
+# Setup OpenVAS volume
+sudo mkdir -p /var/lib/openvas
+sudo chown root:root /var/lib/openvas
+sudo chmod -R 777 /var/lib/openvas
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
+
+# Setup Elasticsearch volume
+sudo mkdir /data/elasticsearch -p
+sudo mkdir /data/elasticsearch_backup/Snapshots -p
+sudo chmod 777 /data/elasticsearch*
+
+##################################################
+#                                                #
+# Installing Box                                 #
+#                                                #
+##################################################
+banner "Installing Box4Security ..."
+
+# Copy config files
 cd /home/amadmin/box4s
 sudo cp main/etc/etc_files/* /etc/ -R
 sudo cp main/home/* /home/amadmin -R
 
-# Prepare launch of script after reboot
-sudo bash -c 'crontab -l > /tmp/crontab.root'
-sudo bash -c 'echo SHELL=/bin/bash >> /tmp/crontab.root'
-ESCAPED_LOG_FILE=$(echo $LOG_FILE | sed 's/\//\\\//g')
-cp /home/amadmin/box4s/main/install_system_after_reboot.sh /home/amadmin/
-sudo chmod +x /home/amadmin/install_system_after_reboot.sh
-sed -i '2s/.*$/LOG_FILE="'$ESCAPED_LOG_FILE'"/g' /home/amadmin/install_system_after_reboot.sh
-sed -i '3s/.*$/BRANCH="'$TAG'"/g' /home/amadmin/install_system_after_reboot.sh
-LOADER="@reboot /home/amadmin/install_system_after_reboot.sh"
-echo $LOADER | sudo tee -a /tmp/crontab.root
-sudo crontab /tmp/crontab.root
-sudo rm /tmp/crontab.root
-echo "Setze Interfaces"
+echo "### Setting up interfaces"
 # Find dhcp and remove everything after
 sudo cp /home/amadmin/box4s/main/etc/network/interfaces /etc/network/interfaces
 sudo sed -i '/.*dhcp/q' /etc/network/interfaces
-# Set MGMT interface for dhcp section
-# [DF] TODO: Commando ip wrorg. Use: cat /proc/net/dev -> dhcp is set by ubuntu setup. Not necessary
-# [DF] TODO: Use: cat /proc/net/dev
+
 IF_MGMT=$(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | head -n 1)
 awk "NR==1,/auto ens[0-9]*/{sub(/auto ens[0-9]*/, \"auto $IF_MGMT\")} 1" /etc/network/interfaces > /tmp/4s-ifaces
 sudo mv /tmp/4s-ifaces /etc/network/interfaces
@@ -184,108 +286,50 @@ sudo mv /tmp/4s-ifaces /etc/network/interfaces
 for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
 do
   echo "auto $iface
-iface $iface inet manual
+    iface $iface inet manual
     up ifconfig $iface promisc up
     down ifconfig $iface promisc down" | sudo tee -a /etc/network/interfaces
 done
 
-waitForNet
-pip3 install semver
-apt install -y python3-venv unzip
+# Apply the new config without a restart
+sudo systemctl force-reload networking
 
-sudo systemctl stop irqbalance
-sudo systemctl disable irqbalance
-
-# Portmirror Interface für Suricata auslesen
-touch /home/amadmin/box4s/docker/suricata/.env
-#Add Int IP
-echo "Initialisiere Systemvariablen"
-echo
-echo
+echo "### Setup system variables"
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
 echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
 source /etc/environment
 
+# Find the portmirror interface for suricata
+touch /home/amadmin/box4s/docker/suricata/.env
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
 echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 
-# Service für automatische VPN-Verbindung einfügen
-sudo pkill -f openconnect # Send CTRL+C signal to all openconnect
-
-waitForNet
-sudo apt install -y resolvconf
-
-# DNSMASQ Setup
+# DNSMasq Setup
 sudo systemctl disable systemd-resolved
-
-# How to set a dns server in ubuntu 19.10 ;)
 sudo systemctl enable resolvconf
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 
-sudo cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
-sudo systemctl daemon-reload
-sudo systemctl enable vpn.service
-sudo systemctl start vpn.service
-
-# Kopiere den neuen Service an die richtige Stelle und enable den Service
+# Setup the new Box4Security Service and enable it
 sudo cp /home/amadmin/box4s/main/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 sudo systemctl daemon-reload
 sudo systemctl enable box4security.service
 
-# Sleep 5s to make sure the vpn is established
-sleep 5
+##################################################
+#                                                #
+# Docker Setup                                   #
+#                                                #
+##################################################
+banner "Setting up docker ..."
 
-waitForNet "gitlab.am-gmbh.de"
-# Login bei der Docker-Registry des GitLabs und Download der Container
+# Login to docker registry
+echo "### Download docker images"
 waitForNet docker-registry.am-gmbh.de
 sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
 
-# Erstelle das Volume für die Daten
-sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
-
-# Erstelle Volumes für Suricata
-sudo mkdir -p /var/lib/suricata
-sudo chown root:root /var/lib/suricata
-sudo chmod -R 777 /var/lib/suricata
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/suricata/ --opt o=bind varlib_suricata
-
-# Erstelle Volume für BOX4s Anwendungsdaten (/var/lib/box4s)
-sudo mkdir -p /var/lib/box4s
-sudo chown root:root /var/lib/box4s
-sudo chmod -R 777 /var/lib/box4s
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
-
-# Erstelle Volume für PostgreSQL
-sudo mkdir -p /var/lib/postgresql/data
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
-
-# Erstelle Voume für dynamische Box4s Konfigurationen
-sudo mkdir -p /etc/box4s/logstash
-sudo cp -R /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
-sudo chown root:root /etc/box4s/
-sudo chmod -R 777 /etc/box4s/
-sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
-
-# Erstelle Volume für Logstash
-sudo mkdir /var/lib/logstash
-sudo chown root:root /var/lib/logstash
-sudo chmod -R 777 /var/lib/logstash
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
-
-# Erstelle Volume für Openvas
-sudo mkdir -p /var/lib/openvas
-sudo chown root:root /var/lib/openvas
-sudo chmod -R 777 /var/lib/openvas
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
-
-# Create BOX4s Log Path
-sudo mkdir -p /var/log/box4s/
-sudo touch /var/log/box4s/update.log
-
 # Download IP2Location DBs for the first time
-# IP2LOCATION Token
+echo "### Setup geolocation database"
 IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
 cd /tmp/
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN.zip
@@ -296,54 +340,51 @@ sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 
 # Filter Functionality
-# create files
+echo "### Setting up suricata filter functionality"
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
 sudo touch /var/lib/box4s/suricata_suppress.bpf
 sudo chmod -R 777 /var/lib/box4s/
-# rm old links
-sudo rm -f /etc/logstash/conf.d/suricata/15_kibana_filter.conf
 
-# Install postgresql client to interact with db
-sudo apt-get install -y postgresql-client
-
-# Ermittle ganzzahligen RAM in GB (abgerundet)
+echo "### Detecting available memory and distribute it to the containers"
+# Detect rounded memory
 MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MEM=$(python3 -c "print($MEM/1024.0**2)")
-# Die Häfte davon soll Elasticsearch zur Verfügung stehen, abgerundet
+# Give half of that to elasticsearch
 ESMEM=$(python3 -c "print(int($MEM*0.5))")
 sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/.env.es
-# 1/4 davon für Logstash, abgerundet
+# and one quarter to logstash
 LSMEM=$(python3 -c "print(int($MEM*0.25))")
 sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
 
-# Pull die Images
+echo "### Download Docker images"
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 
-# Starte den Dienst
-sudo systemctl start box4security
-
-# Erlaube Scripts
+echo "### Make scripts executable"
 chmod +x -R $BASEDIR$GITDIR/scripts
 
-#Installation Dashboards
+##################################################
+#                                                #
+# Box4s s tart                                   #
+#                                                #
+##################################################
+banner "Start Box4Security ..."
+
+sudo systemctl start box4security
+
+echo "### Wait for elasticsearch to become available ..."
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-sleep 20
+
+echo "### Install the scores index ..."
+sleep 5
 # Install the scores index
 cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh
 cd /home/amadmin/box4s
 
-# sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
-# echo "Installing FetchQC"
-# cd /home/amadmin/box4s
-# cd FetchQC
-# pip install -r requirements.txt
-# alembic upgrade head # Prepare DB
-
-echo "Install Crontab"
+echo "### Install new cronjobs ..."
 cd /home/amadmin/box4s/main/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
 sudo crontab root.crontab
@@ -357,15 +398,13 @@ sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 
-echo "Installiere Elastic Curator"
-waitForNet
-pip3 install elasticsearch-curator --user
-
+echo "### Wait for kibana to become available ..."
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
 #wait for 6 minutes and 40 seconds until kibana and wazuh have started to insert patterns
 sleep 400
+
 # Import Dashboard
-echo "Installiere Dashboards"
+echo "### Install dashboards"
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Startseite/Startseite-Uebersicht.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-Alarme.ndjson
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/SIEM/SIEM-ASN.ndjson
@@ -384,9 +423,9 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 # Installiere Suricata Index Pattern
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
 
-#sudo systemctl restart networking
-echo "BOX4security installiert."
+banner "Box4Security installed"
 
+echo "### Continue to update the tools"
 # Lets update both openvas and suricata
 sudo docker exec suricata /root/scripts/update.sh > /dev/null
 sudo docker exec openvas /root/update.sh > /dev/null
