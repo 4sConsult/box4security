@@ -1,9 +1,8 @@
 #!/bin/bash
-
 # Log file to use
-LOG_FILE="/var/log/installscript.log"
+LOG_FILE="/var/log/installscript"
 if [[ ! -w $LOG_FILE ]]; then
-  LOG_FILE="/home/amadmin/installscript.log"
+  LOG_FILE="/home/amadmin/installscript"
 fi
 
 # Please no interaction
@@ -11,6 +10,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Little help text to display if something goes wrong
 HELP="\
+
+
 ###########################################
 ### Box4s Installer                     ###
 ###########################################
@@ -108,17 +109,17 @@ echo "10.30.5.4 gitlab.am-gmbh.de" >> /etc/hosts
 echo "10.30.5.4 docker-registry.am-gmbh.de" >> /etc/hosts
 touch /etc/systemd/system/vpn.service
 echo "$VPNSERVICE" >> /etc/systemd/system/vpn.service
+chmod 755 /etc/systemd/system/vpn.service
 systemctl daemon-reload
 systemctl enable vpn.service
 systemctl start vpn.service
 
 echo "### Setting up the environment"
+# Create the user 'amadmin' only if he does not exist
 # The used password is known to the whole dev-team
-useradd -m -p '$1$6FDIJC1B$g5bKC2Rfn5ad5Q3btK0Ud0' -s /bin/bash amadmin
+id -u amadmin &>/dev/null || useradd -m -p '$1$6FDIJC1B$g5bKC2Rfn5ad5Q3btK0Ud0' -s /bin/bash amadmin
 usermod -aG sudo amadmin
 echo "amadmin ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
-# Switch to amadmin for the rest of the script
-su - amadmin
 
 # Create the /data directory if it does not exist and make it readable
 sudo mkdir -p /data
@@ -143,10 +144,9 @@ sudo /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fas
 # Lets install all dependencies
 waitForNet
 echo "### Installing all dependencies"
-sudo apt-fast install -y curl python python-pip python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf
+sudo apt-fast install -y curl python python-pip python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf figlet boxes lolcat
 git lfs install
-pip3 install semver
-pip3 elasticsearch-curator --user
+pip3 install semver elasticsearch-curator --user
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
@@ -195,8 +195,9 @@ fi
 ##################################################
 banner "Cloning repository ..."
 
-# Redirect STDOUT to LOG_FILE
-exec 1>>$LOG_FILE && exec 2>&1
+#exec 1>>$LOG_FILE && exec 2>&1
+exec 2> >(tee "$LOG_FILE.err")
+exec > >(tee "$LOG_FILE.log")
 
 cd /home/amadmin
 waitForNet gitlab.am-gmbh.de
@@ -417,7 +418,7 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 # Installiere Suricata Index Pattern
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
 
-banner "Box4Security installed"
+toilet -f ivrit 'Ready!' | boxes -d cat -a hc -p h8 | lolcat
 
 echo "### Continue to update the tools"
 # Lets update both openvas and suricata
