@@ -94,7 +94,7 @@ if [ "$CURL" == "" ] || [ "$WGET" == "" ] || [ "$SUDO" == "" ] || [ "$TOILET" ==
     waitForNet
     echo "### Installing deps for apt-fast"
     apt -y update
-    apt -y install curl wget sudo toilet
+    apt -y install curl wget sudo toilet figlet
 fi
 
 ##################################################
@@ -133,7 +133,6 @@ sudo touch /var/log/box4s/update.log
 # Remove services, that might be present, but are not needed
 echo "### Removing some services"
 sudo systemctl disable apache2 nginx systemd-resolved
-sudo systemctl stop systemd-resolved
 sudo apt-fast purge -y apache2 nginx
 
 # Lets install apt-fast for quick package installation
@@ -144,7 +143,7 @@ sudo /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fas
 # Lets install all dependencies
 waitForNet
 echo "### Installing all dependencies"
-sudo apt-fast install -y curl python python-pip python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf figlet boxes lolcat
+sudo apt-fast install -y curl python python-pip python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
 git lfs install
 pip3 install semver elasticsearch-curator --user
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
