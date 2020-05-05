@@ -51,6 +51,38 @@ function waitForNet() {
   done
 }
 
+function fuCHECKPACKAGES {
+  # Make sure dependencies for apt-fast are installed
+  myCURL=$(which curl)
+  myWGET=$(which wget)
+  mySUDO=$(which sudo)
+  if [ "$myCURL" == "" ] || [ "$myWGET" == "" ] || [ "$mySUDO" == "" ]
+    then
+      echo "### Installing deps for apt-fast"
+      apt -y update
+      apt -y install curl wget sudo
+  fi
+  echo "### Installing apt-fast"
+  /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
+  echo -n "### Checking for installer dependencies: "
+  local myPACKAGES="$1"
+  for myDEPS in $myPACKAGES;
+    do
+      myOK=$(dpkg -s $myDEPS 2>&1 | grep -w ok | awk '{ print $3 }' | head -n 1)
+      if [ "$myOK" != "ok" ];
+        then
+          echo "[ NOW INSTALLING ]"
+          apt-fast update -y
+          apt-fast install -y $myPACKAGES
+          break
+      fi
+  done
+  if [ "$myOK" = "ok" ];
+    then
+      echo "[ OK ]"
+  fi
+}
+
 
 ##################################################
 #                                                #
