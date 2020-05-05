@@ -7,8 +7,6 @@ if [[ ! -w $LOG_FILE ]]; then
   LOG_FILE="/home/amadmin/installScript.log"
 fi
 
-export DEBIAN_FRONTEND=noninteractive
-
 ##################################################
 #                                                #
 #                   Functions                    #
@@ -52,6 +50,7 @@ function waitForNet() {
 }
 
 function fuCHECKPACKAGES {
+  export DEBIAN_FRONTEND=noninteractive
   # Make sure dependencies for apt-fast are installed
   myCURL=$(which curl)
   myWGET=$(which wget)
