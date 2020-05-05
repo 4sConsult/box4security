@@ -7,9 +7,26 @@ if [[ ! -w $LOG_FILE ]]; then
   LOG_FILE="/home/amadmin/installScript.log"
 fi
 
+# Little help text to display if something goes wrong
+myINFO="\
+###########################################
+### Box4s Installer                     ###
+###########################################
+Disclaimer:
+This script will install the Box4Security on this system.
+By running the script you know what you are doing:
+1. Your box will get new packages
+2. A new folder called '/data' will be created in your root directory
+3. A new sudo user called 'amadmin' will be created on this system
+########################################
+Usage:
+        $0 --skip-reboot - Script will not reboot immediately after stage one. Manual reboot required.
+Example:
+        $0 --manual - All available tags will be available for install - All of them."
+
 ##################################################
 #                                                #
-#                   Functions                    #
+# Functions                                      #
 #                                                #
 ##################################################
 
@@ -85,7 +102,7 @@ function fuCHECKPACKAGES {
 
 ##################################################
 #                                                #
-#                  Dependencies                  #
+# Dependencies                                   #
 #                                                #
 ##################################################
 
