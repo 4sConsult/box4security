@@ -8,6 +8,10 @@ fi
 # Please no interaction
 export DEBIAN_FRONTEND=noninteractive
 
+# VPN Login
+VPN_PASS=FXFAu8HfFY
+VPN_USER=box4s
+
 # Little help text to display if something goes wrong
 HELP="\
 
@@ -35,7 +39,7 @@ Description=vpn
 After=network.target
 
 [Service]
-Type=Simple
+Type=simple
 Restart=always
 Environment=VPN_PASS=FXFAu8HfFY
 Environment=VPN_USER=box4s
@@ -97,7 +101,7 @@ fi
 # Dependencies                                   #
 #                                                #
 ##################################################
-banner "Installing dependencies ..."
+banner "Dependencies ..."
 
 # Are we root?
 echo -n "### Checking for root: "
@@ -138,15 +142,15 @@ sudo chmod 777 /data
 sudo mkdir -p /var/log/box4s/
 sudo touch /var/log/box4s/update.log
 
-# Remove services, that might be present, but are not needed
-echo "### Removing some services"
-sudo systemctl disable apache2 nginx systemd-resolved
-sudo apt-fast purge -y apache2 nginx
-
 # Lets install apt-fast for quick package installation
 waitForNet
 echo "### Installing apt-fast"
 sudo /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
+
+# Remove services, that might be present, but are not needed
+echo "### Removing some services"
+sudo systemctl disable apache2 nginx systemd-resolved
+sudo apt-fast remove --purge -y apache2 nginx
 
 # Lets install all dependencies
 waitForNet
@@ -168,7 +172,7 @@ sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 # Tags                                           #
 #                                                #
 ##################################################
-banner "Available Tags ..."
+banner "Tags ..."
 
 # Wait for the VPN to be ready
 waitForNet gitlab.am-gmbh.de
@@ -200,7 +204,7 @@ fi
 # Clone Repository                               #
 #                                                #
 ##################################################
-banner "Cloning repository ..."
+banner "Repository ..."
 
 #exec 1>>$LOG_FILE && exec 2>&1
 exec 2> >(tee "$LOG_FILE.err")
@@ -215,7 +219,7 @@ git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.
 # Docker Volumes                                 #
 #                                                #
 ##################################################
-banner "Docker volumes ..."
+banner "Volumes ..."
 
 # Setup data volume
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
@@ -265,7 +269,7 @@ sudo chmod 777 /data/elasticsearch*
 # Installing Box                                 #
 #                                                #
 ##################################################
-banner "Installing Box4Security ..."
+banner "Box4Security ..."
 
 # Copy config files
 cd /home/amadmin/box4s
@@ -323,7 +327,7 @@ sudo systemctl enable box4security.service
 # Docker Setup                                   #
 #                                                #
 ##################################################
-banner "Setting up docker ..."
+banner "Docker ..."
 
 # Login to docker registry
 echo "### Download docker images"
@@ -372,7 +376,7 @@ chmod +x -R /home/amadmin/box4s/scripts
 # Box4s start                                    #
 #                                                #
 ##################################################
-banner "Start Box4Security ..."
+banner "Starting ..."
 
 sudo systemctl start box4security
 
