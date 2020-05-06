@@ -55,7 +55,7 @@ def writeBPFFile():
 class BPF(Resource):
     """API Resource for a single BPF Rule."""
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def get(self, rule_id):
         """Get a single BPF Rule by id."""
         rule = models.BPFRule.query.get(rule_id)
@@ -64,17 +64,17 @@ class BPF(Resource):
         else:
             abort(404, message="BPF Rule with ID {} not found".format(rule_id))
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def post(self):
         """Deny updating BPF Rule."""
         abort(405, message="Cannot update or post directly to a rule ID.")
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def put(self):
         """Deny updating BPF Rule."""
         abort(405, message="Cannot update or post directly to a rule ID.")
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def delete(self, rule_id):
         """Delete a single BPF Rule by id."""
         rule = models.BPFRule.query.get(rule_id)
@@ -91,18 +91,18 @@ class BPF(Resource):
 class BPFs(Resource):
     """API Resource for a set of BPF Rules."""
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def get(self):
         """Return all BPF Rules."""
         rules = models.BPFRule.query.all()
         return models.BPFs.dump(rules)
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def post(self):
         """Implement a new BPF Rule by redirecting to PUT."""
         return self.put()
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def put(self):
         """Implement a new BPF Rule."""
         d = request.json
@@ -120,7 +120,7 @@ class BPFs(Resource):
         writeBPFFile()
         return models.BPF.dump(newRule)
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def delete(self):
         """Delete all BPF Rules from database."""
         models.BPFRule.query.delete()
@@ -132,7 +132,7 @@ class BPFs(Resource):
 class LSR(Resource):
     """API Resource for a single Logstash Rule."""
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def get(self, rule_id):
         """Get a single Logstash Rule by id."""
         rule = models.LogstashRule.query.get(rule_id)
@@ -141,17 +141,17 @@ class LSR(Resource):
         else:
             abort(404, message="Logstash Rule with ID {} not found".format(rule_id))
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def post(self):
         """Deny updating Logstash Rule."""
         abort(405, message="Cannot update or post directly to a rule ID.")
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def put(self):
         """Deny updating Logstash Rule."""
         abort(405, message="Cannot update or post directly to a rule ID.")
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def delete(self, rule_id):
         """Delete Logstash Rule by id."""
         rule = models.LogstashRule.query.get(rule_id)
@@ -168,18 +168,18 @@ class LSR(Resource):
 class LSRs(Resource):
     """API Resource for a set of Logstash Rules."""
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def get(self):
         """Return all Logstash Rules."""
         rules = models.LogstashRule.query.all()
         return models.LSRs.dump(rules)
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def post(self):
         """Implement new Logstash Rule by redirecting to PUT."""
         return self.put()
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def put(self):
         """Implement new Logstash Rule."""
         d = request.json
@@ -199,7 +199,7 @@ class LSRs(Resource):
         writeLSRFile()
         return models.LSR.dump(newRule)
 
-    @roles_required(['Super-Admin', 'Filter'])
+    @roles_required(['Super Admin', 'Filter'])
     def delete(self):
         """Delete all Logstash Rules from database."""
         models.LogstashRule.query.delete()
@@ -243,6 +243,8 @@ class AvailableReleases(Resource):
 
 
 class LaunchUpdate(Resource):
+    """Launch an update."""
+
     def __init__(self):
         """Register Parser and argument for endpoint.
 
@@ -252,7 +254,7 @@ class LaunchUpdate(Resource):
         self.parser.add_argument('target', type=str)
         self.args = self.parser.parse_args()
 
-    @roles_required(['Super-Admin', 'Updates'])
+    @roles_required(['Super Admin', 'Updates'])
     def post(self):
         """Launch update.sh."""
         # targetVersion = self.args['target']
@@ -261,8 +263,9 @@ class LaunchUpdate(Resource):
 
 
 class UpdateLog(Resource):
+    """API representation of the Update Log Endpoint."""
 
-    @roles_required(['Super-Admin', 'Updates'])
+    @roles_required(['Super Admin', 'Updates'])
     def get(self):
         """Return last 15 lines of updatelog file."""
         with open('/var/log/box4s/update.log', 'rb') as f:
@@ -271,6 +274,11 @@ class UpdateLog(Resource):
 
 
 class UpdateStatus(Resource):
+    """API representation of the update status.
+
+    Available options are getting, setting and deleting.
+    """
+
     def __init__(self):
         """Initialize Request Parser."""
         self.parser = reqparse.RequestParser()
@@ -327,6 +335,7 @@ class APIUser(Resource):
         return models.USR.dump(u)
 
     def post(self, user_id):
+        """Adding a User by POST not supported."""
         return {}, 501
 
     @roles_required(['Super Admin', 'User-Management'])
