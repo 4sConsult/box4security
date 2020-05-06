@@ -204,7 +204,20 @@ services:
       - "1515:1515"
       - "514:514/udp"
       - "55000:55000"
-
+  elastalert:
+    container_name: elastalert
+    image: "docker-registry.am-gmbh.de/it-security/b4s/elastalert:dev"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    build:
+      context: ./elastalert
+    restart: always
+    volumes:
+      - ./elastalert/rules:/opt/elastalert/rules
+    ports:
+      - 3030:3030
+      - 3333:3333
 volumes:
   # to persist data beyond container's life
   static_volume:
