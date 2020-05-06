@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Changed
 
 ### Fixed
+- Fehler behoben, bei dem der administrative Nutzer beim Anlegen eines weiteren Benutzers immer dessen Einladung erhielt, auch wenn dies nicht angefordert war.
 
 ### Deprecated
 
