@@ -9,13 +9,12 @@ set -e
 # Updates hier einfügen #
 
 # Stop des Services
-echo "Stopping BOX4s Service. Please wait."
+echo "Stopping BOX4s Service. The BOX4s service will automatically retart after the update is complete. Please wait."
 sudo systemctl stop box4security.service
 
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 
-# Install FetchQC Dependencies as Python3
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl restart box4security.service
