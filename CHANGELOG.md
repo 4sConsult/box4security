@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Changed
 
 ### Fixed
+- Bei fehlerhaften Updates wird nach dem Rollback nun der fehlererzeugende Update-Tag lokal gelöscht, um Hotfixes zu ermöglichen.
 
 ### Deprecated
 
