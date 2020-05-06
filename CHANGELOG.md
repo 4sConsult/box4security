@@ -1,17 +1,24 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [x.x.x](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/x.x.x) - 2020-xx-xx
+## [1.8.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/x.x.x) - 2020-05-13
 
 ### Added
+- Login-Auth-Provider durch WebApp-Login für weitere Anbindung bereitgestellt.
 
 ### Changed
-
+- Direkten Zugriff auf die Visualisierungssoftware verwehrt.
+- Einbetten der Visualisierungssoftware nur noch gegen Authentisierung an Login-Auth-Provider genehmigt.
+  
 ### Fixed
+-  Bug behoben, bei dem es Super-Admins nicht erlaubt war Teile der API zu nutzen.  
+  **WICHIG**: Ein Update von 1.8.0 auf diese Version muss von einem Nutzer mit *Updates*-Rolle angestoßen werden, damit der Auftrag entgegengenommen wird. Der Super-Admin muss also temporär zusätzlich die *Updates*-Rolle erhalten, um das System aktualisieren zu dürfen.
 
 ### Deprecated
+- Ursprüngliches Initialisierungsskript für automatische Einrichtung wird im nachfolgenden Release nicht mehr unterstützt.
 
 ### Removed
+
 
 ## [1.8.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.0) - 2020-04-29
 
