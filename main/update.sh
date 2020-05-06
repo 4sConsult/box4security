@@ -92,6 +92,10 @@ function rollback() {
   # restart box, causes start of the images of Version $1
   systemctl restart box4security
 
+  # Lösche fehlerhaften Tag lokal
+  cd /home/amadmin/box4s/
+  git tag -d $v
+
   /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh web
   # Notify API that we're finished rolling back
   echo "rollback-successful" > /var/lib/box4s/.update.state
@@ -171,7 +175,7 @@ do
      echo "Update auf $v fehlgeschlagen"
      # Notify API that we're starting to roll back
      curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-running"}' > /dev/null
-     rollback $PRIOR
+     rollback $PRIOR $v
    fi
    # successfully updated version
    # pack and store backup
