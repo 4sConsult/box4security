@@ -10,6 +10,7 @@ set -e
 
 # Stop des Services
 echo "Stopping BOX4s Service. The BOX4s service will automatically retart after the update is complete. Please wait."
+sleep 8
 sudo systemctl stop box4security.service
 
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
