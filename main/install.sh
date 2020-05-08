@@ -164,7 +164,7 @@ waitForNet
 echo "### Installing all dependencies"
 sudo apt-fast install -y curl python python-pip python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
 git lfs install
-pip3 install semver elasticsearch-curator --user
+pip3 install semver elasticsearch-curator --user # todo remove user install
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
@@ -295,17 +295,24 @@ awk "NR==1,/iface ens[0-9]* inet dhcp/{sub(/iface ens[0-9]* inet dhcp/, \"iface 
 echo 'dns-nameservers 127.0.0.53' >> /tmp/4s-ifaces
 sudo mv /tmp/4s-ifaces /etc/network/interfaces
 
+# Apply the new config without a restart
+ip link set $IF_MGMT down
+ip link set $IF_MGMT up
+
 # Set other interfaces
 for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
 do
+  # dont apply this for tun0
+  if [ "$iface" == "tun0" ]; then
+    continue;
+  fi
   echo "auto $iface
     iface $iface inet manual
     up ifconfig $iface promisc up
     down ifconfig $iface promisc down" | sudo tee -a /etc/network/interfaces
+  ip link set $iface down
+  ip link set $iface up
 done
-
-# Apply the new config without a restart
-sudo systemctl force-reload networking
 
 echo "### Setup system variables"
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
