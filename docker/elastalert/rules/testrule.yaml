@@ -26,7 +26,7 @@
 
 # (Required)
 # Rule name, must be unique
-name: New country login
+name: testrule
 
 # (Required)
 # Type of alert.
@@ -66,9 +66,4 @@ filter:
 # (Required)
 # The alert is use when a match is found
 alert:
-- "email"
-
-# (required, email specific)
-# a list of email addresses to send alerts to
-email:
-- "test@localhost"
+- debug
