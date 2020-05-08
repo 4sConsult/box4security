@@ -9,7 +9,7 @@ set -e
 # Updates hier einfügen #
 
 # Neue Schwachstellenlöschung einpflegen
-sudo mv /home/amadmin/box4s/main/home/actions.yml /home/amadmin/actions.yml
+sudo cp -f /home/amadmin/box4s/main/home/actions.yml /home/amadmin/actions.yml
 
 # Stop des Services
 echo "Stopping BOX4s Service. Please wait."
