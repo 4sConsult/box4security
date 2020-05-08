@@ -6,7 +6,16 @@ TAG=""
 set -e
 
 #########################
+
 # Updates hier einfügen #
+
+#Volume für elastalert anlegen
+sudo mkdir -p /var/lib/elastalert/rules
+sudo chown root:root /var/lib/elastalert/rules
+sudo chmod -R 777 /var/lib/elastalert/rules
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
+sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/
+
 
 # Stop des Services
 echo "Stopping BOX4s Service. Please wait."
