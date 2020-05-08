@@ -99,7 +99,7 @@ def user():
         db.session.commit()
         try:
             userman.email_manager._render_and_send_email(user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
-            if adduser.email_copy:
+            if adduser.email_copy.data:
                 userman.email_manager._render_and_send_email(current_user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
             # send confirmation E-Mail
             userman.email_manager.send_confirm_email_email(user, None)

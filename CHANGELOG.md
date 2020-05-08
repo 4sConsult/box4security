@@ -11,9 +11,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Embedden der Dashboards ermöglicht das setzen von Filtern am Anfang jedes Dashboards
 
 ### Fixed
+- Fehler behoben, bei dem der administrative Nutzer beim Anlegen eines weiteren Benutzers immer dessen Einladung erhielt, auch wenn dies nicht angefordert war.
 - Bei fehlerhaften Updates wird nach dem Rollback nun der fehlererzeugende Update-Tag lokal gelöscht, um Hotfixes zu ermöglichen.
-
-* Schwachstellen werden jetzt bis zu 180 Tage auf der Box gespeichert, um Langzeitdatenauswertung zu ermöglichen
+- Schwachstellen werden jetzt bis zu 180 Tage auf der Box gespeichert, um Langzeitdatenauswertung zu ermöglichen
 
 ### Deprecated
 
