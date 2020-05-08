@@ -22,4 +22,4 @@ actions:
                           unit_count: 180
                         - filtertype: pattern
                           kind: regex
-                          value: '^(wazuh-alerts-3.x-|logstash-).*$'
+                          value: '^(wazuh-alerts-3.x-|metricbeat-|logstash-).*$'
