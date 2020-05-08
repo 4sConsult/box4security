@@ -444,6 +444,9 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 # Installiere Suricata Index Pattern
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
 
+# Erstelle initialen VulnWhisperer Index
+curl -XPUT "localhost:9200/logstash-vulnwhisperer-$(date +%Y.%m)"
+
 toilet -f ivrit 'Ready!' | boxes -d cat -a hc -p h8 | /usr/games/lolcat
 if [[ "$*" == *runner* ]]; then
 # If in a runner environment exit now (successfully)
