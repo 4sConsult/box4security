@@ -3,9 +3,9 @@ set -e
 # Log file to use
 # Create path if allowed or do NOP
 mkdir -p /var/log/box4s/ || :
-LOG_FILE="/var/log/box4s/install.log"
+LOG_FILE="/var/log/box4s/install"
 if [[ ! -w $LOG_FILE ]]; then
-  LOG_FILE="$HOME/install.log"
+  LOG_FILE="$HOME/install"
 fi
 
 # Please no interaction
