@@ -94,7 +94,7 @@ function rollback() {
 
   # Lösche fehlerhaften Tag lokal
   cd /home/amadmin/box4s/
-  git tag -d $v
+  git tag -d $2
 
   /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh web
   # Notify API that we're finished rolling back
