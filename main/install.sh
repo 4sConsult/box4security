@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 # Log file to use
 LOG_FILE="/var/log/installscript"
 if [[ ! -w $LOG_FILE ]]; then
@@ -79,7 +80,7 @@ function waitForNet() {
 }
 
 function printHelp() {
-  toilet -f ivrit 'Box4Security' | boxes -d cat -a hc -p h8 | lolcat
+  toilet -f ivrit 'BOX4security' | boxes -d cat -a hc -p h8 | lolcat
   echo "$HELP"
 }
 
@@ -110,13 +111,16 @@ if [ "$(whoami)" != "root" ];
     echo "[ NOT OK ]"
     echo "### Please run as root."
     printHelp
-    exit
+    exit 1
   else
     echo "[ OK ]"
 fi
 
 
+
 echo "### Setting up VPN-Connection"
+waitForNet
+sudo apt install -y openconnect
 echo "10.30.5.4 gitlab.am-gmbh.de" >> /etc/hosts
 echo "10.30.5.4 docker-registry.am-gmbh.de" >> /etc/hosts
 touch /etc/systemd/system/vpn.service
