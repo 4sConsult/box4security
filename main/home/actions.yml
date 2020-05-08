@@ -1,6 +1,9 @@
 actions:
         1:
                 action: delete_indices
+                options:
+                          ignore_empty_list: True
+                          continue_if_exception: True
                 description: "Delete Suricata BOX4security indices older than 30 days"
                 filters:
                         - filtertype: age
@@ -13,6 +16,10 @@ actions:
                           value: '^(suricata).*$'
         2:
                 action: delete_indices
+                options:
+                          ignore_empty_list: True
+                          continue_if_exception: True
+
                 description: "Delete other BOX4security indices older than 180 days"
                 filters:
                         - filtertype: age
