@@ -444,7 +444,11 @@ curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -
 # Installiere Suricata Index Pattern
 curl  -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Patterns/suricata.ndjson
 
-toilet -f ivrit 'Ready!' | boxes -d cat -a hc -p h8 | lolcat
+toilet -f ivrit 'Ready!' | boxes -d cat -a hc -p h8 | /usr/games/lolcat
+if [[ "$*" == *runner* ]]; then
+# If in a runner environment exit now (successfully)
+  exit 0
+fi
 
 echo "### Continue cleaning up and updating the tools"
 sudo apt-fast autoremove -y
