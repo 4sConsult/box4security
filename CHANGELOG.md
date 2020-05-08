@@ -7,6 +7,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 
+* Dashboards werden embedded und nicht im Kibana Vollbild angezeigt
+* Embedden der Dashboards ermöglicht das setzen von Filtern am Anfang jedes Dashboards
+
 ### Fixed
 
 * Schwachstellen werden jetzt bis zu 180 Tage auf der Box gespeichert, um Langzeitdatenauswertung zu ermöglichen
