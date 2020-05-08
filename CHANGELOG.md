@@ -9,6 +9,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 
+* Schwachstellen werden jetzt bis zu 180 Tage auf der Box gespeichert, um Langzeitdatenauswertung zu ermöglichen
+
 ### Deprecated
 
 ### Removed
