@@ -8,6 +8,11 @@ set -e
 #########################
 # Updates hier einfügen #
 
+
+#Get new crontabs to load fixed curator deletion times
+cd /home/amadmin/box4s/main/crontab
+su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
+
 # Stop des Services
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
