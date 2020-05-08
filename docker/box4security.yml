@@ -214,7 +214,7 @@ services:
       context: ./elastalert
     restart: always
     volumes:
-      - ./elastalert/rules:/opt/elastalert/rules
+      - varlib_elastalert_rules:/opt/elastalert/rules
     ports:
       - 3030:3030
       - 3333:3333
@@ -232,6 +232,8 @@ volumes:
   varlib_suricata:
     external: true
   varlib_openvas:
+    external: true
+  varlib_elastalert_rules:
     external: true
   etcbox4s_logstash:
     external: true
