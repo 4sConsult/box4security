@@ -8,6 +8,9 @@ set -e
 #########################
 # Updates hier einfügen #
 
+# Apply new crontab
+su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
+
 # Stop des Services
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
