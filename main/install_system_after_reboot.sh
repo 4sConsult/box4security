@@ -120,6 +120,14 @@ sudo chown root:root /var/lib/openvas
 sudo chmod -R 777 /var/lib/openvas
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
 
+# Erstelle Volume für Elastalert
+sudo mkdir -p /var/lib/elastalert/rules
+sudo chown root:root /var/lib/elastalert/rules
+sudo chmod -R 777 /var/lib/elastalert/rules
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
+sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/
+
+
 # Create BOX4s Log Path
 sudo mkdir -p /var/log/box4s/
 sudo touch /var/log/box4s/update.log
