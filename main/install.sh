@@ -1,9 +1,11 @@
 #!/bin/bash
 set -e
 # Log file to use
-LOG_FILE="/var/log/installscript"
+# Create path if allowed or do NOP
+mkdir -p /var/log/box4s/ || :
+LOG_FILE="/var/log/box4s/install.log"
 if [[ ! -w $LOG_FILE ]]; then
-  LOG_FILE="/home/amadmin/installscript"
+  LOG_FILE="$HOME/install.log"
 fi
 
 # Please no interaction
@@ -34,7 +36,7 @@ Usage:
 Options:
         sudo $0 --manual - All available tags will be available for install - All of them."
 
-VPNSERVICE="\
+VPNSERVICE='\
 [Unit]
 Description=vpn
 After=network.target
@@ -46,11 +48,11 @@ Environment=VPN_PASS=FXFAu8HfFY
 Environment=VPN_USER=box4s
 
 # VPN-Tunnel aufbauen
-ExecStart=/bin/sh -c 'echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on-stdin connect.am-gmbh.de'
+ExecStart=/bin/sh -c "echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on-stdin connect.am-gmbh.de"
 
 [Install]
 WantedBy=multi-user.target
-"
+'
 
 ##################################################
 #                                                #
@@ -85,10 +87,10 @@ function printHelp() {
 }
 
 # Lets make sure some basic tools are available
-CURL=$(which curl)
-WGET=$(which wget)
-SUDO=$(which sudo)
-TOILET=$(which toilet)
+CURL=$(which curl) || echo ""
+WGET=$(which wget) || echo ""
+SUDO=$(which sudo) || echo ""
+TOILET=$(which toilet) || echo ""
 if [ "$CURL" == "" ] || [ "$WGET" == "" ] || [ "$SUDO" == "" ] || [ "$TOILET" == "" ]
   then
     waitForNet
@@ -151,9 +153,10 @@ waitForNet
 echo "### Installing apt-fast"
 sudo /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
 
-# Remove services, that might be present, but are not needed
+# Remove services, that might be present, but are not needed.
+# But don't fail if they arent.
 echo "### Removing some services"
-sudo systemctl disable apache2 nginx systemd-resolved
+sudo systemctl disable apache2 nginx systemd-resolved || echo ""
 sudo apt-fast remove --purge -y apache2 nginx
 
 # Lets install all dependencies
@@ -164,12 +167,6 @@ git lfs install
 pip3 install semver elasticsearch-curator --user
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-
-# Copy certificates over
-sudo mkdir -p /etc/nginx/certs
-sudo chown root:root /etc/nginx/certs
-sudo cp /home/amadmin/box4s/main/ssl/*.pem /etc/nginx/certs
-sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 
 ##################################################
 #                                                #
@@ -217,6 +214,12 @@ exec > >(tee "$LOG_FILE.log")
 cd /home/amadmin
 waitForNet gitlab.am-gmbh.de
 git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git box4s -b $TAG
+
+# Copy certificates over
+sudo mkdir -p /etc/nginx/certs
+sudo chown root:root /etc/nginx/certs
+sudo cp /home/amadmin/box4s/main/ssl/*.pem /etc/nginx/certs
+sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 
 ##################################################
 #                                                #
@@ -273,7 +276,7 @@ sudo chmod 777 /data/elasticsearch*
 # Installing Box                                 #
 #                                                #
 ##################################################
-banner "Box4Security ..."
+banner "BOX4security ..."
 
 # Copy config files
 cd /home/amadmin/box4s
