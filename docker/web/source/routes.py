@@ -225,6 +225,7 @@ def authenticate():
     else:
         abort(401)
 
+
 # must be the last one (catchall)
 # let variable r hold the path
 # Redirects for permission pages from 403
