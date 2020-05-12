@@ -192,10 +192,10 @@ echo "Update auf $TAG abgeschlossen."
 echo "VERSION=$TAG" > /home/amadmin/box4s/VERSION
 echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
 # Notify API that we're finished
-sleep 5
 curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
 # Prepare new update.sh for next update
 chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
 chmod +x $BASEDIR$GITDIR/main/update.sh
+sleep 15s # sleep for API <-> Webbrowser communication
 curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
 exit 0
