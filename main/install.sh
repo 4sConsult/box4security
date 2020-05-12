@@ -433,6 +433,11 @@ sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh ki
 #wait for 6 minutes and 40 seconds until kibana and wazuh have started to insert patterns
 sleep 400
 
+while curl -s "localhost:5601/kibana" | grep "Kibana server is not ready yet"
+do
+   sleep 2
+done
+
 # Import Dashboard
 echo "### Install dashboards"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Startseite/Startseite-Uebersicht.ndjson
