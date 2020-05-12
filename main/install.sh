@@ -310,8 +310,8 @@ ip link set $IF_MGMT up
 # Set other interfaces
 for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
 do
-  # dont apply this for tun0
-  if [ "$iface" == "tun0" ]; then
+  # dont apply this for tun0 or docker0
+  if [[ "$iface" =~ ^(tun0|docker0)$ ]]; then
     continue;
   fi
   echo "auto $iface
