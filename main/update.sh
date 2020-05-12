@@ -196,6 +196,6 @@ curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/
 # Prepare new update.sh for next update
 chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
 chmod +x $BASEDIR$GITDIR/main/update.sh
-sleep 15s # sleep for API <-> Webbrowser communication
+sleep 15 # sleep for API <-> Webbrowser communication
 curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
 exit 0
