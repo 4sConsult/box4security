@@ -344,6 +344,7 @@ sudo systemctl enable box4security.service
 banner "Docker ..."
 
 sudo systemctl start docker
+
 # Login to docker registry
 echo "### Download docker images"
 waitForNet docker-registry.am-gmbh.de
@@ -380,6 +381,7 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 echo "### Download Docker images"
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 hostname box4security
+echo "127.0.0.1 box4security" >> /etc/hosts
 sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
