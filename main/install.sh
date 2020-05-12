@@ -272,6 +272,12 @@ sudo mkdir /data/elasticsearch -p
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
 sudo chmod 777 /data/elasticsearch*
 
+# Setup ElastAlert volume
+sudo mkdir -p /var/lib/elastalert/rules
+sudo chown root:root /var/lib/elastalert/rules
+sudo chmod -R 777 /var/lib/elastalert/rules
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
+
 ##################################################
 #                                                #
 # Installing Box                                 #
@@ -283,6 +289,7 @@ banner "BOX4security ..."
 cd /home/amadmin/box4s
 sudo cp main/etc/etc_files/* /etc/ -R
 sudo cp main/home/* /home/amadmin -R
+sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/
 
 echo "### Setting up interfaces"
 # Find dhcp and remove everything after
