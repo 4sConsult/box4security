@@ -1,27 +1,25 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.8.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/x.x.x) - 2020-05-13
+## [1.8.1-rc](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.1-rc) - 2020-05-13
 
 ### Added
-- Login-Auth-Provider durch WebApp-Login für weitere Anbindung bereitgestellt.
+- Login-Auth-Provider durch WebApp-Login für weitere Anbindungen bereitgestellt.
 
 ### Changed
 - Direkten Zugriff auf die Visualisierungssoftware verwehrt.
 - Einbetten der Visualisierungssoftware nur noch gegen Authentisierung an Login-Auth-Provider genehmigt.
-  
-### Fixed
--  Bug behoben, bei dem es Super-Admins nicht erlaubt war Teile der API zu nutzen.  
-  **WICHIG**: Ein Update von 1.8.0 auf diese Version muss von einem Nutzer mit *Updates*-Rolle angestoßen werden, damit der Auftrag entgegengenommen wird. Der Super-Admin muss also temporär zusätzlich die *Updates*-Rolle erhalten, um das System aktualisieren zu dürfen.
 
-* Dashboards werden embedded und nicht im Kibana Vollbild angezeigt
-* Embedden der Dashboards ermöglicht das setzen von Filtern am Anfang jedes Dashboards
-- Fehler behoben, bei dem der administrative Nutzer beim Anlegen eines weiteren Benutzers immer dessen Einladung erhielt, auch wenn dies nicht angefordert war.
-- Bei fehlerhaften Updates wird nach dem Rollback nun der fehlererzeugende Update-Tag lokal gelöscht, um Hotfixes zu ermöglichen.
-- Schwachstellen werden jetzt bis zu 180 Tage auf der Box gespeichert, um Langzeitdatenauswertung zu ermöglichen
+### Fixed
+*  Bug behoben, bei dem es Super-Admins nicht erlaubt war Teile der API zu nutzen. \
+  **WICHIG**: Ein Update von 1.8.0 auf diese Version muss von einem Nutzer mit *Updates*-Rolle angestoßen werden, damit der Auftrag entgegengenommen wird. Der Super-Admin muss also temporär zusätzlich die *Updates*-Rolle erhalten, um das System aktualisieren zu dürfen.
+* Dashboards werden embedded und nicht mehr im Vollbildmodus der Visualisierungssoftware angezeigt.
+* Embedden der Dashboards ermöglicht das Setzen von Filtern am Anfang jedes Dashboards.
+* Fehler behoben, bei dem der administrative Nutzer beim Anlegen eines weiteren Benutzers immer dessen Einladung erhielt, auch wenn dies nicht angefordert war.
+* Bei fehlerhaften Updates wird nach dem Rollback nun der fehlererzeugende Update-Tag lokal gelöscht, um Hotfixes zu ermöglichen.
+* Schwachstellen werden jetzt wie angedacht bis zu 180 Tage auf der Box gespeichert und nicht länger nach 30 Tagen gelöscht, um Langzeitdatenauswertung zu ermöglichen.
 
 ### Deprecated
-- Ursprüngliches Initialisierungsskript für automatische Einrichtung wird im nachfolgenden Release nicht mehr unterstützt.
 
 ### Removed
 
