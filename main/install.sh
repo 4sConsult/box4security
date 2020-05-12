@@ -226,6 +226,7 @@ sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 # Docker Volumes                                 #
 #                                                #
 ##################################################
+sudo systemctl start docker
 banner "Volumes ..."
 
 # Setup data volume
@@ -342,8 +343,6 @@ sudo systemctl enable box4security.service
 #                                                #
 ##################################################
 banner "Docker ..."
-
-sudo systemctl start docker
 
 # Login to docker registry
 echo "### Download docker images"
