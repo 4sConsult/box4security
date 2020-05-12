@@ -343,6 +343,7 @@ sudo systemctl enable box4security.service
 ##################################################
 banner "Docker ..."
 
+sudo systemctl start docker
 # Login to docker registry
 echo "### Download docker images"
 waitForNet docker-registry.am-gmbh.de
