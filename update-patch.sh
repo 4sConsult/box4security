@@ -22,7 +22,7 @@ sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/
 su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
 
 # Stop des Services
-echo "Stopping BOX4s Service. The BOX4s service will automatically retart after the update is complete. Please wait."
+echo "Stopping BOX4s Service. The BOX4s service will automatically restart after the update is complete. Please wait."
 sleep 8
 sudo systemctl stop box4security.service
 
