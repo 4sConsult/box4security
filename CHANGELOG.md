@@ -1,6 +1,29 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [1.8.1-rc](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.1-rc) - 2020-05-13
+
+### Added
+- Login-Auth-Provider durch WebApp-Login für weitere Anbindungen bereitgestellt.
+- Setzen von Filtern am Anfang jedes Dashboards ermöglicht.
+
+### Changed
+- Direkten Zugriff auf die Visualisierungssoftware verwehrt.
+- Einbetten der Visualisierungssoftware nur noch gegen Authentisierung an Login-Auth-Provider genehmigt.
+- Dashboards werden embedded und nicht mehr im Vollbildmodus der Visualisierungssoftware angezeigt.
+
+### Fixed
+*  Bug behoben, bei dem es Super-Admins nicht erlaubt war Teile der API zu nutzen. \
+  **WICHIG**: Ein Update von 1.8.0 auf diese Version muss von einem Nutzer mit *Updates*-Rolle angestoßen werden, damit der Auftrag entgegengenommen wird. Der Super-Admin muss also temporär zusätzlich die *Updates*-Rolle erhalten, um das System aktualisieren zu dürfen.
+* Fehler behoben, bei dem der administrative Nutzer beim Anlegen eines weiteren Benutzers immer dessen Einladung erhielt, auch wenn dies nicht angefordert war.
+* Bei fehlerhaften Updates wird nach dem Rollback nun der fehlererzeugende Update-Tag lokal gelöscht, um Hotfixes zu ermöglichen.
+* Schwachstellen werden jetzt wie angedacht bis zu 180 Tage auf der Box gespeichert und nicht länger nach 30 Tagen gelöscht, um Langzeitdatenauswertung zu ermöglichen.
+
+### Deprecated
+
+### Removed
+
+
 ## [1.8.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.0) - 2020-04-29
 
 ### Added

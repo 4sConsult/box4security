@@ -1,3 +1,4 @@
+"""Module to handle all webapp routes."""
 from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.models import User, Role
@@ -9,6 +10,7 @@ from flask_user import login_required, current_user, roles_required
 from flask_mail import Message
 from source.forms import AddUserForm
 import os
+import re
 import string
 import secrets
 
@@ -99,7 +101,7 @@ def user():
         db.session.commit()
         try:
             userman.email_manager._render_and_send_email(user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
-            if adduser.email_copy:
+            if adduser.email_copy.data:
                 userman.email_manager._render_and_send_email(current_user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
             # send confirmation E-Mail
             userman.email_manager.send_confirm_email_email(user, None)
@@ -183,6 +185,45 @@ def updatelogdl():
         return send_file('/var/log/box4s/update.log', as_attachment=True, attachment_filename='update.log', mimetype='text/plain')
     except Exception:
         return "", 501
+
+
+@app.route('/auth')
+def authenticate():
+    """Authenticate against the webapp."""
+    original_uri = request.headers.get('X-Original-URI')
+    # Check if user is authenticated and active:
+    if current_user.is_authenticated:
+        if not current_user.active:
+            abort(403)
+        # Perform regex matching on the original url to determine resource:
+        if re.match(r'^/kibana.*$', original_uri):
+            # URI starts with /kibana
+            # Check if this is a dashboard queried or another resource:
+            dashboard = list(filter(lambda d: d.url == original_uri, Dashboards))
+            if dashboard:
+                # Since dashboard urls are unique
+                # this is a list of 1 item so we make it an object
+                dashboard = dashboard[0]
+                # Check if current user is permitted
+                if not set(['Super Admin', 'Dashboards-Master', dashboard.role]).isdisjoint([a.name for a in current_user.roles]):
+                    # User is Super Admin or has the required dashboard role
+                    return "", 200
+                else:
+                    # User is not permitted to see request this dashbaord
+                    abort(403)
+            else:
+                # Another resource, allow.
+                # Allow Super Admins
+                if "Super Admin" in [a.name for a in current_user.roles]:
+                    return "", 200
+                # Allow any other Dashboard Role
+                elif not set(['Startseite', 'Dashboards-Master', 'SIEM', 'Schwachstellen', 'Netzwerk']).isdisjoint([a.name for a in current_user.roles]):
+                    return "", 200
+                # Requirements not met => Deny.
+                else:
+                    abort(403)
+    else:
+        abort(401)
 
 
 # must be the last one (catchall)

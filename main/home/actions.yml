@@ -1,7 +1,10 @@
 actions:
         1:
                 action: delete_indices
-                description: "Delete BOX4security indices older than 30 days"
+                options:
+                          ignore_empty_list: True
+                          continue_if_exception: True
+                description: "Delete Suricata BOX4security indices older than 30 days"
                 filters:
                         - filtertype: age
                           source: creation_date
@@ -10,4 +13,34 @@ actions:
                           unit_count: 30
                         - filtertype: pattern
                           kind: regex
-                          value: '^(suricata|metricbeat-|logstash-).*$'
+                          value: '^(suricata).*$'
+        2:
+                action: delete_indices
+                options:
+                          ignore_empty_list: True
+                          continue_if_exception: True
+                description: "Delete other BOX4security indices older than 180 days"
+                filters:
+                        - filtertype: age
+                          source: creation_date
+                          direction: older
+                          unit: days
+                          unit_count: 180
+                        - filtertype: pattern
+                          kind: regex
+                          value: '^(metricbeat-|logstash-).*$'
+        3:
+                action: delete_indices
+                options:
+                          ignore_empty_list: True
+                          continue_if_exception: True
+                description: "Delete Wazuh indices older than 180 days"
+                filters:
+                        - filtertype: age
+                          source: creation_date
+                          direction: older
+                          unit: days
+                          unit_count: 180
+                        - filtertype: pattern
+                          kind: regex
+                          value: '^(wazuh-alerts-3.x-).*$'

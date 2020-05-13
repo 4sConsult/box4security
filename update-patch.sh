@@ -6,51 +6,37 @@ TAG=""
 set -e
 
 #########################
+
 # Updates hier einfügen #
 
-# Force remove FetchQC alembic in favor of Web App alembic
+# Neue Schwachstellenlöschung einpflegen
+sudo cp -f /home/amadmin/box4s/main/home/actions.yml /home/amadmin/actions.yml
 
-PGPASSWORD=zgJnwauCAsHrR6JB psql -h localhost -U postgres box4S_db -c "DROP TABLE IF EXISTS alembic_version;"
-# Delete old index with possibly wrong data. Lets start clean!
-cd /home/amadmin/box4s/scripts/Automation/score_calculation/
-./install_index.sh
-cd /home/amadmin/box4s/
+#Volume für elastalert anlegen
+sudo mkdir -p /var/lib/elastalert/rules
+sudo chown root:root /var/lib/elastalert/rules
+sudo chmod -R 777 /var/lib/elastalert/rules
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
+sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/
+# Apply new crontab
+su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
 
 # Stop des Services
-echo "Stopping BOX4s Service. Please wait."
+echo "Stopping BOX4s Service. The BOX4s service will automatically restart after the update is complete. Please wait."
+sleep 8
 sudo systemctl stop box4security.service
 
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
-# Create the new Docker Volume
-sudo mkdir -p /var/lib/openvas
-sudo chown root:root /var/lib/openvas
-sudo chmod -R 777 /var/lib/openvas
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
 
-# Update Cronjobs
-cd /home/amadmin/box4s/main/crontab
-su - amadmin -c "crontab -r"
-su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
-sudo crontab -r
-sudo crontab root.crontab
-
-# Remove old Services
-sudo systemctl stop openvas-scanner openvas-manager greenbone-security-assistant redis-server || echo ""
-sudo systemctl disable openvas-scanner openvas-manager greenbone-security-assistant redis-server || echo ""
-sudo apt remove -y --purge openvas
-sudo apt autoremove -y
-
-
-# Install FetchQC Dependencies as Python3
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl restart box4security.service
 
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-# Update Suricata
-sudo docker exec suricata /root/scripts/update.sh
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx || sleep 30
+# Update Suricata
+sudo docker exec suricata /root/scripts/update.sh || sleep 1
