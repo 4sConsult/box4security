@@ -395,6 +395,9 @@ sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv
 echo "### Make scripts executable"
 chmod +x -R /home/amadmin/box4s/scripts
 
+#Owner der Skripte zur score Berechnung anpassen
+sudo chown -R amadmin:amadmin /home/amadmin/box4s/scripts/Automation/score_calculation/
+
 ##################################################
 #                                                #
 # Box4s start                                    #
