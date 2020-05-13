@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.8.1-rc](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.1-rc) - 2020-05-13
+## [1.8.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.1) - 2020-05-13
 
 ### Added
 - Login-Auth-Provider durch WebApp-Login für weitere Anbindungen bereitgestellt.
