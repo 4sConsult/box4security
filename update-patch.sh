@@ -9,10 +9,6 @@ set -e
 
 # Updates hier einfügen #
 
-#Owner der Skripte zur score Berechnung anpassen
-sudo chown -R amadmin:amadmin /home/amadmin/box4s/scripts/Automation/score_calculation/
-
-
 # Stop des Services
 echo "Stopping BOX4s Service. The BOX4s service will automatically restart after the update is complete. Please wait."
 sleep 8
