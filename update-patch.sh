@@ -9,18 +9,6 @@ set -e
 
 # Updates hier einfügen #
 
-# Neue Schwachstellenlöschung einpflegen
-sudo cp -f /home/amadmin/box4s/main/home/actions.yml /home/amadmin/actions.yml
-
-#Volume für elastalert anlegen
-sudo mkdir -p /var/lib/elastalert/rules
-sudo chown root:root /var/lib/elastalert/rules
-sudo chmod -R 777 /var/lib/elastalert/rules
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
-sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/
-# Apply new crontab
-su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
-
 # Stop des Services
 echo "Stopping BOX4s Service. The BOX4s service will automatically restart after the update is complete. Please wait."
 sleep 8
