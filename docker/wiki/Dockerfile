@@ -1,1 +1,1 @@
-FROM gollum
+FROM adtac/gollum-alpine
