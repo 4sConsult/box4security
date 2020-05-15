@@ -225,7 +225,7 @@ services:
       context: ./wiki
     restart: always
     ports:
-      - 4567:8080
+      - 4567:80
 volumes:
   # to persist data beyond container's life
   static_volume:
