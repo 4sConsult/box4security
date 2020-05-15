@@ -218,6 +218,14 @@ services:
     ports:
       - 3030:3030
       - 3333:3333
+  wiki:
+    container_name: wiki
+    image: "docker-registry.am-gmbh.de/it-security/b4s/wiki:dev"
+    build:
+      context: ./wiki
+    restart: always
+    ports:
+      - 4567:80
 volumes:
   # to persist data beyond container's life
   static_volume:
