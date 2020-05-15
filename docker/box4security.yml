@@ -178,6 +178,7 @@ services:
     depends_on:
       - web
       - kibana
+      - wiki
 
   dnsmasq:
     container_name: dnsmasq
