@@ -7,7 +7,6 @@ wiki_options = {:universal_toc => false, index_page: "BOX4security"}
 Precious::App.set(:gollum_path, gollum_path)
 Precious::App.set(:default_markup, :markdown)
 Precious::App.set(:wiki_options, wiki_options)
-run Precious::App
 
 require 'rack'
 
