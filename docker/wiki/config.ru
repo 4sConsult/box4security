@@ -3,7 +3,7 @@ require 'rubygems'
 require 'gollum/app'
 
 gollum_path = File.expand_path('/wiki')
-wiki_options = {:universal_toc => false, index_page: "BOX4security"}
+wiki_options = {:universal_toc => false, index_page: "BOX4security", page_file_dir: "BOX4security"}
 Precious::App.set(:gollum_path, gollum_path)
 Precious::App.set(:default_markup, :markdown)
 Precious::App.set(:wiki_options, wiki_options)
