@@ -230,6 +230,13 @@ def authenticate():
                 # Requirements not met => Deny.
                 else:
                     abort(403)
+        elif re.match(r'^/(docs|wiki).*$', original_uri):
+            if not set(['Super Admin', 'Wiki']).isdisjoint([a.name for a in current_user.roles]):
+                # User is Super Admin or has the Wiki role
+                return "", 200
+            else:
+                # User is not permitted to request the Wiki
+                abort(403)
     else:
         abort(401)
 
