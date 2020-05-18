@@ -38,5 +38,5 @@ class MapGollum
 end
 
 # Rack::Handler does not work with Ctrl + C. Use Rack::Server instead.
-Rack::Server.new(:app => MapGollum.new("docs"), :Port => 80, :Host => '0.0.0.0').start
+Rack::Server.new(:app => MapGollum.new("wiki"), :Port => 80, :Host => '0.0.0.0').start
 
