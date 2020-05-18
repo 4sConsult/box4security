@@ -194,6 +194,7 @@ def wiki_index():
     """Show wiki index."""
     return render_template('docs.html', docs_url="/docs/BOX4security")
 
+
 @app.route('/auth')
 def authenticate():
     """Authenticate against the webapp."""
