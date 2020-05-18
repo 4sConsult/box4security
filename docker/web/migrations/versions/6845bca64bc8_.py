@@ -24,6 +24,7 @@ def upgrade():
                        {'id': 11, 'name': 'Wiki', 'description': 'Freigabe für die Dokumentation'},
                    ])
 
+
 def downgrade():
     """Downgrade to migration."""
     op.execute('DELETE FROM "role" WHERE id=11')
