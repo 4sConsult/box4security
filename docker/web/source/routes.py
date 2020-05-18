@@ -187,6 +187,13 @@ def updatelogdl():
         return "", 501
 
 
+@app.route('/docs', methods=['GET'])
+@login_required
+@roles_required(['Super Admin', 'Wiki'])
+def wiki_index():
+    """Show wiki index."""
+    return render_template('docs.html', docs_url="/docs/BOX4security")
+
 @app.route('/auth')
 def authenticate():
     """Authenticate against the webapp."""
