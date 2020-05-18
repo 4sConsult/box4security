@@ -192,7 +192,7 @@ def updatelogdl():
 @roles_required(['Super Admin', 'Wiki'])
 def wiki_index():
     """Show wiki index."""
-    return render_template('docs.html', docs_url="/docs/BOX4security")
+    return render_template('docs.html', docs_url="/wiki/gollum/overview")
 
 
 @app.route('/auth')
