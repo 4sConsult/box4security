@@ -235,6 +235,7 @@ def authenticate():
                 # User is Super Admin or has the Wiki role
                 resp = Response("")
                 resp.headers['authUsername'] = current_user.getName()
+                return resp
             else:
                 # User is not permitted to request the Wiki
                 abort(403)
