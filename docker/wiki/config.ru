@@ -13,9 +13,8 @@ require 'rack'
 # set author
 class Precious::App
     before do
-        puts env
         session['gollum.author'] = {
-            :name => env['X-Auth-Username'],
+            :name => env['HTTP_X_AUTH_USERNAME'],
             :email => "box@4sconsult.de",
         }
     end
