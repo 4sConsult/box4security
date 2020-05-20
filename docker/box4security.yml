@@ -225,6 +225,8 @@ services:
     build:
       context: ./wiki
     restart: always
+    volumes:
+      - varlib_docs:/wiki/
     expose:
       - 80
 volumes:
@@ -241,6 +243,8 @@ volumes:
   varlib_suricata:
     external: true
   varlib_openvas:
+    external: true
+  varlib_docs:
     external: true
   varlib_elastalert_rules:
     external: true
