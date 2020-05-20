@@ -10,7 +10,10 @@ set -e
 # Updates hier einfügen #
 
 # Remove old cronjob logfiles
-sudo rm -R /var/log/cronchecker/
+sudo rm -R /var/log/cronchecker
+#Make new directory for cronjobchecker
+sudo mkdir /var/log/cronchecker
+sudo chown amadmin:amadmin /var/log/cronchecker
 #Get new root crontabs
 cd /home/amadmin/box4s/main/crontab
 sudo crontab root.crontab
