@@ -14,8 +14,8 @@ require 'rack'
 class Precious::App
     before do
         session['gollum.author'] = {
-            :name => "Christoph Meyer",
-            :email => "christoph.meyer@4sconsult.de",
+            :name => env['X-Auth-Username'],
+            :email => "box@4sconsult.de",
         }
     end
 end

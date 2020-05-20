@@ -234,7 +234,7 @@ def authenticate():
             if not set(['Super Admin', 'Wiki']).isdisjoint([a.name for a in current_user.roles]):
                 # User is Super Admin or has the Wiki role
                 resp = Response("")
-                resp.headers['authUsername'] = current_user.getName()
+                resp.headers['X-Auth-Username'] = current_user.getName()
                 return resp
             else:
                 # User is not permitted to request the Wiki
