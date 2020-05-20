@@ -14,4 +14,4 @@ MAILTO=box@4sconsult.de
 @daily docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update FAILURE
 
 # OpenVAS update
-@daily docker exec openvas /root/update.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update FAILURE
+@daily docker exec openvas /root/update.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh openvas_update SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh openvas_update FAILURE
