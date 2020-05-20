@@ -24,8 +24,9 @@ class Precious::App
           end
       end
     before do
+        puts env
         session['gollum.author'] = {
-            :name => headers['X-Auth-Username'],
+            :name => env['X-Auth-Username'],
             :email => "box@4sconsult.de",
         }
     end
