@@ -9,6 +9,9 @@ set -e
 
 # Updates hier einfügen #
 
+# Remove old cronjob logfiles
+sudo rm -R /var/log/cronchecker/
+
 # Stop des Services
 echo "Stopping BOX4s Service. The BOX4s service will automatically restart after the update is complete. Please wait."
 sleep 8
