@@ -187,7 +187,6 @@ def updatelogdl():
         return "", 501
 
 
-@app.route('/wiki')
 @app.route('/docs', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Wiki'])
