@@ -6,10 +6,9 @@
 ###################cronjob && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh NAME SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh NAME FAILURE
 #
 #########Changable Variables################
-user=$(whoami)
 loglocation="/var/log/cronchecker"
-logfile="$loglocation/cronjobchecker_"$user".json"
-tempfile="$loglocation/cronjobchecker_"$user".json.tmp"
+logfile="$loglocation/cronjobchecker.json"
+tempfile="$loglocation/cronjobchecker.json.tmp"
 email_reciever="box@4sconsult.de"
 vulnwhisp_log="$loglocation/vulnwhisp.log"
 ########################################
