@@ -7,7 +7,21 @@ set -e
 
 #########################
 
-# Updates hier einfügen #
+# Setup Wiki volume
+sudo mkdir -p /var/lib/box4s_docs
+sudo chown root:root /var/lib/box4s_docs
+sudo chmod -R 777 /var/lib/box4s_docs
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_docs --opt o=bind varlib_docs
+
+# Initially clone the Wiki repo
+cd /var/lib/box4s_docs
+sudo git clone https://cMeyer:QVXq8i5FxSNEH_YEmze3@gitlab.am-gmbh.de/cmeyer/b4s-docs.git .
+
+# Copy gollum config to wiki root
+cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
+
+#Owner der Skripte zur score Berechnung anpassen
+sudo chown -R amadmin:amadmin /home/amadmin/box4s/scripts/Automation/score_calculation/
 
 # Remove old cronjob logfiles
 sudo rm -R /var/log/cronchecker

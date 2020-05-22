@@ -1,9 +1,12 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [x.x.x](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/x.x.x) - 2020-x-x
+## [1.8.2](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/x.x.x) - 2020-x-x
 
 ### Added
+- Plattform zur Dokumentation eingefügt.
+- Neue Rolle zur Freigabe der Dokumentation eingefügt.
+- Neben offizieller, geschützer Dokumentation wurde die Möglichkeit eingefügt, eigene Seiten der Doku zu erstellen.
 
 ### Changed
 
@@ -11,6 +14,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Fixed
 
 * Fehler in der automatischen Überwachung wiederkehrender Aufgaben behoben
+* Fehler bei der Berechnung der Scores (IT-Security, Alarm, Schwachstellen) behoben
+
 ### Deprecated
 
 ### Removed

@@ -5,7 +5,7 @@ from source.models import User, Role
 from source.config import Dashboards
 import source.error
 from flask_restful import Api
-from flask import render_template, send_from_directory, request, abort, send_file
+from flask import render_template, send_from_directory, request, abort, send_file, Response
 from flask_user import login_required, current_user, roles_required
 from flask_mail import Message
 from source.forms import AddUserForm
@@ -187,6 +187,14 @@ def updatelogdl():
         return "", 501
 
 
+@app.route('/docs', methods=['GET'])
+@login_required
+@roles_required(['Super Admin', 'Wiki'])
+def wiki_index():
+    """Show wiki index."""
+    return render_template('docs.html', docs_url="/wiki/gollum/overview")
+
+
 @app.route('/auth')
 def authenticate():
     """Authenticate against the webapp."""
@@ -222,6 +230,15 @@ def authenticate():
                 # Requirements not met => Deny.
                 else:
                     abort(403)
+        elif re.match(r'^/(docs|wiki).*$', original_uri):
+            if not set(['Super Admin', 'Wiki']).isdisjoint([a.name for a in current_user.roles]):
+                # User is Super Admin or has the Wiki role
+                resp = Response("")
+                resp.headers['X-Auth-Username'] = current_user.getName()
+                return resp
+            else:
+                # User is not permitted to request the Wiki
+                abort(403)
     else:
         abort(401)
 

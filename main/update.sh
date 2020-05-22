@@ -56,6 +56,11 @@ function rollback() {
   cp -R /var/lib/box4s/backup/ssl/* /etc/nginx/certs/
   rm -rf /var/lib/box4s/backup/ssl
 
+  echo "Stelle Dokumentation wieder her"
+  rm -rf /var/lib/box4s_docs/*
+  cp -R /var/lib/box4s/backup/wiki/* /var/lib/box4s_docs/
+  rm -rf /var/lib/box4s/backup/wiki
+
   cd /home/amadmin/box4s/
   waitForNet gitlab.am-gmbh.de
   git fetch
@@ -125,7 +130,7 @@ function backup() {
   cp /var/lib/box4s/suricata_suppress.bpf /var/lib/box4s/backup/suricata_suppress.bpf
   cp /home/amadmin/box4s/docker/suricata/.env /var/lib/box4s/backup/suricata.env
 
-  echo "Erstelle Backup von Systemkonfiguration"
+  echo "Erstelle Backup der Systemkonfiguration"
   cp /etc/hosts /var/lib/box4s/backup/hosts
   cp /etc/environment /var/lib/box4s/backup/environment
   cp /etc/msmtprc /var/lib/box4s/backup/msmtprc
@@ -133,6 +138,10 @@ function backup() {
   cp /etc/network/interfaces /var/lib/box4s/backup/
   mkdir -p /var/lib/box4s/backup/ssl
   cp -R /etc/nginx/certs/* /var/lib/box4s/backup/ssl/
+
+  echo "Erstelle Backup der Dokumentation"
+  mkdir -p /var/lib/box4s/backup/wiki
+  cp -R /var/lib/box4s_docs/* /var/lib/box4s/backup/wiki/
 }
 
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
