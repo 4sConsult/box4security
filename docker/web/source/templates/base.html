@@ -11,8 +11,10 @@
   <body>
     <div class="ui tabular menu">
       <div class="item active" id="start">
-        <i class="home icon"></i>
-        <a class="item" id="startitem" href="/start">Startseite</a>
+        <a class="item" id="startitem" href="/start">
+          <i class="home icon"></i>
+          Startseite
+        </a>
       </div>
       <div class="item" id="siem">
         <div class="ui dropdown pointing link item">
@@ -64,8 +66,10 @@
          </div>
        </div>
        <div class="item active" id="documentation">
-        <i class="book icon"></i>
-        <a class="item" id="docuitem" href="/docs">Dokumentation</a>
+        <a class="item" id="docuitem" href="/docs">
+          <i class="book icon"></i>
+          Dokumentation
+        </a>
       </div>
        <div class="right menu">
          {% if current_user.is_authenticated %}
