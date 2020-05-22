@@ -23,6 +23,15 @@ cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 #Owner der Skripte zur score Berechnung anpassen
 sudo chown -R amadmin:amadmin /home/amadmin/box4s/scripts/Automation/score_calculation/
 
+# Remove old cronjob logfiles
+sudo rm -R /var/log/cronchecker
+#Make new directory for cronjobchecker
+sudo mkdir /var/log/cronchecker
+sudo chown amadmin:amadmin /var/log/cronchecker
+#Get new root crontabs
+cd /home/amadmin/box4s/main/crontab
+sudo crontab root.crontab
+
 # Stop des Services
 echo "Stopping BOX4s Service. The BOX4s service will automatically restart after the update is complete. Please wait."
 sleep 8

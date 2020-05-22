@@ -405,6 +405,10 @@ sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 
+#Make new directory for cronjobchecker
+sudo mkdir /var/log/cronchecker
+sudo chown amadmin:amadmin /var/log/cronchecker
+
 echo "### Make scripts executable"
 chmod +x -R /home/amadmin/box4s/scripts
 

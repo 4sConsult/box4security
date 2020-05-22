@@ -6,10 +6,12 @@
 ###################cronjob && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh NAME SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh NAME FAILURE
 #
 #########Changable Variables################
+user=$(whoami)
 loglocation="/var/log/cronchecker"
-logfile="$loglocation/cronjobchecker.json"
-tempfile="$loglocation/cronjobchecker.json.tmp"
+logfile="$loglocation/cronjobchecker_"$user".json"
+tempfile="$loglocation/cronjobchecker_"$user".json.tmp"
 email_reciever="box@4sconsult.de"
+vulnwhisp_log="$loglocation/vulnwhisp.log"
 ########################################
 timestamp=$(date +%d-%m-%Y_%H-%M-%S)
 initialize()
@@ -18,6 +20,7 @@ initialize()
 if [ ! -f "$logfile" ];then
         if [ ! -d "$loglocation" ];then
                 mkdir $loglocation
+                chown amadmin:amadmin $loglocation
         fi
         {
         echo '{'
@@ -88,7 +91,24 @@ update_values()
 ###
 ###Main
 initialize $1
-update_values $1 $2
+#special case: vulnwhisp record collector, which fails without data in database
+if [ $1 = "vulnwhisp" ] && [ -f "$vulnwhisp_log" ];then
+  #check if created logfile contains empty database
+  #which reports as: referenced before assigned
+    if grep -q "ERROR: local variable 'report' referenced before assignment" "$vulnwhisp_log";then
+      #Failed becaues empty database; Interpret as SUCCESS
+      update_values $1 SUCCESS
+    else
+      #Really Failed
+      update_values $1 $2
+    fi
+  #Get rid of logging file
+    rm "$vulnwhisp_log"
+#special case: openvas record collector, which fails without data in database
+else
+# if not special case, then proceed as usual
+  update_values $1 $2
+fi
 #remove tempfile if exist
 if [ -f "$tempfile" ];then
 
