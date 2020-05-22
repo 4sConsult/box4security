@@ -20,6 +20,9 @@ sudo git clone https://cMeyer:QVXq8i5FxSNEH_YEmze3@gitlab.am-gmbh.de/cmeyer/b4s-
 # Copy gollum config to wiki root
 cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 
+#Owner der Skripte zur score Berechnung anpassen
+sudo chown -R amadmin:amadmin /home/amadmin/box4s/scripts/Automation/score_calculation/
+
 # Stop des Services
 echo "Stopping BOX4s Service. The BOX4s service will automatically restart after the update is complete. Please wait."
 sleep 8

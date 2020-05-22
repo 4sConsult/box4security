@@ -13,6 +13,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 
+* Fehler bei der Berechnung der Scores (IT-Security, Alarm, Schwachstellen) behoben
+
 ### Deprecated
 
 ### Removed
