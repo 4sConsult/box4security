@@ -9,6 +9,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 - Neben offizieller, geschützer Dokumentation wurde die Möglichkeit eingefügt, eigene Seiten der Doku zu erstellen.
 
 ### Changed
+- Dashboard des Schwachstellen-Verlaufs zeigt nun den Verlauf der letzten 90 Tage.
+- Zahlen der einzelnen Schwachstellenkategorie des Schwachstellen-Verlauf-Dashboards basieren nun auf den letzten 7 Tagen.
 
 
 ### Fixed
