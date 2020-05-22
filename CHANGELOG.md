@@ -16,6 +16,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Fehler in der automatischen Überwachung wiederkehrender Aufgaben behoben
 * Fehler bei der Berechnung der Scores (IT-Security, Alarm, Schwachstellen) behoben
 * Fehler behoben, bei dem das wöchentliche Update der Ressourcen zum Fehlschlagen von GeoIP-Auflösungen führte.
+* Fehler behoben, bei dem die Schwachstellenauswertung nicht in die Visualiserung übertragen wurde.
 
 ### Deprecated
 
