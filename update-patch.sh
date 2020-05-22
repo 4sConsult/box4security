@@ -48,7 +48,10 @@ sleep 8
 sudo systemctl stop box4security.service
 
 # Delete Auditbeat images
+# Allow failing
+set +e
 docker images -a | grep "auditbeat" | awk '{print $3}' | xargs docker rmi
+set -e
 
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
