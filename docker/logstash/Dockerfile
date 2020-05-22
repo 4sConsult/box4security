@@ -34,12 +34,6 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/metricbeat/30-preBOX4s.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/metricbeat/40-BOX4sspecial.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/50-DNS_Resolv.conf && \
-	# Winlogbeat
-	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/15-dns_resolv.conf && \
-	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/winlogbeat/20-BeatClientIP.conf && \
-	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/winlogbeat/30-preBOX4s.conf && \
-	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/winlogbeat/40-BOX4sspecial.conf && \
-	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/winlogbeat/50-DNS_Resolv.conf && \
 	# Heartbeat
 	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/heartbeat/20-BeatClientIP.conf && \
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/heartbeat/30-preBOX4s.conf && \
