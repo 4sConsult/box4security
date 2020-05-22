@@ -12,7 +12,7 @@
           <p class="">Ihre Berechtigungen:</p>
                 <div class="ui two link cards">
                     {% for r in current_user.roles %}
-                    {% set role_url = r.name|lower|urlencode %}
+                    {% set role_url = r.name|lower|urlencode|replace('wiki','docs') %}
                     <a class="ui card" href=//{{request.host}}/{{role_url}}>
                       <div class="content">
                       <div class="header">
