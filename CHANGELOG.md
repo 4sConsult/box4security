@@ -6,6 +6,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 - Plattform zur Dokumentation eingefügt.
 - Neue Rolle zur Freigabe der Dokumentation eingefügt.
+- Neben offizieller, geschützer Dokumentation wurde die Möglichkeit eingefügt, eigene Seiten der Doku zu erstellen.
 
 ### Changed
 
