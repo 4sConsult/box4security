@@ -20,6 +20,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Deprecated
 
 ### Removed
+* Auditbeat als ehemalige Endgerätelösung zugunsten Wazuhs abgelöst.
+* Datenverarbeitung von ehemaligen Endgerätelösungen Auditbeat und Winlogbeat entfernt.
 
 ## [1.8.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.1) - 2020-05-13
 

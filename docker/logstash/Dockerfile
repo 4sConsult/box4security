@@ -28,11 +28,6 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/suricata/30-preBOX4s.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/40-BOX4sspecial.conf && \
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/suricata/50-DNS_Resolv.conf && \
-	# Auditbeat
-	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/auditbeat/20-BeatClientIP.conf && \
-	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/auditbeat/30-preBOX4s.conf && \
-	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/auditbeat/40-BOX4sspecial.conf && \
-	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/auditbeat/50-DNS_Resolv.conf && \
 	# Metricbeat
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf && \
 	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/metricbeat/20-BeatClientIP.conf && \

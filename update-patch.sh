@@ -47,6 +47,9 @@ echo "Stopping BOX4s Service. The BOX4s service will automatically restart after
 sleep 8
 sudo systemctl stop box4security.service
 
+# Delete Auditbeat images
+docker images -a | grep "auditbeat" | awk '{print $3}' | xargs docker rmi
+
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 

@@ -19,9 +19,6 @@
   pipeline.batch.delay: 150
   queue.checkpoint.interval: 500
   path.config: "/etc/logstash/conf.d/suricata/*.conf"
-- pipeline.id: auditbeat_filter
-  queue.type: memory
-  path.config: "/etc/logstash/conf.d/auditbeat/*.conf"
 - pipeline.id: heartbeat_filter
   path.config: "/etc/logstash/conf.d/heartbeat/*.conf"
 - pipeline.id: winlogbeat_filter
@@ -40,10 +37,7 @@
              port => "5044"
           }}
    output {
-   if [@metadata][beat] == "auditbeat" {
-      pipeline { send_to => ["auditbeat_pipe"] }
-   }
-   else if [@metadata][beat] == "heartbeat" {
+   if [@metadata][beat] == "heartbeat" {
       pipeline { send_to => ["heartbeat_pipe"] }
      }
    else if [fields][event][type] == "suricata" {
