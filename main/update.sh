@@ -57,7 +57,7 @@ function rollback() {
   rm -rf /var/lib/box4s/backup/ssl
 
   echo "Stelle Dokumentation wieder her"
-  rm -rf /var/lib/box4s/backup/wiki/*
+  rm -rf /var/lib/box4s_docs/*
   cp -R /var/lib/box4s/backup/wiki/* /var/lib/box4s_docs/
   rm -rf /var/lib/box4s/backup/wiki
 
