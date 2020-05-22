@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 
+* Fehler in der automatischen Überwachung wiederkehrender Aufgaben behoben
 ### Deprecated
 
 ### Removed
