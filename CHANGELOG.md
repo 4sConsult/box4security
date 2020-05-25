@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.8.2](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/x.x.x) - 2020-x-x
+## [1.8.2-rc](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.2-rc) - 2020-05-25
 
 ### Added
 - Plattform zur Dokumentation eingefügt.
