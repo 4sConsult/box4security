@@ -55,22 +55,6 @@ services:
       - data:/data
       - varlib_suricata:/var/lib/suricata/
       - varlib_box4s:/var/lib/box4s/
-  auditbeat:
-    build: auditbeat/.
-    container_name: auditbeat
-    privileged: true
-    pid: "host"
-    cap_add:
-      - AUDIT_READ
-      - AUDIT_CONTROL
-      - NET_ADMIN
-    depends_on:
-      logstash:
-        condition: service_healthy
-    image: "docker-registry.am-gmbh.de/it-security/b4s/auditbeat:dev"
-    restart: on-failure
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
