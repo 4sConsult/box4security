@@ -65,5 +65,9 @@ sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh el
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx || sleep 30
+
+# Apply new vuln-progress dashboard
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
+
 # Update Suricata
 sudo docker exec suricata /root/scripts/update.sh || sleep 1
