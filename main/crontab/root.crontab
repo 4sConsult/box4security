@@ -5,7 +5,7 @@ MAILTO=box@4sconsult.de
 0 */6 * * *  echo "" > /data/suricata/eve.json  && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log FAILURE
 
 # Collect OpenVAS Reports
-*/30 * * * *  docker exec -it openvas /root/vulnwhisp.sh && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh vulnwhisp SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh vulnwhisp FAILURE
+*/30 * * * *  docker exec -it openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh vulnwhisp SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh vulnwhisp FAILURE
 
 # Update Resources on Sunday at 9 am
 0 9 * * 0 $BASEDIR/$GITDIR/scripts/Automation/resourceupdate.sh && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh resourceupdate_sunday SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh resourceupdate_sunday FAILURE
@@ -14,4 +14,4 @@ MAILTO=box@4sconsult.de
 @daily docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update FAILURE
 
 # OpenVAS update
-@daily docker exec openvas /root/update.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update FAILURE
+@daily docker exec openvas /root/update.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh openvas_update SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh openvas_update FAILURE

@@ -1,6 +1,31 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [1.8.2](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.2) - 2020-05-27
+
+### Added
+- Plattform zur Dokumentation eingefügt.
+- Neue Rolle zur Freigabe der Dokumentation eingefügt.
+- Neben offizieller, geschützer Dokumentation wurde die Möglichkeit eingefügt, eigene Seiten der Doku zu erstellen.
+
+### Changed
+- Dashboard des Schwachstellen-Verlaufs zeigt nun den Verlauf der letzten 90 Tage.
+- Zahlen der einzelnen Schwachstellenkategorie des Schwachstellen-Verlauf-Dashboards basieren nun auf den letzten 7 Tagen.
+
+
+### Fixed
+
+* Fehler in der automatischen Überwachung wiederkehrender Aufgaben behoben.
+* Fehler bei der Berechnung der Scores (IT-Security, Alarm, Schwachstellen) behoben.
+* Fehler behoben, bei dem das wöchentliche Update der Ressourcen zum Fehlschlagen von GeoIP-Auflösungen führte.
+* Fehler behoben, bei dem die Schwachstellenauswertung nicht in die Visualiserung übertragen wurde.
+
+### Deprecated
+
+### Removed
+* Auditbeat als ehemalige Endgerätelösung zugunsten Wazuhs abgelöst.
+* Datenverarbeitung von ehemaligen Endgerätelösungen Auditbeat und Winlogbeat entfernt.
+
 ## [1.8.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.1) - 2020-05-13
 
 ### Added

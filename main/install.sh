@@ -278,12 +278,25 @@ sudo chown root:root /var/lib/elastalert/rules
 sudo chmod -R 777 /var/lib/elastalert/rules
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
 
+# Setup Wiki volume
+sudo mkdir -p /var/lib/box4s_docs
+sudo chown root:root /var/lib/box4s_docs
+sudo chmod -R 777 /var/lib/box4s_docs
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_docs --opt o=bind varlib_docs
+
 ##################################################
 #                                                #
 # Installing Box                                 #
 #                                                #
 ##################################################
 banner "BOX4security ..."
+
+# Initially clone the Wiki repo
+cd /var/lib/box4s_docs
+sudo git clone https://cMeyer:QVXq8i5FxSNEH_YEmze3@gitlab.am-gmbh.de/cmeyer/b4s-docs.git .
+
+# Copy gollum config to wiki root
+cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 
 # Copy config files
 cd /home/amadmin/box4s
@@ -392,8 +405,15 @@ sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 
+#Make new directory for cronjobchecker
+sudo mkdir /var/log/cronchecker
+sudo chown amadmin:amadmin /var/log/cronchecker
+
 echo "### Make scripts executable"
 chmod +x -R /home/amadmin/box4s/scripts
+
+#Owner der Skripte zur score Berechnung anpassen
+sudo chown -R amadmin:amadmin /home/amadmin/box4s/scripts/Automation/score_calculation/
 
 ##################################################
 #                                                #
@@ -429,7 +449,7 @@ echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto)
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
 
 echo "### Wait for kibana to become available ..."
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || echo ''
 #wait for 6 minutes and 40 seconds until kibana and wazuh have started to insert patterns
 sleep 400
 
