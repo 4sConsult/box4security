@@ -7,6 +7,9 @@ set -e
 
 #########################
 
+#Fixed Schwachstellen Dashboard inserten
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
+
 # Download and correctly extract GeoIP DB
 
 # Stop des Services
