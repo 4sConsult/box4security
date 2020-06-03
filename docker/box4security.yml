@@ -15,7 +15,7 @@ services:
     volumes:
      - data:/data
     env_file:
-      - ./.env.es
+      - elasticsearch/.env.es
   kibana:
     build: kibana/.
     container_name: kibana
@@ -81,7 +81,7 @@ services:
         condition: service_healthy
     env_file:
      - /etc/default/logstash
-     - ./.env.ls
+     - logstash/.env.ls
     ports:
       - 9600:9600
       - 5044:5044
@@ -125,7 +125,7 @@ services:
     extra_hosts:
       - "dockerhost:${INT_IP}"
     env_file:
-      - ./.env.prod.web
+      - web/.env.prod.web
       - ../VERSION
     environment:
       - KUNDE
@@ -142,7 +142,7 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     env_file:
-      - ./.env.prod.db
+      - db/.env.prod.db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
