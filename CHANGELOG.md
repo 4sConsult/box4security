@@ -1,6 +1,23 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## X.X.X - 2020-06-24
+
+### Added
+
+
+### Changed
+
+
+### Fixed
+* Fehlerhafte Datenauswahl im Schwachstellenverlauf für kritisches und hohes Risiko behoben
+
+### Deprecated
+
+
+### Removed
+
+
 ## [1.8.2](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.2) - 2020-05-27
 
 ### Added
