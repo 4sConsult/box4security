@@ -2,8 +2,7 @@ FROM registry.gitlab.com/4sconsult/box4s/baseimage:dev
 
 ADD etc/ /root/etc/
 
-RUN apt-fast update && \
-	  apt-fast install -y filebeat=7.6.2 && \
+RUN apt-fast install -y filebeat=7.6.2 && \
     rm -rf /var/lib/apt/lists/* && \
     cp /root/etc/* /etc/filebeat/ -R && \
     mkdir -p /var/log/filebeat

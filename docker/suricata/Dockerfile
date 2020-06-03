@@ -4,9 +4,7 @@ ADD scripts/ /root/scripts/
 ADD etc/ /root/etc/
 ADD var_lib/ /root/var_lib/
 
-RUN add-apt-repository ppa:oisf/suricata-stable && \
-    apt-fast update && \
-    apt-fast install -y suricata=5.0.3-0ubuntu3 oinkmaster && \
+RUN apt-fast install -y suricata=5.0.3-0ubuntu3 oinkmaster && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/suricata/scripts/ && \
     mkdir -p /var/lib/suricata/rules/ && \

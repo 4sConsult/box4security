@@ -2,8 +2,7 @@ FROM registry.gitlab.com/4sconsult/box4s/baseimage:dev
 
 ADD	etc/ /root/etc/
 
-RUN	apt-fast update && \
-	apt-fast install -y logstash=1:7.6.2-1 && \
+RUN	apt-fast install -y logstash=1:7.6.2-1 && \
 	wget -O /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar https://jdbc.postgresql.org/download/postgresql-42.2.8.jar && \
 	mkdir -p /var/log/logstash && \
 	mkdir -p /etc/box4s && \
