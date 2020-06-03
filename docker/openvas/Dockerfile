@@ -1,4 +1,4 @@
-FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
+FROM registry.gitlab.com/4sconsult/box4s/baseimage:dev
 
 ENV DEBIAN_FRONTEND=noninteractive
 ADD etc/vuln_openvas.ini /etc/vulnwhisperer/vulnwhisperer.ini
