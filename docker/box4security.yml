@@ -4,14 +4,14 @@ services:
   baseimage:
     build: baseimage/.
     container_name: baseimage
-    image: "docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/baseimage:dev"
   elasticsearch:
     build: elasticsearch/.
     container_name: elasticsearch
     restart: always
     ports:
      - 9200:9200
-    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/elasticsearch:dev"
     volumes:
      - data:/data
     env_file:
@@ -24,7 +24,7 @@ services:
      - INT_IP=${INT_IP}
     ports:
      - 5601:5601
-    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/kibana:dev"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -40,12 +40,12 @@ services:
     volumes:
       - varlib_openvas:/var/lib/openvas
       - varlib_logstash:/var/lib/logstash
-    image: "docker-registry.am-gmbh.de/it-security/b4s/openvas:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
   suricata:
     build: suricata/.
     container_name: suricata
     restart: always
-    image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/suricata:dev"
     network_mode: "host"
     env_file:
       - suricata/.env
@@ -59,14 +59,14 @@ services:
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
-    image: "docker-registry.am-gmbh.de/it-security/b4s/metricbeat:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/metricbeat:dev"
     depends_on:
       elasticsearch:
         condition: service_healthy
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat
-    image: "docker-registry.am-gmbh.de/it-security/b4s/heartbeat:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/heartbeat:dev"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -86,7 +86,7 @@ services:
       - 9600:9600
       - 5044:5044
       - 5046:5046
-    image: "docker-registry.am-gmbh.de/it-security/b4s/logstash:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/logstash:dev"
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - etcbox4s_logstash:/etc/logstash/conf.d/general/
@@ -97,13 +97,13 @@ services:
     depends_on:
       logstash:
         condition: service_healthy
-    image: "docker-registry.am-gmbh.de/it-security/b4s/filebeat:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/filebeat:dev"
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - data:/data
   web:
     container_name: web
-    image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/web:dev"
     build:
       context: ./web
       dockerfile: Dockerfile.prod
@@ -134,7 +134,7 @@ services:
         condition: service_healthy
   db:
     container_name: db
-    image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/db:dev"
     build:
       context: ./db
     volumes:
@@ -150,7 +150,7 @@ services:
       retries: 5
   nginx:
     container_name: nginx
-    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/nginx:dev"
     build:
       context: ./nginx
     ports:
@@ -167,7 +167,7 @@ services:
 
   dnsmasq:
     container_name: dnsmasq
-    image: "docker-registry.am-gmbh.de/it-security/b4s/dnsmasq:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/dnsmasq:dev"
     build:
       context: ./dnsmasq
     ports:
@@ -180,7 +180,7 @@ services:
       - "docker-registry.am-gmbh.de:10.30.5.4"
   wazuh:
     container_name: wazuh
-    image: "docker-registry.am-gmbh.de/it-security/b4s/wazuh:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/wazuh:dev"
     build:
       context: ./wazuh
     hostname: wazuh-manager
@@ -192,7 +192,7 @@ services:
       - "55000:55000"
   elastalert:
     container_name: elastalert
-    image: "docker-registry.am-gmbh.de/it-security/b4s/elastalert:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/elastalert:dev"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -206,7 +206,7 @@ services:
       - 3333:3333
   wiki:
     container_name: wiki
-    image: "docker-registry.am-gmbh.de/it-security/b4s/wiki:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/wiki:dev"
     build:
       context: ./wiki
     restart: always
