@@ -1,4 +1,4 @@
-FROM ruby
+FROM ruby:2.7.1
 RUN apt-get -y update && \
   apt-get -y install libicu-dev cmake && \
   rm -rf /var/lib/apt/lists/* && \
