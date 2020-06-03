@@ -4,7 +4,7 @@ Als Rolle möchte ich Feature haben, damit ich Aktion tun kann.
 
 ## Was ist der Lösungsvorschlag?
 
-## Aufgaben
+## Sprint Backlog Items
 Die folgenden Aufgaben müssen erledigt werden, um die User Story zu implementieren:
 - [ ] ...
 - [ ] ...
