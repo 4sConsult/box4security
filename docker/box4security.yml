@@ -135,8 +135,7 @@ services:
   db:
     container_name: db
     image: "registry.gitlab.com/4sconsult/box4s/db:dev"
-    build:
-      context: ./db
+    build: db/.
     volumes:
       - varlib_postgresql/:/var/lib/postgresql/data
     ports:
@@ -151,8 +150,7 @@ services:
   nginx:
     container_name: nginx
     image: "registry.gitlab.com/4sconsult/box4s/nginx:dev"
-    build:
-      context: ./nginx
+    build: nginx/.
     ports:
       - 80:80
       - 443:443
@@ -168,8 +166,7 @@ services:
   dnsmasq:
     container_name: dnsmasq
     image: "registry.gitlab.com/4sconsult/box4s/dnsmasq:dev"
-    build:
-      context: ./dnsmasq
+    build: dnsmasq/.
     ports:
       - 53:5353/tcp
       - 53:5353/udp
@@ -181,8 +178,7 @@ services:
   wazuh:
     container_name: wazuh
     image: "registry.gitlab.com/4sconsult/box4s/wazuh:dev"
-    build:
-      context: ./wazuh
+    build: wazuh/.
     hostname: wazuh-manager
     restart: always
     ports:
@@ -196,8 +192,7 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
-    build:
-      context: ./elastalert
+    build: elastalert/.
     restart: always
     volumes:
       - varlib_elastalert_rules:/opt/elastalert/rules
@@ -207,8 +202,7 @@ services:
   wiki:
     container_name: wiki
     image: "registry.gitlab.com/4sconsult/box4s/wiki:dev"
-    build:
-      context: ./wiki
+    build: wiki/.
     restart: always
     volumes:
       - varlib_docs:/wiki/
