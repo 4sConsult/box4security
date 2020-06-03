@@ -13,10 +13,9 @@ RUN apt update && \
     mkdir -p /var/lib/logstash/openvas && \
     mkdir -p /var/lib/logstash/database && \
     chmod 777 -R /var/lib/logstash && \
-    git clone https://github.com/box4s/VulnWhisperer.git /opt/VulnWhisperer/
-WORKDIR /opt/VulnWhisperer/
-RUN pip install -r requirements.txt && \
-    python setup.py install && \
+    git clone https://github.com/box4s/VulnWhisperer.git /opt/VulnWhisperer/ && \
+    pip install -r /opt/VulnWhisperer/requirements.txt && \
+    python /opt/VulnWhisperer/setup.py install && \
     chmod +x /root/insertconfig.sh && \
     chmod +x /root/start.sh && \
     chmod +x /root/update.sh && \
