@@ -2,8 +2,8 @@ FROM registry.gitlab.com/4sconsult/box4s/baseimage:dev
 
 ADD etc/ /root/etc/
 
-RUN apt update && \
-	  apt install -y heartbeat-elastic=7.6.2 && \
+RUN apt-fast update && \
+	  apt-fast install -y heartbeat-elastic=7.6.2 && \
     rm -rf /var/lib/apt/lists/* && \
     cp /root/etc/* /etc/heartbeat/ -R && \
     mkdir -p /var/log/filebeat

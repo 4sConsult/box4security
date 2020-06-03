@@ -4,11 +4,9 @@ ADD scripts/ /root/scripts/
 ADD etc/ /root/etc/
 ADD var_lib/ /root/var_lib/
 
-RUN apt update && \
-    apt install -y software-properties-common python python-pip && \
-    add-apt-repository ppa:oisf/suricata-stable && \
-    apt update && \
-    apt install -y suricata=5.0.3-0ubuntu3 oinkmaster && \
+RUN add-apt-repository ppa:oisf/suricata-stable && \
+    apt-fast update && \
+    apt-fast install -y suricata=5.0.3-0ubuntu3 oinkmaster && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/suricata/scripts/ && \
     mkdir -p /var/lib/suricata/rules/ && \

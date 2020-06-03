@@ -6,8 +6,8 @@ ARG WAZUH_APP_VERSION="${WAZUH_VERSION}_${ELASTIC_VERSION}"
 
 ADD etc/ /root/etc/
 
-RUN     apt update && \
-        apt install -y kibana=${ELASTIC_VERSION} && \
+RUN     apt-fast update && \
+        apt-fast install -y kibana=${ELASTIC_VERSION} && \
         mkdir -p /var/log/kibana && \
         chown kibana:kibana /var/log/kibana -R && \
         rm -rf /var/lib/apt/lists/* && \
