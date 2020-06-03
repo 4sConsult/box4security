@@ -1,5 +1,6 @@
 FROM ubuntu:19.10
-RUN	apt install -y curl && \
+RUN	apt update && \
+	apt install -y curl && \
 	/bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)" && \
   apt-fast update && \
 	apt-fast install -y wget apt-transport-https openjdk-11-jre gnupg software-properties-common python python-pip && \
