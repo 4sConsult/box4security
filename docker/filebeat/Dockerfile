@@ -1,4 +1,4 @@
-FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
+FROM registry.gitlab.com/4sconsult/box4s/baseimage:dev
 
 ADD etc/ /root/etc/
 

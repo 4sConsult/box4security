@@ -1,4 +1,4 @@
-FROM ubuntu:19.10
+FROM registry.gitlab.com/4sconsult/box4s/baseimage:dev
 RUN	apt update && \
 	apt install -y curl wget apt-transport-https openjdk-11-jre gnupg && \
 	rm -rf /var/lib/apt/lists/*
