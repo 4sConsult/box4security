@@ -10,6 +10,10 @@ echo "Starting OpenVAS Manager ..."
 /usr/sbin/openvasmd --rebuild --progress
 /usr/sbin/openvasmd --listen=127.0.0.1 --port=9390 --database=/var/lib/openvas/mgr/tasks.db
 
+echo "Inserting 4sConsult config ..."
+chmod +x /root/insertconfig.sh
+/root/insertconfig.sh
+
 echo "Starting OpenVAS Scanner ..."
 /usr/sbin/openvassd --unix-socket=/var/run/openvassd.sock
 

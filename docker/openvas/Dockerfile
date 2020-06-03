@@ -8,9 +8,6 @@ ADD scripts/ /root/
 RUN apt update && \
     apt install git zlib1g-dev libxml2-dev libxslt1-dev virtualenv python python3-venv python-pip net-tools alien rpm nsis openvas=9.0.3 -y -o Dpkg::Options::=--force-confnew && \
     rm -rf /var/lib/apt/lists/* && \
-    openvas-start && \
-    chmod +x /root/insertconfig.sh && \
-    /root/insertconfig.sh && \
     mkdir -p /var/lib/logstash/openvas && \
     mkdir -p /var/lib/logstash/database && \
     chmod 777 -R /var/lib/logstash && \
