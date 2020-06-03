@@ -318,6 +318,7 @@ class Alert(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('yaml', type=str)
 
+    @roles_required(['Super Admin', 'Alerts'])
     def get(self, alert_id):
         """Read a single Alert Rule by ID.
 
@@ -325,6 +326,7 @@ class Alert(Resource):
         """
         return requests.get(f"http://elastalert/rules/{alert_id}").json()
 
+    @roles_required(['Super Admin', 'Alerts'])
     def post(self, alert_id):
         """Edit/Update a single Alert Rule by ID.
 
@@ -332,9 +334,11 @@ class Alert(Resource):
         """
         return requests.post(f"http://elastalert/rules/{alert_id}", json=json.dumps(self.args['yaml'])).json()
 
+    @roles_required(['Super Admin', 'Alerts'])
     def put(self):
         return {}, 501
 
+    @roles_required(['Super Admin', 'Alerts'])
     def delete(self, alert_id):
         """Delete a single Alert Rule by ID.
 
@@ -346,6 +350,7 @@ class Alert(Resource):
 class Alerts(Resource):
     """API representation of all alert rules."""
 
+    @roles_required(['Super Admin', 'Alerts'])
     def get(self):
         """Get all alert rules.
 
