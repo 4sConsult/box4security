@@ -1,6 +1,21 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [xxx](xxx) - xxxx-xx-xx
+
+### Added
+
+### Changed
+
+### Optimized
+* Bei jedem Update werden die alten Dockerimages gelöscht, um Speicherplatz zu sparen
+
+### Fixed
+
+### Deprecated
+
+### Removed
+
 ## [1.8.2](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.2) - 2020-05-27
 
 ### Added
