@@ -450,13 +450,6 @@ echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto)
 
 echo "### Wait for kibana to become available ..."
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || echo ''
-#wait for 6 minutes and 40 seconds until kibana and wazuh have started to insert patterns
-sleep 400
-
-while curl -s "localhost:5601/kibana" | grep "Kibana server is not ready yet"
-do
-   sleep 2
-done
 
 # Import Dashboard
 echo "### Install dashboards"

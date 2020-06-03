@@ -30,7 +30,7 @@ RUN chmod +x /entrypoint.sh
 ADD etc/ /root/etc/
 RUN cp /root/etc/kibana/* /etc/kibana/ -R
 
-HEALTHCHECK --retries=50 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana/api/status'
+HEALTHCHECK --retries=50 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana/api/status' | grep -v "Kibana server is not ready yet" || exit 1
 STOPSIGNAL SIGKILL
 USER kibana:kibana
 ENTRYPOINT ["/entrypoint.sh"]

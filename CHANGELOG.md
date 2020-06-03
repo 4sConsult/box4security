@@ -11,6 +11,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Bei jedem Update werden die alten Dockerimages gelöscht, um Speicherplatz zu sparen
 
 ### Fixed
+* Fehlerhafte Datenauswahl im Schwachstellenverlauf für kritisches und hohes Risiko behoben
 
 ### Deprecated
 
