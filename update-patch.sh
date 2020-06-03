@@ -5,17 +5,22 @@ TAG=""
 # Exit on every error
 set -e
 
-#########################
-
-#Fixed Schwachstellen Dashboard inserten
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
-
-# Download and correctly extract GeoIP DB
-
-# Stop des Services
-echo "Stopping BOX4s Service. The BOX4s service will automatically restart after the update is complete. Please wait."
-sleep 8
+echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
+
+# Remove all images, that are on the target system on every update
+sudo docker rmi $(sudo docker images -a -q)
+
+# Making sure to be logged in with the correct account
+sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
+
+# Get the current images
+sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+
+###################
+# Changes here
+
+###################
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
@@ -27,6 +32,4 @@ sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh lo
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx || sleep 30
 
-
-# Update Suricata
-sudo docker exec suricata /root/scripts/update.sh || sleep 1
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
