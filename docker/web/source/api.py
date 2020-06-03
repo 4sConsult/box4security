@@ -6,6 +6,7 @@ from flask import request, render_template
 import requests
 import os
 import subprocess
+import json
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 
@@ -306,17 +307,60 @@ class UpdateStatus(Resource):
 
 
 class Alert(Resource):
-    def get(self, alert_id):
-        return {}, 501
+    """API representation of a single alert by ID.
 
-    def post(self):
-        return {}, 501
+    Read, Update and Delete are wrapping around the ElastAlert API (https://github.com/bitsensor/elastalert#api).
+    Creating is creating a yaml rule file in the rulePath.
+    """
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('yaml', type=str)
+
+    def get(self, alert_id):
+        """Read a single Alert Rule by ID.
+
+        Wraps around ElastAlert's /rules/:id
+        """
+        return requests.get(f"http://elastalert/rules/{alert_id}").json()
+
+    def post(self, alert_id):
+        """Edit/Update a single Alert Rule by ID.
+
+        Wraps around ElastAlert's /rules/:id
+        """
+        return requests.post(f"http://elastalert/rules/{alert_id}", json=json.dumps(self.args['yaml']))
 
     def put(self):
         return {}, 501
 
-    def delete(self):
-        return {}, 501
+    def delete(self, alert_id):
+        """Delete a single Alert Rule by ID.
+
+        Wraps around ElastAlert's /rules/:id
+        """
+        return request.delete(f"http://elastalert/rules/{alert_id}")
+
+
+class Alerts(Resource):
+    """API representation of all alert rules."""
+
+    def get(self):
+        """Get all alert rules.
+
+        Wrap around ElastAlert GET /rules endpoint:
+        Returns a list of directories and rules that exist in the rulesPath (from the config) and are being run by the ElastAlert process.
+        """
+        try:
+            ea = requests.get("http://elastalert/rules")
+            return ea.json()
+        except Timeout:
+            abort(504, message="Alert API Timeout")
+        except ConnectionError:
+            abort(503, message="Alert API unreachable")
+        except Exception:
+            abort(502, message="Alert API Failure")
 
 
 class APIUser(Resource):
