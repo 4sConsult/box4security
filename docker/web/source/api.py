@@ -330,7 +330,7 @@ class Alert(Resource):
 
         Wraps around ElastAlert's /rules/:id
         """
-        return requests.post(f"http://elastalert/rules/{alert_id}", json=json.dumps(self.args['yaml']))
+        return requests.post(f"http://elastalert/rules/{alert_id}", json=json.dumps(self.args['yaml'])).json()
 
     def put(self):
         return {}, 501
@@ -340,7 +340,7 @@ class Alert(Resource):
 
         Wraps around ElastAlert's /rules/:id
         """
-        return request.delete(f"http://elastalert/rules/{alert_id}")
+        return request.delete(f"http://elastalert/rules/{alert_id}").json()
 
 
 class Alerts(Resource):
