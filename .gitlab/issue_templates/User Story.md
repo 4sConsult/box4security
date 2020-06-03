@@ -4,7 +4,7 @@ Als Rolle möchte ich Feature haben, damit ich Aktion tun kann.
 
 ## Was ist der Lösungsvorschlag?
 
-## Aufgaben
+## Sprint Backlog Items
 Die folgenden Aufgaben müssen erledigt werden, um die User Story zu implementieren:
 - [ ] ...
 - [ ] ...
@@ -14,12 +14,3 @@ Die folgenden Aufgaben müssen erledigt werden, um die User Story zu implementie
 - [ ] Sollte den aktuellen Stand vor Beginn dokumentiert haben
 - [ ] Sollte den Lösungsvorschlag vor Beginn dokumentiert haben
 - [ ] Sollte *‹testbares Kriterium, das erfüllt sein sollte›*
-- [ ] …
-
-| Eigenschaft       | Wert   |
-| -----------       | ----   |
-| Business Value    | x      |
-| Story Points      | x      |
-| Zugehöriges Epic  | #      |
-
-`In dieser User Story wird zunächst keine Business Value gepflegt.`
