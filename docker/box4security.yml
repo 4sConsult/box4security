@@ -14,8 +14,8 @@ services:
     image: "registry.gitlab.com/4sconsult/box4s/elasticsearch:dev"
     volumes:
      - data:/data
-    env_file:
-      - elasticsearch/.env.es
+    #env_file:
+    #  - elasticsearch/.env.es
   kibana:
     build: kibana/.
     container_name: kibana
