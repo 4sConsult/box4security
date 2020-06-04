@@ -2,7 +2,7 @@ FROM docker.elastic.co/logstash/logstash:7.6.2
 
 USER root
 COPY --chown=logstash:logstash etc/ /etc/logstash/
-COPY --chown=logstash:logstash etc/ /root/etc/
+COPY --chown=logstash:logstash etc/ /usr/share/logstash/config/
 RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
 	mkdir -p /var/log/logstash && \
 	mkdir -p /etc/box4s && \
@@ -36,6 +36,7 @@ RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /us
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location && \
 	chown logstash:logstash /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
 	chown logstash:logstash /var/log/logstash -R && \
+	chown logstash:logstash /usr/share/logstash/config -R
 	chown logstash:logstash /etc/logstash -R
 
 USER logstash:logstash
