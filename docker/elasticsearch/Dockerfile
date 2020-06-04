@@ -1,4 +1,5 @@
 FROM docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+
 RUN	mkdir -p /var/log/elasticsearch/ && \
 	mkdir -p /data && \
 	touch /var/log/elasticsearch/gc.log && \
