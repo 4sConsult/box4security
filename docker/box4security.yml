@@ -1,10 +1,6 @@
 version: '2.3'
 
 services:
-  baseimage:
-    build: baseimage/.
-    container_name: baseimage
-    image: "registry.gitlab.com/4sconsult/box4s/baseimage:dev"
   elasticsearch:
     build: elasticsearch/.
     container_name: elasticsearch
