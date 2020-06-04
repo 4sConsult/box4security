@@ -2,8 +2,7 @@ FROM docker.elastic.co/logstash/logstash:7.6.2
 
 COPY --chown=logstash:logstash etc/* /usr/share/logstash/config/
 
-RUN	apt-fast install -y logstash=1:7.6.2-1 && \
-	wget -O /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar https://jdbc.postgresql.org/download/postgresql-42.2.8.jar && \
+RUN	wget -O /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar https://jdbc.postgresql.org/download/postgresql-42.2.8.jar && \
 	mkdir -p /var/log/logstash && \
 	mkdir -p /etc/box4s && \
 	mkdir -p /usr/share/logstash/config/ && \
