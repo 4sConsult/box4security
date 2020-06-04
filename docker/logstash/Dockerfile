@@ -1,7 +1,7 @@
 FROM docker.elastic.co/logstash/logstash:7.6.2
 
 USER root
-COPY --chown=logstash:logstash etc/* /usr/share/logstash/config/
+COPY --chown=logstash:logstash etc/ /usr/share/logstash/config/
 RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
 	mkdir -p /var/log/logstash && \
 	mkdir -p /etc/box4s && \
