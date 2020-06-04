@@ -36,24 +36,6 @@ Usage:
 Options:
         sudo $0 --manual - All available tags will be available for install - All of them."
 
-VPNSERVICE='\
-[Unit]
-Description=vpn
-After=network.target
-
-[Service]
-Type=simple
-Restart=always
-Environment=VPN_PASS=FXFAu8HfFY
-Environment=VPN_USER=box4s
-
-# VPN-Tunnel aufbauen
-ExecStart=/bin/sh -c "echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on-stdin connect.am-gmbh.de"
-
-[Install]
-WantedBy=multi-user.target
-'
-
 ##################################################
 #                                                #
 # Functions                                      #
@@ -122,15 +104,8 @@ fi
 
 echo "### Setting up VPN-Connection"
 waitForNet
-sudo apt install -y openconnect
 echo "10.30.5.4 gitlab.am-gmbh.de" >> /etc/hosts
 echo "10.30.5.4 docker-registry.am-gmbh.de" >> /etc/hosts
-touch /etc/systemd/system/vpn.service
-echo "$VPNSERVICE" >> /etc/systemd/system/vpn.service
-sudo chmod 755 /etc/systemd/system/vpn.service
-sudo systemctl daemon-reload
-sudo systemctl enable vpn.service
-sudo systemctl start vpn.service
 
 echo "### Setting up the environment"
 # Create the user 'amadmin' only if he does not exist
