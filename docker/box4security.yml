@@ -59,7 +59,6 @@ services:
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
-    restart: on_failure
     image: "registry.gitlab.com/4sconsult/box4s/metricbeat:dev"
     depends_on:
       elasticsearch:
@@ -67,7 +66,6 @@ services:
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat
-    restart: on_failure
     image: "registry.gitlab.com/4sconsult/box4s/heartbeat:dev"
     depends_on:
       elasticsearch:
@@ -96,7 +94,6 @@ services:
   filebeat:
     build: filebeat/.
     container_name: filebeat
-    restart: on_failure
     depends_on:
       logstash:
         condition: service_healthy
@@ -107,7 +104,6 @@ services:
   web:
     container_name: web
     image: "registry.gitlab.com/4sconsult/box4s/web:dev"
-    restart: on_failure
     build:
       context: ./web
       dockerfile: Dockerfile.prod
@@ -139,7 +135,6 @@ services:
   db:
     container_name: db
     image: "registry.gitlab.com/4sconsult/box4s/db:dev"
-    restart: on_failure
     build: db/.
     volumes:
       - varlib_postgresql/:/var/lib/postgresql/data
@@ -155,7 +150,6 @@ services:
   nginx:
     container_name: nginx
     image: "registry.gitlab.com/4sconsult/box4s/nginx:dev"
-    restart: on_failure
     build: nginx/.
     ports:
       - 80:80
@@ -172,7 +166,6 @@ services:
   dnsmasq:
     container_name: dnsmasq
     image: "registry.gitlab.com/4sconsult/box4s/dnsmasq:dev"
-    restart: on_failure
     build: dnsmasq/.
     ports:
       - 53:5353/tcp
@@ -209,7 +202,6 @@ services:
   wiki:
     container_name: wiki
     image: "registry.gitlab.com/4sconsult/box4s/wiki:dev"
-    restart: on_failure
     build: wiki/.
     restart: always
     volumes:
