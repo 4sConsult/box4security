@@ -7,7 +7,7 @@ services:
     restart: always
     ports:
      - 9200:9200
-    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/elasticsearch:dev"
     volumes:
      - data:/data
   kibana:
@@ -16,13 +16,13 @@ services:
     restart: always
     ports:
      - 5601:5601
-    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/kibana:dev"
     #depends_on:
     #  elasticsearch:
     #    condition: service_started
     stop_signal: SIGKILL
   web:
-    image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/web:dev"
     build:
       context: ./web
     container_name: web
@@ -47,7 +47,7 @@ services:
       db:
         condition: service_healthy
   db:
-    image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/db:dev"
     build:
       context: ./db
     container_name: db

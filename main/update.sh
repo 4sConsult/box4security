@@ -62,7 +62,6 @@ function rollback() {
   rm -rf /var/lib/box4s/backup/wiki
 
   cd /home/amadmin/box4s/
-  waitForNet gitlab.am-gmbh.de
   git fetch
   git checkout -f $1 >/dev/null 2>&1
 
@@ -87,7 +86,6 @@ function rollback() {
   sleep 8
 
   echo "Setze BOX4security Software auf Version $1 zurück"
-  waitForNet docker-registry.am-gmbh.de
   docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull -q
 
   echo "Starte BOX4security Software neu."
@@ -157,7 +155,6 @@ VERSIONS=()
 # Use Python Script to create array of versions that have to be installed
 # versions between current and the latest
 cd $BASEDIR$GITDIR/main
-waitForNet gitlab.am-gmbh.de
 mapfile -t VERSIONS < <(python3 /home/amadmin/box4s/scripts/Automation/versions.py)
 # GET env from local endpoint and extract it so we can keep it
 ENV=$(curl -sLk localhost/ver/ | jq -r '.env')
@@ -168,7 +165,6 @@ do
    backup $PRIOR
    echo "Installiere Version $v"
    cd $BASEDIR$GITDIR
-   waitForNet gitlab.am-gmbh.de
    git fetch
    cp /home/amadmin/box4s/docker/.env.ls /var/lib/box4s/backup/.env.ls
    cp /home/amadmin/box4s/docker/.env.es /var/lib/box4s/backup/.env.es

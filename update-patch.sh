@@ -26,6 +26,7 @@ sudo systemctl disable vpn.service
 sudo rm /etc/systemd/system/vpn.service
 sudo apt remove --purge openconnect
 
+# TODO clone the repo again with the new url or set new upstream
 
 ###################
 

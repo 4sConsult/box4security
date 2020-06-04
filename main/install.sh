@@ -140,7 +140,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 banner "Tags ..."
 
 # Fetch all TAGS as names
-mapfile -t TAGS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r .[].name)
+mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: mPwNxthpxvmQSaZnv3xZ" | jq -r .[].name)
 
 # If manual isntallation, make all tags visible and choose the tag to install
 if [[ "$*" == *manual* ]]
@@ -157,7 +157,7 @@ then
   echo "$TAG will be installed."
 else
   # not manual, install most recent and valid tag
-  TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
+  TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: mPwNxthpxvmQSaZnv3xZ" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
   echo "Tag $TAG is the most recent available tag."
 fi
 
@@ -173,8 +173,7 @@ exec 2> >(tee "$LOG_FILE.err")
 exec > >(tee "$LOG_FILE.log")
 
 cd /home/amadmin
-waitForNet gitlab.am-gmbh.de
-git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git box4s -b $TAG
+git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/box4s.git box4s -b $TAG
 
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
@@ -254,7 +253,7 @@ banner "BOX4security ..."
 
 # Initially clone the Wiki repo
 cd /var/lib/box4s_docs
-sudo git clone https://cMeyer:QVXq8i5FxSNEH_YEmze3@gitlab.am-gmbh.de/cmeyer/b4s-docs.git .
+sudo git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/docs.git .
 
 # Copy gollum config to wiki root
 cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
@@ -327,8 +326,7 @@ banner "Docker ..."
 
 # Login to docker registry
 echo "### Download docker images"
-waitForNet docker-registry.am-gmbh.de
-sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
+sudo docker login registry.gitlab.com -u deploy -p mPwNxthpxvmQSaZnv3xZ
 
 # Download IP2Location DBs for the first time
 echo "### Setup geolocation database"
