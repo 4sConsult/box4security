@@ -1,6 +1,6 @@
-FROM registry.gitlab.com/4sconsult/box4s/baseimage:dev
+FROM docker.elastic.co/logstash/logstash:7.6.2
 
-ADD	etc/ /root/etc/
+COPY --chown=logstash:logstash etc/* /usr/share/logstash/config/
 
 RUN	apt-fast install -y logstash=1:7.6.2-1 && \
 	wget -O /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar https://jdbc.postgresql.org/download/postgresql-42.2.8.jar && \
@@ -43,5 +43,3 @@ RUN	apt-fast install -y logstash=1:7.6.2-1 && \
 	chown logstash:logstash /etc/logstash -R
 
 HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
-USER logstash:logstash
-CMD ["/usr/share/logstash/bin/logstash" , "--path.settings", "/etc/logstash"]
