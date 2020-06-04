@@ -14,7 +14,11 @@ RUN     ./bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp
         echo "hosts:\n  - default:\n     url: https://${INT_IP}\n     port: 55000\n     user: box4s\n     password: wa3hz0hPW\n" > /usr/share/kibana/optimize/wazuh/config/wazuh.yml
 
 USER root
-RUN chown -f kibana:kibana /usr/share/kibana/optimize/wazuh/config
+RUN chown -f kibana:kibana /usr/share/kibana/optimize/wazuh/config && \
+  mkdir -p /var/log/kibana/ && \
+	mkdir -p /data && \
+	touch /var/log/kibana/kibana.log && \
+	chown kibana:kibana -R /var/log/kibana/
 
 HEALTHCHECK --retries=50 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana/api/status' | grep -v "Kibana server is not ready yet" || exit 1
 STOPSIGNAL SIGKILL
