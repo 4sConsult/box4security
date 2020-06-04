@@ -6,7 +6,7 @@ ADD scripts/ /root/scripts/
 ADD etc/ /root/etc/
 ADD var_lib/ /root/var_lib/
 
-RUN apt update &&
+RUN apt update && \
     apt install -y apt-transport-https software-properties-common && \
     add-apt-repository ppa:oisf/suricata-stable && \
     apt update && \
