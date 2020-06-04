@@ -20,6 +20,13 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 ###################
 # Changes here
 
+# Remove VPN connection
+sudo systemctl stop vpn.service
+sudo systemctl disable vpn.service
+sudo rm /etc/systemd/system/vpn.service
+sudo apt remove --purge openconnect
+
+
 ###################
 
 # Start des Services
