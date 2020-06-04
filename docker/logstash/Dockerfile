@@ -2,6 +2,7 @@ FROM docker.elastic.co/logstash/logstash:7.6.2
 
 COPY --chown=logstash:logstash etc/* /usr/share/logstash/config/
 
+USER root
 RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
 	mkdir -p /var/log/logstash && \
 	mkdir -p /etc/box4s && \
@@ -41,4 +42,5 @@ RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /us
 	chown logstash:logstash /var/log/logstash -R && \
 	chown logstash:logstash /etc/logstash -R
 
+USER logstash:logstash
 HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
