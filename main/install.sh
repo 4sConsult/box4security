@@ -11,10 +11,6 @@ fi
 # Please no interaction
 export DEBIAN_FRONTEND=noninteractive
 
-# VPN Login
-VPN_PASS=FXFAu8HfFY
-VPN_USER=box4s
-
 # Little help text to display if something goes wrong
 HELP="\
 
@@ -142,9 +138,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 #                                                #
 ##################################################
 banner "Tags ..."
-
-# Wait for the VPN to be ready
-waitForNet gitlab.am-gmbh.de
 
 # Fetch all TAGS as names
 mapfile -t TAGS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r .[].name)
