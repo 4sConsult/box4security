@@ -1,4 +1,5 @@
 FROM ubuntu:19.10
+ENV DEBIAN_FRONTEND=noninteractive
 RUN	apt update && \
 	apt install -y curl sudo wget apt-utils && \
 	/bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)" && \
