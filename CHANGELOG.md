@@ -4,6 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [xxx](xxx) - xxxx-xx-xx
 
 ### Added
+* Die Box kann nun über `curl -sL https://gitlab.com/snippets/1982942/raw | sudo bash` installiert werden
 
 ### Changed
 
