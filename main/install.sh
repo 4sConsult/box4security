@@ -100,13 +100,6 @@ if [ "$(whoami)" != "root" ];
     echo "[ OK ]"
 fi
 
-
-
-echo "### Setting up VPN-Connection"
-waitForNet
-echo "10.30.5.4 gitlab.am-gmbh.de" >> /etc/hosts
-echo "10.30.5.4 docker-registry.am-gmbh.de" >> /etc/hosts
-
 echo "### Setting up the environment"
 # Create the user 'amadmin' only if he does not exist
 # The used password is known to the whole dev-team
