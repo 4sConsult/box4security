@@ -8,10 +8,8 @@ RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /us
 	mkdir -p /usr/share/logstash/config/ && \
 	mkdir -p /etc/logstash/ && \
 	cp -r /root/etc/* /etc/logstash/ && \
-	ls -liahr /root/etc/ && \
-	ls -liahr /etc/logstash
 	# Filebeat
-RUN	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
+	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
 	# OpenVAS
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/openvas/30-preBOX4s.conf && \
