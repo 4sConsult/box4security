@@ -1,16 +1,10 @@
-FROM registry.gitlab.com/4sconsult/box4s/baseimage:dev
+FROM docker.elastic.co/kibana/kibana:7.6.2
 
 ARG ELASTIC_VERSION=7.6.2
 ARG WAZUH_VERSION=3.12.1
 ARG WAZUH_APP_VERSION="${WAZUH_VERSION}_${ELASTIC_VERSION}"
 
-ADD etc/ /root/etc/
-
-RUN     apt-fast install -y kibana=${ELASTIC_VERSION} && \
-        mkdir -p /var/log/kibana && \
-        chown kibana:kibana /var/log/kibana -R && \
-        rm -rf /var/lib/apt/lists/* && \
-        cp /root/etc/kibana/* /etc/kibana/ -R
+COPY --chown=kibana:kibana etc/* /usr/share/kibana/config/
 
 USER kibana
 WORKDIR /usr/share/kibana
@@ -27,4 +21,3 @@ HEALTHCHECK --retries=50 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana/api/sta
 STOPSIGNAL SIGKILL
 USER kibana:kibana
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/share/kibana/bin/kibana"]
