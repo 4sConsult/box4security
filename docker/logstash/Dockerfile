@@ -1,6 +1,6 @@
 FROM docker.elastic.co/logstash/logstash:7.6.2
 
-COPY --chown=logstash:logstash etc/* /usr/share/logstash/config/
+COPY --chown=logstash:logstash etc/* /root/etc/
 
 USER root
 RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
