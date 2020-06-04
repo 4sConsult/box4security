@@ -1,17 +1,16 @@
 FROM docker.elastic.co/logstash/logstash:7.6.2
 
-COPY --chown=logstash:logstash etc/* /root/etc/
-
 USER root
+COPY --chown=logstash:logstash etc/* /root/etc/
 RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
 	mkdir -p /var/log/logstash && \
 	mkdir -p /etc/box4s && \
 	mkdir -p /usr/share/logstash/config/ && \
 	mkdir -p /etc/logstash/ && \
-	rm -rf /var/lib/apt/lists/* && \
 	cp -r /root/etc/* /etc/logstash/ && \
+	ls -liahr /etc/logstash
 	# Filebeat
-	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
+RUN	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
 	# OpenVAS
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/openvas/15-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/openvas/30-preBOX4s.conf && \
