@@ -1,14 +1,16 @@
-FROM docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev
+FROM ubuntu:19.10
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 ADD scripts/ /root/scripts/
 ADD etc/ /root/etc/
 ADD var_lib/ /root/var_lib/
 
 RUN apt update && \
-    apt install -y software-properties-common python python-pip && \
+    apt install -y apt-transport-https software-properties-common && \
     add-apt-repository ppa:oisf/suricata-stable && \
     apt update && \
-    apt install -y suricata oinkmaster && \
+    apt install -y curl wget sudo suricata=5.0.3-0ubuntu3 oinkmaster && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/suricata/scripts/ && \
     mkdir -p /var/lib/suricata/rules/ && \
