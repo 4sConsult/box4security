@@ -335,10 +335,6 @@ class Alert(Resource):
         return requests.post(f"http://elastalert:3030/rules/{alert_id}", json=json.dumps(self.args['yaml'])).json()
 
     @roles_required(['Super Admin', 'Alerts'])
-    def put(self):
-        return {}, 501
-
-    @roles_required(['Super Admin', 'Alerts'])
     def delete(self, alert_id):
         """Delete a single Alert Rule by ID.
 
@@ -366,6 +362,15 @@ class Alerts(Resource):
             abort(503, message="Alert API unreachable")
         except Exception:
             abort(502, message="Alert API Failure")
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def put(self):
+        """Create a new alerting rule.
+
+        Returns:
+            [type] -- [description]
+        """
+        return {}, 501
 
 
 class APIUser(Resource):
