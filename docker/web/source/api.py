@@ -53,6 +53,13 @@ def writeBPFFile():
         os.system('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')
 
 
+def writeAlertFile(alert):
+    """Write an alert dict to file."""
+    with open(f'/var/lib/elastalert/rules/{{alert["safe_name"]}}.yaml') as f_alert:
+        filled = render_template(f'application/{{alert["type"]}}.yaml.j2', alert=alert)
+        f_alert.write(filled)
+
+
 class BPF(Resource):
     """API Resource for a single BPF Rule."""
 
@@ -346,6 +353,10 @@ class Alert(Resource):
 class Alerts(Resource):
     """API representation of all alert rules."""
 
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+
     @roles_required(['Super Admin', 'Alerts'])
     def get(self):
         """Get all alert rules.
@@ -370,6 +381,12 @@ class Alerts(Resource):
         Returns:
             [type] -- [description]
         """
+        self.parser.add_argument('name', type=str)
+        a = object()
+        # Check if alert with this name exists
+        # return error to notice web
+        # Write alert to file
+        writeAlertFile(a)
         return {}, 501
 
 

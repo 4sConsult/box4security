@@ -1,0 +1,33 @@
+# Elasticsearch host
+es_host: elasticsearch
+
+# Elasticsearch port
+es_port: 9200
+
+# Rule name, must be unique
+name: {{alert.name}}
+
+# Type of rule
+type: {{alert.type}}
+
+# Index to search, wildcard supported
+index: {{alert.index}}
+
+# A list of Elasticsearch filters used for find events
+# These filters are joined with AND and nested in a filtered query
+# For more info: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html
+filter:
+{% for query in alert.queries %}
+    - query:
+        query_string:
+        query: "{{query.field}}: {{query.value}}"
+{% endfor %}
+
+
+# The alert is used when a match is found
+alert:
+- "email"
+
+# a list of email addresses to send alerts to
+email:
+- "box@4sconsult.de"
