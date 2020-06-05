@@ -28,6 +28,12 @@ sudo apt remove --purge openconnect
 
 # TODO clone the repo again with the new url or set new upstream
 
+# Clone the new wiki repo
+sudo rm -R /var/lib/box4s_docs/*
+sudo rm -R /var/lib/box4s_docs/.git
+cd /var/lib/box4s_docs
+sudo git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/docs.git .
+
 ###################
 
 # Start des Services
