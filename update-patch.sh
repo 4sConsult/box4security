@@ -31,7 +31,7 @@ cd /home/amadmin/box4s
 VERSION=$(cat VERSION)
 VERSION=${VERSION##*=}
 sudo git remote -v # show the current configuration
-sudo git remote set-url origin https://gitlab.com/4sconsult/box4s.git
+sudo git remote set-url origin https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/box4s.git
 sudo git fetch
 sudo git pull
 sudo git checkout $VERSION
