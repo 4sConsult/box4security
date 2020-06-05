@@ -201,9 +201,9 @@ services:
     restart: always
     volumes:
       - varlib_elastalert_rules:/opt/elastalert/rules
-    ports:
-      - 3030:3030
-      - 3333:3333
+    expose:
+      - 3030
+      - 3333
   wiki:
     container_name: wiki
     image: "docker-registry.am-gmbh.de/it-security/b4s/wiki:dev"
