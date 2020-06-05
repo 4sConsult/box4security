@@ -228,7 +228,7 @@ class AvailableReleases(Resource):
     def get(self):
         """GET: fetch and return all available releases with their relevant info from GitLab."""
         try:
-            git = requests.get('https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags',
+            git = requests.get('https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags',
                                headers={'PRIVATE-TOKEN': os.getenv('GIT_TOKEN')}).json()
         except Timeout:
             abort(504, message="GitLab API Timeout")
