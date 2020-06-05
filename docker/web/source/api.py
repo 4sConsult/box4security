@@ -324,7 +324,7 @@ class Alert(Resource):
 
         Wraps around ElastAlert's /rules/:id
         """
-        return requests.get(f"http://elastalert/rules/{alert_id}").json()
+        return requests.get(f"http://elastalert:3030/rules/{alert_id}").json()
 
     @roles_required(['Super Admin', 'Alerts'])
     def post(self, alert_id):
@@ -332,7 +332,7 @@ class Alert(Resource):
 
         Wraps around ElastAlert's /rules/:id
         """
-        return requests.post(f"http://elastalert/rules/{alert_id}", json=json.dumps(self.args['yaml'])).json()
+        return requests.post(f"http://elastalert:3030/rules/{alert_id}", json=json.dumps(self.args['yaml'])).json()
 
     @roles_required(['Super Admin', 'Alerts'])
     def put(self):
@@ -344,7 +344,7 @@ class Alert(Resource):
 
         Wraps around ElastAlert's /rules/:id
         """
-        return request.delete(f"http://elastalert/rules/{alert_id}").json()
+        return request.delete(f"http://elastalert:3030/rules/{alert_id}").json()
 
 
 class Alerts(Resource):
@@ -358,7 +358,7 @@ class Alerts(Resource):
         Returns a list of directories and rules that exist in the rulesPath (from the config) and are being run by the ElastAlert process.
         """
         try:
-            ea = requests.get("http://elastalert/rules")
+            ea = requests.get("http://elastalert:3030/rules")
             return ea.json()
         except Timeout:
             abort(504, message="Alert API Timeout")
