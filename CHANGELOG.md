@@ -6,6 +6,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 
 ### Changed
+* Die BOX4security benötigt nun keine VPN-Verbindung mehr, um Softwareaktualisierungen zu beziehen
 
 ### Optimized
 * Bei jedem Update werden die alten Dockerimages gelöscht, um Speicherplatz zu sparen
@@ -18,7 +19,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Removed
 
-## [1.8.2](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.2) - 2020-05-27
+## [1.8.2](https://gitlab.com/4sconsult/box4s/-/tags/1.8.2) - 2020-05-27
 
 ### Added
 - Plattform zur Dokumentation eingefügt.
@@ -43,7 +44,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Auditbeat als ehemalige Endgerätelösung zugunsten Wazuhs abgelöst.
 * Datenverarbeitung von ehemaligen Endgerätelösungen Auditbeat und Winlogbeat entfernt.
 
-## [1.8.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.1) - 2020-05-13
+## [1.8.1](https://gitlab.com/4sconsult/box4s/-/tags/1.8.1) - 2020-05-13
 
 ### Added
 - Login-Auth-Provider durch WebApp-Login für weitere Anbindungen bereitgestellt.
@@ -66,7 +67,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Removed
 
 
-## [1.8.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.8.0) - 2020-04-29
+## [1.8.0](https://gitlab.com/4sconsult/box4s/-/tags/1.8.0) - 2020-04-29
 
 ### Added
 * Aufforderung zum Erstellen eines Administrationsusers nach Update auf diese oder Installation dieser Version eingeführt
@@ -95,7 +96,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Removed
 
 
-## [1.7.1](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7.1) - 2020-04-15
+## [1.7.1](https://gitlab.com/4sconsult/box4s/-/tags/1.7.1) - 2020-04-15
 
 ### Added
 * Überwachung des Update-Prozesses mit automatischem Rollback auf gesicherten Zustand bei Misserfolg
@@ -130,7 +131,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Removed
 * Veraltete, sperrige Dateien entfernt um Speicherplatz und Netzwerkvolumen zu senken
 
-## [1.7.0](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.7.0) - 2020-04-01
+## [1.7.0](https://gitlab.com/4sconsult/box4s/-/tags/1.7.0) - 2020-04-01
 
 ### Compatible with
 * Elastic Products 7.5.0
@@ -190,7 +191,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Dashboard "Intrusion Detection" in dem Bereich SIEM entfernt
 * Dashboard "Schwachstellenübersicht" in dem Bereich Schwachstellen entfernt
 
-## [1.6.3](https://gitlab.am-gmbh.de/it-security/b4s/-/tags/1.6.3) - 2020-03-18
+## [1.6.3](https://gitlab.com/4sconsult/box4s/-/tags/1.6.3) - 2020-03-18
 
 ### Compatible with
 * Elastic Products 7.5.0
