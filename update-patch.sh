@@ -26,7 +26,15 @@ sudo systemctl disable vpn.service
 sudo rm /etc/systemd/system/vpn.service
 sudo apt remove --purge openconnect
 
-# TODO clone the repo again with the new url or set new upstream
+# Change Box4s repo
+cd /home/amadmin/box4s
+VERSION=$(cat VERSION)
+VERSION=${VERSION##*=}
+sudo git remote -v # show the current configuration
+sudo git remote set-url origin https://gitlab.com/4sconsult/box4s.git
+sudo git fetch
+sudo git pull
+sudo git checkout $VERSION
 
 # Clone the new wiki repo
 sudo rm -R /var/lib/box4s_docs/*
