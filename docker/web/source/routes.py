@@ -175,6 +175,12 @@ def rules():
     """Return the filter page."""
     return render_template("filter.html")
 
+@app.route('/alerts', methods=['GET'])
+@login_required
+@roles_required(['Super Admin', 'Alerts'])
+def alerts():
+    """Return the alert page."""
+    return render_template("alert.html")
 
 @app.route('/update/log/download', methods=['GET'])
 @login_required
