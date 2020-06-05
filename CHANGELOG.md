@@ -6,6 +6,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 
 ### Changed
+* Die BOX4security benötigt nun keine VPN-Verbindung mehr, um Softwareaktualisierungen zu beziehen
 
 ### Optimized
 * Bei jedem Update werden die alten Dockerimages gelöscht, um Speicherplatz zu sparen
