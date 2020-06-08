@@ -16,6 +16,7 @@
             <th>Name</th>
             <th>Datengrundlage</th>
             <th>Typ</th>
+            <th>Details</th>
             <th>Aktion</th>
           </tr>
         </thead>
@@ -40,6 +41,20 @@
         </div>
       </div>
     </div>
+    <div class="section">
+      <h2 class="ui header">BOX4s Quick Alerts<div class="sub header">Profitieren Sie von ausgewählten Security Alarmierungen. Diese definierten Regeln erfordern keine Bearbeitung sondern sind sofort einsatzbereit.</div></h2>
+      <div class="ui grid">
+        <div class="row">
+          <h5 class="ui header">BOX4s IDS Malware Alert<div class="sub header">Erhalten Sie sofortige Alarmierung bei Auftreten von Malware zuzuordnendem Netzwerkverkehr.</div></h5>
+        </div>
+        <div class="row">
+          <h5 class="ui header">BOX4s Kritische Schwachstellen<div class="sub header">Erhalten Sie sofortige Alarmierung bei Identikation kritischer Schwachstellen.</div></h5>
+        </div>
+        <div class="row">
+          <h5 class="ui header">BOX4s Kritische Alarme<div class="sub header">Erhalten Sie sofortige Alarmierung bei Auftreten von kritischen IDS-Alarmen.</div></h5>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="ui vertical footer segment">
     <div class="ui center aligned container">
@@ -53,13 +68,14 @@
       <form class="ui form">
         <div class="ui centered grid">
           <div class="row">
-            <div class="eight wide field">
+            <div class="eight wide required field">
               <label>Name</label>
-              <input name="name" type="text" required="" placeholder="Eindeutiger Name für die Alarmierung" value="{{request.args.get("name", default='')}}">
+              <input name="name" type="text" placeholder="Eindeutiger Name für die Alarmierung" value="{{request.args.get("name", default='')}}">
             </div>
           </div>
           <div class="row">
-            <div class="four wide field" data-tooltip='Leer für beliebig'>
+            <div class="eight wide required field" data-tooltip='Wählen Sie die Grundlage anhand derer Alarme generiert werden sollen.'>
+              <label>Datengrundlage</label>
               <div class="ui selection dropdown">
                 <input type="hidden" name="source">
                 <i class="dropdown icon"></i>
