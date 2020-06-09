@@ -10,7 +10,7 @@
   </head>
   <body>
     <div class="ui tabular menu">
-      {% if current_user.has_role('Startseite') or if current_user.has_role('Dashboards-Master') %}
+      {% if current_user.has_role('Startseite') %}
         <div class="item active" id="start">
           <a class="item" id="startitem" href="/start">
             <i class="home icon"></i>
@@ -18,7 +18,7 @@
           </a>
         </div>
       {% endif %}
-      {% if current_user.has_role('SIEM') or if current_user.has_role('Dashboards-Master') %}
+      {% if current_user.has_role('SIEM') %}
         <div class="item" id="siem">
           <div class="ui dropdown pointing link item">
             <i class="globe icon" id="securitymenu"></i> SIEM
@@ -36,7 +36,7 @@
            </div>
          </div>
        {% endif %}
-       {% if current_user.has_role('Schwachstellen') or if current_user.has_role('Dashboards-Master') %}
+       {% if current_user.has_role('Schwachstellen') %}
          <div class="item" id="vuln">
     	      <div class="ui dropdown pointing link item">
     	         <i class="bug icon"></i> Schwachstellen
@@ -49,7 +49,7 @@
             </div>
         </div>
       {% endif %}
-      {% if current_user.has_role('Netzwerk') or if current_user.has_role('Dashboards-Master') %}
+      {% if current_user.has_role('Netzwerk') %}
         <div class="item" id="net">
     	     <div class="ui dropdown pointing link item">
              <i class="sitemap icon"></i> Netzwerk <i class="dropdown icon"></i>
@@ -61,28 +61,26 @@
            </div>
         </div>
       {% endif %}
-      {% if current_user.has_role('FAQ') or current_user.has_role('User-Management') or current_user.has_role('Filter') or current_user.has_role('Updates') %}
-        <div class="item" id="administration">
-          <div class="ui dropdown pointing link item">
-    	       <i class="cogs icon"></i> Administration
-             <i class="dropdown icon"></i>
-             <div class="menu">
-               {% if current_user.has_role('FAQ') %}
-               <a class="item" href="/faq">FAQ</a>
-               {% endif %}
-               {% if current_user.has_role('User-Management') %}
-               <a class="item" href="/user">Benutzer</a>
-               {% endif %}
-               {% if current_user.has_role('Filter') %}
-               <a class="item" href="/filter">Filter</a>
-               {% endif %}
-               {% if current_user.has_role('Updates') %}
-               <a class="item" href="/update">Updates</a>
-               {% endif %}
-             </div>
+      <div class="item" id="administration">
+        <div class="ui dropdown pointing link item">
+  	       <i class="cogs icon"></i> Administration
+           <i class="dropdown icon"></i>
+           <div class="menu">
+             {% if current_user.has_role('FAQ') %}
+             <a class="item" href="/faq">FAQ</a>
+             {% endif %}
+             {% if current_user.has_role('User-Management') %}
+             <a class="item" href="/user">Benutzer</a>
+             {% endif %}
+             {% if current_user.has_role('Filter') %}
+             <a class="item" href="/filter">Filter</a>
+             {% endif %}
+             {% if current_user.has_role('Updates') %}
+             <a class="item" href="/update">Updates</a>
+             {% endif %}
            </div>
          </div>
-       {% endif %}
+       </div>
        {% if current_user.has_role('Wiki') %}
          <div class="item active" id="documentation">
           <a class="item" id="docuitem" href="/docs">
