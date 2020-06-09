@@ -10,67 +10,87 @@
   </head>
   <body>
     <div class="ui tabular menu">
-      <div class="item active" id="start">
-        <a class="item" id="startitem" href="/start">
-          <i class="home icon"></i>
-          Startseite
-        </a>
-      </div>
-      <div class="item" id="siem">
-        <div class="ui dropdown pointing link item">
-          <i class="globe icon" id="securitymenu"></i> SIEM
-  	       <i class="dropdown icon"></i>
-           <div class="menu">
-             <a class="item" href="/siem-overview">Übersicht</a>
-             <a class="item" href="/siem-alerts">Alarme</a>
-             <a class="item" href="/siem-asn">ASN</a>
-             <a class="item" href="/siem-http">HTTP</a>
-             <a class="item" href="/siem-dns">DNS</a>
-             <a class="item" href="/siem-proto">Protokolle & Dienste</a>
-             <a class="item" href="/wazuh">Endgeräte</a>
-             <a class="item" href="/siem-social-media">Social Media (Alpha)</a>
+      {% if current_user.has_role('Startseite') or if current_user.has_role('Dashboards-Master') %}
+        <div class="item active" id="start">
+          <a class="item" id="startitem" href="/start">
+            <i class="home icon"></i>
+            Startseite
+          </a>
+        </div>
+      {% endif %}
+      {% if current_user.has_role('SIEM') or if current_user.has_role('Dashboards-Master') %}
+        <div class="item" id="siem">
+          <div class="ui dropdown pointing link item">
+            <i class="globe icon" id="securitymenu"></i> SIEM
+    	       <i class="dropdown icon"></i>
+             <div class="menu">
+               <a class="item" href="/siem-overview">Übersicht</a>
+               <a class="item" href="/siem-alerts">Alarme</a>
+               <a class="item" href="/siem-asn">ASN</a>
+               <a class="item" href="/siem-http">HTTP</a>
+               <a class="item" href="/siem-dns">DNS</a>
+               <a class="item" href="/siem-proto">Protokolle & Dienste</a>
+               <a class="item" href="/wazuh">Endgeräte</a>
+               <a class="item" href="/siem-social-media">Social Media (Alpha)</a>
+             </div>
            </div>
          </div>
-       </div>
-       <div class="item" id="vuln">
-  	      <div class="ui dropdown pointing link item">
-  	         <i class="bug icon"></i> Schwachstellen
-  	          <i class="dropdown icon"></i>
-              <div class="menu">
-  	             <a class="item" href="/vuln-overview"> Übersicht </a>
-  	             <a class="item" href="/vuln-progress"> Verlauf </a>
-  	             <a class="item" href="/vuln-details"> Details </a>
-              </div>
-          </div>
-      </div>
-      <div class="item" id="net">
-  	     <div class="ui dropdown pointing link item">
-           <i class="sitemap icon"></i> Netzwerk <i class="dropdown icon"></i>
-           <div class="menu">
-             <a class="item" href="/network-overview">Übersicht</a>
-  	         <a class="item" href="/network-streams">Datenflüsse</a>
-  	         <a class="item" href="/network-asn">GeoIP & ASN</a>
-  	       </div>
-         </div>
-      </div>
-      <div class="item" id="administration">
-        <div class="ui dropdown pointing link item">
-  	       <i class="cogs icon"></i> Administration
-           <i class="dropdown icon"></i>
-           <div class="menu">
-             <a class="item" href="/faq">FAQ</a>
-             <a class="item" href="/user">Benutzer</a>
-             <a class="item" href="/filter">Filter</a>
-             <a class="item" href="/update">Updates</a>
+       {% endif %}
+       {% if current_user.has_role('Schwachstellen') or if current_user.has_role('Dashboards-Master') %}
+         <div class="item" id="vuln">
+    	      <div class="ui dropdown pointing link item">
+    	         <i class="bug icon"></i> Schwachstellen
+    	          <i class="dropdown icon"></i>
+                <div class="menu">
+    	             <a class="item" href="/vuln-overview"> Übersicht </a>
+    	             <a class="item" href="/vuln-progress"> Verlauf </a>
+    	             <a class="item" href="/vuln-details"> Details </a>
+                </div>
+            </div>
+        </div>
+      {% endif %}
+      {% if current_user.has_role('Netzwerk') or if current_user.has_role('Dashboards-Master') %}
+        <div class="item" id="net">
+    	     <div class="ui dropdown pointing link item">
+             <i class="sitemap icon"></i> Netzwerk <i class="dropdown icon"></i>
+             <div class="menu">
+               <a class="item" href="/network-overview">Übersicht</a>
+    	         <a class="item" href="/network-streams">Datenflüsse</a>
+    	         <a class="item" href="/network-asn">GeoIP & ASN</a>
+    	       </div>
+           </div>
+        </div>
+      {% endif %}
+      {% if current_user.has_role('FAQ') or current_user.has_role('User-Management') or current_user.has_role('Filter') or current_user.has_role('Updates') %}
+        <div class="item" id="administration">
+          <div class="ui dropdown pointing link item">
+    	       <i class="cogs icon"></i> Administration
+             <i class="dropdown icon"></i>
+             <div class="menu">
+               {% if current_user.has_role('FAQ') %}
+               <a class="item" href="/faq">FAQ</a>
+               {% endif %}
+               {% if current_user.has_role('User-Management') %}
+               <a class="item" href="/user">Benutzer</a>
+               {% endif %}
+               {% if current_user.has_role('Filter') %}
+               <a class="item" href="/filter">Filter</a>
+               {% endif %}
+               {% if current_user.has_role('Updates') %}
+               <a class="item" href="/update">Updates</a>
+               {% endif %}
+             </div>
            </div>
          </div>
-       </div>
-       <div class="item active" id="documentation">
-        <a class="item" id="docuitem" href="/docs">
-          <i class="book icon"></i>
-          Dokumentation
-        </a>
-      </div>
+       {% endif %}
+       {% if current_user.has_role('Wiki') %}
+         <div class="item active" id="documentation">
+          <a class="item" id="docuitem" href="/docs">
+            <i class="book icon"></i>
+            Dokumentation
+          </a>
+        </div>
+      {% endif %}
        <div class="right menu">
          {% if current_user.is_authenticated %}
          <a class="item"></a>
