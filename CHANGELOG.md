@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Die BOX4security benötigt nun keine VPN-Verbindung mehr, um Softwareaktualisierungen zu beziehen
+* Fehlermeldung eingeführt, wenn ein User-Manager einen SuperAdmin versucht zu löschen
 
 ### Optimized
 * Bei jedem Update werden die alten Dockerimages gelöscht, um Speicherplatz zu sparen
