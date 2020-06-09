@@ -353,8 +353,11 @@ class APIUser(Resource):
 
         user = models.User.query.get(user_id)
         if user:
+            # Current user is user management
             if models.Role.query.get(2) in current_user.roles:
+                # role of the user to be deleted is superadmin
                 if models.Role.query.get(1) in user.roles:
+                    # dont allow deletion
                     abort(403, message="Only Super Admins can delete other Super Admin accounts.")
 
             if models.Role.query.get(1) in user.roles:
