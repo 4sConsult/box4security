@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-{% current_user.roles %}
+{{ current_user.roles }}
+{{ current_user.has_role('User-Management') }}
 <html lang="de" dir="ltr">
   <head>
     <meta charset="utf-8">
