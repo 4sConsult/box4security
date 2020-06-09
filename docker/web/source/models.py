@@ -28,7 +28,7 @@ class User(db.Model, UserMixin):
     # Define the relationship to Role via UserRoles
     roles = db.relationship('Role', secondary='user_role')
 
-     def has_role(self, role):
+    def has_role(self, role):
         return role in roles
 
     def getName(self):
