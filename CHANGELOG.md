@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Die BOX4security benötigt nun keine VPN-Verbindung mehr, um Softwareaktualisierungen zu beziehen
+* Standardnachricht von Elasticsearch bei der ersten Inbetriebnahme ausgeblendet
 
 ### Optimized
 * Bei jedem Update werden die alten Dockerimages gelöscht, um Speicherplatz zu sparen
