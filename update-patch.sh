@@ -28,8 +28,8 @@ sudo apt remove --purge openconnect
 
 # Change Box4s repo
 # Backup the current environment files ...
-sudo cp /home/amadmin/box4s/docker/.env.es /tmp/.env.es
-sudo cp /home/amadmin/box4s/docker/.env.ls /tmp/.env.ls
+sudo mv /home/amadmin/box4s/docker/.env.es /tmp/.env.es
+sudo mv /home/amadmin/box4s/docker/.env.ls /tmp/.env.ls
 
 cd /home/amadmin/box4s
 VERSION=$(cat VERSION)
@@ -41,8 +41,8 @@ sudo git pull
 sudo git checkout $VERSION
 
 # ... and put the environment files back where they belong
-sudo cp /tmp/.env.es /home/amadmin/box4s/docker/elasticsearch/.env.es
-sudo cp /tmp/.env.ls /home/amadmin/box4s/docker/logstash/.env.ls
+sudo mv /tmp/.env.es /home/amadmin/box4s/docker/elasticsearch/.env.es
+sudo mv /tmp/.env.ls /home/amadmin/box4s/docker/logstash/.env.ls
 
 # Clone the new wiki repo
 sudo rm -R /var/lib/box4s_docs/*
