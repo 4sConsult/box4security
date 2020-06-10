@@ -9,6 +9,14 @@ from flask import redirect, url_for
 class CreatorUserMan(UserManager):
     """Extended UserManager class."""
 
+    def unauthorized_view(self):
+        """ Prepare a Flash message and redirect to USER_UNAUTHORIZED_ENDPOINT"""
+        # Prepare Flash message
+        url = request.script_root + request.path
+
+        # Redirect to USER_UNAUTHORIZED_ENDPOINT
+        return redirect(self._endpoint_url(self.USER_UNAUTHORIZED_ENDPOINT))
+
     def login_view(self):
         """Extend default login view.
 
