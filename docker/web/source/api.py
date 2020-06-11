@@ -55,8 +55,17 @@ def writeBPFFile():
 
 def writeAlertFile(alert):
     """Write an alert dict to file."""
+    # TODO: check permissions / Try error
     with open(f'/var/lib/elastalert/rules/{{alert["safe_name"]}}.yaml') as f_alert:
         filled = render_template(f'application/{{alert["type"]}}.yaml.j2', alert=alert)
+        f_alert.write(filled)
+
+
+def writeQuickAlertFile(key):
+    """Write a quick alert to file."""
+    # TODO: check permissions / Try error
+    with open(f'/var/lib/elastalert/rules/quick_{{key}}.yaml') as f_alert:
+        filled = render_template(f'application/quick_alert_{{key}}.yaml.j2')
         f_alert.write(filled)
 
 
@@ -388,6 +397,42 @@ class Alerts(Resource):
         # Write alert to file
         writeAlertFile(a)
         return {}, 501
+
+
+class AlertsQuick(Resource):
+    """API representation of BOX4s Quick alert rules."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def put(self):
+        """Enable BOX4s Quick Alert Rule.
+
+        Accepts key from ['ids', 'vuln', 'netuse', ''].
+        Calls function to write the corresponding prepared alert rule file to disk.
+        Returns 202 and the key on success.
+        TODO: Exception handling
+        TODO: Sanitize key
+        """
+        self.parser.add_argument('key', type=str)
+        writeQuickAlertFile(self.parser['key'])
+        return {'key': self.parser['key']}, 202
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def delete(self):
+        """Disable BOX4s Quick Alert Rule.
+
+        Accepts key from ['ids', 'vuln', 'netuse', ''].
+        Deletes the rule corresponding to the specified key.
+        Returns 204 on success.
+        TODO: Exception handling
+        TODO: Sanitize key
+        """
+        self.parser.add_argument('key', type=str)
+        os.remove(f'/var/lib/elastalert/rules/quick_{{key}}.yaml')
+        return {}, 204
 
 
 class APIUser(Resource):
