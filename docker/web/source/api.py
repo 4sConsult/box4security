@@ -405,6 +405,11 @@ class AlertsQuick(Resource):
     def __init__(self):
         """Register Parser and argument for endpoint."""
         self.parser = reqparse.RequestParser()
+        self.parser.add_argument('key', type=str)
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
 
     @roles_required(['Super Admin', 'Alerts'])
     def put(self):
@@ -416,11 +421,10 @@ class AlertsQuick(Resource):
         Returns 202 and the key on success.
         TODO: Exception handling
         """
-        self.parser.add_argument('key', type=str)
-        if self.parser['key'] not in ['ids', 'vuln', 'netuse']:
-            return {'key': self.parser['key']}, 400
-        writeQuickAlertFile(self.parser['key'])
-        return {'key': self.parser['key']}, 202
+        if self.args['key'] not in ['ids', 'vuln', 'netuse']:
+            return {'key': self.args['key']}, 400
+        writeQuickAlertFile(self.args['key'])
+        return {'key': self.args['key']}, 202
 
     @roles_required(['Super Admin', 'Alerts'])
     def delete(self):
@@ -432,10 +436,9 @@ class AlertsQuick(Resource):
         Returns 204 on success.
         TODO: Exception handling
         """
-        self.parser.add_argument('key', type=str)
-        if self.parser['key'] not in ['ids', 'vuln', 'netuse']:
-            return {'key': self.parser['key']}, 400
-        os.remove(f'/var/lib/elastalert/rules/quick_{ self.parser["key"] }.yaml')
+        if self.args['key'] not in ['ids', 'vuln', 'netuse']:
+            return {'key': self.args['key']}, 400
+        os.remove(f'/var/lib/elastalert/rules/quick_{ self.args["key"] }.yaml')
         return {}, 204
 
 
