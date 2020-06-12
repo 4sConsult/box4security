@@ -344,11 +344,11 @@ class Alert(Resource):
 
     @roles_required(['Super Admin', 'Alerts'])
     def post(self, alert_id):
-        """Edit/Update a single Alert Rule by ID.
+        """Add/Edit/Update a single Alert Rule by ID.
 
         Wraps around ElastAlert's /rules/:id
         """
-        return requests.post(f"http://elastalert:3030/rules/{alert_id}", json=json.dumps(self.args['yaml'])).json()
+        return requests.post(f"http://elastalert:3030/rules/{alert_id}", json=json.dumps({'yaml': self.args['yaml']})).json()
 
     @roles_required(['Super Admin', 'Alerts'])
     def delete(self, alert_id):
@@ -356,7 +356,13 @@ class Alert(Resource):
 
         Wraps around ElastAlert's /rules/:id
         """
-        return requests.delete(f"http://elastalert:3030/rules/{alert_id}").json()
+        response = requests.delete(f"http://elastalert:3030/rules/{alert_id}")
+        try:
+            response = response.json()
+            return response
+        except json.JSONDecodeError:
+            # ElastAlert does not return a valid json response, when deleting stuff successfully, apparently.
+            return {}, 204
 
 
 class Alerts(Resource):
