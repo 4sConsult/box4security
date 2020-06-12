@@ -5,7 +5,7 @@ from flask_user import UserMixin
 
 
 class User(db.Model, UserMixin):
-    u"""User class to handle authentication and authorization.
+    """User class to handle authentication and authorization.
 
     active: can login e.g. not banned
     email_confirmed_at: Zeitstempel, an dem die E-Mail bestätigt wurde
