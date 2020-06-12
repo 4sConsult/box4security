@@ -56,16 +56,16 @@ def writeBPFFile():
 def writeAlertFile(alert):
     """Write an alert dict to file."""
     # TODO: check permissions / Try error
-    with open(f'/var/lib/elastalert/rules/{{alert["safe_name"]}}.yaml') as f_alert:
-        filled = render_template(f'application/{{alert["type"]}}.yaml.j2', alert=alert)
+    with open(f'/var/lib/elastalert/rules/{{ alert["safe_name"] }}.yaml') as f_alert:
+        filled = render_template(f'application/{{ alert["type"] }}.yaml.j2', alert=alert)
         f_alert.write(filled)
 
 
 def writeQuickAlertFile(key):
     """Write a quick alert to file."""
     # TODO: check permissions / Try error
-    with open(f'/var/lib/elastalert/rules/quick_{{key}}.yaml') as f_alert:
-        filled = render_template(f'application/quick_alert_{{key}}.yaml.j2')
+    with open(f'/var/lib/elastalert/rules/quick_{{ key }}.yaml') as f_alert:
+        filled = render_template(f'application/quick_alert_{{ key }}.yaml.j2')
         f_alert.write(filled)
 
 
@@ -435,7 +435,7 @@ class AlertsQuick(Resource):
         self.parser.add_argument('key', type=str)
         if self.parser['key'] not in ['ids', 'vuln', 'netuse']:
             return {'key': self.parser['key']}, 400
-        os.remove(f'/var/lib/elastalert/rules/quick_{{self.parser["key"]}}.yaml')
+        os.remove(f'/var/lib/elastalert/rules/quick_{{ self.parser["key"] }}.yaml')
         return {}, 204
 
 
