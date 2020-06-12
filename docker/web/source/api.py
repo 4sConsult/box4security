@@ -415,13 +415,13 @@ class AlertsQuick(Resource):
     def put(self):
         """Enable BOX4s Quick Alert Rule.
 
-        Accepts key from ['ids', 'vuln', 'netuse'].
+        Accepts key from whitelist array.
         Denies with 400 if key not from the whitelist array.
         Calls function to write the corresponding prepared alert rule file to disk.
         Returns 202 and the key on success.
         TODO: Exception handling
         """
-        if self.args['key'] not in ['ids', 'vuln', 'netuse']:
+        if self.args['key'] not in ['malware', 'ids', 'vuln', 'netuse']:
             return {'key': self.args['key']}, 400
         writeQuickAlertFile(self.args['key'])
         return {'key': self.args['key']}, 202
@@ -436,7 +436,7 @@ class AlertsQuick(Resource):
         Returns 204 on success.
         TODO: Exception handling
         """
-        if self.args['key'] not in ['ids', 'vuln', 'netuse']:
+        if self.args['key'] not in ['malware', 'ids', 'vuln', 'netuse']:
             return {'key': self.args['key']}, 400
         os.remove(f'/var/lib/elastalert/rules/quick_{ self.args["key"] }.yaml')
         return {}, 204
