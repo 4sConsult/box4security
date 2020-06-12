@@ -16,7 +16,7 @@
         </div>
         <div class="two wide center aligned column">
           <div class="ui fitted toggle checkbox">
-            <input type="checkbox" name="">
+            <input type="checkbox" data-key="malware">
           </div>
         </div>
         <div class="fourteen wide column">
@@ -24,7 +24,7 @@
         </div>
         <div class="two wide center aligned column">
           <div class="ui fitted toggle checkbox">
-            <input type="checkbox" name="">
+            <input type="checkbox" data-key="vuln">
           </div>
         </div>
         <div class="fourteen wide column">
@@ -32,7 +32,7 @@
         </div>
         <div class="two wide center aligned column">
           <div class="ui fitted toggle checkbox">
-            <input type="checkbox" name="">
+            <input type="checkbox" data-key="ids">
           </div>
         </div>
         <div class="fourteen wide column">
@@ -40,7 +40,7 @@
         </div>
         <div class="two wide center aligned column">
           <div class="ui fitted toggle checkbox">
-            <input type="checkbox" name="">
+            <input type="checkbox" data-key="netuse">
           </div>
         </div>
       </div>
@@ -146,7 +146,45 @@
   </script>
   <script type="text/javascript">
   $('div.item.active').removeClass('active');
-  $('.ui.checkbox').checkbox();
+  $('.ui.checkbox').checkbox(
+    {
+    onChecked: function() {
+      var key = this.dataset.key;
+      fetch(`//{{ request.host }}/rules/alerts/quick`, {
+        method: 'PUT',
+        redirect: 'follow',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({'key': this.dataset.key})
+        })
+      .then((response) => {
+        console.log(response.status);
+        return response.json();
+      })
+      .then((json) => {
+        console.log(json);
+      })
+    },
+    onUnchecked: function() {
+      var key = this.dataset.key;
+      fetch(`//{{ request.host }}/rules/alerts/quick`, {
+        method: 'DELETE',
+        redirect: 'follow',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({'key': this.dataset.key})
+        })
+      .then((response) => {
+        console.log(response.status);
+        return response.json();
+      })
+      .then((json) => {
+        console.log(json);
+      })
+    },
+  });
   $('#administration').addClass('active');
   $('.dropdown')
     .dropdown()
