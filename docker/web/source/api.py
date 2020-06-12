@@ -410,13 +410,15 @@ class AlertsQuick(Resource):
     def put(self):
         """Enable BOX4s Quick Alert Rule.
 
-        Accepts key from ['ids', 'vuln', 'netuse', ''].
+        Accepts key from ['ids', 'vuln', 'netuse'].
+        Denies with 400 if key not from the whitelist array.
         Calls function to write the corresponding prepared alert rule file to disk.
         Returns 202 and the key on success.
         TODO: Exception handling
-        TODO: Sanitize key
         """
         self.parser.add_argument('key', type=str)
+        if self.parser['key'] not in ['ids', 'vuln', 'netuse']:
+            return {'key': self.parser['key']}, 400
         writeQuickAlertFile(self.parser['key'])
         return {'key': self.parser['key']}, 202
 
@@ -424,14 +426,16 @@ class AlertsQuick(Resource):
     def delete(self):
         """Disable BOX4s Quick Alert Rule.
 
-        Accepts key from ['ids', 'vuln', 'netuse', ''].
+        Accepts key from ['ids', 'vuln', 'netuse'].
+        Denies with 400 if key not from the whitelist array.
         Deletes the rule corresponding to the specified key.
         Returns 204 on success.
         TODO: Exception handling
-        TODO: Sanitize key
         """
         self.parser.add_argument('key', type=str)
-        os.remove(f'/var/lib/elastalert/rules/quick_{{key}}.yaml')
+        if self.parser['key'] not in ['ids', 'vuln', 'netuse']:
+            return {'key': self.parser['key']}, 400
+        os.remove(f'/var/lib/elastalert/rules/quick_{{self.parser["key"]}}.yaml')
         return {}, 204
 
 
