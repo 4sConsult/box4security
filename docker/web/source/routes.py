@@ -183,7 +183,7 @@ def rules():
 @app.route('/alerts', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Alerts'])
-def alerts():
+def alarms():
     """Return the alert page."""
     return render_template("alert.html")
 
