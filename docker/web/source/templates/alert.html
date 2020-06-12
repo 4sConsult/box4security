@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="ui main text container">
+    <h1 class="ui header">BOX4security - Alarmierung</h1>
+    <div class="ui floating tiny message">
+      <p>
+        Sie haben hier die Möglichkeit Alarmierungen anhand von definierten Daten-Features vorzunehmen.
+      </p>
+    </div>
+    <div class="ui inverted section divider"></div>
+    <div class="section">
+      <h2 class="ui header">BOX4s Quick Alerts<div class="sub header">Profitieren Sie von ausgewählten Security Alarmierungen. Diese definierten Regeln erfordern keine Bearbeitung sondern sind sofort einsatzbereit.</div></h2>
+      <div class="ui grid">
+        <div class="fourteen wide column">
+          <h5 class="ui header">BOX4s IDS Malware Alert<div class="sub header">Erhalten Sie sofortige Alarmierung beim Auftreten von Malware zuzuordnendem Netzwerkverkehr.</div></h5>
+        </div>
+        <div class="two wide center aligned column">
+          <div class="ui fitted toggle checkbox">
+            <input type="checkbox" data-key="malware">
+          </div>
+        </div>
+        <div class="fourteen wide column">
+          <h5 class="ui header">BOX4s Kritische Schwachstellen<div class="sub header">Erhalten Sie sofortige Alarmierung bei Identikation kritischer Schwachstellen.</div></h5>
+        </div>
+        <div class="two wide center aligned column">
+          <div class="ui fitted toggle checkbox">
+            <input type="checkbox" data-key="vuln">
+          </div>
+        </div>
+        <div class="fourteen wide column">
+          <h5 class="ui header">BOX4s Kritische Alarme<div class="sub header">Erhalten Sie sofortige Alarmierung beim Auftreten von kritischen IDS-Alarmen.</div></h5>
+        </div>
+        <div class="two wide center aligned column">
+          <div class="ui fitted toggle checkbox">
+            <input type="checkbox" data-key="ids">
+          </div>
+        </div>
+        <div class="fourteen wide column">
+          <h5 class="ui header">BOX4s Erhöhtes Datenaufkommen<div class="sub header">Erhalten Sie sofortige Alarmierung, wenn das Datenaufkommen um ein erhebliches Vielfaches höher ist als zuletzt.</div></h5>
+        </div>
+        <div class="two wide center aligned column">
+          <div class="ui fitted toggle checkbox">
+            <input type="checkbox" data-key="netuse">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui inverted section divider"></div>
+    <div class="section">
+      <h2 class="ui header">Aktive Alarmierungen<div class="sub header">Lorem Ipsum</div></h2>
+      <table id="tbl" class="ui celled single line small table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Datengrundlage</th>
+            <th>Typ</th>
+            <th>Details</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+      <div class="ui grid">
+        <div class="two column row">
+          <div class="left floated column">
+            <a class="ui positive centered icon button _open">
+              <i class="plus icon"></i>
+            </a>
+          </div>
+          <div class="right floated column">
+            <div class="fluid ui labeled button">
+              <a class="fluid ui negative button _flush">
+                <i class="exclamation triangle icon"></i>
+                Alle Alarmierungen irreversibel löschen
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui vertical footer segment">
+    <div class="ui center aligned container">
+    <img src="/static/Box4S_Logo.png" class="ui centered small image">
+  </div>
+  </div>
+  <div class="ui small modal">
+    <i class="close icon"></i>
+    <div class="header">Alarmierung hinzufügen</div>
+    <div class="content">
+      <form class="ui form">
+        <div class="ui centered grid">
+          <div class="row">
+            <div class="eight wide required field">
+              <label>Name</label>
+              <input name="name" type="text" placeholder="Eindeutiger Name für die Alarmierung" value="{{request.args.get("name", default='')}}">
+            </div>
+          </div>
+          <div class="row">
+            <div class="eight wide required field" data-tooltip='Wählen Sie die Grundlage anhand derer Alarme generiert werden sollen.'>
+              <label>Datengrundlage</label>
+              <div class="ui selection dropdown">
+                <input type="hidden" name="source">
+                <i class="dropdown icon"></i>
+                <div class="default text">Datengrundlage (*)</div>
+                <div class="menu">
+                  <div class="item" data-value="logstash-vulnwhisperer-*">Schwachstellen</div>
+                  <div class="item" data-value="suricata-*">IDS</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="six wide center aligned column">
+              <div class="ui">
+                <div class="ui buttons">
+                  <button class="ui green button _add">Hinzufügen & aktivieren</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script type="text/javascript">
+    function apiEndpoint(endpoint, method='GET', redirect='follow') {
+    return fetch(`//{{ request.host }}/${endpoint}`, {method: method, redirect: redirect})
+      .then((response) => {
+        return response.json()
+      })
+      .then(json => {
+        return json
+      })
+      .catch((err) => {
+        console.log('Fetch Error :-S', err);
+      });
+    }
+    const getEndpoint = async(endpoint, method) => {
+    const ret = await apiEndpoint(endpoint, method)
+    return ret
+    }
+  </script>
+  <script type="text/javascript">
+  $('div.item.active').removeClass('active');
+  $('.ui.checkbox').checkbox(
+    {
+    onChecked: function() {
+      var key = this.dataset.key;
+      fetch(`//{{ request.host }}/rules/alerts/quick`, {
+        method: 'PUT',
+        redirect: 'follow',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({'key': this.dataset.key})
+        })
+      .then((response) => {
+        console.log(response.status);
+        return response.json();
+      })
+      .then((json) => {
+        console.log(json);
+      })
+    },
+    onUnchecked: function() {
+      var key = this.dataset.key;
+      fetch(`//{{ request.host }}/rules/alerts/quick`, {
+        method: 'DELETE',
+        redirect: 'follow',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({'key': this.dataset.key})
+        })
+      .then((response) => {
+        console.log(response.status);
+        return response.json();
+      })
+      .then((json) => {
+        console.log(json);
+      })
+    },
+  });
+  $('#administration').addClass('active');
+  $('.dropdown')
+    .dropdown()
+  ;
+  (async function() {
+    getEndpoint('rules/alerts/').then((ret) => {
+      addToTable(ret);
+    })
+  function addToTable(data) {
+    let tbody = $(`#tbl tbody`);
+    data.forEach(rule => {
+      row = `<tr>
+        <td>${rule.name}</td>
+        <td>${rule.type}</td>
+        <td class="collapsing">
+          <a data-rule-id="${rule.id}" class="ui icon red button">
+            <i class="trash alternate outline icon"></i>
+          </a>
+        </td>
+      </tr>`;
+      tbody.append(row);
+    })
+    $( `#tbl tbody tr td a` ).on('click', (e) => {
+      var target = $(e.delegateTarget)
+      getEndpoint(`rules/alerts/${target.data('rule-id')}`, method='DELETE')
+      target.closest('tr').animate({
+        opacity: "0%",
+      }, 500, function() {
+        target.closest('tr').remove();
+      });
+    })
+
+  }
+})();
+  $("a._flush").click((e) => {
+    if (confirm(`Sind Sie sicher alle Alarmierungen unwiderruflich zu LÖSCHEN?`)) {
+      getEndpoint(`rules/alerts/`, method='DELETE');
+      $( `#tbl tbody` ).empty()
+    }
+  });
+  </script>
+  {% if request.args.get('create') %}
+    <script type="text/javascript">
+      $('.ui.modal').modal('show');
+    </script>
+  {% endif %}
+  <script type="text/javascript">
+    // show modal
+    $('a._open').click(() => $('.ui.modal').modal('show'));
+    // Submit Filter Script
+    $('button._add').click(async (e) => {
+      e.preventDefault();
+      // Parse form data into json object
+      var fd = new FormData($('form.ui.form')[0])
+      var json = {};
+      fd.forEach((value, key) => {json[key] = value});
+      var set = $(e.delegateTarget).data('set');
+      const response = await fetch(`rules/alerts/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        body: JSON.stringify(json)
+      });
+      if (response.ok) {
+        $('.ui.modal').modal('hide');
+        // Reload without parameters
+        window.location = window.location.pathname;
+      }
+    });
+  </script>
+{% endblock %}
