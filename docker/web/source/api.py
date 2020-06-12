@@ -356,7 +356,7 @@ class Alert(Resource):
 
         Wraps around ElastAlert's /rules/:id
         """
-        return request.delete(f"http://elastalert:3030/rules/{alert_id}").json()
+        return requests.delete(f"http://elastalert:3030/rules/{alert_id}").json()
 
 
 class Alerts(Resource):
