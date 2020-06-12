@@ -65,7 +65,7 @@ def writeQuickAlertFile(key):
     """Write a quick alert to file."""
     # TODO: check permissions / Try error
     with open(f'/var/lib/elastalert/rules/quick_{ key }.yaml', 'w') as f_alert:
-        filled = render_template(f'application/quick_alert_{ key }.yaml.j2', {})
+        filled = render_template(f'application/quick_alert_{ key }.yaml.j2', alert={})
         f_alert.write(filled)
 
 
@@ -430,7 +430,7 @@ class AlertsQuick(Resource):
         if self.args['key'] not in ['malware', 'ids', 'vuln', 'netuse']:
             return {'key': self.args['key']}, 400
         # writeQuickAlertFile(self.args['key'])
-        yaml = render_template(f"application/quick_alert_{  self.args['key'] }.yaml.j2", {})
+        yaml = render_template(f"application/quick_alert_{  self.args['key'] }.yaml.j2", alert={})
         return json.dumps({'yaml': yaml})
         # response = requests.post(f"http://elastalert:3030/rules/quick_{  self.args['key'] }", json=json.dumps({'yaml': yaml}))
         # return response.json(), 202
