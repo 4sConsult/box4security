@@ -17,7 +17,7 @@ run_every:
 # ElastAlert will buffer results from the most recent
 # period of time, in case some log sources are not in real time
 buffer_time:
-  minutes: 1
+  minutes: 15
 
 # Optional URL prefix for elasticsearch
 #es_url_prefix: elasticsearch
