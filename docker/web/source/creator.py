@@ -10,7 +10,7 @@ class CreatorUserMan(UserManager):
     """Extended UserManager class."""
 
     def unauthorized_view(self):
-        """ Prepare a Flash message and redirect to USER_UNAUTHORIZED_ENDPOINT"""
+        """ Prepare a Flash message and redirect to USER_UNAUTHORIZED_ENDPOINT."""
         # Prepare Flash message
         flash(_("You do not have permission to access the BOX4security."), 'error')
 
