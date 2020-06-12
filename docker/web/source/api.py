@@ -56,7 +56,7 @@ def writeBPFFile():
 def writeAlertFile(alert):
     """Write an alert dict to file."""
     # TODO: check permissions / Try error
-    with open(f'/var/lib/elastalert/rules/{ alert["safe_name"] }.yaml') as f_alert:
+    with open(f'/var/lib/elastalert/rules/{ alert["safe_name"] }.yaml', 'w') as f_alert:
         filled = render_template(f'application/{ alert["type"] }.yaml.j2', alert=alert)
         f_alert.write(filled)
 
@@ -64,7 +64,7 @@ def writeAlertFile(alert):
 def writeQuickAlertFile(key):
     """Write a quick alert to file."""
     # TODO: check permissions / Try error
-    with open(f'/var/lib/elastalert/rules/quick_{ key }.yaml') as f_alert:
+    with open(f'/var/lib/elastalert/rules/quick_{ key }.yaml', 'w') as f_alert:
         filled = render_template(f'application/quick_alert_{ key }.yaml.j2')
         f_alert.write(filled)
 
