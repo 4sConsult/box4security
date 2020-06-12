@@ -438,6 +438,7 @@ class AlertsQuick(Resource):
         """
         if self.args['key'] not in ['malware', 'ids', 'vuln', 'netuse']:
             return {'key': self.args['key']}, 400
+        requests.delete(f"http://elastalert:3030/rules/quick_{ self.args['key'] }")
         os.remove(f'/var/lib/elastalert/rules/quick_{ self.args["key"] }.yaml')
         return {}, 204
 
