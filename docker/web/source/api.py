@@ -431,7 +431,8 @@ class AlertsQuick(Resource):
             return {'key': self.args['key']}, 400
         # writeQuickAlertFile(self.args['key'])
         yaml = render_template(f"application/quick_alert_{  self.args['key'] }.yaml.j2")
-        response = requests.post(f"http://elastalert:3030/rules/quick_{  self.args['key'] }", data=json.dumps({'yaml': yaml}))
+        print(yaml)
+        response = requests.post(f"http://elastalert:3030/rules/quick_{  self.args['key'] }", json=json.dumps({'yaml': yaml}))
         return response.json(), 202
 
     @roles_required(['Super Admin', 'Alerts'])
