@@ -65,7 +65,7 @@ def writeQuickAlertFile(key):
     """Write a quick alert to file."""
     # TODO: check permissions / Try error
     with open(f'/var/lib/elastalert/rules/quick_{ key }.yaml', 'w') as f_alert:
-        filled = render_template(f'application/quick_alert_{ key }.yaml.j2')
+        filled = render_template(f'application/quick_alert_{ key }.yaml')
         f_alert.write(filled)
 
 
