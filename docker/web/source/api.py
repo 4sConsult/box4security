@@ -429,7 +429,6 @@ class AlertsQuick(Resource):
         """
         if self.args['key'] not in ['malware', 'ids', 'vuln', 'netuse']:
             return {'key': self.args['key']}, 400
-        # writeQuickAlertFile(self.args['key'])
         yaml = render_template(f"application/quick_alert_{  self.args['key'] }.yaml.j2", alert={})
         response = requests.post(f"http://elastalert:3030/rules/quick_{  self.args['key'] }", json={'yaml': yaml})
         return response.json(), 202
@@ -447,7 +446,6 @@ class AlertsQuick(Resource):
         if self.args['key'] not in ['malware', 'ids', 'vuln', 'netuse']:
             return {'key': self.args['key']}, 400
         requests.delete(f"http://elastalert:3030/rules/quick_{ self.args['key'] }")
-        # os.remove(f'/var/lib/elastalert/rules/quick_{ self.args["key"] }.yaml')
         return {}, 204
 
 
