@@ -23,7 +23,7 @@ index: logstash-vulnwhisperer-*
 filter:
 - query:
     query_string:
-    query: "risk_score: >=9"
+        query: "risk_score: >=9"
 
 {% include "application/alert_email_conf.yaml.j2" %}
 {% raw %}
