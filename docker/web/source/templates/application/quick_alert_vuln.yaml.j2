@@ -21,9 +21,10 @@ terms_window_size:
 index: logstash-vulnwhisperer-*
 
 filter:
-- query:
-    query_string:
-        query: "risk_score:[7.5 TO *]"
+- range:
+    risk_score:
+        from: 7.5
+        to: 10
 
 {% include "application/alert_email_conf.yaml.j2" %}
 {% raw %}
