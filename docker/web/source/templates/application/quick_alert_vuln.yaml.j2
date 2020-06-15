@@ -12,6 +12,14 @@ type: new_term
 fields:
  - "uniqueVul"
 
+# take the whole day into account, as vulns have the timestamp of the scan
+timeframe:
+    days: 1
+
+# run this alert every 4h
+run_every:
+    hours: 4
+
 # This means that we will query 90 days worth of data when ElastAlert starts to find which values of uniqueVul already exist
 terms_window_size:
   days: 90
