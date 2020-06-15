@@ -56,6 +56,10 @@ sudo git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/docs.git
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl restart box4security.service
 
+# Use time between service start and health checks to install modified crontab
+# Removes -it from docker exec openvas vulnwhisp
+sudo crontab /home/amadmin/box4s/main/crontab/root.crontab
+
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash || sleep 30
