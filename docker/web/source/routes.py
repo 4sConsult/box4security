@@ -62,10 +62,9 @@ def staticfiles(filename):
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
 
 
-@app.route("/wazuh/<path:filename>")
-def download_files(filename):
-    """Return a static file."""
-    return send_from_directory(app.config["WAZUH_FOLDER"], filename)
+@app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
+def send_foo(filename):
+    return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
 
 
 @app.route('/faq', methods=['GET'])
