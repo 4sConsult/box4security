@@ -17,7 +17,7 @@ class CreatorUserMan(UserManager):
         url = request.url
         # Redirect to USER_UNAUTHENTICATED_ENDPOINT
         safe_next_url = self.make_safe_url(url)
-        return redirect(self._endpoint_url(self.USER_UNAUTHENTICATED_ENDPOINT)+'?next='+quote(safe_next_url))
+        return redirect(self._endpoint_url(self.USER_UNAUTHENTICATED_ENDPOINT) + '?next=' + quote(safe_next_url))
 
     def unauthorized_view(self):
         """Rdirect to USER_UNAUTHORIZED_ENDPOINT."""
