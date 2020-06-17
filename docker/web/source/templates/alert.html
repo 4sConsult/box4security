@@ -132,7 +132,7 @@
     element.innerText = text;
     return element.innerHTML;
   }
-fetch(`//{{ request.host }}/rules/alerts/quick`)
+fetch(`//{{ request.host }}/rules/alerts_quick/quick`)
 .then((response) => response.json)
 .then((json) => {
   json.forEach(rule => {
