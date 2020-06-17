@@ -30,8 +30,9 @@ class User(db.Model, UserMixin):
 
     def has_role(self, role):
         for r in self.roles:
-            if r.name == role: return true
-        return false
+            if r.name == role:
+                return True
+        return False
 
     def getName(self):
         """Return name of current user or email if no name exists."""
