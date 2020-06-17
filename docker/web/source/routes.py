@@ -5,7 +5,7 @@ from source.models import User, Role
 from source.config import Dashboards
 import source.error
 from flask_restful import Api
-from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect
+from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for
 from flask_user import login_required, current_user, roles_required
 from flask_mail import Message
 from source.forms import AddUserForm
@@ -55,21 +55,18 @@ def index():
     if not current_user.has_role('Startseite'):
         # User does not have privileges to read the start page => redirect to the first he can or implicitly to 403 by trying to access start
         for rdict in [
-            {'name': 'Super Admin', 'endpoint': user},
-            {'name': 'Filter', 'endpoint': rules},
-            {'name': 'Updates', 'endpoint': update},
-            {'name': 'User-Management', 'endpoint': user},
-            {'name': 'FAQ', 'endpoint': faq},
-            {'name': 'Dashboards-Master', 'endpoint': catchall, 'param': 'start'},
-            {'name': 'SIEM', 'endpoint': catchall, 'param': 'siem-overview'},
-            {'name': 'Schwachstellen', 'endpoint': catchall, 'param': 'vuln-overview'},
-            {'name': 'Netzwerk', 'endpoint': catchall, 'param': 'network-overview'},
+            {'name': 'Super Admin', 'url': url_for('user')},
+            {'name': 'Filter', 'url': url_for('rules')},
+            {'name': 'Updates', 'url': url_for('update')},
+            {'name': 'User-Management', 'url': url_for('user')},
+            {'name': 'FAQ', 'url': url_for('faq')},
+            {'name': 'Dashboards-Master', 'url': '/start'},
+            {'name': 'SIEM', 'url': '/siem-overview'},
+            {'name': 'Schwachstellen', 'url': '/vuln-overview'},
+            {'name': 'Netzwerk', 'url': '/network-overview'},
         ]:
             if current_user.has_role(rdict['name']):
-                if rdict['param']:
-                    return rdict['endpoint'](rdict['param'])
-                else:
-                    return rdict['endpoint']
+                return redirect(rdict['url'])
     return catchall('start')
 
 
