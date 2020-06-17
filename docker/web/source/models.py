@@ -29,8 +29,9 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary='user_role')
 
     def has_role(self, role):
+
         for r in self.roles:
-            if r.name == role:
+            if r.name == role or r.name == "Super Admin":
                 return True
         return False
 
