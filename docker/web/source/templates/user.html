@@ -296,6 +296,11 @@
               if(response.ok){
                 $(e.delegateTarget).closest('tr').remove();
               }
+              else {
+                errormsg = "Sie dürfen diese Aktion nicht ausführen. Nur Super Admins können andere Super Admins löschen.";
+                row = `<div class="ui red message">${errormsg}</div>`;
+                $(`#edit-submit`).before(row);
+              }
             })
           };
           break;
