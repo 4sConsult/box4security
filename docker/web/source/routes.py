@@ -47,9 +47,9 @@ api.add_resource(Health, '/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 
+api.add_resource(AlertsQuick, '/rules/alerts/quick/')
 api.add_resource(Alert, '/rules/alerts/<alert_id>')
 api.add_resource(Alerts, '/rules/alerts/')
-api.add_resource(AlertsQuick, '/rules/alerts/quick/')
 
 
 @app.route('/')
