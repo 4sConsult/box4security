@@ -55,11 +55,11 @@ def index():
     if not current_user.has_role('Startseite'):
         # User does not have privileges to read the start page => redirect to the first he can or implicitly to 403 by trying to access start
         for rdict in [
-            {'name': 'Super Admin', 'url': url_for(user)},
-            {'name': 'Filter', 'url': url_for(rules)},
-            {'name': 'Updates', 'url': url_for(update)},
-            {'name': 'User-Management', 'url': url_for(user)},
-            {'name': 'FAQ', 'url': url_for(faq)},
+            {'name': 'Super Admin', 'url': url_for('user')},
+            {'name': 'Filter', 'url': url_for('rules')},
+            {'name': 'Updates', 'url': url_for('update')},
+            {'name': 'User-Management', 'url': url_for('user')},
+            {'name': 'FAQ', 'url': url_for('faq')},
             {'name': 'Dashboards-Master', 'url': '/start'},
             {'name': 'SIEM', 'url': '/siem-overview'},
             {'name': 'Schwachstellen', 'url': '/vuln-overview'},
