@@ -66,9 +66,9 @@ def index():
             {'name': 'Netzwerk', 'endpoint': catchall, 'param': 'network-overview'},
         ]:
             if current_user.has_role(rdict['name']):
-                if rdict['param']:
+                try:
                     return rdict['endpoint'](rdict['param'])
-                else:
+                except KeyError:
                     return rdict['endpoint']
     return catchall('start')
 
