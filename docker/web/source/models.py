@@ -29,7 +29,8 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary='user_role')
 
     def has_role(self, role):
-
+        # For each role the user has, check, if the given role is actually in the users roles
+        # But if the user is a super admin, always return true, as they are allowed to to everything
         for r in self.roles:
             if r.name == role or r.name == "Super Admin":
                 return True
