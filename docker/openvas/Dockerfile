@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:19.10
 
 ENV DEBIAN_FRONTEND=noninteractive
 ADD etc/vuln_openvas.ini /etc/vulnwhisperer/vulnwhisperer.ini
