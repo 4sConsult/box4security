@@ -132,13 +132,13 @@
     element.innerText = text;
     return element.innerHTML;
   }
-fetch(`//{{ request.host }}/rules/alerts_quick/quick`)
-.then((response) => response.json)
+fetch(`//{{ request.host }}/rules/alerts_quick/`)
+.then((response) => response.json())
 .then((json) => {
   json.forEach(rule => {
     rule = sanitizeHTML(rule);
     rule = rule.replace('quick_', '');
-    $(`input[data-key="${rule}"]`).checkbox('check');
+    $(`input[data-key="${rule}"]`).parent().checkbox('set checked');
   });
 })
 
@@ -167,7 +167,7 @@ fetch(`//{{ request.host }}/rules/alerts_quick/quick`)
     {
     onChecked: function() {
       var key = this.dataset.key;
-      fetch(`//{{ request.host }}/rules/alerts/quick`, {
+      fetch(`//{{ request.host }}/rules/alerts_quick/`, {
         method: 'PUT',
         redirect: 'follow',
         headers: {
@@ -185,7 +185,7 @@ fetch(`//{{ request.host }}/rules/alerts_quick/quick`)
     },
     onUnchecked: function() {
       var key = this.dataset.key;
-      fetch(`//{{ request.host }}/rules/alerts/quick`, {
+      fetch(`//{{ request.host }}/rules/alerts_quick/`, {
         method: 'DELETE',
         redirect: 'follow',
         headers: {
