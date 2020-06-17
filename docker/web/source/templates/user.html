@@ -296,6 +296,11 @@
               if(response.ok){
                 $(e.delegateTarget).closest('tr').remove();
               }
+              else {
+                errormsg = "Sie dürfen diese Aktion nicht ausführen. Nur Super Admins können andere Super Admins löschen.";
+                row = `<div class="ui red message">${errormsg}</div>`;
+                $(`#edit-submit`).before(row);
+              }
             })
           };
           break;
@@ -319,8 +324,15 @@
         break;
         case 'disable':
           fetch(`/api/user/${$(e.delegateTarget).data('user-id')}/lock`, {method: 'POST'})
-          .then(() => {
-            location.reload();
+          .then((response) => {
+            if(response.ok){
+              location.reload();
+            }
+            else {
+              errormsg = "Sie dürfen diese Aktion nicht ausführen. Nur Super Admins können andere Super Admins (ent)sperren.";
+              row = `<div class="ui red message">${errormsg}</div>`;
+              $(`#edit-submit`).before(row);
+            }
           })
           break;
       }
