@@ -64,7 +64,7 @@ def staticfiles(filename):
 
 @app.route('/wazuh/<path:filename>')
 def download_file(filename):
-    return send_from_directory(app.config['WAZUH_FOLDER'],  filename, as_attachment=True)
+    return send_from_directory(app.config['WAZUH_FOLDER'], filename, as_attachment=True)
 
 
 @app.route('/faq', methods=['GET'])
