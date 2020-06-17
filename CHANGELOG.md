@@ -35,7 +35,6 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 - Dashboard des Schwachstellen-Verlaufs zeigt nun den Verlauf der letzten 90 Tage.
 - Zahlen der einzelnen Schwachstellenkategorie des Schwachstellen-Verlauf-Dashboards basieren nun auf den letzten 7 Tagen.
 
-
 ### Fixed
 
 * Fehler in der automatischen Überwachung wiederkehrender Aufgaben behoben.
