@@ -19,7 +19,7 @@
             </a>
           </div>
         {% endif %}
-        {% if current_user.has_role('SIEM') %}
+        {% if current_user.has_role('SIEM') or current_user.has_role('Dashboards-Master') %}
           <div class="item" id="siem">
             <div class="ui dropdown pointing link item">
               <i class="globe icon" id="securitymenu"></i> SIEM
@@ -37,7 +37,7 @@
              </div>
            </div>
          {% endif %}
-         {% if current_user.has_role('Schwachstellen') %}
+         {% if current_user.has_role('Schwachstellen') or current_user.has_role('Dashboards-Master') %}
            <div class="item" id="vuln">
       	      <div class="ui dropdown pointing link item">
       	         <i class="bug icon"></i> Schwachstellen
@@ -50,7 +50,7 @@
               </div>
           </div>
         {% endif %}
-        {% if current_user.has_role('Netzwerk') %}
+        {% if current_user.has_role('Netzwerk') or current_user.has_role('Dashboards-Master') %}
           <div class="item" id="net">
       	     <div class="ui dropdown pointing link item">
                <i class="sitemap icon"></i> Netzwerk <i class="dropdown icon"></i>
