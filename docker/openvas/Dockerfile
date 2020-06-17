@@ -13,7 +13,7 @@ RUN apt update && \
     chmod 777 -R /var/lib/logstash && \
     git clone https://github.com/box4s/VulnWhisperer.git /opt/VulnWhisperer/
 WORKDIR /opt/VulnWhisperer/
-RUN pip install -r requirements.txt && \
+RUN pip3 install -r requirements.txt && \
     python setup.py install && \
     chmod +x /root/insertconfig.sh && \
     chmod +x /root/start.sh && \
