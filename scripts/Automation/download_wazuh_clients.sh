@@ -7,6 +7,9 @@ if [ $# -eq 0 ]
 fi
 echo "Downloadindg Wazuh Client Files of Version" $WAZUH_VERSION
 workdir=/home/amadmin/box4s/docker/web/source/wazuh
+if [ ! -d "$workdir" ];then
+        mkdir $workdir
+fi
 cd $workdir
 #download redhat/centos
 redhat_download=https://packages.wazuh.com/3.x/yum/wazuh-agent-$WAZUH_VERSION-1.x86_64.rpm
