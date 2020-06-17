@@ -6,7 +6,7 @@ RUN apt-get -y update && \
   gem install rack execjs therubyracer && \
   gem install gollum:5.0.1 && \
   gem install org-ruby
-
+  
 WORKDIR /wiki
 CMD ["rackup"]
 EXPOSE 80

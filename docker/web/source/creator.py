@@ -3,11 +3,26 @@ from werkzeug.wrappers import Request, Response
 from flask_user import UserManager
 from source.models import User, Role
 from source.extensions import db
-from flask import redirect, url_for
+from flask import redirect, url_for, flash, request
+from urllib.parse import quote
 
 
 class CreatorUserMan(UserManager):
     """Extended UserManager class."""
+
+    def unauthenticated_view(self):
+        """Prepare a Flash message and redirect to USER_UNAUTHORIZED_ENDPOINT."""
+        # Prepare Flash message
+        flash("You do not have permission to access the BOX4security.", 'error')
+        url = request.url
+        # Redirect to USER_UNAUTHENTICATED_ENDPOINT
+        safe_next_url = self.make_safe_url(url)
+        return redirect(self._endpoint_url(self.USER_UNAUTHENTICATED_ENDPOINT) + '?next=' + quote(safe_next_url))
+
+    def unauthorized_view(self):
+        """Rdirect to USER_UNAUTHORIZED_ENDPOINT."""
+        # Redirect to USER_UNAUTHORIZED_ENDPOINT
+        return redirect(self._endpoint_url(self.USER_UNAUTHORIZED_ENDPOINT))
 
     def login_view(self):
         """Extend default login view.

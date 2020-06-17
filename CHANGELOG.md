@@ -8,6 +8,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Die BOX4security benötigt nun keine VPN-Verbindung mehr, um Softwareaktualisierungen zu beziehen
+* Fehlermeldung eingeführt, wenn ein User-Manager einen SuperAdmin versucht zu löschen
+* Fehlermeldung angepasst, wenn jemand nicht autorisiert oder nicht authentifiziert ist
+* Benutzer werden nach dem Login immer auf eine Seite weitergeleitet, für die sie auch freigeschaltet sind
+* Benutzer können nun nur noch die Bereiche im Menü sehen, für die sie auch die notwendigen Rechte haben
 * Standardnachricht von Elasticsearch bei der ersten Inbetriebnahme ausgeblendet
 
 ### Optimized
@@ -31,7 +35,6 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Changed
 - Dashboard des Schwachstellen-Verlaufs zeigt nun den Verlauf der letzten 90 Tage.
 - Zahlen der einzelnen Schwachstellenkategorie des Schwachstellen-Verlauf-Dashboards basieren nun auf den letzten 7 Tagen.
-
 
 ### Fixed
 

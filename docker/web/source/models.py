@@ -5,7 +5,7 @@ from flask_user import UserMixin
 
 
 class User(db.Model, UserMixin):
-    u"""User class to handle authentication and authorization.
+    """User class to handle authentication and authorization.
 
     active: can login e.g. not banned
     email_confirmed_at: Zeitstempel, an dem die E-Mail bestätigt wurde
@@ -27,6 +27,14 @@ class User(db.Model, UserMixin):
 
     # Define the relationship to Role via UserRoles
     roles = db.relationship('Role', secondary='user_role')
+
+    def has_role(self, role):
+        # For each role the user has, check, if the given role is actually in the users roles
+        # But if the user is a super admin, always return true, as they are allowed to to everything
+        for r in self.roles:
+            if r.name == role or r.name == "Super Admin":
+                return True
+        return False
 
     def getName(self):
         """Return name of current user or email if no name exists."""
