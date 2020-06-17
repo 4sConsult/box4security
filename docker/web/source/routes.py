@@ -63,7 +63,7 @@ def staticfiles(filename):
 
 
 @app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
-def send_foo(filename):
+def send_wazuh_files(filename):
     return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
 
 
