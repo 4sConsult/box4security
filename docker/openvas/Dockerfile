@@ -6,7 +6,7 @@ ADD etc/ /etc/openvas/
 ADD scripts/ /root/
 
 RUN apt update && \
-    apt install curl apt-transport-https software-properties-common git zlib1g-dev libxml2-dev libxslt1-dev virtualenv python python2 python3-venv python2-pip python3-pip net-tools alien rpm nsis openvas -y -o Dpkg::Options::=--force-confnew && \
+    apt install curl apt-transport-https software-properties-common git zlib1g-dev libxml2-dev libxslt1-dev virtualenv python python2 python3-venv python3-pip net-tools alien rpm nsis openvas -y -o Dpkg::Options::=--force-confnew && \
     rm -rf /var/lib/apt/lists/* && \
     curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && \
     python2 get-pip.py && \
