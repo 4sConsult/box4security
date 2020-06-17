@@ -346,7 +346,6 @@ class APIUser(Resource):
         a) User must be Super Admin or User Manager
         b) User cannot delete himself
         c) Only Super Admins can delete Super Admin accounts
-        d) User-Management cannot delete a Super Admin
         """
         if current_user.id == user_id:
             abort(400, message="Users cannot delete their own accounts.")
