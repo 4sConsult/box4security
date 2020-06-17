@@ -29,7 +29,9 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary='user_role')
 
     def has_role(self, role):
-        return role in self.roles
+        for r in self.roles:
+            if r.name == role: return true
+        return false
 
     def getName(self):
         """Return name of current user or email if no name exists."""
