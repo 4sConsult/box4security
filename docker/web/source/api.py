@@ -418,6 +418,19 @@ class AlertsQuick(Resource):
             abort(400, message="Bad Request. Failed parsing arguments.")
 
     @roles_required(['Super Admin', 'Alerts'])
+    def get(self):
+        """Get all ENABLED Quick Alert Rules.
+
+        Returns a list of enabled quick alert rules as json.
+        """
+        ea = requests.get("http://elastalert:3030/rules").json()
+        resp = []
+        for rule in ea['rules']:
+            if rule.startswith('quick'):
+                resp.append(rule)
+        return resp
+
+    @roles_required(['Super Admin', 'Alerts'])
     def put(self):
         """Enable BOX4s Quick Alert Rule.
 
