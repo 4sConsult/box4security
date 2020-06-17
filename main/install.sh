@@ -351,10 +351,10 @@ MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MEM=$(python3 -c "print($MEM/1024.0**2)")
 # Give half of that to elasticsearch
 ESMEM=$(python3 -c "print(int($MEM*0.5))")
-sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/.env.es
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/elasticsearch/.env.es
 # and one quarter to logstash
 LSMEM=$(python3 -c "print(int($MEM*0.25))")
-sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/logstash/.env.ls
 
 echo "### Download Docker images"
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull

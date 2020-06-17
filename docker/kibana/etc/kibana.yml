@@ -15,3 +15,4 @@ logging.dest: /var/log/kibana/kibana.log
 logging.silent: false
 logging.quiet: false
 logging.verbose: false
+telemetry.enabled: false

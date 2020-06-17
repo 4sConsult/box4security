@@ -12,6 +12,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Fehlermeldung angepasst, wenn jemand nicht autorisiert oder nicht authentifiziert ist
 * Benutzer werden nach dem Login immer auf eine Seite weitergeleitet, für die sie auch freigeschaltet sind
 * Benutzer können nun nur noch die Bereiche im Menü sehen, für die sie auch die notwendigen Rechte haben
+* Standardnachricht von Elasticsearch bei der ersten Inbetriebnahme ausgeblendet
 
 ### Optimized
 * Bei jedem Update werden die alten Dockerimages gelöscht, um Speicherplatz zu sparen
