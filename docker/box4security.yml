@@ -1,10 +1,6 @@
 version: '2.3'
 
 services:
-  baseimage:
-    build: baseimage/.
-    container_name: baseimage
-    image: "registry.gitlab.com/4sconsult/box4s/baseimage:dev"
   elasticsearch:
     build: elasticsearch/.
     container_name: elasticsearch
@@ -15,7 +11,7 @@ services:
     volumes:
      - data:/data
     env_file:
-      - ./.env.es
+      - elasticsearch/.env.es
   kibana:
     build: kibana/.
     container_name: kibana
@@ -81,7 +77,7 @@ services:
         condition: service_healthy
     env_file:
      - /etc/default/logstash
-     - ./.env.ls
+     - logstash/.env.ls
     ports:
       - 9600:9600
       - 5044:5044
@@ -125,7 +121,7 @@ services:
     extra_hosts:
       - "dockerhost:${INT_IP}"
     env_file:
-      - ./.env.prod.web
+      - web/.env.prod.web
       - ../VERSION
     environment:
       - KUNDE
@@ -135,14 +131,13 @@ services:
   db:
     container_name: db
     image: "registry.gitlab.com/4sconsult/box4s/db:dev"
-    build:
-      context: ./db
+    build: db/.
     volumes:
       - varlib_postgresql/:/var/lib/postgresql/data
     ports:
       - "127.0.0.1:5432:5432"
     env_file:
-      - ./.env.prod.db
+      - db/.env.prod.db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -151,8 +146,7 @@ services:
   nginx:
     container_name: nginx
     image: "registry.gitlab.com/4sconsult/box4s/nginx:dev"
-    build:
-      context: ./nginx
+    build: nginx/.
     ports:
       - 80:80
       - 443:443
@@ -168,8 +162,7 @@ services:
   dnsmasq:
     container_name: dnsmasq
     image: "registry.gitlab.com/4sconsult/box4s/dnsmasq:dev"
-    build:
-      context: ./dnsmasq
+    build: dnsmasq/.
     ports:
       - 53:5353/tcp
       - 53:5353/udp
@@ -178,8 +171,7 @@ services:
   wazuh:
     container_name: wazuh
     image: "registry.gitlab.com/4sconsult/box4s/wazuh:dev"
-    build:
-      context: ./wazuh
+    build: wazuh/.
     hostname: wazuh-manager
     restart: always
     ports:
@@ -193,8 +185,7 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
-    build:
-      context: ./elastalert
+    build: elastalert/.
     restart: always
     volumes:
       - varlib_elastalert_rules:/opt/elastalert/rules
@@ -204,8 +195,7 @@ services:
   wiki:
     container_name: wiki
     image: "registry.gitlab.com/4sconsult/box4s/wiki:dev"
-    build:
-      context: ./wiki
+    build: wiki/.
     restart: always
     volumes:
       - varlib_docs:/wiki/
