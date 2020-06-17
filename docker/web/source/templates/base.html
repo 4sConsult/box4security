@@ -62,26 +62,28 @@
              </div>
           </div>
         {% endif %}
-        <div class="item" id="administration">
-          <div class="ui dropdown pointing link item">
-    	       <i class="cogs icon"></i> Administration
-             <i class="dropdown icon"></i>
-             <div class="menu">
-               {% if current_user.has_role('FAQ') %}
-               <a class="item" href="/faq">FAQ</a>
-               {% endif %}
-               {% if current_user.has_role('User-Management') %}
-               <a class="item" href="/user">Benutzer</a>
-               {% endif %}
-               {% if current_user.has_role('Filter') %}
-               <a class="item" href="/filter">Filter</a>
-               {% endif %}
-               {% if current_user.has_role('Updates') %}
-               <a class="item" href="/update">Updates</a>
-               {% endif %}
+        {% if current_user.has_role('FAQ') or current_user.has_role('User-Management') or current_user.has_role('Filter') or current_user.has_role('Updates') %}
+          <div class="item" id="administration">
+            <div class="ui dropdown pointing link item">
+      	       <i class="cogs icon"></i> Administration
+               <i class="dropdown icon"></i>
+               <div class="menu">
+                 {% if current_user.has_role('FAQ') %}
+                 <a class="item" href="/faq">FAQ</a>
+                 {% endif %}
+                 {% if current_user.has_role('User-Management') %}
+                 <a class="item" href="/user">Benutzer</a>
+                 {% endif %}
+                 {% if current_user.has_role('Filter') %}
+                 <a class="item" href="/filter">Filter</a>
+                 {% endif %}
+                 {% if current_user.has_role('Updates') %}
+                 <a class="item" href="/update">Updates</a>
+                 {% endif %}
+               </div>
              </div>
            </div>
-         </div>
+         {% endif %}
          {% if current_user.has_role('Wiki') %}
            <div class="item active" id="documentation">
             <a class="item" id="docuitem" href="/docs">
