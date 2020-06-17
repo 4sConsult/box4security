@@ -11,7 +11,7 @@ WORKDIR /usr/share/kibana
 RUN     ./bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-${WAZUH_APP_VERSION}.zip && \
         mkdir /usr/share/kibana/optimize/wazuh && \
         mkdir /usr/share/kibana/optimize/wazuh/config && \
-        printf "hosts:\n  - default:\n     url: https://${INT_IP}\n     port: 55000\n     user: box4s\n     password: wa3hz0hPW\n" > /usr/share/kibana/optimize/wazuh/config/wazuh.yml
+        echo "hosts:\n  - default:\n     url: https://${INT_IP}\n     port: 55000\n     user: box4s\n     password: wa3hz0hPW\n" > /usr/share/kibana/optimize/wazuh/config/wazuh.yml
 
 USER root
 RUN chown -f kibana:kibana /usr/share/kibana/optimize/wazuh/config && \
