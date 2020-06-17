@@ -9,7 +9,7 @@ class Config():
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite://")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     STATIC_FOLDER = "{}/project/static".format(os.getenv('APP_FOLDER'))
-    WAZUH_FOLDER = "{}/static/wazuh".format(os.getenv('APP_FOLDER'))
+    WAZUH_FOLDER = "{}/source/wazuh".format(os.getenv('APP_FOLDER'))
 
     SECRET_KEY = os.getenv("SECRET_KEY")
 
