@@ -60,10 +60,11 @@ def index():
             {'name': 'Updates', 'url': url_for('update')},
             {'name': 'User-Management', 'url': url_for('user')},
             {'name': 'FAQ', 'url': url_for('faq')},
-            {'name': 'Dashboards-Master', 'url': '/start'},
+            {'name': 'Dashboards-Master', 'url': '/startseite'},
             {'name': 'SIEM', 'url': '/siem-overview'},
             {'name': 'Schwachstellen', 'url': '/vuln-overview'},
             {'name': 'Netzwerk', 'url': '/network-overview'},
+            {'name': 'Wiki', 'url': '/docs'},
         ]:
             if current_user.has_role(rdict['name']):
                 return redirect(rdict['url'])
