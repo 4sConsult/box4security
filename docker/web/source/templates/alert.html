@@ -126,6 +126,23 @@
   </div>
 {% endblock %}
 {% block scripts %}
+<script type="text/javascript">
+  function sanitizeHTML(text) {
+    var element = document.createElement('div');
+    element.innerText = text;
+    return element.innerHTML;
+  }
+fetch(`//{{ request.host }}/rules/alerts/quick`)
+.then((response) => response.json)
+.then((json) => {
+  json.forEach(rule => {
+    rule = sanitizeHTML(rule);
+    rule = rule.replace('quick_', '');
+    $(`input[data-key="${rule}"]`).checkbox('check');
+  });
+})
+
+  </script>
   <script type="text/javascript">
     function apiEndpoint(endpoint, method='GET', redirect='follow') {
     return fetch(`//{{ request.host }}/${endpoint}`, {method: method, redirect: redirect})
