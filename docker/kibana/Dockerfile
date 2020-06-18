@@ -20,7 +20,8 @@ RUN chown -f kibana:kibana /usr/share/kibana/optimize/wazuh/config && \
 	mkdir -p /var/lib/kibana && \
 	touch /var/log/kibana/kibana.log && \
 	chown kibana:kibana -R /var/log/kibana/ && \
-  chown kibana:kibana -R /var/lib/kibana/
+  chown kibana:kibana -R /var/lib/kibana/ && \
+  chmod +x /entry.sh
 
 HEALTHCHECK --retries=50 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana/api/status' | grep -v "Kibana server is not ready yet" || exit 1
 STOPSIGNAL SIGKILL
