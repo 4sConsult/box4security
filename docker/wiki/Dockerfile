@@ -1,4 +1,4 @@
-FROM ruby:2.7.1
+FROM ruby:latest
 RUN apt-get -y update && \
   apt-get -y install libicu-dev cmake && \
   rm -rf /var/lib/apt/lists/* && \
@@ -6,7 +6,7 @@ RUN apt-get -y update && \
   gem install rack execjs therubyracer && \
   gem install gollum:5.0.1 && \
   gem install org-ruby
-  
+
 WORKDIR /wiki
 CMD ["rackup"]
 EXPOSE 80

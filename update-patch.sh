@@ -19,6 +19,7 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 ###################
 # Changes here
+pip install requests
 
 # Remove VPN connection
 sudo systemctl stop vpn.service

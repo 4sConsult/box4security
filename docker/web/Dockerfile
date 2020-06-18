@@ -1,4 +1,4 @@
-from python:3.8.2-slim-buster
+from python:latest
 
 # Prevents Python from writing pyc files to disc
 ENV PYTHONDONTWRITEBYTECODE 1
