@@ -100,9 +100,7 @@ services:
   web:
     container_name: web
     image: "registry.gitlab.com/4sconsult/box4s/web:dev"
-    build:
-      context: ./web
-      dockerfile: Dockerfile.prod
+    build: web/.
     command: >
      bash -c "python main.py db upgrade head &&
      gunicorn --bind 0.0.0.0:5000 main:app"
@@ -121,7 +119,7 @@ services:
     extra_hosts:
       - "dockerhost:${INT_IP}"
     env_file:
-      - web/.env.prod.web
+      - web/.env.web
       - ../VERSION
     environment:
       - KUNDE
