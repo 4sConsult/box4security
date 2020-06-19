@@ -347,7 +347,7 @@ class Alert(Resource):
             return response
         except json.JSONDecodeError:
             # make json and return it
-            return json.dumps(response)
+            return json.dumps(response.text)
 
     @roles_required(['Super Admin', 'Alerts'])
     def post(self, alert_id):
