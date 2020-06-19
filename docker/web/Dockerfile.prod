@@ -1,4 +1,5 @@
-from python:latest
+# Builder
+from python:latest as builder
 
 # Prevents Python from writing pyc files to disc
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -15,7 +16,7 @@ RUN flake8 --ignore=E501,F401 . && \
 
 
 # Final
-FROM python:3.8.2-slim-buster
+FROM python:latest
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
 

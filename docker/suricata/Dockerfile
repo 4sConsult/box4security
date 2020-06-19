@@ -1,4 +1,4 @@
-FROM ubuntu:19.10
+FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -10,7 +10,7 @@ RUN apt update && \
     apt install -y apt-transport-https software-properties-common && \
     add-apt-repository ppa:oisf/suricata-stable && \
     apt update && \
-    apt install -y curl wget sudo suricata=5.0.3-0ubuntu3 oinkmaster && \
+    apt install -y curl wget sudo suricata oinkmaster && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/suricata/scripts/ && \
     mkdir -p /var/lib/suricata/rules/ && \

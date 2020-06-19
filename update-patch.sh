@@ -19,6 +19,7 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 ###################
 # Changes here
+pip install requests
 
 #Download wazuh clients
 sudo sh /home/amadmin/box4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
