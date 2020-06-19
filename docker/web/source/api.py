@@ -482,12 +482,16 @@ class AlertMailer(Resource):
         Success: Returns 200, {"email": "example@example.com"} on success
         Missing: Returns 404 if no email set.
         """
-        with open('/var/lib/box4s/alert_mail.conf') as fd:
-            alert_mail = fd.read()
-            if alert_mail:
-                return {'email': alert_mail}, 200
-            else:
-                return {}, 404
+        try:
+            with open('/var/lib/box4s/alert_mail.conf') as fd:
+                alert_mail = fd.read()
+                if alert_mail:
+                    return {'email': alert_mail}, 200
+                else:
+                    return {}, 404
+        except FileNotFoundError:
+            return {}, 404
+
 
     def put(self):
         """Write supplied `email` parameter to disk.

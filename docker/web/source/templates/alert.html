@@ -221,17 +221,25 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
     .then((response) => response.json())
     .then((json) => {
       if ("email" in json ) {
-        $('#alert-mail').value(json.email);
+        $('#alert-mail').val(json.email);
       } else {
         $('.ui.checkbox').children('input').prop("disabled", true);
       }
     })
   })();
   $("button#btn-set-alert-mailer").click((e) => {
-    var email = $('#alert-mail').value();
+    var email = $('#alert-mail').val();
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
     {
-      fetch(`//{{ request.host }}/api/alerts/mailer`, {method: "PUT"})
+      fetch(`//{{ request.host }}/api/alerts/mailer`,
+        {
+          method: "PUT",
+          follow: "redirect",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({email: email})
+        })
       .then((response) => {
         if(response.ok)
          {
