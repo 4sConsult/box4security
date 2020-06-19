@@ -10,7 +10,21 @@
     <div class="ui inverted section divider"></div>
     <div class="section">
       <h2 class="ui header">BOX4s Quick Alerts<div class="sub header">Profitieren Sie von ausgewählten Security Alarmierungen. Diese definierten Regeln erfordern keine Bearbeitung sondern sind sofort einsatzbereit.</div></h2>
-      <div class="ui grid">
+      <div class="ui middle aligned grid">
+        <div class="nine wide column">
+          <h5 class="ui header">BOX4s Alarmadresse<div class="sub header">Definieren zunächst die E-Mailadresse, an welche die vertraulichen Alarme übermittelt werden sollen.</div></h5>
+        </div>
+        <div class="five wide column">
+          <div class="ui fluid left icon input">
+            <input id="alert-mail" type="text" placeholder="E-Mailadresse">
+            <i class="mail icon"></i>
+          </div>
+        </div>
+        <div class="one wide column">
+          <button class="ui fluid green icon button" id="btn-set-alert-mailer">
+            <i class="cog icon"></i>
+          </button>
+        </div>
         <div class="fourteen wide column">
           <h5 class="ui header">BOX4s IDS Malware Alert<div class="sub header">Erhalten Sie sofortige Alarmierung beim Auftreten von Malware zuzuordnendem Netzwerkverkehr.</div></h5>
         </div>
@@ -207,37 +221,31 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
     .dropdown()
   ;
   (async function() {
-    /*
-    * getEndpoint('rules/alerts/').then((ret) => {
-    *  addToTable(ret);
-    * })
-    */
-  function addToTable(data) {
-    let tbody = $(`#tbl tbody`);
-    data.forEach(rule => {
-      row = `<tr>
-        <td>${rule.name}</td>
-        <td>${rule.type}</td>
-        <td class="collapsing">
-          <a data-rule-id="${rule.id}" class="ui icon red button">
-            <i class="trash alternate outline icon"></i>
-          </a>
-        </td>
-      </tr>`;
-      tbody.append(row);
+    fetch(`//{{ request.host }}/api/alerts/mailer`)
+    .then((response) => response.json())
+    .then((json) => {
+      if ("email" in json ) {
+        $('#alert-mail').value(json.email);
+      } else {
+        $('.ui.checkbox').children('input').prop("disabled", true);
+      }
     })
-    $( `#tbl tbody tr td a` ).on('click', (e) => {
-      var target = $(e.delegateTarget)
-      getEndpoint(`rules/alerts/${target.data('rule-id')}`, method='DELETE')
-      target.closest('tr').animate({
-        opacity: "0%",
-      }, 500, function() {
-        target.closest('tr').remove();
-      });
-    })
-
-  }
-})();
+  })();
+  $("button#set-alert-mailer").click((e) => {
+    var email = $('#alert-mail').value();
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
+    {
+      fetch(`//{{ request.host }}/api/alerts/mailer`, {method: "PUT"})
+      .then((response) => {
+        if(response.ok)
+         {
+          $('.ui.checkbox').children('input').prop("disabled", false);
+         }
+      }
+    } else {
+      alert("Bitte geben Sie eine güötige E-Mail-Adresse an.");
+    }
+  })
   $("a._flush").click((e) => {
     if (confirm(`Sind Sie sicher alle Alarmierungen unwiderruflich zu LÖSCHEN?`)) {
       getEndpoint(`rules/alerts/`, method='DELETE');
