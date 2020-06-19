@@ -479,6 +479,7 @@ class AlertMailer(Resource):
         """Register Parser and argument for endpoint."""
         self.parser = reqparse.RequestParser()
 
+    @roles_required(['Super Admin', 'Alerts'])
     def get(self):
         """Get currently installed alert receiver email address.
 
@@ -495,6 +496,7 @@ class AlertMailer(Resource):
         except FileNotFoundError:
             return {}, 404
 
+    @roles_required(['Super Admin', 'Alerts'])
     def put(self):
         """Write supplied `email` parameter to disk.
 
@@ -511,10 +513,12 @@ class AlertMailer(Resource):
 
         return {}, 202
 
+    @roles_required(['Super Admin', 'Alerts'])
     def post(self):
         """Write supplied `email` parameter to disk by redirecting to PUT."""
         return self.put()
 
+    @roles_required(['Super Admin', 'Alerts'])
     def delete(self):
         """Delete set alarm mail by truncating the file.
 
