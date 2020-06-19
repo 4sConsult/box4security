@@ -16,7 +16,7 @@
         </div>
         <div class="five wide column">
           <div class="ui fluid left icon input">
-            <input id="alert-mail" type="text" placeholder="E-Mailadresse">
+            <input id="alert-mail" type="text" placeholder="E-Mail-Adresse">
             <i class="mail icon"></i>
           </div>
         </div>
@@ -252,6 +252,7 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
         if(response.ok)
          {
           $('.ui.checkbox').children('input').prop("disabled", false);
+          $(e.currentTarget).children('i').removeClass("cog").addClass("check");
          }
       })
     } else {
