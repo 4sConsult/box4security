@@ -469,6 +469,56 @@ class AlertsQuick(Resource):
         return {}, 204
 
 
+class AlertMailer(Resource):
+    """BOX4s Alert Mailer Resource."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+
+    def get(self):
+        """Get currently installed alert receiver email address.
+
+        Success: Returns 200, {"email": "example@example.com"} on success
+        Missing: Returns 404 if no email set.
+        """
+        with open('/var/lib/box4s/alert_mail.conf') as fd:
+            alert_mail = fd.read()
+            if alert_mail:
+                return {'email': alert_mail}, 200
+            else:
+                return {}, 404
+
+    def put(self):
+        """Write supplied `email` parameter to disk.
+
+        Truncates previous content.
+        Return 202 on success.
+        """
+        self.parser.add_argument('email', type=str)
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+        with open('/var/lib/box4s/alert_mail.conf', 'w') as fd:
+            fd.write(self.args['email'])
+
+        return {}, 202
+
+    def post(self):
+        """Write supplied `email` parameter to disk by redirecting to PUT."""
+        return self.put()
+
+    def delete(self):
+        """Delete set alarm mail by truncating the file.
+
+        Return 204 on success.
+        """
+        fd = open('/var/lib/box4s/alert_mail.conf', 'w')
+        fd.close()
+        return {}, 204
+
+
 class APIUser(Resource):
     """BOX4s User Resource."""
 

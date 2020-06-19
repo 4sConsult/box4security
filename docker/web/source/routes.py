@@ -1,7 +1,7 @@
 """Module to handle all webapp routes."""
 from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
-from source.api import Alerts, Alert, AlertsQuick
+from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
 from source.config import Dashboards
 import source.error
@@ -50,6 +50,7 @@ api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 api.add_resource(AlertsQuick, '/rules/alerts_quick/')
 api.add_resource(Alert, '/rules/alerts/<alert_id>')
 api.add_resource(Alerts, '/rules/alerts/')
+api.add_resource(AlertMailer, '/api/alerts/mailer/')
 
 
 @app.route('/')
