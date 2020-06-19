@@ -207,9 +207,11 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
     .dropdown()
   ;
   (async function() {
-    getEndpoint('rules/alerts/').then((ret) => {
-      addToTable(ret);
-    })
+    /*
+    * getEndpoint('rules/alerts/').then((ret) => {
+    *  addToTable(ret);
+    * })
+    */
   function addToTable(data) {
     let tbody = $(`#tbl tbody`);
     data.forEach(rule => {
