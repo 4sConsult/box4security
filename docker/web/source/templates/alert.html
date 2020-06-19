@@ -20,7 +20,7 @@
             <i class="mail icon"></i>
           </div>
         </div>
-        <div class="one wide column">
+        <div class="two wide column">
           <button class="ui fluid green icon button" id="btn-set-alert-mailer">
             <i class="cog icon"></i>
           </button>
@@ -227,7 +227,7 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
       }
     })
   })();
-  $("button#set-alert-mailer").click((e) => {
+  $("button#btn-set-alert-mailer").click((e) => {
     var email = $('#alert-mail').value();
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
     {
@@ -237,9 +237,9 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
          {
           $('.ui.checkbox').children('input').prop("disabled", false);
          }
-      }
+      })
     } else {
-      alert("Bitte geben Sie eine güötige E-Mail-Adresse an.");
+      alert("Bitte geben Sie eine gültige E-Mail-Adresse an.");
     }
   })
   $("a._flush").click((e) => {
