@@ -20,6 +20,9 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 ###################
 # Changes here
 
+#Download wazuh clients
+sudo sh /home/amadmin/box4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
+
 # Remove VPN connection
 sudo systemctl stop vpn.service
 sudo systemctl disable vpn.service
