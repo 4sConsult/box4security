@@ -4,6 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## X.X.X - 2020-06-24
 
 ### Added
+* Rolle *Alerts* zur Kontrolle von Alarmierungen hinzugefügt
 
 
 ### Changed
