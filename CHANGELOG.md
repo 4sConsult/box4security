@@ -11,6 +11,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Fehlerhafte Datenauswahl im Schwachstellenverlauf für kritisches und hohes Risiko behoben
+* Fehlschlagenes Einspeisen von Schwachstellenreports bei fehlerhaftem Zeitstempel behoben
 
 ### Deprecated
 
