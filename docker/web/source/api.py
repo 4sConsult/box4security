@@ -419,6 +419,7 @@ class AlertsQuick(Resource):
         """Register Parser and argument for endpoint."""
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('key', type=str)
+        self.parser.add_argument('email', type=str, required=False)
         try:
             self.args = self.parser.parse_args()
         except Exception:
@@ -449,7 +450,9 @@ class AlertsQuick(Resource):
         """
         if self.args['key'] not in ['malware', 'ids', 'vuln', 'netuse']:
             return {'key': self.args['key']}, 400
-        yaml = render_template(f"application/quick_alert_{  self.args['key'] }.yaml.j2", alert={})
+        if "email" not in self.args:
+            abort(400, message="Bad Request. Missing email parameter.")
+        yaml = render_template(f"application/quick_alert_{  self.args['key'] }.yaml.j2", target=self.args['email'])
         response = requests.post(f"http://elastalert:3030/rules/quick_{  self.args['key'] }", json={'yaml': yaml})
         return response.json(), 202
 

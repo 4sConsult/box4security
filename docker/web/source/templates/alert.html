@@ -181,18 +181,26 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
     {
     onChecked: function() {
       var key = this.dataset.key;
-      fetch(`//{{ request.host }}/rules/alerts_quick/`, {
-        method: 'PUT',
-        redirect: 'follow',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({'key': this.dataset.key})
-        })
-      .then((response) => {
-        return response.json();
-      })
+      fetch(`//{{ request.host }}/api/alerts/mailer/`)
+      .then((response) => response.json())
       .then((json) => {
+        if ("email" in json ) {
+          fetch(`//{{ request.host }}/rules/alerts_quick/`, {
+            method: 'PUT',
+            redirect: 'follow',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'key': this.dataset.key, 'email': json.email})
+            })
+          .then((response) => {
+            return response.json();
+          })
+          .then((json) => {
+          })
+        } else {
+          alert("Bitte prüfen Sie erneut die hinterlegte E-Mail-Adresse. Der Alarm wurde nicht aktiviert.")
+        }
       })
     },
     onUnchecked: function() {
