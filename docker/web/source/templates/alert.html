@@ -217,7 +217,7 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
     .dropdown()
   ;
   (async function() {
-    fetch(`//{{ request.host }}/api/alerts/mailer`)
+    fetch(`//{{ request.host }}/api/alerts/mailer/`)
     .then((response) => response.json())
     .then((json) => {
       if ("email" in json ) {
@@ -231,7 +231,7 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
     var email = $('#alert-mail').val();
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
     {
-      fetch(`//{{ request.host }}/api/alerts/mailer`,
+      fetch(`//{{ request.host }}/api/alerts/mailer/`,
         {
           method: "PUT",
           follow: "redirect",
