@@ -6,7 +6,7 @@ filebeat.inputs:
   enabled: false
 - type: log
   enabled: true
-  harvester_limit: 1
+  #harvester_limit: 1
   #close_eof: true
   json.keys_under_root: true
   json.add_error_key: true
