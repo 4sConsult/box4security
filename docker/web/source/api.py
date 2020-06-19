@@ -340,7 +340,14 @@ class Alert(Resource):
 
         Wraps around ElastAlert's /rules/:id
         """
-        return json.dumps(requests.get(f"http://elastalert:3030/rules/{alert_id}"))
+        response = requests.get(f"http://elastalert:3030/rules/{alert_id}")
+        try:
+            response = response.json()
+            # is already json => return
+            return response
+        except json.JSONDecodeError:
+            # make json and return it
+            return json.dumps(response)
 
     @roles_required(['Super Admin', 'Alerts'])
     def post(self, alert_id):
