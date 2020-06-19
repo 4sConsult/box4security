@@ -78,6 +78,11 @@ def staticfiles(filename):
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
 
 
+@app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
+def send_wazuh_files(filename):
+    return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
+
+
 @app.route('/faq', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'FAQ'])
