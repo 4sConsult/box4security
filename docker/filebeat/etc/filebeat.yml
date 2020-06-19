@@ -8,9 +8,6 @@ filebeat.inputs:
   enabled: true
   #harvester_limit: 1
   #close_eof: true
-  json.keys_under_root: true
-  json.add_error_key: true
-  json.message_key: log
   scan.sort: filename
   paths:
     - /var/lib/logstash/openvas/*.json
