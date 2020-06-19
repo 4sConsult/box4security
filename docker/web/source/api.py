@@ -492,7 +492,6 @@ class AlertMailer(Resource):
         except FileNotFoundError:
             return {}, 404
 
-
     def put(self):
         """Write supplied `email` parameter to disk.
 
