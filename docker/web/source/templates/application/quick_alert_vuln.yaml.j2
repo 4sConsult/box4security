@@ -41,7 +41,7 @@ alert_subject: "BOX4s Critical Vulnerability: {0}: {1} ({2})"
 alert_subject_args:
 - client.domain
 - plugin_name
-- scan_severity
+- risk_score
 alert_text: "Client: {0} (Task: {6})\n{1} ({3} - {4})\n{2}\n\nSolution: {5}"
 alert_text_type: alert_text_only
-alert_text_args: ["client.domain","plugin_name","plugin_output", "scan_severity", "risk_score_name", "solution", "task_name"]
+alert_text_args: ["client.domain","plugin_name","plugin_output", "risk_score", "risk_score_name", "solution", "task_name"]
