@@ -21,7 +21,7 @@ run_every:
 metric_agg_key: "network.bytes"
 metric_agg_type: "sum"
 # The ratio of the metric value in the last timeframe to the previous timeframe that when hit will trigger an alert.
-spike_height: 15
+spike_height: 5
 spike_type: "up"
 
 # Spike over the last day
@@ -32,5 +32,5 @@ timeframe:
 {% raw %}
 alert_subject: "BOX4s Network Usage Spike"
 {% endraw %}
-alert_text: "The current network usage is 15x higher than in the last 24h."
+alert_text: "The current network usage is 5x higher than in the last 24 hours."
 alert_text_type: alert_text_only
