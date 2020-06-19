@@ -190,11 +190,9 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
         body: JSON.stringify({'key': this.dataset.key})
         })
       .then((response) => {
-        console.log(response.status);
         return response.json();
       })
       .then((json) => {
-        console.log(json);
       })
     },
     onUnchecked: function() {
@@ -208,11 +206,9 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
         body: JSON.stringify({'key': this.dataset.key})
         })
       .then((response) => {
-        console.log(response.status);
         return response.json();
       })
       .then((json) => {
-        console.log(json);
       })
     },
   });
