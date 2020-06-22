@@ -1,0 +1,20 @@
+{% extends ./alert_base.yaml.j2 %}
+
+# (Required, spike specific)
+# The size of the window used to determine average event frequency
+# We use two sliding windows each of size timeframe
+# To measure the 'reference' rate and the current rate
+timeframe:
+  hours: 2
+
+# (Required, spike specific)
+# The spike rule matches when the current window contains spike_height times more
+# events than the reference window
+spike_height: 3
+
+# (Required, spike specific)
+# The direction of the spike
+# 'up' matches only spikes, 'down' matches only troughs
+# 'both' matches both spikes and troughs
+spike_type: "up"
+

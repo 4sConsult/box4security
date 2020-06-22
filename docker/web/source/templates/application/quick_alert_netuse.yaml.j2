@@ -1,0 +1,36 @@
+name: Network Usage Spike
+# (Required)
+# Type of alert.
+# the frequency rule type alerts when num_events events occur with timeframe time
+# The any rule will match everything. Every hit that the query returns will generate an alert.
+type: spike_aggregation
+
+# (Required)
+# Index to search, wildcard supported
+index: suricata-*
+
+filter:
+- term:
+    event.subtype: "flow"
+
+# calculated once per 3h
+run_every:
+  hours: 3
+
+# This is the name of the field over which the metric value will be calculated.
+metric_agg_key: "network.bytes"
+metric_agg_type: "sum"
+# The ratio of the metric value in the last timeframe to the previous timeframe that when hit will trigger an alert.
+spike_height: 5
+spike_type: "up"
+
+# Spike over the last day
+timeframe:
+    days: 1
+
+{% include "application/alert_email_conf.yaml.j2" %}
+{% raw %}
+alert_subject: "BOX4s Network Usage Spike"
+{% endraw %}
+alert_text: "The current network usage is 5x higher than in the last 24 hours."
+alert_text_type: alert_text_only

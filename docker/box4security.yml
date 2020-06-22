@@ -108,6 +108,7 @@ services:
        - static_volume:/home/app/web/source/static
        - /var/log/box4s/:/var/log/box4s/
        - varlib_box4s/:/var/lib/box4s/
+       - varlib_elastalert_rules:/var/lib/elastalert/rules/
     expose:
       - 5000
     healthcheck:
@@ -187,9 +188,9 @@ services:
     restart: always
     volumes:
       - varlib_elastalert_rules:/opt/elastalert/rules
-    ports:
-      - 3030:3030
-      - 3333:3333
+    expose:
+      - 3030
+      - 3333
   wiki:
     container_name: wiki
     image: "registry.gitlab.com/4sconsult/box4s/wiki:dev"

@@ -11,6 +11,8 @@ sudo systemctl stop box4security.service
 # Remove all images, that are on the target system on every update
 sudo docker rmi $(sudo docker images -a -q)
 
+# If exists, remove the elastalert example rule
+rm -f /var/lib/elastalert/rules/testrule.yaml
 # Making sure to be logged in with the correct account
 sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
 

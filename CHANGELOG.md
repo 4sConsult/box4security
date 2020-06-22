@@ -4,6 +4,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [xxx](xxx) - xxxx-xx-xx
 
 ### Added
+* Alarmierung mittels aktivierbarer, ausgewählter BOX4s Quick Alerts hinzugefügt
+* Rolle *Alerts* zur Kontrolle von Alarmierungen hinzugefügt
 * Die Box kann nun über `curl -sL https://gitlab.com/snippets/1982942/raw | sudo bash` installiert werden
 * Wazuh Clients können direkt von der BOX4security heruntergeladen werden (Für Endgeräte ohne direkte Internetverbindung)
 
@@ -21,6 +23,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Fehlerhafte Datenauswahl im Schwachstellenverlauf für kritisches und hohes Risiko behoben
+* Fehlschlagenes Einspeisen von Schwachstellenreports bei fehlerhaftem Zeitstempel behoben
 
 ### Deprecated
 

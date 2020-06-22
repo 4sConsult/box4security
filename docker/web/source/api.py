@@ -6,6 +6,7 @@ from flask import request, render_template
 import requests
 import os
 import subprocess
+import json
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 
@@ -50,6 +51,22 @@ def writeBPFFile():
         f_bpf.write(filled)
         # read pw from $SSHPASS and login to dockerhost to execute restartSuricata
         os.system('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')
+
+
+def writeAlertFile(alert):
+    """Write an alert dict to file."""
+    # TODO: check permissions / Try error
+    with open(f'/var/lib/elastalert/rules/{ alert["safe_name"] }.yaml', 'w') as f_alert:
+        filled = render_template(f'application/{ alert["type"] }.yaml.j2', alert=alert)
+        f_alert.write(filled)
+
+
+def writeQuickAlertFile(key):
+    """Write a quick alert to file."""
+    # TODO: check permissions / Try error
+    with open(f'/var/lib/elastalert/rules/quick_{ key }.yaml', 'w') as f_alert:
+        filled = render_template(f'application/quick_alert_{ key }.yaml.j2', alert={})
+        f_alert.write(filled)
 
 
 class BPF(Resource):
@@ -306,17 +323,210 @@ class UpdateStatus(Resource):
 
 
 class Alert(Resource):
+    """API representation of a single alert by ID.
+
+    Read, Update and Delete are wrapping around the ElastAlert API (https://github.com/bitsensor/elastalert#api).
+    Creating is creating a yaml rule file in the rulePath.
+    """
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('yaml', type=str)
+
+    @roles_required(['Super Admin', 'Alerts'])
     def get(self, alert_id):
-        return {}, 501
+        """Read a single Alert Rule by ID.
 
-    def post(self):
-        return {}, 501
+        Wraps around ElastAlert's /rules/:id
+        """
+        response = requests.get(f"http://elastalert:3030/rules/{alert_id}")
+        try:
+            response = response.json()
+            # is already json => return
+            return response
+        except json.JSONDecodeError:
+            # make json and return it
+            return json.dumps(response.text)
 
+    @roles_required(['Super Admin', 'Alerts'])
+    def post(self, alert_id):
+        """Add/Edit/Update a single Alert Rule by ID.
+
+        Wraps around ElastAlert's /rules/:id
+        """
+        return requests.post(f"http://elastalert:3030/rules/{alert_id}", json=json.dumps({'yaml': self.args['yaml']})).json()
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def delete(self, alert_id):
+        """Delete a single Alert Rule by ID.
+
+        Wraps around ElastAlert's /rules/:id
+        """
+        response = requests.delete(f"http://elastalert:3030/rules/{alert_id}")
+        try:
+            response = response.json()
+            return response
+        except json.JSONDecodeError:
+            # ElastAlert does not return a valid json response, when deleting stuff successfully, apparently.
+            return {}, 204
+
+
+class Alerts(Resource):
+    """API representation of all alert rules."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def get(self):
+        """Get all alert rules.
+
+        Wrap around ElastAlert GET /rules endpoint:
+        Returns a list of directories and rules that exist in the rulesPath (from the config) and are being run by the ElastAlert process.
+        """
+        try:
+            ea = requests.get("http://elastalert:3030/rules")
+            return ea.json()
+        except Timeout:
+            abort(504, message="Alert API Timeout")
+        except ConnectionError:
+            abort(503, message="Alert API unreachable")
+        except Exception:
+            abort(502, message="Alert API Failure")
+
+    @roles_required(['Super Admin', 'Alerts'])
     def put(self):
+        """Create a new alerting rule.
+
+        Returns:
+            [type] -- [description]
+        """
+        self.parser.add_argument('name', type=str)
+        a = object()
+        # Check if alert with this name exists
+        # return error to notice web
+        # Write alert to file
+        writeAlertFile(a)
         return {}, 501
 
+
+class AlertsQuick(Resource):
+    """API representation of BOX4s Quick alert rules."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('key', type=str)
+        self.parser.add_argument('email', type=str, required=False)
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def get(self):
+        """Get all ENABLED Quick Alert Rules.
+
+        Returns a list of enabled quick alert rules as json.
+        """
+        ea = requests.get("http://elastalert:3030/rules").json()
+        resp = []
+        for rule in ea['rules']:
+            if rule.startswith('quick'):
+                resp.append(rule)
+        return resp
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def put(self):
+        """Enable BOX4s Quick Alert Rule.
+
+        Accepts key from whitelist array.
+        Denies with 400 if key not from the whitelist array.
+        Calls function to write the corresponding prepared alert rule file to disk.
+        Returns 202 and the key on success.
+        TODO: Exception handling
+        """
+        if self.args['key'] not in ['malware', 'ids', 'vuln', 'netuse']:
+            return {'key': self.args['key']}, 400
+        if "email" not in self.args:
+            abort(400, message="Bad Request. Missing email parameter.")
+        yaml = render_template(f"application/quick_alert_{  self.args['key'] }.yaml.j2", target=self.args['email'])
+        response = requests.post(f"http://elastalert:3030/rules/quick_{  self.args['key'] }", json={'yaml': yaml})
+        return response.json(), 202
+
+    @roles_required(['Super Admin', 'Alerts'])
     def delete(self):
-        return {}, 501
+        """Disable BOX4s Quick Alert Rule.
+
+        Accepts key from ['ids', 'vuln', 'netuse'].
+        Denies with 400 if key not from the whitelist array.
+        Deletes the rule corresponding to the specified key.
+        Returns 204 on success.
+        TODO: Exception handling
+        """
+        if self.args['key'] not in ['malware', 'ids', 'vuln', 'netuse']:
+            return {'key': self.args['key']}, 400
+        requests.delete(f"http://elastalert:3030/rules/quick_{ self.args['key'] }")
+        return {}, 204
+
+
+class AlertMailer(Resource):
+    """BOX4s Alert Mailer Resource."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def get(self):
+        """Get currently installed alert receiver email address.
+
+        Success: Returns 200, {"email": "example@example.com"} on success
+        Missing: Returns 404 if no email set.
+        """
+        try:
+            with open('/var/lib/box4s/alert_mail.conf') as fd:
+                alert_mail = fd.read()
+                if alert_mail:
+                    return {'email': alert_mail}, 200
+                else:
+                    return {}, 404
+        except FileNotFoundError:
+            return {}, 404
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def put(self):
+        """Write supplied `email` parameter to disk.
+
+        Truncates previous content.
+        Return 202 on success.
+        """
+        self.parser.add_argument('email', type=str)
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+        with open('/var/lib/box4s/alert_mail.conf', 'w') as fd:
+            fd.write(self.args['email'])
+
+        return {}, 202
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def post(self):
+        """Write supplied `email` parameter to disk by redirecting to PUT."""
+        return self.put()
+
+    @roles_required(['Super Admin', 'Alerts'])
+    def delete(self):
+        """Delete set alarm mail by truncating the file.
+
+        Return 204 on success.
+        """
+        fd = open('/var/lib/box4s/alert_mail.conf', 'w')
+        fd.close()
+        return {}, 204
 
 
 class APIUser(Resource):

@@ -1,0 +1,47 @@
+name: Critical Vulnerability
+# (Required)
+# Type of alert.
+# the frequency rule type alerts when num_events events occur with timeframe time
+# The any rule will match everything. Every hit that the query returns will generate an alert.
+type: new_term
+
+{# realert:
+  hours: 4 #}
+
+# Monitor the field uniqueVul
+fields:
+ - "uniqueVul"
+
+# take the whole day into account, as vulns have the timestamp of the scan
+{# timeframe:
+    days: 1 #}
+
+# run this alert every 4h
+run_every:
+    minutes: 5
+
+# This means that we will query 90 days worth of data when ElastAlert starts to find which values of uniqueVul already exist
+terms_window_size:
+  days: 90
+
+# (Required)
+# Index to search, wildcard supported
+index: logstash-vulnwhisperer-*
+
+filter:
+- range:
+    risk_score:
+        from: 7.5
+        to: 10
+
+{% include "application/alert_email_conf.yaml.j2" %}
+{% raw %}
+alert_subject: "BOX4s Critical Vulnerability: {0}: {1} ({2})"
+{% endraw %}
+alert_subject_args:
+- client.domain
+- plugin_name
+- risk_score
+alert_text: "Client: {0} (Task: {6})\n{1} ({3} - {4})\n{2}\n\nSolution: {5}"
+alert_text_type: alert_text_only
+alert_text_args: ["client.domain","plugin_name","plugin_output", "risk_score", "risk_score_name", "solution", "task_name"]

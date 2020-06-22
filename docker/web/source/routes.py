@@ -1,6 +1,7 @@
 """Module to handle all webapp routes."""
 from source import app, mail, db, userman
-from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
+from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
+from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
 from source.config import Dashboards
 import source.error
@@ -37,7 +38,6 @@ api.add_resource(BPF, '/rules/bpf/<int:rule_id>')
 api.add_resource(BPFs, '/rules/bpf/')
 api.add_resource(LSR, '/rules/logstash/<int:rule_id>')
 api.add_resource(LSRs, '/rules/logstash/')
-api.add_resource(Alert, '/alert/<int:alert_id>')
 api.add_resource(Version, '/ver/')
 api.add_resource(AvailableReleases, '/ver/releases/')
 api.add_resource(LaunchUpdate, '/update/launch/')
@@ -46,6 +46,11 @@ api.add_resource(UpdateStatus, '/update/status/')
 api.add_resource(Health, '/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
+
+api.add_resource(AlertsQuick, '/rules/alerts_quick/')
+api.add_resource(Alert, '/rules/alerts/<alert_id>')
+api.add_resource(Alerts, '/rules/alerts/')
+api.add_resource(AlertMailer, '/api/alerts/mailer/')
 
 
 @app.route('/')
@@ -195,6 +200,14 @@ def update_post():
 def rules():
     """Return the filter page."""
     return render_template("filter.html")
+
+
+@app.route('/alerts', methods=['GET'])
+@login_required
+@roles_required(['Super Admin', 'Alerts'])
+def alarms():
+    """Return the alert page."""
+    return render_template("alert.html")
 
 
 @app.route('/update/log/download', methods=['GET'])

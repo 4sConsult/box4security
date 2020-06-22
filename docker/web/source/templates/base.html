@@ -62,7 +62,7 @@
              </div>
           </div>
         {% endif %}
-        {% if current_user.has_role('FAQ') or current_user.has_role('User-Management') or current_user.has_role('Filter') or current_user.has_role('Updates') %}
+        {% if current_user.has_role('FAQ') or current_user.has_role('User-Management') or current_user.has_role('Filter') or current_user.has_role('Updates') or current_user.has_role('Alerts') %}
           <div class="item" id="administration">
             <div class="ui dropdown pointing link item">
       	       <i class="cogs icon"></i> Administration
@@ -76,6 +76,9 @@
                  {% endif %}
                  {% if current_user.has_role('Filter') %}
                  <a class="item" href="/filter">Filter</a>
+                 {% endif %}
+                 {% if current_user.has_role('Alerts') %}
+                 <a class="item" href="/alerts">Alarme</a>
                  {% endif %}
                  {% if current_user.has_role('Updates') %}
                  <a class="item" href="/update">Updates</a>

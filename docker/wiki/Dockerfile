@@ -1,5 +1,6 @@
 FROM ruby:latest
-RUN apt-get -y update && \
+RUN apt-get clean && \
+  apt-get -y update && \
   apt-get -y install libicu-dev cmake && \
   rm -rf /var/lib/apt/lists/* && \
   gem install github-linguist && \

@@ -1,4 +1,4 @@
-from python:latest
+from python:latest as builder
 
 # Prevents Python from writing pyc files to disc
 ENV PYTHONDONTWRITEBYTECODE 1

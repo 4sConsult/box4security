@@ -37,8 +37,10 @@ function rollback() {
   rm -f /var/lib/box4s/backup/resolv.personal
   cp /var/lib/box4s/backup/15_logstash_suppress.conf /var/lib/box4s/15_logstash_suppress.conf
   cp /var/lib/box4s/backup/suricata_suppress.bpf /var/lib/box4s/suricata_suppress.bpf
+  cp /var/lib/box4s/backup/alert_mail.conf /var/lib/box4s/alert_mail.conf || : # dont fail if this file didn't exist
   rm -f /var/lib/box4s/backup/15_logstash_suppress.conf
   rm -f /var/lib/box4s/backup/suricata_suppress.bpf
+  rm -f /var/lib/box4s/backup/alert_mail.conf
   cp /var/lib/box4s/backup/suricata.env /home/amadmin/box4s/docker/suricata/.env
   rm -f /var/lib/box4s/backup/suricata.env
 
@@ -60,6 +62,11 @@ function rollback() {
   rm -rf /var/lib/box4s_docs/*
   cp -R /var/lib/box4s/backup/wiki/* /var/lib/box4s_docs/
   rm -rf /var/lib/box4s/backup/wiki
+
+  echo "Stelle die konfiguierten Alarme wieder her"
+  rm -rf /var/lib/elastalert/rules/*
+  cp -R /var/lib/box4s/backup/alerts/* /var/lib/elastalert/rules/
+  rm -rf /var/lib/box4s/backup/alerts
 
   cd /home/amadmin/box4s/
   git fetch
@@ -126,6 +133,7 @@ function backup() {
   cp /var/lib/box4s/resolv.personal /var/lib/box4s/backup/resolv.personal
   cp /var/lib/box4s/15_logstash_suppress.conf /var/lib/box4s/backup/15_logstash_suppress.conf
   cp /var/lib/box4s/suricata_suppress.bpf /var/lib/box4s/backup/suricata_suppress.bpf
+  cp /var/lib/box4s/alert_mail.conf /var/lib/box4s/backup/alert_mail.conf || : # dont fail if this file doesnt exist (yet)
   cp /home/amadmin/box4s/docker/suricata/.env /var/lib/box4s/backup/suricata.env
 
   echo "Erstelle Backup der Systemkonfiguration"
@@ -140,6 +148,10 @@ function backup() {
   echo "Erstelle Backup der Dokumentation"
   mkdir -p /var/lib/box4s/backup/wiki
   cp -R /var/lib/box4s_docs/* /var/lib/box4s/backup/wiki/
+
+  echo "Erstelle Backup der konfigurierten Alarme"
+  mkdir -p /var/lib/box4s/backup/alerts
+  cp -R /var/lib/elastalert/rules/* /var/lib/box4s/backup/alerts
 }
 
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
