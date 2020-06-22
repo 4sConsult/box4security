@@ -45,9 +45,10 @@ sudo rm /etc/systemd/system/vpn.service || :
 sudo apt remove -y --purge openconnect || :
 
 # Change Box4s repo
-# Backup the current environment files ...
-sudo mv /home/amadmin/box4s/docker/.env.es /tmp/.env.es
-sudo mv /home/amadmin/box4s/docker/.env.ls /tmp/.env.ls
+# Move the current environment files ...
+# ... and put the environment files back where they belong
+sudo mv /home/amadmin/box4s/docker/.env.es /home/amadmin/box4s/docker/elasticsearch/.env.es
+sudo mv /home/amadmin/box4s/docker/.env.ls /home/amadmin/box4s/docker/logstash/.env.ls
 
 # This should be a prerequirement, as it is part of 1.8.3
 
@@ -59,10 +60,6 @@ sudo mv /home/amadmin/box4s/docker/.env.ls /tmp/.env.ls
 # sudo git fetch
 # sudo git pull
 # sudo git checkout $VERSION
-
-# # ... and put the environment files back where they belong
-# sudo mv /tmp/.env.es /home/amadmin/box4s/docker/elasticsearch/.env.es
-# sudo mv /tmp/.env.ls /home/amadmin/box4s/docker/logstash/.env.ls
 
 # # Clone the new wiki repo
 # sudo rm -R /var/lib/box4s_docs/*
