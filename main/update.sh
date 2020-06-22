@@ -37,8 +37,10 @@ function rollback() {
   rm -f /var/lib/box4s/backup/resolv.personal
   cp /var/lib/box4s/backup/15_logstash_suppress.conf /var/lib/box4s/15_logstash_suppress.conf
   cp /var/lib/box4s/backup/suricata_suppress.bpf /var/lib/box4s/suricata_suppress.bpf
+  cp /var/lib/box4s/backup/alert_mail.conf /var/lib/box4s/alert_mail.conf || : # dont fail if this file didn't exist
   rm -f /var/lib/box4s/backup/15_logstash_suppress.conf
   rm -f /var/lib/box4s/backup/suricata_suppress.bpf
+  rm -f /var/lib/box4s/backup/alert_mail.conf
   cp /var/lib/box4s/backup/suricata.env /home/amadmin/box4s/docker/suricata/.env
   rm -f /var/lib/box4s/backup/suricata.env
 
@@ -131,6 +133,7 @@ function backup() {
   cp /var/lib/box4s/resolv.personal /var/lib/box4s/backup/resolv.personal
   cp /var/lib/box4s/15_logstash_suppress.conf /var/lib/box4s/backup/15_logstash_suppress.conf
   cp /var/lib/box4s/suricata_suppress.bpf /var/lib/box4s/backup/suricata_suppress.bpf
+  cp /var/lib/box4s/alert_mail.conf /var/lib/box4s/backup/alert_mail.conf || : # dont fail if this file doesnt exist (yet)
   cp /home/amadmin/box4s/docker/suricata/.env /var/lib/box4s/backup/suricata.env
 
   echo "Erstelle Backup der Systemkonfiguration"
