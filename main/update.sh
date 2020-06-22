@@ -61,6 +61,11 @@ function rollback() {
   cp -R /var/lib/box4s/backup/wiki/* /var/lib/box4s_docs/
   rm -rf /var/lib/box4s/backup/wiki
 
+  echo "Stelle die konfiguierten Alarme wieder her"
+  rm -rf /var/lib/elastalert/rules/*
+  cp -R /var/lib/box4s/backup/alerts/* /var/lib/elastalert/rules/
+  rm -rf /var/lib/box4s/backup/alerts
+
   cd /home/amadmin/box4s/
   git fetch
   git checkout -f $1 >/dev/null 2>&1
@@ -140,6 +145,10 @@ function backup() {
   echo "Erstelle Backup der Dokumentation"
   mkdir -p /var/lib/box4s/backup/wiki
   cp -R /var/lib/box4s_docs/* /var/lib/box4s/backup/wiki/
+
+  echo "Erstelle Backup der konfigurierten Alarme"
+  mkdir -p /var/lib/box4s/backup/alerts
+  cp -R /var/lib/elastalert/rules/* /var/lib/box4s/backup/alerts
 }
 
 #Die Sleep Anweisungen dienen nur der Demo und können entfernt werden
