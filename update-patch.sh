@@ -8,8 +8,10 @@ set -e
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
+# remove stopped containers on update
+sudo docker rm  $(docker ps -q -a) || :
 # Remove all images, that are on the target system on every update
-sudo docker rmi $(sudo docker images -a -q)
+sudo docker rmi $(sudo docker images -a -q) || :
 
 # If exists, remove the elastalert example rule
 rm -f /var/lib/elastalert/rules/testrule.yaml
