@@ -20,9 +20,9 @@ depends_on = None
 def upgrade():
     """Upgrade to migration."""
     op.bulk_insert(Role.__table__,
-                [
-                    {'id': 12, 'name': 'Alerts', 'description': 'Kontrolle der Alarmierungen'},
-                ])
+                   [
+                       {'id': 12, 'name': 'Alerts', 'description': 'Kontrolle der Alarmierungen'},
+                   ])
 
 
 def downgrade():
