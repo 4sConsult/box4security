@@ -15,6 +15,10 @@ sudo docker rmi $(sudo docker images -a -q) || :
 
 # If exists, remove the elastalert example rule
 rm -f /var/lib/elastalert/rules/testrule.yaml
+
+# Set nameserver temporarily
+cp /var/lib/box4s/resolv.personal /etc/resolv.conf
+
 # Making sure to be logged in with the correct account
 sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
 
@@ -63,6 +67,11 @@ sudo rm -R /var/lib/box4s_docs/*
 sudo rm -R /var/lib/box4s_docs/.git
 cd /var/lib/box4s_docs
 sudo git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/docs.git .
+
+# restore dnsmasq as dnsserver
+echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
+systemctl restart resolvconf
+
 
 ###################
 
