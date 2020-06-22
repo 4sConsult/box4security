@@ -39,34 +39,36 @@ pip install requests
 sudo sh /home/amadmin/box4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
 
 # Remove VPN connection
-sudo systemctl stop vpn.service
-sudo systemctl disable vpn.service
-sudo rm /etc/systemd/system/vpn.service
-sudo apt remove --purge openconnect
+sudo systemctl stop vpn.service || :
+sudo systemctl disable vpn.service || :
+sudo rm /etc/systemd/system/vpn.service || :
+sudo apt remove -y --purge openconnect || :
 
 # Change Box4s repo
 # Backup the current environment files ...
 sudo mv /home/amadmin/box4s/docker/.env.es /tmp/.env.es
 sudo mv /home/amadmin/box4s/docker/.env.ls /tmp/.env.ls
 
-cd /home/amadmin/box4s
-VERSION=$(cat VERSION)
-VERSION=${VERSION##*=}
-sudo git remote -v # show the current configuration
-sudo git remote set-url origin https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/box4s.git
-sudo git fetch
-sudo git pull
-sudo git checkout $VERSION
+# This should be a prerequirement, as it is part of 1.8.3
 
-# ... and put the environment files back where they belong
-sudo mv /tmp/.env.es /home/amadmin/box4s/docker/elasticsearch/.env.es
-sudo mv /tmp/.env.ls /home/amadmin/box4s/docker/logstash/.env.ls
+# cd /home/amadmin/box4s
+# VERSION=$(cat VERSION)
+# VERSION=${VERSION##*=}
+# sudo git remote -v # show the current configuration
+# sudo git remote set-url origin https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/box4s.git
+# sudo git fetch
+# sudo git pull
+# sudo git checkout $VERSION
 
-# Clone the new wiki repo
-sudo rm -R /var/lib/box4s_docs/*
-sudo rm -R /var/lib/box4s_docs/.git
-cd /var/lib/box4s_docs
-sudo git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/docs.git .
+# # ... and put the environment files back where they belong
+# sudo mv /tmp/.env.es /home/amadmin/box4s/docker/elasticsearch/.env.es
+# sudo mv /tmp/.env.ls /home/amadmin/box4s/docker/logstash/.env.ls
+
+# # Clone the new wiki repo
+# sudo rm -R /var/lib/box4s_docs/*
+# sudo rm -R /var/lib/box4s_docs/.git
+# cd /var/lib/box4s_docs
+# sudo git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/docs.git .
 
 # restore dnsmasq as dnsserver
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
