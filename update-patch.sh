@@ -10,7 +10,8 @@ set -e
 #Fixed Schwachstellen Dashboard inserten
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/main/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
 
-# Download and correctly extract GeoIP DB
+# If exists, remove the elastalert example rule
+rm -f /var/lib/elastalert/rules/testrule.yaml
 
 # Stop des Services
 echo "Stopping BOX4s Service. The BOX4s service will automatically restart after the update is complete. Please wait."
