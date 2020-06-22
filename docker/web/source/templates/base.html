@@ -9,88 +9,112 @@
     {% endblock %}
   </head>
   <body>
-    <div class="ui tabular menu">
-      <div class="item active" id="start">
-        <a class="item" id="startitem" href="/start">
-          <i class="home icon"></i>
-          Startseite
-        </a>
-      </div>
-      <div class="item" id="siem">
-        <div class="ui dropdown pointing link item">
-          <i class="globe icon" id="securitymenu"></i> SIEM
-  	       <i class="dropdown icon"></i>
-           <div class="menu">
-             <a class="item" href="/siem-overview">Übersicht</a>
-             <a class="item" href="/siem-alerts">Alarme</a>
-             <a class="item" href="/siem-asn">ASN</a>
-             <a class="item" href="/siem-http">HTTP</a>
-             <a class="item" href="/siem-dns">DNS</a>
-             <a class="item" href="/siem-proto">Protokolle & Dienste</a>
-             <a class="item" href="/wazuh">Endgeräte</a>
-             <a class="item" href="/siem-social-media">Social Media (Alpha)</a>
-           </div>
-         </div>
-       </div>
-       <div class="item" id="vuln">
-  	      <div class="ui dropdown pointing link item">
-  	         <i class="bug icon"></i> Schwachstellen
-  	          <i class="dropdown icon"></i>
-              <div class="menu">
-  	             <a class="item" href="/vuln-overview"> Übersicht </a>
-  	             <a class="item" href="/vuln-progress"> Verlauf </a>
-  	             <a class="item" href="/vuln-details"> Details </a>
-              </div>
+    {% if current_user.is_authenticated %}
+      <div class="ui tabular menu">
+        {% if current_user.has_role('Startseite') %}
+          <div class="item active" id="start">
+            <a class="item" id="startitem" href="/start">
+              <i class="home icon"></i>
+              Startseite
+            </a>
           </div>
-      </div>
-      <div class="item" id="net">
-  	     <div class="ui dropdown pointing link item">
-           <i class="sitemap icon"></i> Netzwerk <i class="dropdown icon"></i>
-           <div class="menu">
-             <a class="item" href="/network-overview">Übersicht</a>
-  	         <a class="item" href="/network-streams">Datenflüsse</a>
-  	         <a class="item" href="/network-asn">GeoIP & ASN</a>
-  	       </div>
-         </div>
-      </div>
-      <div class="item" id="administration">
-        <div class="ui dropdown pointing link item">
-  	       <i class="cogs icon"></i> Administration
-           <i class="dropdown icon"></i>
-           <div class="menu">
-             <a class="item" href="/faq">FAQ</a>
-             <a class="item" href="/user">Benutzer</a>
-             <a class="item" href="/filter">Filter</a>
-             <a class="item" href="/alerts">Alarme</a>
-             <a class="item" href="/update">Updates</a>
-           </div>
-         </div>
-       </div>
-       <div class="item active" id="documentation">
-        <a class="item" id="docuitem" href="/docs">
-          <i class="book icon"></i>
-          Dokumentation
-        </a>
-      </div>
-       <div class="right menu">
-         {% if current_user.is_authenticated %}
-         <a class="item"></a>
-         <div class="item">
-           <div class="ui dropdown pointing link item">
-             <i class="user icon"></i>{%if current_user.last_name %}{{ current_user.first_name }} {{current_user.last_name}} {% else %} {{ current_user.email }} {% endif %}
-             <i class="dropdown icon"></i>
-             <div class="menu">
-               <a class="item" href="{{url_for('user.logout')}}">Logout</a>
-               <a class="item" href="{{url_for('user.change_password')}}">Passwort ändern</a>
+        {% endif %}
+        {% if current_user.has_role('SIEM') or current_user.has_role('Dashboards-Master') %}
+          <div class="item" id="siem">
+            <div class="ui dropdown pointing link item">
+              <i class="globe icon" id="securitymenu"></i> SIEM
+      	       <i class="dropdown icon"></i>
+               <div class="menu">
+                 <a class="item" href="/siem-overview">Übersicht</a>
+                 <a class="item" href="/siem-alerts">Alarme</a>
+                 <a class="item" href="/siem-asn">ASN</a>
+                 <a class="item" href="/siem-http">HTTP</a>
+                 <a class="item" href="/siem-dns">DNS</a>
+                 <a class="item" href="/siem-proto">Protokolle & Dienste</a>
+                 <a class="item" href="/wazuh">Endgeräte</a>
+                 <a class="item" href="/siem-social-media">Social Media (Alpha)</a>
+               </div>
              </div>
            </div>
-         </div>
-         {% else %}
-         <a class="item" id="user" href="//{{request.host}}/user/sign-in"><i class="user icon"></i>Login</a>
          {% endif %}
-          <a class="item"id="4smenu" href="https://www.4sconsult.de/" target="__blank"><img class="ui small image" src="/static/Box4S_Logo.png"></a>
+         {% if current_user.has_role('Schwachstellen') or current_user.has_role('Dashboards-Master') %}
+           <div class="item" id="vuln">
+      	      <div class="ui dropdown pointing link item">
+      	         <i class="bug icon"></i> Schwachstellen
+      	          <i class="dropdown icon"></i>
+                  <div class="menu">
+      	             <a class="item" href="/vuln-overview"> Übersicht </a>
+      	             <a class="item" href="/vuln-progress"> Verlauf </a>
+      	             <a class="item" href="/vuln-details"> Details </a>
+                  </div>
+              </div>
+          </div>
+        {% endif %}
+        {% if current_user.has_role('Netzwerk') or current_user.has_role('Dashboards-Master') %}
+          <div class="item" id="net">
+      	     <div class="ui dropdown pointing link item">
+               <i class="sitemap icon"></i> Netzwerk <i class="dropdown icon"></i>
+               <div class="menu">
+                 <a class="item" href="/network-overview">Übersicht</a>
+      	         <a class="item" href="/network-streams">Datenflüsse</a>
+      	         <a class="item" href="/network-asn">GeoIP & ASN</a>
+      	       </div>
+             </div>
+          </div>
+        {% endif %}
+        {% if current_user.has_role('FAQ') or current_user.has_role('User-Management') or current_user.has_role('Filter') or current_user.has_role('Updates') or current_user.has_role('Alerts') %}
+          <div class="item" id="administration">
+            <div class="ui dropdown pointing link item">
+      	       <i class="cogs icon"></i> Administration
+               <i class="dropdown icon"></i>
+               <div class="menu">
+                 {% if current_user.has_role('FAQ') %}
+                 <a class="item" href="/faq">FAQ</a>
+                 {% endif %}
+                 {% if current_user.has_role('User-Management') %}
+                 <a class="item" href="/user">Benutzer</a>
+                 {% endif %}
+                 {% if current_user.has_role('Filter') %}
+                 <a class="item" href="/filter">Filter</a>
+                 {% endif %}
+                 {% if current_user.has_role('Alerts') %}
+                 <a class="item" href="/alerts">Alarme</a>
+                 {% endif %}
+                 {% if current_user.has_role('Updates') %}
+                 <a class="item" href="/update">Updates</a>
+                 {% endif %}
+               </div>
+             </div>
+           </div>
+         {% endif %}
+         {% if current_user.has_role('Wiki') %}
+           <div class="item active" id="documentation">
+            <a class="item" id="docuitem" href="/docs">
+              <i class="book icon"></i>
+              Dokumentation
+            </a>
+          </div>
+        {% endif %}
+         <div class="right menu">
+           {% if current_user.is_authenticated %}
+           <a class="item"></a>
+           <div class="item">
+             <div class="ui dropdown pointing link item">
+               <i class="user icon"></i>{%if current_user.last_name %}{{ current_user.first_name }} {{current_user.last_name}} {% else %} {{ current_user.email }} {% endif %}
+               <i class="dropdown icon"></i>
+               <div class="menu">
+                 <a class="item" href="{{url_for('user.logout')}}">Logout</a>
+                 <a class="item" href="{{url_for('user.change_password')}}">Passwort ändern</a>
+               </div>
+             </div>
+           </div>
+           {% else %}
+           <a class="item" id="user" href="//{{request.host}}/user/sign-in"><i class="user icon"></i>Login</a>
+           {% endif %}
+            <a class="item"id="4smenu" href="https://www.4sconsult.de/" target="__blank"><img class="ui small image" src="/static/Box4S_Logo.png"></a>
+         </div>
        </div>
-     </div>
+     {% endif %}
     {% block content %}
     {% endblock %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>

@@ -1,21 +1,17 @@
 version: '2.3'
 
 services:
-  baseimage:
-    build: baseimage/.
-    container_name: baseimage
-    image: "docker-registry.am-gmbh.de/it-security/b4s/baseimage:dev"
   elasticsearch:
     build: elasticsearch/.
     container_name: elasticsearch
     restart: always
     ports:
      - 9200:9200
-    image: "docker-registry.am-gmbh.de/it-security/b4s/elasticsearch:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/elasticsearch:dev"
     volumes:
      - data:/data
     env_file:
-      - ./.env.es
+      - elasticsearch/.env.es
   kibana:
     build: kibana/.
     container_name: kibana
@@ -24,7 +20,7 @@ services:
      - INT_IP=${INT_IP}
     ports:
      - 5601:5601
-    image: "docker-registry.am-gmbh.de/it-security/b4s/kibana:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/kibana:dev"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -40,12 +36,12 @@ services:
     volumes:
       - varlib_openvas:/var/lib/openvas
       - varlib_logstash:/var/lib/logstash
-    image: "docker-registry.am-gmbh.de/it-security/b4s/openvas:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
   suricata:
     build: suricata/.
     container_name: suricata
     restart: always
-    image: "docker-registry.am-gmbh.de/it-security/b4s/suricata:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/suricata:dev"
     network_mode: "host"
     env_file:
       - suricata/.env
@@ -59,14 +55,14 @@ services:
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
-    image: "docker-registry.am-gmbh.de/it-security/b4s/metricbeat:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/metricbeat:dev"
     depends_on:
       elasticsearch:
         condition: service_healthy
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat
-    image: "docker-registry.am-gmbh.de/it-security/b4s/heartbeat:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/heartbeat:dev"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -81,12 +77,12 @@ services:
         condition: service_healthy
     env_file:
      - /etc/default/logstash
-     - ./.env.ls
+     - logstash/.env.ls
     ports:
       - 9600:9600
       - 5044:5044
       - 5046:5046
-    image: "docker-registry.am-gmbh.de/it-security/b4s/logstash:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/logstash:dev"
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - etcbox4s_logstash:/etc/logstash/conf.d/general/
@@ -97,16 +93,14 @@ services:
     depends_on:
       logstash:
         condition: service_healthy
-    image: "docker-registry.am-gmbh.de/it-security/b4s/filebeat:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/filebeat:dev"
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - data:/data
   web:
     container_name: web
-    image: "docker-registry.am-gmbh.de/it-security/b4s/web:dev"
-    build:
-      context: ./web
-      dockerfile: Dockerfile.prod
+    image: "registry.gitlab.com/4sconsult/box4s/web:dev"
+    build: web/.
     command: >
      bash -c "python main.py db upgrade head &&
      gunicorn --bind 0.0.0.0:5000 main:app"
@@ -126,7 +120,7 @@ services:
     extra_hosts:
       - "dockerhost:${INT_IP}"
     env_file:
-      - ./.env.prod.web
+      - web/.env.web
       - ../VERSION
     environment:
       - KUNDE
@@ -135,15 +129,14 @@ services:
         condition: service_healthy
   db:
     container_name: db
-    image: "docker-registry.am-gmbh.de/it-security/b4s/db:dev"
-    build:
-      context: ./db
+    image: "registry.gitlab.com/4sconsult/box4s/db:dev"
+    build: db/.
     volumes:
       - varlib_postgresql/:/var/lib/postgresql/data
     ports:
       - "127.0.0.1:5432:5432"
     env_file:
-      - ./.env.prod.db
+      - db/.env.db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -151,9 +144,8 @@ services:
       retries: 5
   nginx:
     container_name: nginx
-    image: "docker-registry.am-gmbh.de/it-security/b4s/nginx:dev"
-    build:
-      context: ./nginx
+    image: "registry.gitlab.com/4sconsult/box4s/nginx:dev"
+    build: nginx/.
     ports:
       - 80:80
       - 443:443
@@ -168,22 +160,17 @@ services:
 
   dnsmasq:
     container_name: dnsmasq
-    image: "docker-registry.am-gmbh.de/it-security/b4s/dnsmasq:dev"
-    build:
-      context: ./dnsmasq
+    image: "registry.gitlab.com/4sconsult/box4s/dnsmasq:dev"
+    build: dnsmasq/.
     ports:
       - 53:5353/tcp
       - 53:5353/udp
     volumes:
       - varlib_box4s:/var/lib/box4s/
-    extra_hosts:
-      - "gitlab.am-gmbh.de:10.30.5.4"
-      - "docker-registry.am-gmbh.de:10.30.5.4"
   wazuh:
     container_name: wazuh
-    image: "docker-registry.am-gmbh.de/it-security/b4s/wazuh:dev"
-    build:
-      context: ./wazuh
+    image: "registry.gitlab.com/4sconsult/box4s/wazuh:dev"
+    build: wazuh/.
     hostname: wazuh-manager
     restart: always
     ports:
@@ -193,12 +180,11 @@ services:
       - "55000:55000"
   elastalert:
     container_name: elastalert
-    image: "docker-registry.am-gmbh.de/it-security/b4s/elastalert:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/elastalert:dev"
     depends_on:
       elasticsearch:
         condition: service_healthy
-    build:
-      context: ./elastalert
+    build: elastalert/.
     restart: always
     volumes:
       - varlib_elastalert_rules:/opt/elastalert/rules
@@ -207,9 +193,8 @@ services:
       - 3333
   wiki:
     container_name: wiki
-    image: "docker-registry.am-gmbh.de/it-security/b4s/wiki:dev"
-    build:
-      context: ./wiki
+    image: "registry.gitlab.com/4sconsult/box4s/wiki:dev"
+    build: wiki/.
     restart: always
     volumes:
       - varlib_docs:/wiki/

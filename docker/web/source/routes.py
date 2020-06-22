@@ -6,7 +6,7 @@ from source.models import User, Role
 from source.config import Dashboards
 import source.error
 from flask_restful import Api
-from flask import render_template, send_from_directory, request, abort, send_file, Response
+from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for
 from flask_user import login_required, current_user, roles_required
 from flask_mail import Message
 from source.forms import AddUserForm
@@ -57,6 +57,22 @@ api.add_resource(AlertMailer, '/api/alerts/mailer/')
 @login_required
 def index():
     """Return the start dashboard."""
+    if not current_user.has_role('Startseite'):
+        # User does not have privileges to read the start page => redirect to the first he can or implicitly to 403 by trying to access start
+        for rdict in [
+            {'name': 'Super Admin', 'url': url_for('user')},
+            {'name': 'Filter', 'url': url_for('rules')},
+            {'name': 'Updates', 'url': url_for('update')},
+            {'name': 'User-Management', 'url': url_for('user')},
+            {'name': 'FAQ', 'url': url_for('faq')},
+            {'name': 'Dashboards-Master', 'url': '/startseite'},
+            {'name': 'SIEM', 'url': '/siem-overview'},
+            {'name': 'Schwachstellen', 'url': '/vuln-overview'},
+            {'name': 'Netzwerk', 'url': '/network-overview'},
+            {'name': 'Wiki', 'url': '/docs'},
+        ]:
+            if current_user.has_role(rdict['name']):
+                return redirect(rdict['url'])
     return catchall('start')
 
 
@@ -65,6 +81,11 @@ def index():
 def staticfiles(filename):
     """Return a static file."""
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
+
+
+@app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
+def send_wazuh_files(filename):
+    return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
 
 
 @app.route('/faq', methods=['GET'])
