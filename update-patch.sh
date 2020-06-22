@@ -19,6 +19,12 @@ sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
 # Get the current images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
+# Make sure elasticsearch can write
+sudo chmod 777 -R /data/elasticsearch
+sudo chmod 777 -R /var/lib/logstash
+sudo chmod 777 -R /var/lib/openvas
+sudo chmod 777 -R /data/suricata/eve.json
+
 ###################
 # Changes here
 pip install requests
