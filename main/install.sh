@@ -173,6 +173,7 @@ exec 2> >(tee "$LOG_FILE.err")
 exec > >(tee "$LOG_FILE.log")
 
 cd /home/amadmin
+GIT_LFS_SKIP_SMUDGE=1
 git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/box4s.git box4s -b $TAG
 
 # Copy certificates over
