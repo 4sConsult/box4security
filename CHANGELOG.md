@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Rolle *Alerts* zur Kontrolle von Alarmierungen hinzugefügt
 * Die Box kann nun über `curl -sL https://gitlab.com/snippets/1982942/raw | sudo bash` installiert werden
 * Wazuh Clients können direkt von der BOX4security heruntergeladen werden (Für Endgeräte ohne direkte Internetverbindung)
+* Wiki um einen Eintrag zum Thema Wazuh erweitert
 
 ### Changed
 * Die BOX4security benötigt nun keine VPN-Verbindung mehr, um Softwareaktualisierungen zu beziehen
