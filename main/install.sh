@@ -127,7 +127,7 @@ sudo apt-fast remove --purge -y apache2 nginx
 waitForNet
 echo "### Installing all dependencies"
 sudo apt-fast install -y curl python python-pip python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
-git lfs install
+git lfs install --skip-smudge
 pip3 install semver elasticsearch-curator requests
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
@@ -140,7 +140,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 banner "Tags ..."
 
 # Fetch all TAGS as names
-mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: mPwNxthpxvmQSaZnv3xZ" | jq -r .[].name)
+mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: GckUq7pHB6zxcA16eFTf" | jq -r .[].name)
 
 # If manual isntallation, make all tags visible and choose the tag to install
 if [[ "$*" == *manual* ]]
@@ -157,7 +157,7 @@ then
   echo "$TAG will be installed."
 else
   # not manual, install most recent and valid tag
-  TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: mPwNxthpxvmQSaZnv3xZ" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
+  TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: GckUq7pHB6zxcA16eFTf" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
   echo "Tag $TAG is the most recent available tag."
 fi
 
@@ -216,7 +216,7 @@ sudo chmod -R 777 /etc/box4s/
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
 
 # Setup Logstash volume
-sudo mkdir /var/lib/logstash
+sudo mkdir -p /var/lib/logstash
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
@@ -260,9 +260,9 @@ cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 
 # Copy config files
 cd /home/amadmin/box4s
-sudo cp main/etc/etc_files/* /etc/ -R
-sudo cp main/home/* /home/amadmin -R
-sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/
+sudo cp main/etc/etc_files/* /etc/ -R || :
+sudo cp main/home/* /home/amadmin -R || :
+sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/ || :
 
 echo "### Setting up interfaces"
 # Find dhcp and remove everything after
