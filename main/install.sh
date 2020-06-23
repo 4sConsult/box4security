@@ -140,7 +140,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 banner "Tags ..."
 
 # Fetch all TAGS as names
-mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: mPwNxthpxvmQSaZnv3xZ" | jq -r .[].name)
+mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: GckUq7pHB6zxcA16eFTf" | jq -r .[].name)
 
 # If manual isntallation, make all tags visible and choose the tag to install
 if [[ "$*" == *manual* ]]
@@ -157,7 +157,7 @@ then
   echo "$TAG will be installed."
 else
   # not manual, install most recent and valid tag
-  TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: mPwNxthpxvmQSaZnv3xZ" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
+  TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: GckUq7pHB6zxcA16eFTf" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
   echo "Tag $TAG is the most recent available tag."
 fi
 
