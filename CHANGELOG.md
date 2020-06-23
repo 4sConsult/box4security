@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [xxx](xxx) - xxxx-xx-xx
+## [1.8.4](https://gitlab.com/4sconsult/box4s/-/tags/1.8.4) - 2020-06-23
 
 ### Added
 * Alarmierung mittels aktivierbarer, ausgewählter BOX4s Quick Alerts hinzugefügt
@@ -23,7 +23,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Fehlerhafte Datenauswahl im Schwachstellenverlauf für kritisches und hohes Risiko behoben
-* Fehlschlagenes Einspeisen von Schwachstellenreports bei fehlerhaftem Zeitstempel behoben
+* Fehlschlagendes Einspeisen von Schwachstellenreports bei fehlerhaftem Zeitstempel behoben
 
 ### Deprecated
 
