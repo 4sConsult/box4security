@@ -387,7 +387,7 @@ banner "Starting ..."
 sudo systemctl start box4security
 
 echo "### Wait for elasticsearch to become available ..."
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana
 
 echo "### Install the scores index ..."
 sleep 5
