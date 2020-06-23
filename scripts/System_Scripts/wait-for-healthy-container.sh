@@ -3,7 +3,7 @@ container_name=$1
 shift
 timeout=$1
 
-default_timeout=120
+default_timeout=500
 
 if [ -z ${timeout} ]; then
     timeout=${default_timeout}
