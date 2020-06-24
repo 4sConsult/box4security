@@ -1,11 +1,12 @@
 """Module to handle all webapp routes."""
 from source import app, mail, db, userman
-from source.api import BPF, BPFs, LSR, LSRs, Alert, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
+from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
+from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
 from source.config import Dashboards
 import source.error
 from flask_restful import Api
-from flask import render_template, send_from_directory, request, abort, send_file, Response
+from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for
 from flask_user import login_required, current_user, roles_required
 from flask_mail import Message
 from source.forms import AddUserForm
@@ -37,7 +38,6 @@ api.add_resource(BPF, '/rules/bpf/<int:rule_id>')
 api.add_resource(BPFs, '/rules/bpf/')
 api.add_resource(LSR, '/rules/logstash/<int:rule_id>')
 api.add_resource(LSRs, '/rules/logstash/')
-api.add_resource(Alert, '/alert/<int:alert_id>')
 api.add_resource(Version, '/ver/')
 api.add_resource(AvailableReleases, '/ver/releases/')
 api.add_resource(LaunchUpdate, '/update/launch/')
@@ -47,11 +47,32 @@ api.add_resource(Health, '/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 
+api.add_resource(AlertsQuick, '/rules/alerts_quick/')
+api.add_resource(Alert, '/rules/alerts/<alert_id>')
+api.add_resource(Alerts, '/rules/alerts/')
+api.add_resource(AlertMailer, '/api/alerts/mailer/')
+
 
 @app.route('/')
 @login_required
 def index():
     """Return the start dashboard."""
+    if not current_user.has_role('Startseite'):
+        # User does not have privileges to read the start page => redirect to the first he can or implicitly to 403 by trying to access start
+        for rdict in [
+            {'name': 'Super Admin', 'url': url_for('user')},
+            {'name': 'Filter', 'url': url_for('rules')},
+            {'name': 'Updates', 'url': url_for('update')},
+            {'name': 'User-Management', 'url': url_for('user')},
+            {'name': 'FAQ', 'url': url_for('faq')},
+            {'name': 'Dashboards-Master', 'url': '/startseite'},
+            {'name': 'SIEM', 'url': '/siem-overview'},
+            {'name': 'Schwachstellen', 'url': '/vuln-overview'},
+            {'name': 'Netzwerk', 'url': '/network-overview'},
+            {'name': 'Wiki', 'url': '/docs'},
+        ]:
+            if current_user.has_role(rdict['name']):
+                return redirect(rdict['url'])
     return catchall('start')
 
 
@@ -60,6 +81,11 @@ def index():
 def staticfiles(filename):
     """Return a static file."""
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
+
+
+@app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
+def send_wazuh_files(filename):
+    return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
 
 
 @app.route('/faq', methods=['GET'])
@@ -174,6 +200,14 @@ def update_post():
 def rules():
     """Return the filter page."""
     return render_template("filter.html")
+
+
+@app.route('/alerts', methods=['GET'])
+@login_required
+@roles_required(['Super Admin', 'Alerts'])
+def alarms():
+    """Return the alert page."""
+    return render_template("alert.html")
 
 
 @app.route('/update/log/download', methods=['GET'])

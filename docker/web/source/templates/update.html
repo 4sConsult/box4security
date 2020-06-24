@@ -117,6 +117,10 @@
             } else {
               var strago = `vor ${ago} Tagen`;
             }
+            if (version.version === "1.6.3") {
+              // Set message for this tag, as it does not exist in the backend.
+              version.message = "Einführung der Update-Funktion und Hinzunahme standardisierter Dashboards"
+            }
             var description = `<td>
                 <div class="ui accordion">
                   <div class="title">

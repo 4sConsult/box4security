@@ -18,6 +18,7 @@
       Sehen und bearbeiten Sie hier die Benutzer der BOX4security.
     </p>
   </div>
+  <div id="errormsg"></div>
   <div class="ui inverted section divider"></div>
   <table class="ui celled single line small table">
     <thead>
@@ -296,6 +297,11 @@
               if(response.ok){
                 $(e.delegateTarget).closest('tr').remove();
               }
+              else {
+                errormsg = "Sie dürfen diese Aktion nicht ausführen. Nur Super Admins können andere Super Admins löschen.";
+                row = `<div class="ui red message">${errormsg}</div>`;
+                $(`#errormsg`).before(row);
+              }
             })
           };
           break;
@@ -319,8 +325,15 @@
         break;
         case 'disable':
           fetch(`/api/user/${$(e.delegateTarget).data('user-id')}/lock`, {method: 'POST'})
-          .then(() => {
-            location.reload();
+          .then((response) => {
+            if(response.ok){
+              location.reload();
+            }
+            else {
+              errormsg = "Sie dürfen diese Aktion nicht ausführen. Nur Super Admins können andere Super Admins (ent)sperren.";
+              row = `<div class="ui red message">${errormsg}</div>`;
+              $(`#errormsg`).before(row);
+            }
           })
           break;
       }

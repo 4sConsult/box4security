@@ -1,21 +1,11 @@
-FROM ubuntu:19.10
-RUN	apt update && \
-	apt install -y curl wget apt-transport-https openjdk-11-jre gnupg && \
-	rm -rf /var/lib/apt/lists/*
+FROM docker.elastic.co/logstash/logstash:7.6.2
 
-ADD	etc/ /root/etc/
-
-RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
-	echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
-	apt update && \
-	apt install -y logstash=1:7.6.2-1 && \
-	wget -O /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar https://jdbc.postgresql.org/download/postgresql-42.2.8.jar && \
+USER root
+COPY --chown=logstash:logstash etc/ /etc/logstash/
+COPY --chown=logstash:logstash etc/ /usr/share/logstash/config/
+RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
 	mkdir -p /var/log/logstash && \
 	mkdir -p /etc/box4s && \
-	mkdir -p /usr/share/logstash/config/ && \
-	mkdir -p /etc/logstash/ && \
-	rm -rf /var/lib/apt/lists/* && \
-	cp -r /root/etc/* /etc/logstash/ && \
 	# Filebeat
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/filebeat/21-4s_Special.conf && \
 	# OpenVAS
@@ -46,8 +36,8 @@ RUN	wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add 
 	/usr/share/logstash/bin/logstash-plugin install logstash-filter-ip2location && \
 	chown logstash:logstash /usr/share/logstash/logstash-core/lib/jars/postgresql-42.2.8.jar && \
 	chown logstash:logstash /var/log/logstash -R && \
+	chown logstash:logstash /usr/share/logstash/config -R && \
 	chown logstash:logstash /etc/logstash -R
 
-HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
 USER logstash:logstash
-CMD ["/usr/share/logstash/bin/logstash" , "--path.settings", "/etc/logstash"]
+HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
