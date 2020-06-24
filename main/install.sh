@@ -11,10 +11,6 @@ fi
 # Please no interaction
 export DEBIAN_FRONTEND=noninteractive
 
-# VPN Login
-VPN_PASS=FXFAu8HfFY
-VPN_USER=box4s
-
 # Little help text to display if something goes wrong
 HELP="\
 
@@ -35,24 +31,6 @@ Usage:
         sudo $0
 Options:
         sudo $0 --manual - All available tags will be available for install - All of them."
-
-VPNSERVICE='\
-[Unit]
-Description=vpn
-After=network.target
-
-[Service]
-Type=simple
-Restart=always
-Environment=VPN_PASS=FXFAu8HfFY
-Environment=VPN_USER=box4s
-
-# VPN-Tunnel aufbauen
-ExecStart=/bin/sh -c "echo $VPN_PASS | sudo openconnect -u $VPN_USER --passwd-on-stdin connect.am-gmbh.de"
-
-[Install]
-WantedBy=multi-user.target
-'
 
 ##################################################
 #                                                #
@@ -118,20 +96,6 @@ if [ "$(whoami)" != "root" ];
     echo "[ OK ]"
 fi
 
-
-
-echo "### Setting up VPN-Connection"
-waitForNet
-sudo apt install -y openconnect
-echo "10.30.5.4 gitlab.am-gmbh.de" >> /etc/hosts
-echo "10.30.5.4 docker-registry.am-gmbh.de" >> /etc/hosts
-touch /etc/systemd/system/vpn.service
-echo "$VPNSERVICE" >> /etc/systemd/system/vpn.service
-sudo chmod 755 /etc/systemd/system/vpn.service
-sudo systemctl daemon-reload
-sudo systemctl enable vpn.service
-sudo systemctl start vpn.service
-
 echo "### Setting up the environment"
 # Create the user 'amadmin' only if he does not exist
 # The used password is known to the whole dev-team
@@ -163,8 +127,8 @@ sudo apt-fast remove --purge -y apache2 nginx
 waitForNet
 echo "### Installing all dependencies"
 sudo apt-fast install -y curl python python-pip python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
-git lfs install
-pip3 install semver elasticsearch-curator
+git lfs install --skip-smudge
+pip3 install semver elasticsearch-curator requests
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
@@ -175,11 +139,8 @@ sudo chmod +x /usr/local/bin/docker-compose
 ##################################################
 banner "Tags ..."
 
-# Wait for the VPN to be ready
-waitForNet gitlab.am-gmbh.de
-
 # Fetch all TAGS as names
-mapfile -t TAGS < <(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r .[].name)
+mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: GckUq7pHB6zxcA16eFTf" | jq -r .[].name)
 
 # If manual isntallation, make all tags visible and choose the tag to install
 if [[ "$*" == *manual* ]]
@@ -196,7 +157,7 @@ then
   echo "$TAG will be installed."
 else
   # not manual, install most recent and valid tag
-  TAG=$(curl -s https://gitlab.am-gmbh.de/api/v4/projects/it-security%2Fb4s/repository/tags --header "PRIVATE-TOKEN: p3a72xCJnChRkMCdUCD6" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
+  TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: GckUq7pHB6zxcA16eFTf" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
   echo "Tag $TAG is the most recent available tag."
 fi
 
@@ -212,8 +173,7 @@ exec 2> >(tee "$LOG_FILE.err")
 exec > >(tee "$LOG_FILE.log")
 
 cd /home/amadmin
-waitForNet gitlab.am-gmbh.de
-git clone https://cMeyer:p3a72xCJnChRkMCdUCD6@gitlab.am-gmbh.de/it-security/b4s.git box4s -b $TAG
+git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/box4s.git box4s -b $TAG
 
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
@@ -256,7 +216,7 @@ sudo chmod -R 777 /etc/box4s/
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
 
 # Setup Logstash volume
-sudo mkdir /var/lib/logstash
+sudo mkdir -p /var/lib/logstash
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
@@ -293,16 +253,16 @@ banner "BOX4security ..."
 
 # Initially clone the Wiki repo
 cd /var/lib/box4s_docs
-sudo git clone https://cMeyer:QVXq8i5FxSNEH_YEmze3@gitlab.am-gmbh.de/cmeyer/b4s-docs.git .
+sudo git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/docs.git .
 
 # Copy gollum config to wiki root
 cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 
 # Copy config files
 cd /home/amadmin/box4s
-sudo cp main/etc/etc_files/* /etc/ -R
-sudo cp main/home/* /home/amadmin -R
-sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/
+sudo cp main/etc/etc_files/* /etc/ -R || :
+sudo cp main/home/* /home/amadmin -R || :
+sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/ || :
 
 echo "### Setting up interfaces"
 # Find dhcp and remove everything after
@@ -366,8 +326,7 @@ banner "Docker ..."
 
 # Login to docker registry
 echo "### Download docker images"
-waitForNet docker-registry.am-gmbh.de
-sudo docker login docker-registry.am-gmbh.de -u deployment-token-box -p KPLm6mZJFzuA9QY9oCZC
+sudo docker login registry.gitlab.com -u deploy -p mPwNxthpxvmQSaZnv3xZ
 
 # Download IP2Location DBs for the first time
 echo "### Setup geolocation database"
@@ -379,6 +338,9 @@ sudo unzip -o IP2LOCATION-LITE-DB5.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.BIN
 sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
+
+# Download wazuh clients
+sudo sh /home/amadmin/box4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
 
 # Filter Functionality
 echo "### Setting up suricata filter functionality"
@@ -392,10 +354,10 @@ MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MEM=$(python3 -c "print($MEM/1024.0**2)")
 # Give half of that to elasticsearch
 ESMEM=$(python3 -c "print(int($MEM*0.5))")
-sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/.env.es
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/elasticsearch/.env.es
 # and one quarter to logstash
 LSMEM=$(python3 -c "print(int($MEM*0.25))")
-sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/.env.ls
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/logstash/.env.ls
 
 echo "### Download Docker images"
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
@@ -450,13 +412,6 @@ echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto)
 
 echo "### Wait for kibana to become available ..."
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || echo ''
-#wait for 6 minutes and 40 seconds until kibana and wazuh have started to insert patterns
-sleep 400
-
-while curl -s "localhost:5601/kibana" | grep "Kibana server is not ready yet"
-do
-   sleep 2
-done
 
 # Import Dashboard
 echo "### Install dashboards"

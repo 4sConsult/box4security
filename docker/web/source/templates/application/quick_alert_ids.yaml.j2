@@ -1,0 +1,39 @@
+name: Critical Intrusion Detection
+# (Required)
+# Type of alert.
+# the frequency rule type alerts when num_events events occur with timeframe time
+# The any rule will match everything. Every hit that the query returns will generate an alert.
+type: any
+
+{# realert:
+  hours: 4 #}
+
+# take the whole day into account, vulns have the timestamp of the scan
+timeframe:
+    minutes: 1
+
+# (Required)
+# Index to search, wildcard supported
+index: suricata-*
+
+filter:
+# Ignore 4s Alerts for now (gid=2)
+- query:
+    query_string:
+      query: "NOT alert.gid:2"
+- range:
+    alert.severity:
+        from: 4
+        to: 5
+
+{% include "application/alert_email_conf.yaml.j2" %}
+{% raw %}
+alert_subject: "BOX4s IDS: {0} - {1} <-> {2}"
+{% endraw %}
+alert_subject_args:
+- alert.signature
+- source.domain
+- destination.domain
+alert_text: "{4} ({7}/{5}) \nSource: {0}:{1} <-> Destination: {2}:{3}\n Payload:\n{6}"
+alert_text_type: alert_text_only
+alert_text_args: ["source.domain", "source.port.number", "destination.domain", "destination.port.name", "alert.signature","log.severity", "payload_printable", "alert.severity"]
