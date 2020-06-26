@@ -34,6 +34,8 @@ sudo chmod 777 -R /data/suricata/eve.json
 ###################
 # Changes here
 
+#install curator for machines that do not have it
+pip3 install elasticsearch-curator==5.8.1 --user
 
 
 ###################
