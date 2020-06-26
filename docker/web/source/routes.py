@@ -61,7 +61,7 @@ def check_if_user_active():
     """
     if current_user.is_authenticated:
         if request.endpoint not in ['user.logout', 'authenticate'] and not current_user.active:
-            flash('Ihr Zugang wurde deaktiviert. Sie wurden automatisch abgemeldet.', 'error')
+            flash('Your access was disabled. You have been logged out automatically.', 'error')
             return redirect(url_for('user.logout'))
 
 
