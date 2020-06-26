@@ -6,7 +6,7 @@ from source.models import User, Role
 from source.config import Dashboards
 import source.error
 from flask_restful import Api
-from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for
+from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for, flash
 from flask_user import login_required, current_user, roles_required
 from flask_mail import Message
 from source.forms import AddUserForm
@@ -51,6 +51,17 @@ api.add_resource(AlertsQuick, '/rules/alerts_quick/')
 api.add_resource(Alert, '/rules/alerts/<alert_id>')
 api.add_resource(Alerts, '/rules/alerts/')
 api.add_resource(AlertMailer, '/api/alerts/mailer/')
+
+
+@app.before_request
+def check_if_user_active():
+    """Check if authenticated user is active before every request.
+    Will just log user out if no longer active.
+    """
+    if current_user.is_authenticated:
+        if request.endpoint != 'user.logout' and not current_user.active:
+            flash('Ihr Zugang wurde deaktiviert. Sie wurden automatisch abgemeldet.', 'error')
+            return redirect(url_for('user.logout'))
 
 
 @app.route('/')
