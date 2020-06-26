@@ -57,9 +57,10 @@ api.add_resource(AlertMailer, '/api/alerts/mailer/')
 def check_if_user_active():
     """Check if authenticated user is active before every request.
     Will just log user out if no longer active.
+    Exclude the authenticate endpoint, as it checks for itself.
     """
     if current_user.is_authenticated:
-        if request.endpoint != 'user.logout' and not current_user.active:
+        if request.endpoint not in ['user.logout', 'authenticate'] and not current_user.active:
             flash('Ihr Zugang wurde deaktiviert. Sie wurden automatisch abgemeldet.', 'error')
             return redirect(url_for('user.logout'))
 
