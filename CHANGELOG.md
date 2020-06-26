@@ -6,6 +6,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 
 ### Changed
+* Gesperrte Nutzer werden nun sofort ausgeloggt
 
 ### Optimized
 
