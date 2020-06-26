@@ -19,7 +19,7 @@ services:
     environment:
      - INT_IP=${INT_IP}
     ports:
-     - 5601:5601
+     - 127.0.0.1:5601:5601
     image: "registry.gitlab.com/4sconsult/box4s/kibana:dev"
     depends_on:
       elasticsearch:
