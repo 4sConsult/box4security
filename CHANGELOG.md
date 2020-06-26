@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Optimized
 
 ### Fixed
+* Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen, ein Templatestring nicht ausgefüllt wurde.
 
 ### Deprecated
 
