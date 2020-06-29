@@ -101,8 +101,7 @@ echo "### Setting up the environment"
 # The used password is known to the whole dev-team
 id -u amadmin &>/dev/null || sudo useradd -m -p '$1$6FDIJC1B$g5bKC2Rfn5ad5Q3btK0Ud0' -s /bin/bash amadmin
 sudo usermod -aG sudo amadmin
-echo "amadmin ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
-
+echo "amadmin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 # Create the /data directory if it does not exist and make it readable
 sudo mkdir -p /data
 sudo chown root:root /data

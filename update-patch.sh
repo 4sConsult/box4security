@@ -16,6 +16,12 @@ curl -X POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty" -
 }
 '
 
+# Edit suoders to not require password for sudo commands as amadmin
+# Delete last line
+sudo sed -i '$ d' /etc/sudoers
+# Add new option
+echo "amadmin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
