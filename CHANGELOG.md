@@ -7,6 +7,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
+* SSH via Passwort zur BOX4s nicht länger erlaubt. Stattdessen wird nur noch SSH mit Public-Key-Authentifikation durch 4sConsult-Mitarbeiter zugelassen.
 
 ### Optimized
 
