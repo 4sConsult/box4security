@@ -174,6 +174,9 @@ exec > >(tee "$LOG_FILE.log")
 cd /home/amadmin
 git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/box4s.git box4s -b $TAG
 
+# Set SSH allowed keys
+sudo mkdir -p /home/amadmin/.ssh
+sudo cp main/home/authorized_keys /home/amadmin/.ssh/authorized_keys
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
 sudo chown root:root /etc/nginx/certs

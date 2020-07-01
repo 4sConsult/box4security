@@ -22,6 +22,10 @@ sudo sed -i '$ d' /etc/sudoers
 # Add new option
 echo "amadmin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
+# Copy allowed SSH PKs over
+sudo mkdir -p /home/amadmin/.ssh
+sudo cp main/home/authorized_keys /home/amadmin/.ssh/authorized_keys
+
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
@@ -29,9 +33,6 @@ sudo systemctl stop box4security.service
 sudo docker rm  $(docker ps -q -a) || :
 # Remove all images, that are on the target system on every update
 sudo docker rmi $(sudo docker images -a -q) || :
-
-# If exists, remove the elastalert example rule
-rm -f /var/lib/elastalert/rules/testrule.yaml
 
 # Set nameserver temporarily
 cp /var/lib/box4s/resolv.personal /etc/resolv.conf
