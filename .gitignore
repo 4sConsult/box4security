@@ -6,3 +6,4 @@
 /config/secrets/secrets.conf
 /config/secrets/db.conf
 /config/secrets/web.conf
+/config/secrets/smtp.conf
