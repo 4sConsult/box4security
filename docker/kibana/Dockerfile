@@ -20,7 +20,7 @@ RUN mkdir -p /usr/share/kibana/optimize/wazuh/config && \
 USER kibana
 WORKDIR /usr/share/kibana
 RUN     ./bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-${WAZUH_APP_VERSION}.zip && \
-        echo -e "hosts:\n  - default:\n     url: https://${INT_IP}\n     port: 55000\n     user: box4s\n     password: wa3hz0hPW\n" > /usr/share/kibana/optimize/wazuh/config/wazuh.yml
+        echo -e "hosts:\n  - default:\n     url: https://${INT_IP}\n     port: 55000\n     user: ${WAZUH_USER}\n     password: ${WAZUH_PASS}\n" > /usr/share/kibana/optimize/wazuh/config/wazuh.yml
 
 HEALTHCHECK --retries=50 CMD curl -s -XGET 'http://127.0.0.1:5601/kibana/api/status' | grep -v "Kibana server is not ready yet" || exit 1
 USER kibana:kibana
