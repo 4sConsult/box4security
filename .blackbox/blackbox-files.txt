@@ -5,5 +5,5 @@ config/secrets/secrets.conf
 config/secrets/smtp.conf
 config/secrets/wazuh.conf
 config/secrets/web.conf
-docker/web/web.key
+config/secrets/web.key
 config/secrets/box4security.key.pem
