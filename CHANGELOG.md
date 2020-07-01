@@ -6,10 +6,12 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 
 ### Changed
+* Gesperrte Nutzer werden nun sofort ausgeloggt
 
 ### Optimized
 
 ### Fixed
+* Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen, ein Templatestring nicht ausgefüllt wurde.
 
 ### Deprecated
 

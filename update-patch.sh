@@ -5,6 +5,17 @@ TAG=""
 # Exit on every error
 set -e
 
+# Delete Findings of outdated, local openvas version
+curl -X POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "match": {
+      "nvt_oid": "1.3.6.1.4.1.25623.1.0.108560"
+    }
+  }
+}
+'
+
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
@@ -34,13 +45,6 @@ sudo chmod 777 -R /data/suricata/eve.json
 ###################
 # Changes here
 
-
-
-
-
-#install curator for machines that do not have it
-pip3 install elasticsearch-curator==5.8.1 --user
-PATH=$PATH:/home/amadmin/.local/bin
 
 ###################
 
