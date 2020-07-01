@@ -4,6 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [xxx](https://gitlab.com/4sconsult/box4s/-/tags/xxx) - xxxx-xx-xx
 
 ### Added
+* Rate Limiting beim Einloggen eingeführt
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
