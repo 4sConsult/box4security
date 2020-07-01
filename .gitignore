@@ -8,3 +8,4 @@
 /config/secrets/web.conf
 /config/secrets/smtp.conf
 /config/secrets/msmtprc
+/config/secrets/openvas.conf
