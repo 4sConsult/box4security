@@ -178,7 +178,8 @@ git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/box4s.git box
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
 sudo chown root:root /etc/nginx/certs
-sudo cp /home/amadmin/box4s/main/ssl/*.pem /etc/nginx/certs
+sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
+sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
 sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 
 ##################################################
