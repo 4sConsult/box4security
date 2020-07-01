@@ -262,6 +262,7 @@ cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 # Copy config files
 cd /home/amadmin/box4s
 sudo cp config/etc/etc_files/* /etc/ -R || :
+sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
 sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/ || :
 
