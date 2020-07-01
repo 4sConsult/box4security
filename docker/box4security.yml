@@ -122,6 +122,7 @@ services:
     env_file:
       - web/web.env
       - ../config/secrets/web.conf
+      - ../config/secrets/smtp.conf
       - ../VERSION
     environment:
       - KUNDE
