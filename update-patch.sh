@@ -44,7 +44,7 @@ sudo chmod 777 -R /data/suricata/eve.json
 
 ###################
 # Changes here
-
+chmod +x /home/amadmin/box4s/scripts/Automation/update.sh
 
 ###################
 

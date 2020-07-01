@@ -112,10 +112,10 @@ function rollback() {
   echo "Wiederherstellung auf $1 abgeschlossen."
 
   # Prepare new update.sh for next update
-  chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
-  chmod +x $BASEDIR$GITDIR/main/update.sh
+  chown amadmin:amadmin $BASEDIR$GITDIR/scripts/Automation/update.sh
+  chmod +x $BASEDIR$GITDIR/scripts/Automation/update.sh
   curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
-
+  sleep 5
   # Exit update with error code
   exit 1
 }
@@ -211,8 +211,8 @@ echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
 # Notify API that we're finished
 curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
 # Prepare new update.sh for next update
-chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
-chmod +x $BASEDIR$GITDIR/main/update.sh
+chown amadmin:amadmin $BASEDIR$GITDIR/scripts/Automation/update.sh
+chmod +x $BASEDIR$GITDIR/scripts/Automation/update.sh
 sleep 15 # sleep for API <-> Webbrowser communication
 curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
 exit 0
