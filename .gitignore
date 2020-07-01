@@ -5,3 +5,4 @@
 /docker/web/web.key
 /config/secrets/secrets.conf
 /config/secrets/db.conf
+/config/secrets/web.conf
