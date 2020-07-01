@@ -77,6 +77,7 @@ services:
         condition: service_healthy
     env_file:
      - /etc/default/logstash
+     - ../config/secrets/db.conf
      - logstash/.env.ls
     ports:
       - 9600:9600
