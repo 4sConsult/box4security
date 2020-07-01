@@ -1,2 +1,3 @@
+config/secrets/secrets.conf
 docker/web/web.key
 scripts/System_Scripts/../../config/secrets/box4security.key.pem

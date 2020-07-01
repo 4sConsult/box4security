@@ -3,3 +3,4 @@
 /.blackbox/secring.gpg
 /scripts/System_Scripts/../../config/secrets/box4security.key.pem
 /docker/web/web.key
+/config/secrets/secrets.conf
