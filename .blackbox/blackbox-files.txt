@@ -1,4 +1,5 @@
 config/secrets/db.conf
+config/secrets/msmtprc
 config/secrets/secrets.conf
 config/secrets/smtp.conf
 config/secrets/web.conf
