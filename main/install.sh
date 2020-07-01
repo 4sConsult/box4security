@@ -253,6 +253,13 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/b
 ##################################################
 banner "BOX4security ..."
 
+# No longer allow SSH with password login
+sudo sed -i 's/#\?PasswordAuthentication .*$/PasswordAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?ChallengeResponseAuthentication .*$/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?UsePAM .*$/UsePAM no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+
 # Initially clone the Wiki repo
 cd /var/lib/box4s_docs
 sudo git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/docs.git .
