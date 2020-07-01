@@ -120,7 +120,8 @@ services:
     extra_hosts:
       - "dockerhost:${INT_IP}"
     env_file:
-      - web/.env.web
+      - web/web.env
+      - ../config/secrets/web.conf
       - ../VERSION
     environment:
       - KUNDE
