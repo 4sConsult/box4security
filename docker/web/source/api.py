@@ -275,7 +275,7 @@ class LaunchUpdate(Resource):
     def post(self):
         """Launch update.sh."""
         # targetVersion = self.args['target']
-        subprocess.Popen('ssh -o StrictHostKeyChecking=no -l amadmin dockerhost sudo /home/amadmin/box4s/main/update.sh', shell=True)
+        subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo /home/amadmin/box4s/main/update.sh', shell=True)
         return {"message": "accepted"}, 200
 
 
