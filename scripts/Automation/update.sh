@@ -80,15 +80,6 @@ function rollback() {
   echo "Setze Dienst auf Version $1 zurück"
   cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 
-  echo "Setze VPN auf Version $1 zurück"
-  cp /home/amadmin/box4s/config/etc/systemd/vpn.service /etc/systemd/system/vpn.service
-  systemctl daemon-reload
-  systemctl enable vpn.service
-  systemctl enable box4security.service
-
-  echo "Starte VPN neu."
-  systemctl restart vpn
-
   # sleep to wait for established connection
   sleep 8
 
