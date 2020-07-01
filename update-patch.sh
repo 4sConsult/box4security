@@ -26,6 +26,13 @@ echo "amadmin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 sudo mkdir -p /home/amadmin/.ssh
 sudo cp main/home/authorized_keys /home/amadmin/.ssh/authorized_keys
 
+# No longer allow SSH with password login
+sudo sed -i 's/#\?PasswordAuthentication .*$/PasswordAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?ChallengeResponseAuthentication .*$/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?UsePAM .*$/UsePAM no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
