@@ -9,3 +9,4 @@
 /config/secrets/smtp.conf
 /config/secrets/msmtprc
 /config/secrets/openvas.conf
+/config/secrets/wazuh.conf

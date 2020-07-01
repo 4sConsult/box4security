@@ -3,6 +3,7 @@ config/secrets/msmtprc
 config/secrets/openvas.conf
 config/secrets/secrets.conf
 config/secrets/smtp.conf
+config/secrets/wazuh.conf
 config/secrets/web.conf
 docker/web/web.key
 scripts/System_Scripts/../../config/secrets/box4security.key.pem
