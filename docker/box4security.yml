@@ -37,6 +37,8 @@ services:
       - varlib_openvas:/var/lib/openvas
       - varlib_logstash:/var/lib/logstash
     image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
+    env_file:
+      - ../config/secrets/openvas.conf
   suricata:
     build: suricata/.
     container_name: suricata
