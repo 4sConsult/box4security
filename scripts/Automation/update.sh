@@ -25,7 +25,7 @@ function rollback() {
 
   echo "Stelle Datenbank Backup wieder her"
   docker cp /var/lib/box4s/backup/box4S_db_$1.tar db:/root/box4S_db.tar
-  docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
+  docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
 
   echo "Stelle Kundenkonfiguration wieder her"
   tar -C /var/lib/box4s/backup/ -vxf /var/lib/box4s/backup/etc_box4s_$1.tar
@@ -115,7 +115,7 @@ function backup() {
 
   echo "Erstelle Backup vom aktuellen Stand: $1"
   echo "Erstelle Datenbank Backup"
-  docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_dump -F tar box4S_db > /root/box4S_db.tar"
+  docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_dump -F tar box4S_db > /root/box4S_db.tar"
   docker cp db:/root/box4S_db.tar /var/lib/box4s/backup/box4S_db_$PRIOR.tar
 
   echo "Erstelle Backup der Kundenkonfiguration"
