@@ -211,7 +211,7 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/p
 
 # Setup Box4s Settings volume
 sudo mkdir -p /etc/box4s/logstash
-sudo cp -R /home/amadmin/box4s/main/etc/logstash/* /etc/box4s/logstash/
+sudo cp -R /home/amadmin/box4s/config/etc/logstash/* /etc/box4s/logstash/
 sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
@@ -261,13 +261,13 @@ cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 
 # Copy config files
 cd /home/amadmin/box4s
-sudo cp main/etc/etc_files/* /etc/ -R || :
-sudo cp main/home/* /home/amadmin -R || :
+sudo cp config/etc/etc_files/* /etc/ -R || :
+sudo cp config/home/* /home/amadmin -R || :
 sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/ || :
 
 echo "### Setting up interfaces"
 # Find dhcp and remove everything after
-sudo cp /home/amadmin/box4s/main/etc/network/interfaces /etc/network/interfaces
+sudo cp /home/amadmin/box4s/config/etc/network/interfaces /etc/network/interfaces
 sudo sed -i '/.*dhcp/q' /etc/network/interfaces
 
 IF_MGMT=$(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | head -n 1)
@@ -314,7 +314,7 @@ sudo systemctl enable resolvconf
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 
 # Setup the new Box4Security Service and enable it
-sudo cp /home/amadmin/box4s/main/etc/systemd/box4security.service /etc/systemd/system/box4security.service
+sudo cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 sudo systemctl daemon-reload
 sudo systemctl enable box4security.service
 
@@ -398,8 +398,8 @@ cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 cd /home/amadmin/box4s
 
 echo "### Install new cronjobs ..."
-cd /home/amadmin/box4s/main/crontab
-su - amadmin -c "crontab /home/amadmin/box4s/main/crontab/amadmin.crontab"
+cd /home/amadmin/box4s/config/crontab
+su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 sudo crontab root.crontab
 
 source /etc/environment

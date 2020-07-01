@@ -78,10 +78,10 @@ function rollback() {
   rm -f /var/lib/box4s/backup/.env.es /var/lib/box4s/backup/.env.ls
 
   echo "Setze Dienst auf Version $1 zurück"
-  cp /home/amadmin/box4s/main/etc/systemd/box4security.service /etc/systemd/system/box4security.service
+  cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 
   echo "Setze VPN auf Version $1 zurück"
-  cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
+  cp /home/amadmin/box4s/config/etc/systemd/vpn.service /etc/systemd/system/vpn.service
   systemctl daemon-reload
   systemctl enable vpn.service
   systemctl enable box4security.service
