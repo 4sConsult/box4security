@@ -34,8 +34,8 @@ build_release:
     script:
         - docker-compose -f docker/box4security.prod.yml build
 
-push_dev:
-    stage: push_dev
+push_release:
+    stage: push_release
     only:
         - master
     script:
