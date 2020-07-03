@@ -133,8 +133,14 @@ sudo make symlinks-install
 
 # Change to path from snippet
 cd /tmp/box4s
+# Decrypt secrets
+blackbox_decrypt_file config/secrets/secrets.conf
+blackbox_decrypt_file config/secrets/db.conf
 # Source the secrets relatively
 source config/secrets/secrets.conf
+source config/secrets/db.conf
+# For security reasons, remove decrypted versions
+blackbox_shred_all_files
 # Create the user $HOST_USER only if he does not exist
 # The used password is known to the whole dev-team
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
@@ -183,6 +189,10 @@ exec > >(tee "$LOG_FILE.log")
 
 cd /home/amadmin
 git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s -b $TAG
+
+# Decrypt all secrets via postdeploy
+cd box4s
+blackbox_postdeploy
 
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
@@ -414,9 +424,6 @@ sudo crontab root.crontab
 source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 sudo systemctl daemon-reload
-
-# Acquire the db secrets
-source /home/amadmin/box4s/config/db.conf
 
 #Ignore own INT_IP
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
