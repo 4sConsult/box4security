@@ -4,8 +4,10 @@
 
 # Define the stages
 stages:
-    - build_dev
-    - push_dev
+    - build_runner
+    - push_runner
+    - build_release
+    - push_release
 
 # Copy the current suricata .env file, so the build works
 # Login to the registry
@@ -17,13 +19,24 @@ before_script:
 build_dev:
     stage: build_dev
     script:
-        - docker-compose -f docker/box4security.yml build
+        - docker-compose -f docker/box4security.runner.yml build
 
 # Push using compose file
 push_dev:
     stage: push_dev
     script:
-        - docker-compose -f docker/box4security.yml push
+        - docker-compose -f docker/box4security.runner.yml push
 
-  
-  
+build_release:
+    stage: build_release
+    only:
+        - master
+    script:
+        - docker-compose -f docker/box4security.prod.yml build
+
+push_dev:
+    stage: push_dev
+    only:
+        - master
+    script:
+        - docker-compose -f docker/box4security.prod.yml push
