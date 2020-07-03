@@ -133,6 +133,8 @@ sudo make symlinks-install
 
 # Change to path from snippet
 cd /tmp/box4s
+# Import Secret Key and use the deploy token as password
+gpg --passphrase $token --import .blackbox/box4s.pem
 # Decrypt secrets
 blackbox_decrypt_file config/secrets/secrets.conf
 blackbox_decrypt_file config/secrets/db.conf
