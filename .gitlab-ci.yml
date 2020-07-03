@@ -16,14 +16,14 @@ before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
 # Build using compose file
-build_dev:
-    stage: build_dev
+build_runner:
+    stage: build_runner
     script:
         - docker-compose -f docker/box4security.runner.yml build
 
 # Push using compose file
-push_dev:
-    stage: push_dev
+push_runner:
+    stage: push_runner
     script:
         - docker-compose -f docker/box4security.runner.yml push
 
