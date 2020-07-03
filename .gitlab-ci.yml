@@ -7,6 +7,7 @@ variables:
 
 before_script:
     #- docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker info
 
 build_dev:
     stage: build_dev
@@ -15,7 +16,7 @@ build_dev:
     #- docker build . --tag $REGISTRY_GROUP_PROJECT/gitlab-ci-shell-example:dev
 
 push_dev:
-    stage: push
+    stage: push_dev
     script:
         - docker info
     #- docker push $REGISTRY_GROUP_PROJECT/gitlab-ci-shell-example:latest
