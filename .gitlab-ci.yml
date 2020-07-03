@@ -1,8 +1,6 @@
 stages:
     - build_dev
-    - build_master
     - push_dev
-    - push_master
   
 variables:
     REGISTRY_GROUP_PROJECT: $CI_REGISTRY/4sconsult/box4s
@@ -10,13 +8,13 @@ variables:
 before_script:
     #- docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
-build-image:
+build_dev:
     stage: build_dev
     script:
         - docker info
     #- docker build . --tag $REGISTRY_GROUP_PROJECT/gitlab-ci-shell-example:dev
 
-push-image:
+push_dev:
     stage: push
     script:
         - docker info
