@@ -1,0 +1,42 @@
+# BOX4security CI
+#
+# This CI config will build the images and push them afterwards
+
+# Define the stages
+stages:
+    - build_runner
+    - push_runner
+    - build_release
+    - push_release
+
+# Copy the current suricata .env file, so the build works
+# Login to the registry
+before_script:
+    - cp /home/amadmin/box4s/docker/suricata/.env docker/suricata/.env
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+
+# Build using compose file
+build_runner:
+    stage: build_runner
+    script:
+        - docker-compose -f docker/box4security.runner.yml build
+
+# Push using compose file
+push_runner:
+    stage: push_runner
+    script:
+        - docker-compose -f docker/box4security.runner.yml push
+
+build_release:
+    stage: build_release
+    only:
+        - master
+    script:
+        - docker-compose -f docker/box4security.prod.yml build
+
+push_release:
+    stage: push_release
+    only:
+        - master
+    script:
+        - docker-compose -f docker/box4security.prod.yml push

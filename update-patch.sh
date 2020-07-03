@@ -46,6 +46,11 @@ sudo chmod 777 -R /data/suricata/eve.json
 # Changes here
 chmod +x /home/amadmin/box4s/scripts/Automation/update.sh
 
+#install curator for machines that do not have it
+pip3 install elasticsearch-curator==5.8.1 --user
+PATH=$PATH:/home/amadmin/.local/bin
+
+
 ###################
 
 # Start des Services
