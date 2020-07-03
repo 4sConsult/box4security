@@ -1,21 +1,25 @@
-# GitLab CI
+# BOX4security CI
+#
+# This CI config will build the images and push them afterwards
 
+# Define the stages
 stages:
     - build_dev
     - push_dev
-  
-variables:
-    REGISTRY_GROUP_PROJECT: $CI_REGISTRY/4sconsult/box4s
 
+# Copy the current suricata .env file, so the build works
+# Login to the registry
 before_script:
     - cp /home/amadmin/box4s/docker/suricata/.env docker/suricata/.env
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
+# Build using compose file
 build_dev:
     stage: build_dev
     script:
         - docker-compose -f docker/box4security.yml build
 
+# Push using compose file
 push_dev:
     stage: push_dev
     script:
