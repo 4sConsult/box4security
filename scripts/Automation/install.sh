@@ -97,14 +97,6 @@ if [ "$(whoami)" != "root" ];
 fi
 
 echo "### Setting up the environment"
-# Source the secrets relatively
-source ../../config/secrets/secrets.conf
-# Create the user 'amadmin' only if he does not exist
-# The used password is known to the whole dev-team
-id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
-sudo usermod -aG sudo $HOST_USER
-echo "$HOST_USER ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
-
 # Create the /data directory if it does not exist and make it readable
 sudo mkdir -p /data
 sudo chown root:root /data
@@ -133,6 +125,21 @@ git lfs install --skip-smudge
 pip3 install semver elasticsearch-curator requests
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
+
+# Install BlackBox to decrypt stuff
+git clone https://github.com/StackExchange/blackbox.git /opt/blackbox
+cd /opt/blackbox
+sudo make symlinks-install
+
+# Change to path from snippet
+cd /tmp/box4s
+# Source the secrets relatively
+source config/secrets/secrets.conf
+# Create the user $HOST_USER only if he does not exist
+# The used password is known to the whole dev-team
+id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
+sudo usermod -aG sudo $HOST_USER
+echo "$HOST_USER ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
 
 ##################################################
 #                                                #
