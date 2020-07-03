@@ -1,7 +1,27 @@
-before_script:
-    - docker info
-  
-build_image:
-script:
-    - docker info
-  
+image: ubuntu:20.04
+
+stages:
+    - build_dev
+    - build_master
+    - push_dev
+    - push_master
+
+docker build:
+    stage: build_dev
+    script:
+        - docker info
+
+docker build:
+    stage: build_master
+    script:
+        - docker info
+
+docker push dev:
+    stage: push_dev
+    script:
+        - docker info
+
+docker push master:
+    stage: push_master
+    script:
+        - docker info
