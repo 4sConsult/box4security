@@ -8,20 +8,17 @@ variables:
     REGISTRY_GROUP_PROJECT: $CI_REGISTRY/4sconsult/box4s
 
 before_script:
-    #- docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker info
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
 build_dev:
     stage: build_dev
     script:
-        - docker info
-    #- docker build . --tag $REGISTRY_GROUP_PROJECT/gitlab-ci-shell-example:dev
+        - docker-compose -f docker/box4security.yml build
 
 push_dev:
     stage: push_dev
     script:
-        - docker info
-    #- docker push $REGISTRY_GROUP_PROJECT/gitlab-ci-shell-example:latest
+        - docker-compose -f docker/box4security.yml push
 
   
   
