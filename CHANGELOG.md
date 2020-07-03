@@ -4,6 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [xxx](https://gitlab.com/4sconsult/box4s/-/tags/xxx) - xxxx-xx-xx
 
 ### Added
+* Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
@@ -16,6 +17,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Deprecated
 
 ### Removed
+* Geheimisse aus Source Code entfernt
 
 ## [1.8.4](https://gitlab.com/4sconsult/box4s/-/tags/1.8.4) - 2020-06-23
 
