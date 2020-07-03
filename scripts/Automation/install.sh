@@ -97,11 +97,13 @@ if [ "$(whoami)" != "root" ];
 fi
 
 echo "### Setting up the environment"
+# Source the secrets relatively
+source ../../config/secrets/secrets.conf
 # Create the user 'amadmin' only if he does not exist
 # The used password is known to the whole dev-team
-id -u amadmin &>/dev/null || sudo useradd -m -p '$1$6FDIJC1B$g5bKC2Rfn5ad5Q3btK0Ud0' -s /bin/bash amadmin
-sudo usermod -aG sudo amadmin
-echo "amadmin ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
+id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
+sudo usermod -aG sudo $HOST_USER
+echo "$HOST_USER ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
 
 # Create the /data directory if it does not exist and make it readable
 sudo mkdir -p /data
@@ -140,7 +142,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 banner "Tags ..."
 
 # Fetch all TAGS as names
-mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: GckUq7pHB6zxcA16eFTf" | jq -r .[].name)
+mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: $GIT_API_TOKEN" | jq -r .[].name)
 
 # If manual isntallation, make all tags visible and choose the tag to install
 if [[ "$*" == *manual* ]]
@@ -157,7 +159,7 @@ then
   echo "$TAG will be installed."
 else
   # not manual, install most recent and valid tag
-  TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: GckUq7pHB6zxcA16eFTf" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
+  TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: $GIT_API_TOKEN" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
   echo "Tag $TAG is the most recent available tag."
 fi
 
@@ -173,7 +175,7 @@ exec 2> >(tee "$LOG_FILE.err")
 exec > >(tee "$LOG_FILE.log")
 
 cd /home/amadmin
-git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/box4s.git box4s -b $TAG
+git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s -b $TAG
 
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
@@ -254,7 +256,7 @@ banner "BOX4security ..."
 
 # Initially clone the Wiki repo
 cd /var/lib/box4s_docs
-sudo git clone https://deploy:mPwNxthpxvmQSaZnv3xZ@gitlab.com/4sconsult/docs.git .
+sudo git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/docs.git .
 
 # Copy gollum config to wiki root
 cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
@@ -332,7 +334,6 @@ sudo docker login registry.gitlab.com -u deploy -p mPwNxthpxvmQSaZnv3xZ
 
 # Download IP2Location DBs for the first time
 echo "### Setup geolocation database"
-IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
 cd /tmp/
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN.zip
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
@@ -407,10 +408,13 @@ source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 sudo systemctl daemon-reload
 
+# Acquire the db secrets
+source /home/amadmin/box4s/config/db.conf
+
 #Ignore own INT_IP
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
-echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
-echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres psql postgres://localhost/box4S_db
+echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
+echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
 
 echo "### Wait for kibana to become available ..."
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || echo ''
