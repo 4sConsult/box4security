@@ -16,6 +16,22 @@ curl -X POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty" -
 }
 '
 
+
+# Unlock the files
+# Import Secret Key and use the deploy token as password
+# TODO: USE TOKEN HERE????
+echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
+# Remove passphrase from secret key to allow decryptions without a passphrase.
+printf "passwd\n$token\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
+blackbox_postdeploy
+
+# Copy new certificates over
+sudo mkdir -p /etc/nginx/certs
+sudo chown root:root /etc/nginx/certs
+sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
+sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
+sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
+
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
@@ -23,9 +39,6 @@ sudo systemctl stop box4security.service
 sudo docker rm  $(docker ps -q -a) || :
 # Remove all images, that are on the target system on every update
 sudo docker rmi $(sudo docker images -a -q) || :
-
-# If exists, remove the elastalert example rule
-rm -f /var/lib/elastalert/rules/testrule.yaml
 
 # Set nameserver temporarily
 cp /var/lib/box4s/resolv.personal /etc/resolv.conf
