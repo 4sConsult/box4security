@@ -247,6 +247,7 @@ class Version(Resource):
         else:
             abort(403, message="Forbidden.")
 
+
 class AvailableReleases(Resource):
     """API Resource for working with all available releases."""
 
