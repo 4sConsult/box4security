@@ -232,18 +232,32 @@ class Version(Resource):
         """
         GET currently installed version and environment.
 
+        Allowed for `Updates`, `Super Admin` role or request from the docker host.
+
         version is a semantic version string
         env specifies the environment: prod (default) or dev
         """
         CURRVER = os.getenv('VERSION')
-        return {'version': CURRVER, 'env': os.getenv('BOX4s_ENV', 'production')}
+        if request.headers.get('x-forwarded-for') == '172.20.8.1':
+            # request from docker host, allow
+            return {'version': CURRVER, 'env': os.getenv('BOX4s_ENV', 'production')}
+        elif current_user.is_authenticated and current_user.has_role('Updates'):
+            # request from allowed role
+            return {'version': CURRVER, 'env': os.getenv('BOX4s_ENV', 'production')}
+        else:
+            abort(403, message="Forbidden.")
 
 
 class AvailableReleases(Resource):
     """API Resource for working with all available releases."""
 
     def get(self):
-        """GET: fetch and return all available releases with their relevant info from GitLab."""
+        """GET: fetch and return all available releases with their relevant info from GitLab.
+        Allowed for `Updates`, `Super Admin` role or request from the docker host.
+        """
+        if not (current_user.is_authenticated and current_user.has_role('Updates')) and not request.headers.get('x-forwarded-for') == '172.20.8.1':
+            abort(403, message="Forbidden.")
+
         try:
             git = requests.get('https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags',
                                headers={'PRIVATE-TOKEN': os.getenv('GIT_TOKEN')}).json()
@@ -300,6 +314,7 @@ class UpdateStatus(Resource):
         """Initialize Request Parser."""
         self.parser = reqparse.RequestParser()
 
+    @roles_required(['Super Admin', 'Updates'])
     def get(self):
         """Get update status."""
         with open('/var/lib/box4s/.update.state', 'r') as f:
@@ -308,15 +323,25 @@ class UpdateStatus(Resource):
             return {'status': status}, 200
 
     def post(self):
-        """Set new update status."""
+        """Set new update status.
+        Allowed for `Updates`, `Super Admin` role or request from the docker host.
+        """
         self.parser.add_argument('status', type=str)
         self.args = self.parser.parse_args()
+
+        if not (current_user.is_authenticated and current_user.has_role('Updates')) and not request.headers.get('x-forwarded-for') == '172.20.8.1':
+            abort(403, message="Forbidden.")
+
         with open('/var/lib/box4s/.update.state', 'w') as f:
             f.write(self.args['status'])
             return {}, 200
 
     def delete(self):
-        """Empty update state file."""
+        """Empty update state file.
+        Allowed for `Updates`, `Super Admin` role or request from the docker host.
+        """
+        if not (current_user.is_authenticated and current_user.has_role('Updates')) and not request.headers.get('x-forwarded-for') == '172.20.8.1':
+            abort(403, message="Forbidden.")
         f = open('/var/lib/box4s/.update.state', 'w')
         f.close()
         return {}, 205

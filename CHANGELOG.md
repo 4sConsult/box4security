@@ -12,6 +12,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen, ein Templatestring nicht ausgefüllt wurde.
+* API-Endpunkte des Update-Prozesses weiter gegen unauthorisierten Zugriff gehärtet.
 
 ### Deprecated
 
