@@ -7,6 +7,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
+* Hostsystem auf Ubuntu 20.04 LTS aktualisiert
 
 ### Optimized
 
