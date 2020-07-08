@@ -10,4 +10,4 @@
 /config/secrets/msmtprc
 /config/secrets/openvas.conf
 /config/secrets/wazuh.conf
-/config/secrets/smtp_auth_file.yaml
+/docker/elastalert/etc/elastalert/smtp_auth_file.yaml

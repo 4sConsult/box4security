@@ -3,7 +3,6 @@ FROM bitsensor/elastalert:3.0.0-beta.0
 USER root
 ADD etc/ /root/etc/
 # COPY secret:
-COPY ../../config/secrets/smtp_auth_file.yaml /root/etc/smtp_auth_file.yaml
 RUN cp /root/etc/elastalert-server/config.yaml /opt/elastalert-server/config/config.yaml && \
   cp /root/etc/elastalert-server/config.yaml /opt/elastalert-server/config/elastalert-test.yaml && \
   cp /root/etc/elastalert-server/config.yaml /opt/elastalert-server/config/elastalert.yaml && \

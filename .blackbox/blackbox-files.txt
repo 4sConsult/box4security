@@ -4,7 +4,7 @@ config/secrets/msmtprc
 config/secrets/openvas.conf
 config/secrets/secrets.conf
 config/secrets/smtp.conf
-config/secrets/smtp_auth_file.yaml
+docker/elastalert/etc/elastalert/smtp_auth_file.yaml
 config/secrets/wazuh.conf
 config/secrets/web.conf
 config/secrets/web.key
