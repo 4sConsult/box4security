@@ -2,4 +2,4 @@
 box@4sconsult.de
 christoph.meyer@4sconsult.de
 constantin.tillmann@4sconsult.de
-jan.guenther@4sconsult.de
+jan.guenther@4sconsult.de # Jan Guenther (Key for Development) <jan.guenther@4sconsult.de>
