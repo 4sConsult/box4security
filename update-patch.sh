@@ -31,7 +31,8 @@ sudo sed -i 's/#\?PasswordAuthentication .*$/PasswordAuthentication no/g' /etc/s
 sudo sed -i 's/#\?ChallengeResponseAuthentication .*$/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config
 sudo sed -i 's/#\?UsePAM .*$/UsePAM no/g' /etc/ssh/sshd_config
 sudo sed -i 's/#\?PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
-sudo systemctl restart sshd
+# Spawn a sub shell that will restart sshd in 30m, applying the changes from config
+(sleep 1800; sudo systemctl restart sshd)&
 
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
