@@ -15,13 +15,19 @@ curl -X POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty" -
   }
 }
 '
+# Install BlackBox to decrypt stuff
+git clone https://github.com/StackExchange/blackbox.git /opt/blackbox
+cd /opt/blackbox
+sudo make symlinks-install
+sleep 10
+# ATTENTION ATTENTION
+# Assumes already imported deploy GPG key and unlocked (removed passphrase)
 
-# Unlock the files
 # Import Secret Key and use the deploy token as password
-# TODO: USE TOKEN HERE????
-echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
+# echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
 # Remove passphrase from secret key to allow decryptions without a passphrase.
-printf "passwd\n$token\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
+# printf "passwd\n$token\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
+# Unlock the files
 blackbox_postdeploy
 
 # Copy new certificates over
