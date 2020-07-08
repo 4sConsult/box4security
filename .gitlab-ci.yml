@@ -18,6 +18,8 @@ before_script:
 # Build using compose file
 build_runner:
     stage: build_runner
+    before_script:
+        - blackbox_postdeploy
     script:
         - docker-compose -f docker/box4security.runner.yml build
 
@@ -31,6 +33,8 @@ build_release:
     stage: build_release
     only:
         - master
+    before_script:
+        - blackbox_postdeploy
     script:
         - docker-compose -f docker/box4security.prod.yml build
 

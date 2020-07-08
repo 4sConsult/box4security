@@ -1,0 +1,13 @@
+/.blackbox/pubring.gpg~
+/.blackbox/pubring.kbx~
+/.blackbox/secring.gpg
+/config/secrets/box4security.key.pem
+/config/secrets/web.key
+/config/secrets/secrets.conf
+/config/secrets/db.conf
+/config/secrets/web.conf
+/config/secrets/smtp.conf
+/config/secrets/msmtprc
+/config/secrets/openvas.conf
+/config/secrets/wazuh.conf
+/config/secrets/smtp_auth_file.yaml

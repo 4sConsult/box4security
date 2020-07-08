@@ -18,6 +18,8 @@ services:
     restart: always
     environment:
      - INT_IP=${INT_IP}
+    env_file:
+     - ../config/secrets/wazuh.conf
     ports:
      - 127.0.0.1:5601:5601
     image: "registry.gitlab.com/4sconsult/box4s/kibana:dev"
@@ -37,6 +39,8 @@ services:
       - varlib_openvas:/var/lib/openvas
       - varlib_logstash:/var/lib/logstash
     image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
+    env_file:
+      - ../config/secrets/openvas.conf
   suricata:
     build: suricata/.
     container_name: suricata
@@ -77,6 +81,7 @@ services:
         condition: service_healthy
     env_file:
      - /etc/default/logstash
+     - ../config/secrets/db.conf
      - logstash/.env.ls
     ports:
       - 9600:9600
@@ -123,7 +128,9 @@ services:
     extra_hosts:
       - "dockerhost:${INT_IP}"
     env_file:
-      - web/.env.web
+      - web/web.env
+      - ../config/secrets/web.conf
+      - ../config/secrets/smtp.conf
       - ../VERSION
     environment:
       - KUNDE
@@ -139,7 +146,7 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     env_file:
-      - db/.env.db
+      - ../config/secrets/db.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -181,6 +188,8 @@ services:
       - "1515:1515"
       - "514:514/udp"
       - "55000:55000"
+    env_file:
+      - ../config/secrets/wazuh.conf
   elastalert:
     container_name: elastalert
     image: "registry.gitlab.com/4sconsult/box4s/elastalert:dev"
