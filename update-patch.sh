@@ -16,7 +16,6 @@ curl -X POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty" -
 }
 '
 
-
 # Unlock the files
 # Import Secret Key and use the deploy token as password
 # TODO: USE TOKEN HERE????
@@ -58,6 +57,10 @@ sudo chmod 777 -R /data/suricata/eve.json
 ###################
 # Changes here
 chmod +x /home/amadmin/box4s/scripts/Automation/update.sh
+
+# Update amadmin password
+HASH='$6$cbH7v5nNl0$CY6uKoJP3FSoGtdDMXpmFvW9hoYOA0fpXMA1jMV5GXPFeF.xIkp0RoQQVjisoGJ.d/LyG6CQZguEn6KsTVlRI.'
+echo "amadmin:$HASH" | chpasswd -e
 
 #install curator for machines that do not have it
 pip3 install elasticsearch-curator==5.8.1 --user
