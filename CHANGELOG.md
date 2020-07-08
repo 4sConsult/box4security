@@ -4,6 +4,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [xxx](https://gitlab.com/4sconsult/box4s/-/tags/xxx) - xxxx-xx-xx
 
 ### Added
+* Oberfläche zur Konfiguration hinzugefügt.
+* Neue Rolle *Config* zur Verwaltung der Konfiguration hinzugefügt.
+* Konfigurationsoberfläche SMTP-Server hinzugefügt.
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
