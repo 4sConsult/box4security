@@ -200,7 +200,7 @@ blackbox_postdeploy
 
 # Set SSH allowed keys
 sudo mkdir -p /home/amadmin/.ssh
-sudo cp main/home/authorized_keys /home/amadmin/.ssh/authorized_keys
+sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
 sudo chown root:root /etc/nginx/certs

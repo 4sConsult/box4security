@@ -45,7 +45,7 @@ echo "amadmin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Copy allowed SSH PKs over
 sudo mkdir -p /home/amadmin/.ssh
-sudo cp main/home/authorized_keys /home/amadmin/.ssh/authorized_keys
+sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
 
 # No longer allow SSH with password login
 sudo sed -i 's/#\?PasswordAuthentication .*$/PasswordAuthentication no/g' /etc/ssh/sshd_config
