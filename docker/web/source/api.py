@@ -689,6 +689,23 @@ class APIUserLock(Resource):
             abort(404, message="User with ID {} not found. Nothing changed.".format(user_id))
 
 
+class APIWizardReset(Resource):
+    """Endpoint to reset the Wizard and start anew."""
+
+    def post(self):
+        """Reset the Wizard and start anew.
+
+        Resetting is only allowed, if there exists one user AND this user's mail is not verified (else return 401).
+        Resetting is done by deleting this user, thus, wizard will start anew."""
+        if models.User.query.count() == 1:
+            user = models.User.query.get(1)
+            if not user.email_confirmed_at:
+                db.session.delete(user)
+                db.session.commit()
+                return {'message': 'success'}, 200
+        abort(401, message="Resetting Wizard not allowed at this stage.")
+
+
 class Health(Resource):
     """Health endpoint."""
 
