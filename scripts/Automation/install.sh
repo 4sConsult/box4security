@@ -149,7 +149,7 @@ blackbox_shred_all_files
 # The used password is known to the whole dev-team
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
 sudo usermod -aG sudo $HOST_USER
-echo "$HOST_USER ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
+echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 ##################################################
 #                                                #
@@ -200,7 +200,7 @@ blackbox_postdeploy
 
 # Set SSH allowed keys
 sudo mkdir -p /home/amadmin/.ssh
-sudo cp main/home/authorized_keys /home/amadmin/.ssh/authorized_keys
+sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
 sudo chown root:root /etc/nginx/certs
