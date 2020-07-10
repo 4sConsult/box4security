@@ -49,8 +49,8 @@ def writeBPFFile():
         rules = models.BPFRule.query.all()
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
-        # read pw from $SSHPASS and login to dockerhost to execute restartSuricata
-        os.system('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')
+        # login to dockerhost using ssh key and execute restartSuricata
+        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /home/amadmin/restartSuricata.sh')
 
 
 def writeAlertFile(alert):
@@ -289,7 +289,7 @@ class LaunchUpdate(Resource):
     def post(self):
         """Launch update.sh."""
         # targetVersion = self.args['target']
-        subprocess.Popen('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/box4s/scripts/Automation/update.sh', shell=True)
+        subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo /home/amadmin/box4s/scripts/Automation/update.sh', shell=True)
         return {"message": "accepted"}, 200
 
 

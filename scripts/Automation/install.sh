@@ -149,7 +149,7 @@ blackbox_shred_all_files
 # The used password is known to the whole dev-team
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
 sudo usermod -aG sudo $HOST_USER
-echo "$HOST_USER ALL=NOPASSWD:/home/amadmin/restartSuricata.sh, /home/amadmin/box4s/update-patch.sh,  /home/amadmin/box4s/main/update.sh" >> /etc/sudoers
+echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 ##################################################
 #                                                #
@@ -198,6 +198,9 @@ git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s 
 cd box4s
 blackbox_postdeploy
 
+# Set SSH allowed keys
+sudo mkdir -p /home/amadmin/.ssh
+sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
 # Copy certificates over
 sudo mkdir -p /etc/nginx/certs
 sudo chown root:root /etc/nginx/certs
@@ -274,6 +277,13 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/b
 #                                                #
 ##################################################
 banner "BOX4security ..."
+
+# No longer allow SSH with password login
+sudo sed -i 's/#\?PasswordAuthentication .*$/PasswordAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?ChallengeResponseAuthentication .*$/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?UsePAM .*$/UsePAM no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
+sudo systemctl restart sshd
 
 # Initially clone the Wiki repo
 cd /var/lib/box4s_docs
