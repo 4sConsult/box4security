@@ -702,7 +702,7 @@ class APIWizardReset(Resource):
             user = models.User.query.get(1)
             if not user.email_confirmed_at:
                 return {'message': 'Resetting Wizard allowed.'}, 200
-        abort(401, message="Resetting Wizard not allowed at this stage.")
+        abort(403, message="Resetting Wizard not allowed at this stage.")
 
     def post(self):
         """Reset the Wizard and start anew.

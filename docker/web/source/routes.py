@@ -1,6 +1,7 @@
 """Module to handle all webapp routes."""
 from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
+from source.api import APIWizardReset
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
 from source.config import Dashboards
@@ -52,6 +53,8 @@ api.add_resource(Alert, '/rules/alerts/<alert_id>')
 api.add_resource(Alerts, '/rules/alerts/')
 api.add_resource(AlertMailer, '/api/alerts/mailer/')
 
+# Wizard
+api.add_resource(APIWizardReset, '/api/wizard/reset')
 
 @app.before_request
 def check_if_user_active():
