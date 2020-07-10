@@ -49,10 +49,6 @@ sudo chmod 777 -R /data/suricata/eve.json
 pip3 install elasticsearch-curator==5.8.1 --user
 PATH=$PATH:/home/amadmin/.local/bin
 
-#install upgrades 
-sudo apt-get update
-sudo apt-get upgrade
-
 
 ###################
 
