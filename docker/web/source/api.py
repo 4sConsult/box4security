@@ -692,10 +692,22 @@ class APIUserLock(Resource):
 class APIWizardReset(Resource):
     """Endpoint to reset the Wizard and start anew."""
 
+    def get(self):
+        """Return if a wizard reset should be available.
+
+        Resetting is only allowed, if there exists one user AND this user's mail is not verified.
+        200 => Allowed, 403 => Forbidden.
+        """
+        if models.User.query.count() == 1:
+            user = models.User.query.get(1)
+            if not user.email_confirmed_at:
+                return {'message': 'Resetting Wizard allowed.'}, 200
+        abort(401, message="Resetting Wizard not allowed at this stage.")
+
     def post(self):
         """Reset the Wizard and start anew.
 
-        Resetting is only allowed, if there exists one user AND this user's mail is not verified (else return 401).
+        Resetting is only allowed, if there exists one user AND this user's mail is not verified (else return 403).
         Resetting is done by deleting this user, thus, wizard will start anew."""
         if models.User.query.count() == 1:
             user = models.User.query.get(1)
@@ -703,7 +715,7 @@ class APIWizardReset(Resource):
                 db.session.delete(user)
                 db.session.commit()
                 return {'message': 'success'}, 200
-        abort(401, message="Resetting Wizard not allowed at this stage.")
+        abort(403, message="Resetting Wizard not allowed at this stage.")
 
 
 class Health(Resource):

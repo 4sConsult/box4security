@@ -49,9 +49,31 @@
     {% if user_manager.USER_ENABLE_FORGOT_PASSWORD %}
     <div class="ui message">
           <a href="{{ url_for('user.forgot_password') }}" tabindex='195'>
-              {%trans%}Passwort vergessen?{%endtrans%}</a>
+              {%trans%}Passwort vergessen?{%endtrans%}</a><br>
+          <a id='btn-wizard-reset' href="/api/wizard/reset" tabindex="196">Einrichtung neustarten?</a>
     </div>
     {% endif %}
   </div>
 </div>
+{% endblock %}
+{% block scripts %}
+  <script type="text/javascript">
+  fetch('//{{ request.host }}/api/wizard/reset', { method: 'GET'})
+  .then( (r) => {
+    if(!r.ok) {
+      $('#btn-wizard-reset').hide();
+    }
+  });
+  $('#btn-wizard-reset').on('click', (e) => {
+    e.preventDefault();
+
+    const response = await fetch('//{{ request.host }}/api/wizard/reset', {method: 'POST'});
+    if (response.ok) {
+        // Reload without parameters
+        window.location = window.location.pathname;
+    } else {
+      alert("Die Einrichtung kann in diesem Stand nicht neugestartet werden.")
+    }
+  })
+  </script>
 {% endblock %}
