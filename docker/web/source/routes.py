@@ -56,6 +56,7 @@ api.add_resource(AlertMailer, '/api/alerts/mailer/')
 # Wizard
 api.add_resource(APIWizardReset, '/api/wizard/reset')
 
+
 @app.before_request
 def check_if_user_active():
     """Check if authenticated user is active before every request.

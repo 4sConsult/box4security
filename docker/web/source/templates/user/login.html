@@ -64,7 +64,7 @@
       $('#btn-wizard-reset').hide();
     }
   });
-  $('#btn-wizard-reset').on('click', (e) => {
+  $('#btn-wizard-reset').on('click', async (e) => {
     e.preventDefault();
 
     const response = await fetch('//{{ request.host }}/api/wizard/reset', {method: 'POST'});
