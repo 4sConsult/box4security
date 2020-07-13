@@ -46,7 +46,8 @@ RUN chown -R app:app $HOME && \
   mkdir -p /var/log/box4s/ && \
   chown -R app:app /var/log/box4s/ && \
   mkdir -p /var/lib/box4s && \
-  chown -R app:app /var/lib/box4s/
+  chown -R app:app /var/lib/box4s/ && \
+  chmod 600 /home/app/.ssh/web.key
 
 # change to the app user
 USER app
