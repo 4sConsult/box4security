@@ -25,20 +25,32 @@
                 <h4 class="ui dividing header">SMTP-Konfiguration</h4>
                 <div class="field">
                   <label>Absender</label>
-                  <input type="text" name="smtp[sender-name]" placeholder="Name des Absenders">
+                  <div class="ui left icon input">
+                    <input type="text" name="smtp[sender-name]" placeholder="Name des Absenders">
+                    <i class="id card icon"></i>
+                  </div>
                 </div>
                 <div class="field">
-                  <input required type="email" name="smtp[sender-email]" placeholder="E-Mail-Adresse des Absenders">
+                    <div class="ui left icon input">
+                        <input required type="email" name="smtp[sender-email]" placeholder="E-Mail-Adresse des Absenders">
+                        <i class="at icon"></i>
+                    </div>
                 </div>
                 <div class="field">
                   <label>Verbindung</label>
                   <div class="fields">
                     <div class="twelve wide field">
-                      <input required type="text" name="smtp[host]" placeholder="SMTP-Host">
+                        <div class="ui left icon input">
+                            <input required type="text" name="smtp[host]" placeholder="SMTP-Host">
+                            <i class="server icon"></i>
+                        </div>
                     </div>
                     <div class="four wide field">
-                      <input required type="number" name="smtp[port]" placeholder="SMTP-Port">
-                      <small class="helper">Meist 465, 587 oder 25.</small>
+                        <div class="ui left icon input">
+                            <input required type="number" name="smtp[port]" placeholder="SMTP-Port">
+                            <i class="plug icon"></i>
+                        </div>
+                        <small class="helper">Meist 465, 587 oder 25.</small>
                     </div>
                   </div>
                 </div>
@@ -51,10 +63,16 @@
                 </div>
                 <div class="field">
                   <label>Authentifikation</label>
-                  <input required type="text" name="smtp[username]" placeholder="SMTP-Username">
+                  <div class="ui left icon input">
+                      <input required type="text" name="smtp[username]" placeholder="SMTP-Username">
+                      <i class="user icon"></i>
+                  </div>
                 </div>
                 <div class="field">
-                  <input required type="password" name="smtp[password]" placeholder="SMTP-Passwort">
+                  <div class="ui left icon input">
+                    <input required type="password" name="smtp[password]" placeholder="SMTP-Passwort">
+                    <i class="key icon"></i>
+                  </div>
                 </div>
                 <button class="ui green button" type="submit">Änderungen anwenden</button>
               </form>
