@@ -15,3 +15,7 @@ video {
     background-color: #36515A !important;
     color: white !important;
 }
+
+small.helper {
+  color: #36515A !important;
+}

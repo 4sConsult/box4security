@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="ui main text container">
+    {# One-time system messages called Flash messages #}
+    {% block flash_messages %}
+        {%- with messages = get_flashed_messages(with_categories=true) -%}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="ui message {{category}}">{{ message|safe }}</div>
+                {% endfor %}
+            {% endif %}
+        {%- endwith %}
+    {% endblock %}
+    <h1 class="ui header">BOX4security - Konfiguration</h1>
+    <div class="ui inverted section divider"></div>
+    <div class="section">
+        <div class="ui top attached secondary pointing tabular menu">
+            <a class="item active">
+              Mail
+            </a>
+          </div>
+          <div class="ui bottom attached active tab segment">
+            <!-- Mail -->
+            <form class="ui form" mehthod="POST" action="/_uqg9uhqer3g">
+                <h4 class="ui dividing header">SMTP-Konfiguration</h4>
+                <div class="field">
+                  <label>Absender</label>
+                  <input type="text" name="smtp[sender-name]" placeholder="Name des Absenders">
+                </div>
+                <div class="field">
+                  <input required type="email" name="smtp[sender-email]" placeholder="E-Mail-Adresse des Absenders">
+                </div>
+                <div class="field">
+                  <label>Verbindung</label>
+                  <div class="fields">
+                    <div class="twelve wide field">
+                      <input required type="text" name="smtp[host]" placeholder="SMTP-Host">
+                    </div>
+                    <div class="four wide field">
+                      <input required type="number" name="smtp[port]" placeholder="SMTP-Port">
+                      <small class="helper">Meist 465, 587 oder 25.</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="field">
+                    <div class="ui toggle checkbox">
+                        <input required type="checkbox" name="smtp[tls]">
+                        <label>Secure (TLS)</label>
+                        <small class="helper">Sollte bei Port 465 aktiviert, sonst aus sein (587, 25).</small>
+                    </div>
+                </div>
+                <div class="field">
+                  <label>Authentifikation</label>
+                  <input required type="text" name="smtp[username]" placeholder="SMTP-Username">
+                </div>
+                <div class="field">
+                  <input required type="password" name="smtp[password]" placeholder="SMTP-Passwort">
+                </div>
+                <button class="ui green button" type="submit">Änderungen anwenden</button>
+              </form>
+          </div>
+    </div>
+  <div class="ui vertical footer segment">
+    <div class="ui center aligned container">
+    <img src="/static/Box4S_Logo.png" class="ui centered small image">
+  </div>
+  </div>
+  {% endblock %}
+{% block scripts %}
+  <script type="text/javascript">
+  $('div.item.active').removeClass('active');
+  $('#administration').addClass('active');
+  </script>
+{% endblock %}
