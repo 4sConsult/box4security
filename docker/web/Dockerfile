@@ -23,10 +23,14 @@ RUN mkdir -p /home/app && \
   addgroup app && useradd -g app app && \
   mkdir $APP_HOME
 WORKDIR $APP_HOME
+RUN mkdir $HOME/.ssh
+COPY web.key $HOME/.ssh/web.key
+COPY web.pub $HOME/.ssh/web.pub
 
-# Install sshpass
+
+# Install curl & ssh
 RUN apt update && \
-  apt install -y sshpass curl && \
+  apt install -y curl ssh && \
   rm -rf /var/lib/apt/lists/*
 
 
@@ -42,7 +46,8 @@ RUN chown -R app:app $HOME && \
   mkdir -p /var/log/box4s/ && \
   chown -R app:app /var/log/box4s/ && \
   mkdir -p /var/lib/box4s && \
-  chown -R app:app /var/lib/box4s/
+  chown -R app:app /var/lib/box4s/ && \
+  chmod 600 /home/app/.ssh/web.key
 
 # change to the app user
 USER app
