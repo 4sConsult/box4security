@@ -8,9 +8,11 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Neue Rolle *Config* zur Verwaltung der Konfiguration hinzugefügt.
 * Konfigurationsoberfläche SMTP-Server hinzugefügt.
 * Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
+* Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer, existiert.
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
+* SSH via Passwort zur BOX4s nicht länger erlaubt. Stattdessen wird nur noch SSH mit Public-Key-Authentifikation durch 4sConsult-Mitarbeiter zugelassen.
 
 ### Optimized
 

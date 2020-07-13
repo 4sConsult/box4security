@@ -9,8 +9,6 @@ xpack.canvas.enabled: false
 #Canvas disabled for now since it crashes kibana with wazuh enabled
 kibana.index: ".kibana"
 #server.ssl.enabled: True
-server.ssl.certificate: "/usr/share/kibana/config/kibana-selfsigned.crt"
-server.ssl.key: "/usr/share/kibana/config/kibana-selfsigned.key"
 logging.dest: /var/log/kibana/kibana.log
 logging.silent: false
 logging.quiet: false

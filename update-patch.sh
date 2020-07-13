@@ -15,13 +15,19 @@ curl -X POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty" -
   }
 }
 '
+# Install BlackBox to decrypt stuff
+git clone https://github.com/StackExchange/blackbox.git /opt/blackbox
+cd /opt/blackbox
+sudo make symlinks-install
+sleep 10
+# ATTENTION ATTENTION
+# Assumes already imported deploy GPG key and unlocked (removed passphrase)
 
-# Unlock the files
 # Import Secret Key and use the deploy token as password
-# TODO: USE TOKEN HERE????
-echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
+# echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
 # Remove passphrase from secret key to allow decryptions without a passphrase.
-printf "passwd\n$token\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
+# printf "passwd\n$token\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
+# Unlock the files
 blackbox_postdeploy
 
 # Copy new certificates over
@@ -30,6 +36,24 @@ sudo chown root:root /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
 sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
+
+# Edit suoders to not require password for sudo commands as amadmin
+# Delete last line
+sudo sed -i '$ d' /etc/sudoers
+# Add new option
+echo "amadmin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# Copy allowed SSH PKs over
+sudo mkdir -p /home/amadmin/.ssh
+sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
+
+# No longer allow SSH with password login
+sudo sed -i 's/#\?PasswordAuthentication .*$/PasswordAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?ChallengeResponseAuthentication .*$/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?UsePAM .*$/UsePAM no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
+# Spawn a sub shell that will restart sshd in 30m, applying the changes from config
+(sleep 1800; sudo systemctl restart sshd)&
 
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service

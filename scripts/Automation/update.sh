@@ -163,6 +163,7 @@ mapfile -t VERSIONS < <(python3 /home/amadmin/box4s/scripts/Automation/versions.
 ENV=$(curl -sLk localhost/ver/ | jq -r '.env')
 TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
+source /home/amadmin/box4s/config/secrets/db.conf
 for v in "${VERSIONS[@]}"
 do
    backup $PRIOR
