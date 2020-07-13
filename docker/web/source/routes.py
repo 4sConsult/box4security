@@ -218,6 +218,14 @@ def rules():
     return render_template("filter.html")
 
 
+@app.route('/config', methods=['GET'])
+@login_required
+@roles_required(['Super Admin'])
+def config():
+    """Return the configuration page."""
+    return render_template("config.html")
+
+
 @app.route('/alerts', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Alerts'])
