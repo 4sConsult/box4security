@@ -21,18 +21,18 @@
           </div>
           <div class="ui bottom attached active tab segment">
             <!-- Mail -->
-            <form class="ui form" mehthod="POST" action="/_uqg9uhqer3g">
+            <form id="formSMTP" class="ui form">
                 <h4 class="ui dividing header">SMTP-Konfiguration</h4>
                 <div class="field">
                   <label>Absender</label>
                   <div class="ui left icon input">
-                    <input type="text" name="smtp[sender-name]" placeholder="Name des Absenders">
+                    <input type="text" name="senderName" placeholder="Name des Absenders">
                     <i class="id card icon"></i>
                   </div>
                 </div>
                 <div class="field">
                     <div class="ui left icon input">
-                        <input required type="email" name="smtp[sender-email]" placeholder="E-Mail-Adresse des Absenders">
+                        <input required type="email" name="senderMail" placeholder="E-Mail-Adresse des Absenders">
                         <i class="at icon"></i>
                     </div>
                 </div>
@@ -41,13 +41,13 @@
                   <div class="fields">
                     <div class="twelve wide field">
                         <div class="ui left icon input">
-                            <input required type="text" name="smtp[host]" placeholder="SMTP-Host">
+                            <input required type="text" name="host" placeholder="SMTP-Host">
                             <i class="server icon"></i>
                         </div>
                     </div>
                     <div class="four wide field">
                         <div class="ui left icon input">
-                            <input required type="number" name="smtp[port]" placeholder="SMTP-Port">
+                            <input required type="number" name="port" placeholder="SMTP-Port">
                             <i class="plug icon"></i>
                         </div>
                         <small class="helper">Meist 465, 587 oder 25.</small>
@@ -56,7 +56,7 @@
                 </div>
                 <div class="field">
                     <div class="ui toggle checkbox">
-                        <input required type="checkbox" name="smtp[tls]">
+                        <input required type="checkbox" name="tls">
                         <label>Secure (TLS)</label>
                         <small class="helper">Sollte bei Port 465 aktiviert, sonst aus sein (587, 25).</small>
                     </div>
@@ -64,13 +64,13 @@
                 <div class="field">
                   <label>Authentifikation</label>
                   <div class="ui left icon input">
-                      <input required type="text" name="smtp[username]" placeholder="SMTP-Username">
+                      <input required type="text" name="username" placeholder="SMTP-Username">
                       <i class="user icon"></i>
                   </div>
                 </div>
                 <div class="field">
                   <div class="ui left icon input">
-                    <input required type="password" name="smtp[password]" placeholder="SMTP-Passwort">
+                    <input required type="password" name="password" placeholder="SMTP-Passwort">
                     <i class="key icon"></i>
                   </div>
                 </div>
@@ -88,5 +88,21 @@
   <script type="text/javascript">
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
+  </script>
+  <script type="text/javascript">
+    $('#formSMTP').on('submit', async (e) => {
+    var form = document.getElementById('formSMTP');
+    let formData = new FormData(form);
+    var jsonForm = JSON.stringify(Object.fromEntries(formData));
+    e.preventDefault();
+    let response = await fetch('//{{ request.host }}/api/config/smtp', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: jsonForm
+    });
+    });
   </script>
 {% endblock %}
