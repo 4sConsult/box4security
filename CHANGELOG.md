@@ -5,6 +5,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 * Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
+* Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer, existiert.
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
