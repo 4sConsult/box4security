@@ -699,7 +699,7 @@ class APIWizardReset(Resource):
         200 => Allowed, 403 => Forbidden.
         """
         if models.User.query.count() == 1:
-            user = models.User.query.get(1)
+            user = models.User.query.first()
             if not user.email_confirmed_at:
                 return {'message': 'Resetting Wizard allowed.'}, 200
         abort(403, message="Resetting Wizard not allowed at this stage.")
@@ -710,7 +710,7 @@ class APIWizardReset(Resource):
         Resetting is only allowed, if there exists one user AND this user's mail is not verified (else return 403).
         Resetting is done by deleting this user, thus, wizard will start anew."""
         if models.User.query.count() == 1:
-            user = models.User.query.get(1)
+            user = models.User.query.first()
             if not user.email_confirmed_at:
                 db.session.delete(user)
                 db.session.commit()
