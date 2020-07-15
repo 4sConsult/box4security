@@ -208,6 +208,10 @@ sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
 sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 
+# Copy the smtp.conf to /etc/box4s
+sudo mkdir -p /etc/box4s/
+sudo cp /home/amadmin/box4s/config/secrets/smtp.conf /etc/box4s/smtp.conf
+
 ##################################################
 #                                                #
 # Docker Volumes                                 #
