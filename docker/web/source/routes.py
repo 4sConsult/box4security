@@ -2,6 +2,7 @@
 from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.api import APIWizardReset
+from source.api import APISMTP, APISMTPCertificate
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
 from source.config import Dashboards
@@ -55,6 +56,10 @@ api.add_resource(AlertMailer, '/api/alerts/mailer/')
 
 # Wizard
 api.add_resource(APIWizardReset, '/api/wizard/reset')
+
+# SMTP
+api.add_resource(APISMTP, '/api/smtp/config')
+api.add_resource(APISMTPCertificate, '/api/smtp/cert')
 
 
 @app.before_request
