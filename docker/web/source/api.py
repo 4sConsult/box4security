@@ -695,7 +695,17 @@ class APISMTP(Resource):
     @roles_required(['Super Admin'])
     def get(self):
         """Return the current SMTP configuration."""
-        pass
+        # Read current SMTP configuration from environment variables.
+        config = {
+            'SMTP_HOST': os.getenv('MAIL_SERVER'),
+            'SMTP_PORT': os.getenv('MAIL_PORT'),
+            'SMTP_USE_TLS': os.getenv('MAIL_USE_TLS'),
+            'SMTP_USERNAME': os.getenv('MAIL_USERNAME'),
+            'SMTP_PASSWORD': os.getenv('MAIL_PASSWORD'),
+            'SMTP_SENDER_MAIL': os.getenv('MAIL_DEFAULT_SENDER'),
+            'SMTP_SENDER_NAME': 'BOX4security'
+        }
+        return config, 200
 
     @roles_required(['Super Admin'])
     def post(self):
