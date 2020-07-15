@@ -689,6 +689,39 @@ class APIUserLock(Resource):
             abort(404, message="User with ID {} not found. Nothing changed.".format(user_id))
 
 
+class APISMTP(Resource):
+    """Endpoint to interact with the SMTP config."""
+
+    @roles_required(['Super Admin'])
+    def get(self):
+        """Return the current SMTP configuration."""
+        pass
+
+    @roles_required(['Super Admin'])
+    def post(self):
+        """Set (replace) the SMTP configuration.
+
+        Parameters:"""
+        pass
+
+
+class APISMTPCertificate(Resource):
+    """Endpoint to interact with the SMTP certificate.
+
+    Non-JSON Endpoint.
+    """
+
+    @roles_required(['Super Admin'])
+    def get(self):
+        """Return the current SMTP certificate."""
+        pass
+
+    @roles_required(['Super Admin'])
+    def put(self):
+        """Replace the current SMTP certificate."""
+        pass
+
+
 class APIWizardReset(Resource):
     """Endpoint to reset the Wizard and start anew."""
 
