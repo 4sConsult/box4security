@@ -1,4 +1,4 @@
-from python:latest as builder
+from python:3.8.2-slim-buster as builder
 
 # Prevents Python from writing pyc files to disc
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -6,12 +6,13 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /usr/src/app
+ADD requirements.txt /usr/src/app/requirements.txt
 RUN pip install --upgrade pip && \
-  pip install flake8
+  pip install flake8 && \
+  pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 COPY . /usr/src/app
-RUN flake8 --ignore=E501,F401 . && \
-  pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+RUN flake8 --ignore=E501,F401 .
 
 
 # Final
