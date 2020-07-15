@@ -5,10 +5,11 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 * Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
-* Rate Limiting beim Einloggen eingeführt
+* Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer, existiert.
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
+* SSH via Passwort zur BOX4s nicht länger erlaubt. Stattdessen wird nur noch SSH mit Public-Key-Authentifikation durch 4sConsult-Mitarbeiter zugelassen.
 
 ### Optimized
 

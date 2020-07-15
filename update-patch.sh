@@ -37,6 +37,24 @@ sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
 sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
 
+# Edit suoders to not require password for sudo commands as amadmin
+# Delete last line
+sudo sed -i '$ d' /etc/sudoers
+# Add new option
+echo "amadmin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# Copy allowed SSH PKs over
+sudo mkdir -p /home/amadmin/.ssh
+sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
+
+# No longer allow SSH with password login
+sudo sed -i 's/#\?PasswordAuthentication .*$/PasswordAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?ChallengeResponseAuthentication .*$/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?UsePAM .*$/UsePAM no/g' /etc/ssh/sshd_config
+sudo sed -i 's/#\?PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
+# Spawn a sub shell that will restart sshd in 30m, applying the changes from config
+(sleep 1800; sudo systemctl restart sshd)&
+
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
 
