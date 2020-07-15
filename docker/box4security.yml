@@ -117,6 +117,7 @@ services:
        - /var/log/box4s/:/var/log/box4s/
        - varlib_box4s/:/var/lib/box4s/
        - varlib_elastalert_rules:/var/lib/elastalert/rules/
+       - /etc/box4s/smtp.conf:/etc/box4s/smtp.conf
     expose:
       - 5000
     healthcheck:
