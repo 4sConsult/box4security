@@ -1,6 +1,6 @@
 """Module for webapp API."""
 from source import models, db
-from flask_restful import Resource, reqparse, abort
+from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
 import requests
@@ -78,7 +78,7 @@ def writeSMTPConfig(config):
     Expects a Python dictionary that has the keys for config.
     """
     with open('/etc/box4s/smtp.conf.tmp', 'w') as etc_smtp:
-        filled = render_template('application/smtp.conf.j2', config=config)
+        filled = render_template('application/smtp.conf.j2', smtp=config)
         etc_smtp.write(filled)
 
 
@@ -705,6 +705,15 @@ class APIUserLock(Resource):
 class APISMTP(Resource):
     """Endpoint to interact with the SMTP config."""
 
+    SMTP_MARSHAL = {
+        'SMTP_HOST': fields.String,
+        'SMTP_PORT': fields.Integer,
+        'SMTP_USE_TLS': fields.Boolean,
+        'SMTP_USERNAME': fields.String,
+        'SMTP_SENDER_MAIL': fields.String,
+        'SMTP_SENDER_NAME': fields.String,
+    }
+
     def __init__(self):
         """Register Parser."""
         self.parser = reqparse.RequestParser()
@@ -718,11 +727,11 @@ class APISMTP(Resource):
             'SMTP_PORT': os.getenv('MAIL_PORT'),
             'SMTP_USE_TLS': os.getenv('MAIL_USE_TLS'),
             'SMTP_USERNAME': os.getenv('MAIL_USERNAME'),
-            'SMTP_PASSWORD': os.getenv('MAIL_PASSWORD'),
             'SMTP_SENDER_MAIL': os.getenv('MAIL_DEFAULT_SENDER'),
             'SMTP_SENDER_NAME': 'BOX4security'
         }
-        return config, 200
+        # marshal = apply described format
+        return marshal(config, self.SMTP_MARSHAL), 200
 
     @roles_required(['Super Admin'])
     def post(self):
