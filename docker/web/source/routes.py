@@ -58,8 +58,8 @@ api.add_resource(AlertMailer, '/api/alerts/mailer/')
 api.add_resource(APIWizardReset, '/api/wizard/reset')
 
 # SMTP
-api.add_resource(APISMTP, '/api/smtp/config')
-api.add_resource(APISMTPCertificate, '/api/smtp/cert')
+api.add_resource(APISMTP, '/api/config/smtp')
+api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
 
 
 @app.before_request
