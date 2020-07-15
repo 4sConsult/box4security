@@ -30,6 +30,10 @@ sleep 10
 # Unlock the files
 blackbox_postdeploy
 
+# Copy the smtp.conf to /etc/box4s
+sudo mkdir -p /etc/box4s/
+sudo cp /home/amadmin/box4s/config/secrets/smtp.conf /etc/box4s/smtp.conf
+
 # Copy new certificates over
 sudo mkdir -p /etc/nginx/certs
 sudo chown root:root /etc/nginx/certs
