@@ -332,7 +332,7 @@ done
 
 echo "### Setup system variables"
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
-IPINFO2=$(echo $IPINFO | awk  '{print substr($IPINFO, 6, length($IPINFO))}')
+IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
 echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
 source /etc/environment
