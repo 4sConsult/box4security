@@ -754,8 +754,7 @@ class APISMTP(Resource):
         self.parser.add_argument('username', type=str, required=True)
         self.parser.add_argument('password', type=str, required=True)
         self.args = self.parser.parse_args()
-        config = vars(self.args)
-        writeSMTPConfig(config)
+        writeSMTPConfig(self.args)
         return {"message": "SMTP config successfully updated."}, 200
 
 
