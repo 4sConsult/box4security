@@ -25,7 +25,7 @@ function rollback() {
 
   echo "Stelle Datenbank Backup wieder her"
   docker cp /var/lib/box4s/backup/box4S_db_$1.tar db:/root/box4S_db.tar
-  docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
+  docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
 
   echo "Stelle Kundenkonfiguration wieder her"
   tar -C /var/lib/box4s/backup/ -vxf /var/lib/box4s/backup/etc_box4s_$1.tar
@@ -78,16 +78,7 @@ function rollback() {
   rm -f /var/lib/box4s/backup/.env.es /var/lib/box4s/backup/.env.ls
 
   echo "Setze Dienst auf Version $1 zurück"
-  cp /home/amadmin/box4s/main/etc/systemd/box4security.service /etc/systemd/system/box4security.service
-
-  echo "Setze VPN auf Version $1 zurück"
-  cp /home/amadmin/box4s/main/etc/systemd/vpn.service /etc/systemd/system/vpn.service
-  systemctl daemon-reload
-  systemctl enable vpn.service
-  systemctl enable box4security.service
-
-  echo "Starte VPN neu."
-  systemctl restart vpn
+  cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 
   # sleep to wait for established connection
   sleep 8
@@ -112,10 +103,10 @@ function rollback() {
   echo "Wiederherstellung auf $1 abgeschlossen."
 
   # Prepare new update.sh for next update
-  chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
-  chmod +x $BASEDIR$GITDIR/main/update.sh
+  chown amadmin:amadmin $BASEDIR$GITDIR/scripts/Automation/update.sh
+  chmod +x $BASEDIR$GITDIR/scripts/Automation/update.sh
   curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
-
+  sleep 5
   # Exit update with error code
   exit 1
 }
@@ -124,7 +115,7 @@ function backup() {
 
   echo "Erstelle Backup vom aktuellen Stand: $1"
   echo "Erstelle Datenbank Backup"
-  docker exec db /bin/bash -c "PGPASSWORD=zgJnwauCAsHrR6JB PGUSER=postgres pg_dump -F tar box4S_db > /root/box4S_db.tar"
+  docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_dump -F tar box4S_db > /root/box4S_db.tar"
   docker cp db:/root/box4S_db.tar /var/lib/box4s/backup/box4S_db_$PRIOR.tar
 
   echo "Erstelle Backup der Kundenkonfiguration"
@@ -172,6 +163,7 @@ mapfile -t VERSIONS < <(python3 /home/amadmin/box4s/scripts/Automation/versions.
 ENV=$(curl -sLk localhost/ver/ | jq -r '.env')
 TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
+source /home/amadmin/box4s/config/secrets/db.conf
 for v in "${VERSIONS[@]}"
 do
    backup $PRIOR
@@ -211,8 +203,8 @@ echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
 # Notify API that we're finished
 curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
 # Prepare new update.sh for next update
-chown amadmin:amadmin $BASEDIR$GITDIR/main/update.sh
-chmod +x $BASEDIR$GITDIR/main/update.sh
+chown amadmin:amadmin $BASEDIR$GITDIR/scripts/Automation/update.sh
+chmod +x $BASEDIR$GITDIR/scripts/Automation/update.sh
 sleep 15 # sleep for API <-> Webbrowser communication
 curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
 exit 0

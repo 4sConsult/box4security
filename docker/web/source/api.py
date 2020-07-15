@@ -49,8 +49,8 @@ def writeBPFFile():
         rules = models.BPFRule.query.all()
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
-        # read pw from $SSHPASS and login to dockerhost to execute restartSuricata
-        os.system('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')
+        # login to dockerhost using ssh key and execute restartSuricata
+        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /home/amadmin/restartSuricata.sh')
 
 
 def writeAlertFile(alert):
@@ -289,7 +289,7 @@ class LaunchUpdate(Resource):
     def post(self):
         """Launch update.sh."""
         # targetVersion = self.args['target']
-        subprocess.Popen('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/box4s/main/update.sh', shell=True)
+        subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo /home/amadmin/box4s/scripts/Automation/update.sh', shell=True)
         return {"message": "accepted"}, 200
 
 
@@ -687,6 +687,35 @@ class APIUserLock(Resource):
             return {'user': user_id, 'active': user.active}, 200
         else:
             abort(404, message="User with ID {} not found. Nothing changed.".format(user_id))
+
+
+class APIWizardReset(Resource):
+    """Endpoint to reset the Wizard and start anew."""
+
+    def get(self):
+        """Return if a wizard reset should be available.
+
+        Resetting is only allowed, if there exists one user AND this user's mail is not verified.
+        200 => Allowed, 403 => Forbidden.
+        """
+        if models.User.query.count() == 1:
+            user = models.User.query.first()
+            if not user.email_confirmed_at:
+                return {'message': 'Resetting Wizard allowed.'}, 200
+        abort(403, message="Resetting Wizard not allowed at this stage.")
+
+    def post(self):
+        """Reset the Wizard and start anew.
+
+        Resetting is only allowed, if there exists one user AND this user's mail is not verified (else return 403).
+        Resetting is done by deleting this user, thus, wizard will start anew."""
+        if models.User.query.count() == 1:
+            user = models.User.query.first()
+            if not user.email_confirmed_at:
+                db.session.delete(user)
+                db.session.commit()
+                return {'message': 'success'}, 200
+        abort(403, message="Resetting Wizard not allowed at this stage.")
 
 
 class Health(Resource):

@@ -4,10 +4,12 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [xxx](https://gitlab.com/4sconsult/box4s/-/tags/xxx) - xxxx-xx-xx
 
 ### Added
+* Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
+* Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer, existiert.
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
-* Hostsystem auf Ubuntu 20.04 LTS aktualisiert
+* SSH via Passwort zur BOX4s nicht länger erlaubt. Stattdessen wird nur noch SSH mit Public-Key-Authentifikation durch 4sConsult-Mitarbeiter zugelassen.
 
 ### Optimized
 
@@ -18,6 +20,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Deprecated
 
 ### Removed
+* Geheimisse aus Source Code entfernt
 
 ## [1.8.4](https://gitlab.com/4sconsult/box4s/-/tags/1.8.4) - 2020-06-23
 
