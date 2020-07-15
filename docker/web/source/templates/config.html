@@ -88,18 +88,19 @@
   <script type="text/javascript">
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
-
-  fetch('//{{ request.host }}/api/config/smtp')
-  .then((resp) => resp.json())
-  .then((jso) => {
-    document.getElementById('smtpHost').value(jso.SMTP_HOST);
-    document.getElementById('smtpPort').value(jso.SMTP_PORT);
-    document.getElementById('smtpTLS').value(jso.SMTP_USE_TLS);
-    document.getElementById('senderMail').value(jso.SMTP_SENDER_MAIL);
-    document.getElementById('senderName').value(jso.SMTP_SENDER_NAME);
-    document.getElementById('smtpUsername').value(jso.SMTP_USERNAME);
-    document.getElementById('smtpPassword').value(jso.SMTP_PASSWORD);
-  });
+  window.onload = function(){
+    fetch('//{{ request.host }}/api/config/smtp')
+    .then((resp) => resp.json())
+    .then((jso) => {
+      document.getElementById('smtpHost').value = jso.SMTP_HOST;
+      document.getElementById('smtpPort').value = jso.SMTP_PORT;
+      var checkTLS = $('#smtpTLS').parents()[0];
+      jso.SMTP_USE_TLS ? $(checkTLS).checkbox('check') : $(checkTLS).checkbox('uncheck');
+      document.getElementById('senderMail').value = jso.SMTP_SENDER_MAIL;
+      document.getElementById('senderName').value = jso.SMTP_SENDER_NAME;
+      document.getElementById('smtpUsername').value = jso.SMTP_USERNAME;
+    });
+  }  
   </script>
   <script type="text/javascript">
     $('#formSMTP').on('submit', async (e) => {
