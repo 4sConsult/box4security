@@ -69,6 +69,19 @@ def writeQuickAlertFile(key):
         f_alert.write(filled)
 
 
+def writeSMTPConfig(config):
+    """Write the SMTP config to the corresponding files.
+
+    Writes:
+        - /etc/box4s
+
+    Expects a Python dictionary that has the keys for config.
+    """
+    with open('/etc/box4s/smtp.conf.tmp', 'w') as etc_smtp:
+        filled = render_template('application/smtp.conf.j2', config=config)
+        etc_smtp.write(filled)
+
+
 class BPF(Resource):
     """API Resource for a single BPF Rule."""
 
@@ -692,6 +705,10 @@ class APIUserLock(Resource):
 class APISMTP(Resource):
     """Endpoint to interact with the SMTP config."""
 
+    def __init__(self):
+        """Register Parser."""
+        self.parser = reqparse.RequestParser()
+
     @roles_required(['Super Admin'])
     def get(self):
         """Return the current SMTP configuration."""
@@ -711,8 +728,26 @@ class APISMTP(Resource):
     def post(self):
         """Set (replace) the SMTP configuration.
 
-        Parameters:"""
-        pass
+        Parameters:
+            - senderName
+            - senderMail
+            - host
+            - port
+            - tls
+            - username
+            - password
+        """
+        # self.parser.add_argument('senderName', type=str)
+        self.parser.add_argument('senderMail', type=str, required=True)
+        self.parser.add_argument('host', type=str, required=True)
+        self.parser.add_argument('port', type=int, required=True)
+        self.parser.add_argument('tls', type=bool, required=True)
+        self.parser.add_argument('username', type=str, required=True)
+        self.parser.add_argument('password', type=str, required=True)
+        self.args = self.parser.parse_args()
+        config = vars(self.args)
+        writeSMTPConfig(config)
+        return {"message": "SMTP config successfully updated."}, 200
 
 
 class APISMTPCertificate(Resource):
