@@ -117,6 +117,10 @@ services:
        - /var/log/box4s/:/var/log/box4s/
        - varlib_box4s/:/var/lib/box4s/
        - varlib_elastalert_rules:/var/lib/elastalert/rules/
+       - /etc/box4s/smtp.conf:/etc/box4s/smtp.conf
+       - /etc/msmtprc:/etc/box4s/msmtprc
+       - /etc/ssl/certs/BOX4s-SMTP.pem:/etc/ssl/certs/BOX4s-SMTP.pem
+       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
     expose:
       - 5000
     healthcheck:
@@ -130,7 +134,7 @@ services:
     env_file:
       - web/web.env
       - ../config/secrets/web.conf
-      - ../config/secrets/smtp.conf
+      - /etc/box4s/smtp.conf
       - ../VERSION
     environment:
       - KUNDE

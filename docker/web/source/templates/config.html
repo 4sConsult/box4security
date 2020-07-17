@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="ui main text container">
+    {# One-time system messages called Flash messages #}
+    {% block flash_messages %}
+        {%- with messages = get_flashed_messages(with_categories=true) -%}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="ui message {{category}}">{{ message|safe }}</div>
+                {% endfor %}
+            {% endif %}
+        {%- endwith %}
+    {% endblock %}
+    <h1 class="ui header">BOX4security - Konfiguration</h1>
+    <div class="ui inverted section divider"></div>
+    <div class="section">
+        <div class="ui top attached secondary pointing tabular menu">
+            <a class="item active">
+              Mail
+            </a>
+          </div>
+          <div class="ui bottom attached active tab segment">
+            <!-- Mail -->
+            <form id="formSMTP" method="get" class="ui form" enctype="multipart/form-data">
+                <h4 class="ui dividing header">SMTP-Konfiguration</h4>
+                <div class="field">
+                  <label>Absender</label>
+                    <div class="ui left icon input">
+                        <input required type="email" id="senderMail" name="senderMail" placeholder="E-Mail-Adresse des Absenders">
+                        <i class="at icon"></i>
+                    </div>
+                </div>
+                <div class="field">
+                  <label>Verbindung</label>
+                  <div class="fields">
+                    <div class="twelve wide field">
+                        <div class="ui left icon input">
+                            <input required type="text" id="smtpHost" name="host" placeholder="SMTP-Host">
+                            <i class="server icon"></i>
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui left icon input">
+                            <input required type="number" id="smtpPort" name="port" placeholder="SMTP-Port">
+                            <i class="plug icon"></i>
+                        </div>
+                        <small class="helper">Meist 465, 587 oder 25.</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="fields">
+                  <div class="ui middle aligned grid field">
+                    <div class="row">
+                      <div class="nine wide column">
+                        <div class="ui toggle checkbox">
+                          <input type="checkbox" id="smtpTLS" name="tls">
+                          <label>Secure (TLS)</label>
+                        </div>
+                        <br>
+                        <small class="helper">Sollte bei Port 465 aktiviert, sonst aus sein (587, 25).</small>
+                      </div>
+                      <div class="seven wide column">
+                        <div class="ui action input cert">
+                          <input id="cert-text" type="text" placeholder="TLS-Zertifikat.crt" readonly>
+                          <input id="cert-file" accept=".crt,.pem,.cer" type="file" name="cert">
+                          <div class="ui icon button">
+                            <i class="attach icon"></i>
+                          </div>
+                        </div>
+                        <br>
+                        <small class="helper">Sollte der Mail-Server ein selbstsigniertes Zertifikat verwenden, laden Sie es hier hoch.</small>
+                      </div>
+                    </div>         
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Authentifikation</label>
+                  <div class="ui left icon input">
+                      <input required type="text" id="smtpUsername" name="username" placeholder="SMTP-Username">
+                      <i class="user icon"></i>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="ui left icon input">
+                    <input required type="password" id="smtpPassword" name="password" placeholder="SMTP-Passwort">
+                    <i class="key icon"></i>
+                  </div>
+                </div>
+                <button class="ui green button" type="submit">Änderungen anwenden</button>
+              </form>
+          </div>
+    </div>
+  <div class="ui vertical footer segment">
+    <div class="ui center aligned container">
+    <img src="/static/Box4S_Logo.png" class="ui centered small image">
+  </div>
+  </div>
+  {% endblock %}
+{% block scripts %}
+  <script type="text/javascript">
+  $('div.item.active').removeClass('active');
+  $('#administration').addClass('active');
+
+  $("#cert-text, .ui.action.input.cert>.button").click(function() {
+    $(this).parent().find("#cert-file").click();
+  });
+
+  $('#cert-file', '.ui.action.input.cert')
+  .on('change', function(e) {
+    var name = e.target.files[0].name;
+    $('#cert-text', $(e.target).parent()).val(name);
+  });
+
+
+  window.onload = function(){
+    fetch('//{{ request.host }}/api/config/smtp')
+    .then((resp) => resp.json())
+    .then((jso) => {
+      document.getElementById('smtpHost').value = jso.SMTP_HOST;
+      document.getElementById('smtpPort').value = jso.SMTP_PORT;
+      var checkTLS = $('#smtpTLS').parents()[0];
+      jso.SMTP_USE_TLS ? $(checkTLS).checkbox('check') : $(checkTLS).checkbox('uncheck');
+      document.getElementById('senderMail').value = jso.SMTP_SENDER_MAIL;
+      document.getElementById('smtpUsername').value = jso.SMTP_USERNAME;
+    });
+  }  
+  </script>
+  <script type="text/javascript">
+    const waitForWeb = async () =>  {
+      var done = false;
+      while (!done) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        fetch('//{{ request.host }}/_health')
+        .then(resp => {
+          if(resp.ok) {
+            done = true;
+          }
+        });
+      }
+    }
+    $('#formSMTP').on('submit', async (e) => {
+    e.preventDefault();
+    var form = document.getElementById('formSMTP');
+    var formData = new FormData(form);
+    formData.delete('cert');
+    var certData = new FormData()
+    certData.append('cert', $('#cert-file')[0].files[0])
+    var responseCert = await fetch('//{{ request.host }}/api/config/smtp/cert', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+      },
+        body: certData
+    });
+    var jsonForm = JSON.stringify(Object.fromEntries(formData));
+    let response = await fetch('//{{ request.host }}/api/config/smtp', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: jsonForm
+    });
+    var msg =  document.createElement('div');
+    msg.classList = "ui visible message"
+    if(response.ok){
+        msg.classList.add("success");
+        msg.innerHTML = '<div class="header">SMTP-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen.</p>'
+        $('#formSMTP').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
+    } else { 
+        msg.classList.add("error");
+        msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.';
+    }
+    form.insertBefore(msg, form.lastElementChild);
+    if(response.ok){
+      setTimeout(async () => {
+        await waitForWeb();
+        // Reload without parameters
+        window.location = window.location.pathname;
+      }, 15000);
+    }
+    
+    });
+  </script>
+{% endblock %}
