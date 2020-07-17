@@ -722,7 +722,6 @@ class APISMTP(Resource):
         'SMTP_USE_TLS': fields.Boolean,
         'SMTP_USERNAME': fields.String,
         'SMTP_SENDER_MAIL': fields.String,
-        'SMTP_SENDER_NAME': fields.String,
     }
 
     def __init__(self):
@@ -739,7 +738,6 @@ class APISMTP(Resource):
             'SMTP_USE_TLS': os.getenv('MAIL_USE_TLS'),
             'SMTP_USERNAME': os.getenv('MAIL_USERNAME'),
             'SMTP_SENDER_MAIL': os.getenv('MAIL_DEFAULT_SENDER'),
-            'SMTP_SENDER_NAME': 'BOX4security'
         }
         # marshal = apply described format
         return marshal(config, self.SMTP_MARSHAL), 200
