@@ -787,6 +787,10 @@ class APISMTPCertificate(Resource):
             if file.filename == '':
                 return {"message": "No SMTP Certificate supplied."}, 204
             file.save('/etc/ssl/certs/BOX4s-SMTP.pem')
+            # Update update /etc/ssl/certs and ca-certificates.crt
+            #  on docker host
+            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo cp /etc/ssl/certs/BOX4s-SMTP.pem /usr/local/share/ca-certificates/BOX4s-SMTP.crt', shell=True)
+            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo update-ca-certificates', shell=True)
             return {"message": "SMTP Certificate saved."}, 200
         else:
             return {"message": "No SMTP Certificate supplied."}, 204

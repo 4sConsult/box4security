@@ -120,6 +120,7 @@ services:
        - /etc/box4s/smtp.conf:/etc/box4s/smtp.conf
        - /etc/msmtprc:/etc/box4s/msmtprc
        - /etc/ssl/certs/BOX4s-SMTP.pem:/etc/ssl/certs/BOX4s-SMTP.pem
+       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
     expose:
       - 5000
     healthcheck:
