@@ -1,0 +1,13 @@
+defaults
+tls {% if smtp['tls'] or smtp['port'] == 587 %}on{% else %}off{% endif %}
+{% if not smtp['tls'] and smtp['port'] == 587 %}tls_starttls on{% endif -%}
+auth on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+aliases /etc/aliases
+account {{ smtp['senderMail'] }}
+port {{ smtp['port'] }}
+host {{ smtp['host'] }}
+from {{ smtp['senderMail'] }}
+user {{ smtp['username'] }}
+password {{ smtp['password'] }}
+account default : {{ smtp['senderMail'] }}

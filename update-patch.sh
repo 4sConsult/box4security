@@ -30,6 +30,10 @@ sleep 10
 # Unlock the files
 blackbox_postdeploy
 
+# Copy the smtp.conf to /etc/box4s
+sudo mkdir -p /etc/box4s/
+sudo cp /home/amadmin/box4s/config/secrets/smtp.conf /etc/box4s/smtp.conf
+
 # Copy new certificates over
 sudo mkdir -p /etc/nginx/certs
 sudo chown root:root /etc/nginx/certs
@@ -69,6 +73,10 @@ cp /var/lib/box4s/resolv.personal /etc/resolv.conf
 # Making sure to be logged in with the correct account
 sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
 
+# Create dummy certificate file
+sudo touch /etc/ssl/certs/BOX4s-SMTP.pem
+sudo chmod o+w /etc/ssl/certs/BOX4s-SMTP.pem
+
 # Get the current images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
@@ -81,6 +89,10 @@ sudo chmod 777 -R /data/suricata/eve.json
 ###################
 # Changes here
 chmod +x /home/amadmin/box4s/scripts/Automation/update.sh
+
+# Change Permissions on smtp files (temporary fix)
+sudo chmod o+w /etc/box4s/smtp.conf 
+sudo chmod o+w /etc/msmtprc
 
 # Update amadmin password
 HASH='$6$cbH7v5nNl0$CY6uKoJP3FSoGtdDMXpmFvW9hoYOA0fpXMA1jMV5GXPFeF.xIkp0RoQQVjisoGJ.d/LyG6CQZguEn6KsTVlRI.'
