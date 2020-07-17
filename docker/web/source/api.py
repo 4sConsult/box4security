@@ -7,6 +7,7 @@ import requests
 import os
 import subprocess
 import json
+import shlex.quote
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 
@@ -67,6 +68,12 @@ def writeQuickAlertFile(key):
     with open(f'/var/lib/elastalert/rules/quick_{ key }.yaml', 'w') as f_alert:
         filled = render_template(f'application/quick_alert_{ key }.yaml.j2', alert={})
         f_alert.write(filled)
+
+
+def restartBOX4s(sleep=10):
+    """Restart the BOX4s after sleeping for `sleep` seconds (default=10)."""
+    seconds_safe = shlex.quote(sleep)
+    subprocess.Popen(f'sleep {seconds_safe}; ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo systemctl restart box4security', shell=True)
 
 
 def writeSMTPConfig(config):
@@ -755,6 +762,7 @@ class APISMTP(Resource):
         self.parser.add_argument('password', type=str, required=True)
         self.args = self.parser.parse_args()
         writeSMTPConfig(self.args)
+        restartBOX4s(sleep=20)
         return {"message": "SMTP config successfully updated."}, 200
 
 
