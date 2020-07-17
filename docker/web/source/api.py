@@ -728,7 +728,7 @@ class APISMTP(Resource):
         """Register Parser."""
         self.parser = reqparse.RequestParser()
 
-    @roles_required(['Super Admin'])
+    @roles_required(['Super Admin', 'Config'])
     def get(self):
         """Return the current SMTP configuration."""
         # Read current SMTP configuration from environment variables.
@@ -742,7 +742,7 @@ class APISMTP(Resource):
         # marshal = apply described format
         return marshal(config, self.SMTP_MARSHAL), 200
 
-    @roles_required(['Super Admin'])
+    @roles_required(['Super Admin', 'Config'])
     def post(self):
         """Set (replace) the SMTP configuration.
 
@@ -773,12 +773,12 @@ class APISMTPCertificate(Resource):
 
     POST accepts non-json form-data.
     """
-    @roles_required(['Super Admin'])
+    @roles_required(['Super Admin', 'Config'])
     def get(self):
         """Return not implemented."""
         abort(501, message="Certificate retrieval not implemented.")
 
-    @roles_required(['Super Admin'])
+    @roles_required(['Super Admin', 'Config'])
     def post(self):
         """Replace the current SMTP certificate."""
         print(request.files)
