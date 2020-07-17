@@ -81,12 +81,16 @@ def writeSMTPConfig(config):
 
     Writes:
         - /etc/box4s
+        - /etc/msmtprc
 
     Expects a Python dictionary that has the keys for config.
     """
-    with open('/etc/box4s/smtp.conf.tmp', 'w') as etc_smtp:
+    with open('/etc/box4s/smtp.conf', 'w') as etc_smtp:
         filled = render_template('application/smtp.conf.j2', smtp=config)
         etc_smtp.write(filled)
+    with open('/etc/box4s/msmtprc', 'w') as etc_msmtp:
+        filled = render_template('application/msmtprc.j2', smtp=config)
+        etc_msmtp.write(filled)
 
 
 class BPF(Resource):
