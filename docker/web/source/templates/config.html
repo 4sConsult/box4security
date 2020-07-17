@@ -48,12 +48,30 @@
                     </div>
                   </div>
                 </div>
-                <div class="field">
-                    <div class="ui toggle checkbox">
-                        <input type="checkbox" id="smtpTLS" name="tls">
-                        <label>Secure (TLS)</label>
+                <div class="fields">
+                  <div class="ui middle aligned grid field">
+                    <div class="row">
+                      <div class="nine wide column">
+                        <div class="ui toggle checkbox">
+                          <input type="checkbox" id="smtpTLS" name="tls">
+                          <label>Secure (TLS)</label>
+                        </div>
+                        <br>
                         <small class="helper">Sollte bei Port 465 aktiviert, sonst aus sein (587, 25).</small>
-                    </div>
+                      </div>
+                      <div class="seven wide column">
+                        <div class="ui action input cert">
+                          <input id="cert-text" type="text" placeholder="TLS-Zertifikat.crt" readonly>
+                          <input id="cert-file" accept=".crt,.pem,.cer" type="file" name="cert">
+                          <div class="ui icon button">
+                            <i class="attach icon"></i>
+                          </div>
+                        </div>
+                        <br>
+                        <small class="helper">Sollte der Mail-Server ein selbstsigniertes Zertifikat verwenden, laden Sie es hier hoch.</small>
+                      </div>
+                    </div>         
+                  </div>
                 </div>
                 <div class="field">
                   <label>Authentifikation</label>
@@ -82,6 +100,18 @@
   <script type="text/javascript">
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
+
+  $("#cert-text").click(function() {
+    $(this).parent().find("#cert-file").click();
+  });
+
+  $('#cert-file', '.ui.action.input.cert')
+  .on('change', function(e) {
+    var name = e.target.files[0].name;
+    $('#cert-text', $(e.target).parent()).val(name);
+  });
+
+
   window.onload = function(){
     fetch('//{{ request.host }}/api/config/smtp')
     .then((resp) => resp.json())
@@ -111,6 +141,7 @@
     $('#formSMTP').on('submit', async (e) => {
     var form = document.getElementById('formSMTP');
     let formData = new FormData(form);
+    formData.delete('cert');
     var jsonForm = JSON.stringify(Object.fromEntries(formData));
     e.preventDefault();
     let response = await fetch('//{{ request.host }}/api/config/smtp', {
@@ -125,13 +156,13 @@
     msg.classList = "ui visible message"
     if(response.ok){
         msg.classList.add("success")
-        msg.innerHTML = 'SMTP-Konfiguration erfolgreich gespeichert. <br/> Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen.'
+        msg.innerHTML = '<div class="header">SMTP-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen.</p>'
         $('#formSMTP').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
     } else { 
         msg.classList.add("error")
         msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.'
     }
-    form.insertBefore(msg, form.firstChild);
+    form.insertBefore(msg, form.lastChild());
     if(response.ok){
       setTimeout(async () => {
         await waitForWeb();
