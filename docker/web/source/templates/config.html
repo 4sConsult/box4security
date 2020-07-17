@@ -101,7 +101,7 @@
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
 
-  $("#cert-text").click(function() {
+  $("#cert-text, .ui.action.input.cert>.button").click(function() {
     $(this).parent().find("#cert-file").click();
   });
 
