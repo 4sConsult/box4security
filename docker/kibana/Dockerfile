@@ -17,6 +17,8 @@ RUN mkdir -p /usr/share/kibana/optimize/wazuh/config && \
   chown kibana:kibana -R /var/lib/kibana/ && \
   chmod +x /entrypoint.sh
 
+RUN echo 'NODE_OPTIONS="--max-old-space-size=2048"' >> /etc/default/kibana
+
 USER kibana
 WORKDIR /usr/share/kibana
 RUN     ./bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-${WAZUH_APP_VERSION}.zip && \
