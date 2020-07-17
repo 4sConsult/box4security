@@ -18,7 +18,7 @@ class CreatorUserMan(UserManager):
         Returns True if sending mails works, else False.
         """
         try:
-            self.email_adapter.send_email_message("box+smtptest@4sconsult.de", "SMTP-TEST", "", "", "box+smtptest@4sconsult.de", "BOX4security")
+            self.email_adapter.send_email_message("box@4sconsult.de", "SMTP-TEST", "", "", "box@4sconsult.de", "BOX4security")
         except EmailError:
             return False
         return True
