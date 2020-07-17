@@ -7,18 +7,21 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Oberfläche zur Konfiguration hinzugefügt.
 * Neue Rolle *Config* zur Verwaltung der Konfiguration hinzugefügt.
 * Konfigurationsoberfläche SMTP-Server hinzugefügt.
-* Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
 * Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer, existiert.
+* Rate Limiting beim Einloggen eingeführt
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
 * SSH via Passwort zur BOX4s nicht länger erlaubt. Stattdessen wird nur noch SSH mit Public-Key-Authentifikation durch 4sConsult-Mitarbeiter zugelassen.
+* Hostsystem auf Ubuntu 20.04 LTS aktualisiert
 
 ### Optimized
+* Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
+* API-Endpunkte des Update-Prozesses weiter gegen unauthorisierten Zugriff gehärtet
 
 ### Fixed
 * Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen, ein Templatestring nicht ausgefüllt wurde.
-* API-Endpunkte des Update-Prozesses weiter gegen unauthorisierten Zugriff gehärtet.
+* Bug behoben, der dazu führte, dass Events aus Suricata nicht gespeichert wurden
 
 ### Deprecated
 
