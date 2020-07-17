@@ -106,12 +106,13 @@
     const waitForWeb = async () =>  {
       var done = false;
       while (!done) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
         fetch('//{{ request.host }}/_health')
         .then(resp => {
-          if(resp.ok){
+          if(resp.ok) {
             done = true;
           }
-        })
+        });
       }
     }
     $('#formSMTP').on('submit', async (e) => {
@@ -131,16 +132,21 @@
     msg.classList = "ui visible message"
     if(response.ok){
         msg.classList.add("success")
-        msg.innerHTML = 'SMTP-Konfiguration erfolgreich gespeichert. Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neugeladen.'
+        msg.innerHTML = 'SMTP-Konfiguration erfolgreich gespeichert. <br/> Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen.'
         $('#formSMTP').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
     } else { 
         msg.classList.add("error")
         msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.'
     }
     form.insertBefore(msg, form.firstChild);
-    await waitForWeb();
-    // Reload without parameters
-    window.location = window.location.pathname;
+    if(response.ok){
+      setTimeout(async () => {
+        await waitForWeb();
+        // Reload without parameters
+        window.location = window.location.pathname;
+      }, 15000);
+    }
+    
     });
   </script>
 {% endblock %}
