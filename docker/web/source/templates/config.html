@@ -103,6 +103,17 @@
   }  
   </script>
   <script type="text/javascript">
+    const waitForWeb = async () =>  {
+      var done = false;
+      while (!done) {
+        fetch('//{{ request.host }}/_health')
+        .then(resp => {
+          if(resp.ok){
+            done = true;
+          }
+        })
+      }
+    }
     $('#formSMTP').on('submit', async (e) => {
     var form = document.getElementById('formSMTP');
     let formData = new FormData(form);
@@ -120,13 +131,16 @@
     msg.classList = "ui visible message"
     if(response.ok){
         msg.classList.add("success")
-        msg.innerHTML = 'SMTP-Konfiguration erfolgreich gespeichert. Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld.'
-        $('#formSMTP').find('button').prop('disabled', true);
+        msg.innerHTML = 'SMTP-Konfiguration erfolgreich gespeichert. Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neugeladen.'
+        $('#formSMTP').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
     } else { 
         msg.classList.add("error")
         msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.'
     }
-    form.insertBefore(msg, form.firstChild)
+    form.insertBefore(msg, form.firstChild);
+    await waitForWeb();
+    // Reload without parameters
+    window.location = window.location.pathname;
     });
   </script>
 {% endblock %}
