@@ -18,6 +18,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Optimized
 * Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
 * API-Endpunkte des Update-Prozesses weiter gegen unauthorisierten Zugriff gehärtet
+* Ein bei der initialen Registrierung nicht erreichbarer SMTP-Server führt nicht mehr dazu, dass die Registrierung fehlschlägt. Für weitere Nutzer sollte der SMTP-Server dann über die oberfläche angepasst werden.
 
 ### Fixed
 * Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen, ein Templatestring nicht ausgefüllt wurde.
