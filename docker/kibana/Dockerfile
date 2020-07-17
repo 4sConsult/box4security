@@ -17,7 +17,7 @@ RUN mkdir -p /usr/share/kibana/optimize/wazuh/config && \
   chown kibana:kibana -R /var/lib/kibana/ && \
   chmod +x /entrypoint.sh
 
-RUN echo "NODE_OPTIONS=--max_old_space_size=4096" > /etc/default/kibana
+RUN echo 'NODE_OPTIONS="--max-old-space-size=2048"' >> /etc/default/kibana
 
 USER kibana
 WORKDIR /usr/share/kibana
