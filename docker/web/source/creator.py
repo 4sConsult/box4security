@@ -6,6 +6,7 @@ from source.extensions import db
 from flask import redirect, url_for, flash, request
 from urllib.parse import quote
 from flask_mail import Mail
+from datetime import datetime
 
 
 class CreatorUserMan(UserManager):
@@ -13,11 +14,11 @@ class CreatorUserMan(UserManager):
 
     def trySMTP(self):
         """Test the SMTP Connection.
-        
+
         Returns True if sending mails works, else False.
         """
         try:
-            super().email_adapter.send_email_message("box+smtptest@4sconsult.de", "SMTP-TEST", "", "", "box+smtptest@4sconsult.de", "BOX4security")
+            self.email_adapter.send_email_message("box+smtptest@4sconsult.de", "SMTP-TEST", "", "", "box+smtptest@4sconsult.de", "BOX4security")
         except EmailError:
             return False
         return True
@@ -48,6 +49,11 @@ class CreatorUserMan(UserManager):
                 # Only one user => add to Super Admin if not already is
                 sa = User.query.first()
                 if Role.query.get(1) not in sa.roles:
+                    # Likely the first time this method is called => also check for SMTP
+                    smtpState = self.trySMTP()
+                    if not smtpState:
+                        # SMTP not working => need to mark the user as confirmed
+                        sa.email_confirmed_at = datetime.now()
                     sa.roles.append(Role.query.get(1))
                     db.session.add(sa)
                     db.session.commit()
@@ -56,7 +62,11 @@ class CreatorUserMan(UserManager):
         else:
             # First time, offer registration
             # try SMTP
-            # it does not work, so don't require email validation and automatically validate the user
+            smtpState = self.trySMTP()
+            if not smtpState:
+                # SMTP not working => don't require to send "Welcome E-Mail"
+                # Still need to confirm the user.
+                self.USER_SEND_REGISTERED_EMAIL = False
             return super().register_view()
 
     def register_view(self):
