@@ -4,7 +4,6 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [xxx](https://gitlab.com/4sconsult/box4s/-/tags/xxx) - xxxx-xx-xx
 
 ### Added
-* Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
 * Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer, existiert.
 * Rate Limiting beim Einloggen eingeführt
 
@@ -14,10 +13,11 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Hostsystem auf Ubuntu 20.04 LTS aktualisiert
 
 ### Optimized
+* Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
+* API-Endpunkte des Update-Prozesses weiter gegen unauthorisierten Zugriff gehärtet
 
 ### Fixed
 * Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen, ein Templatestring nicht ausgefüllt wurde.
-* API-Endpunkte des Update-Prozesses weiter gegen unauthorisierten Zugriff gehärtet
 * Bug behoben, der dazu führte, dass Events aus Suricata nicht gespeichert wurden
 
 ### Deprecated
