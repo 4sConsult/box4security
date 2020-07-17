@@ -1,14 +1,26 @@
 """Flask middleware to initialize app with an admin user."""
 from werkzeug.wrappers import Request, Response
-from flask_user import UserManager
+from flask_user import UserManager, EmailError
 from source.models import User, Role
 from source.extensions import db
 from flask import redirect, url_for, flash, request
 from urllib.parse import quote
+from flask_mail import Mail
 
 
 class CreatorUserMan(UserManager):
     """Extended UserManager class."""
+
+    def trySMTP(self):
+        """Test the SMTP Connection.
+        
+        Returns True if sending mails works, else False.
+        """
+        try:
+            super().email_adapter.send_email_message("box+smtptest@4sconsult.de", "SMTP-TEST", "", "", "box+smtptest@4sconsult.de", "BOX4security")
+        except EmailError:
+            return False
+        return True
 
     def unauthenticated_view(self):
         """Prepare a Flash message and redirect to USER_UNAUTHORIZED_ENDPOINT."""
@@ -43,6 +55,8 @@ class CreatorUserMan(UserManager):
             return super().login_view()
         else:
             # First time, offer registration
+            # try SMTP
+            # it does not work, so don't require email validation and automatically validate the user
             return super().register_view()
 
     def register_view(self):
