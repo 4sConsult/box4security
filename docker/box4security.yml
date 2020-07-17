@@ -119,6 +119,7 @@ services:
        - varlib_elastalert_rules:/var/lib/elastalert/rules/
        - /etc/box4s/smtp.conf:/etc/box4s/smtp.conf
        - /etc/msmtprc:/etc/box4s/msmtprc
+       - /etc/ssl/certs/BOX4s-SMTP.pem:/etc/ssl/certs/BOX4s-SMTP.pem
     expose:
       - 5000
     healthcheck:

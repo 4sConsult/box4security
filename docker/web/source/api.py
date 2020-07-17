@@ -771,18 +771,25 @@ class APISMTP(Resource):
 class APISMTPCertificate(Resource):
     """Endpoint to interact with the SMTP certificate.
 
-    Non-JSON Endpoint.
+    POST accepts non-json form-data.
     """
-
     @roles_required(['Super Admin'])
     def get(self):
-        """Return the current SMTP certificate."""
-        pass
+        """Return not implemented."""
+        abort(501, message="Certificate retrieval not implemented.")
 
     @roles_required(['Super Admin'])
-    def put(self):
+    def post(self):
         """Replace the current SMTP certificate."""
-        pass
+        print(request.files)
+        if 'cert' in request.files:
+            file = request.files['cert']
+            if file.filename == '':
+                return {"message": "No SMTP Certificate supplied."}, 204
+            file.save('/etc/ssl/certs/BOX4s-SMTP.pem')
+            return {"message": "SMTP Certificate saved."}, 200
+        else:
+            return {"message": "No SMTP Certificate supplied."}, 204
 
 
 class APIWizardReset(Resource):

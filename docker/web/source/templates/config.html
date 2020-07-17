@@ -21,7 +21,7 @@
           </div>
           <div class="ui bottom attached active tab segment">
             <!-- Mail -->
-            <form id="formSMTP" class="ui form">
+            <form id="formSMTP" method="get" class="ui form" enctype="multipart/form-data">
                 <h4 class="ui dividing header">SMTP-Konfiguration</h4>
                 <div class="field">
                   <label>Absender</label>
@@ -139,11 +139,20 @@
       }
     }
     $('#formSMTP').on('submit', async (e) => {
-    var form = document.getElementById('formSMTP');
-    let formData = new FormData(form);
-    formData.delete('cert');
-    var jsonForm = JSON.stringify(Object.fromEntries(formData));
     e.preventDefault();
+    var form = document.getElementById('formSMTP');
+    var formData = new FormData(form);
+    formData.delete('cert');
+    var certData = new FormData()
+    certData.append('cert', $('#cert-file')[0].files[0])
+    var responseCert = await fetch('//{{ request.host }}/api/config/smtp/cert', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+      },
+        body: certData
+    });
+    var jsonForm = JSON.stringify(Object.fromEntries(formData));
     let response = await fetch('//{{ request.host }}/api/config/smtp', {
       method: 'POST',
       headers: {
@@ -155,14 +164,14 @@
     var msg =  document.createElement('div');
     msg.classList = "ui visible message"
     if(response.ok){
-        msg.classList.add("success")
+        msg.classList.add("success");
         msg.innerHTML = '<div class="header">SMTP-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen.</p>'
         $('#formSMTP').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
     } else { 
-        msg.classList.add("error")
-        msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.'
+        msg.classList.add("error");
+        msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.';
     }
-    form.insertBefore(msg, form.lastChild());
+    form.insertBefore(msg, form.lastElementChild);
     if(response.ok){
       setTimeout(async () => {
         await waitForWeb();
