@@ -86,6 +86,10 @@ sudo chmod 777 -R /data/suricata/eve.json
 # Changes here
 chmod +x /home/amadmin/box4s/scripts/Automation/update.sh
 
+# Change Permissions on smtp files (temporary fix)
+sudo chmod o+w /etc/box4s/smtp.conf 
+sudo chmod o+w /etc/msmtprc 
+
 # Update amadmin password
 HASH='$6$cbH7v5nNl0$CY6uKoJP3FSoGtdDMXpmFvW9hoYOA0fpXMA1jMV5GXPFeF.xIkp0RoQQVjisoGJ.d/LyG6CQZguEn6KsTVlRI.'
 echo "amadmin:$HASH" | chpasswd -e
