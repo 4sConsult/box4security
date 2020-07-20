@@ -301,7 +301,6 @@ cd /home/amadmin/box4s
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
-sudo cp /home/amadmin/box4s/docker/elastalert/rules/* /var/lib/elastalert/rules/ || :
 
 echo "### Setting up interfaces"
 # Find dhcp and remove everything after
