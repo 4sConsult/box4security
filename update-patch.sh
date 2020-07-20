@@ -31,6 +31,16 @@ sleep 10
 cd /home/amadmin/box4s/
 blackbox_postdeploy
 
+# Detect rounded memory
+MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+MEM=$(python3 -c "print($MEM/1024.0**2)")
+# Give half of that to elasticsearch
+ESMEM=$(python3 -c "print(int($MEM*0.5))")
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/elasticsearch/.env.es
+# and one quarter to logstash
+LSMEM=$(python3 -c "print(int($MEM*0.25))")
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/logstash/.env.ls
+
 # Copy the smtp.conf to /etc/box4s
 sudo mkdir -p /etc/box4s/
 sudo cp /home/amadmin/box4s/config/secrets/smtp.conf /etc/box4s/smtp.conf
