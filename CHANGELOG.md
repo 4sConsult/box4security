@@ -14,6 +14,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Gesperrte Nutzer werden nun sofort ausgeloggt
 * SSH via Passwort zur BOX4s nicht länger erlaubt. Stattdessen wird nur noch SSH mit Public-Key-Authentifikation durch 4sConsult-Mitarbeiter zugelassen.
 * Hostsystem auf Ubuntu 20.04 LTS aktualisiert
+* HTTPS-Zertifikat erneuert. Durch die Erneuerung kann es zu Beeinträchtigungen in der visuellen Darstellung des Update-Prozesses kommen. Sie können nach 10-15 Minuten, den Update-Tab neuladen. Das Update wird auch ohne korrekte Darstellung durchgeführt.
 
 ### Optimized
 * Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
