@@ -4,8 +4,11 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [xxx](https://gitlab.com/4sconsult/box4s/-/tags/xxx) - xxxx-xx-xx
 
 ### Added
-* Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer, existiert.
-* Rate Limiting beim Einloggen eingeführt
+* Neue Rolle *Config* zur Verwaltung der Konfiguration hinzugefügt.
+* Oberfläche zur Konfiguration hinzugefügt.
+* Konfigurationsoberfläche SMTP-Server hinzugefügt.
+* Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer existiert.
+* Rate Limiting zur Abwehr von Brute-Forcing beim Einloggen eingeführt
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
@@ -15,6 +18,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Optimized
 * Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
 * API-Endpunkte des Update-Prozesses weiter gegen unauthorisierten Zugriff gehärtet
+* Ein bei der initialen Registrierung nicht erreichbarer SMTP-Server führt nicht mehr dazu, dass die Registrierung fehlschlägt. Für weitere Nutzer sollte der SMTP-Server dann über die oberfläche angepasst werden.
 
 ### Fixed
 * Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen, ein Templatestring nicht ausgefüllt wurde.

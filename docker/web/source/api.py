@@ -1,12 +1,13 @@
 """Module for webapp API."""
 from source import models, db
-from flask_restful import Resource, reqparse, abort
+from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
 import requests
 import os
 import subprocess
 import json
+from shlex import quote
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 
@@ -67,6 +68,29 @@ def writeQuickAlertFile(key):
     with open(f'/var/lib/elastalert/rules/quick_{ key }.yaml', 'w') as f_alert:
         filled = render_template(f'application/quick_alert_{ key }.yaml.j2', alert={})
         f_alert.write(filled)
+
+
+def restartBOX4s(sleep=10):
+    """Restart the BOX4s after sleeping for `sleep` seconds (default=10)."""
+    seconds_safe = quote(str(sleep))
+    subprocess.Popen(f'sleep {seconds_safe}; ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo systemctl restart box4security', shell=True)
+
+
+def writeSMTPConfig(config):
+    """Write the SMTP config to the corresponding files.
+
+    Writes:
+        - /etc/box4s
+        - /etc/msmtprc
+
+    Expects a Python dictionary that has the keys for config.
+    """
+    with open('/etc/box4s/smtp.conf', 'w') as etc_smtp:
+        filled = render_template('application/smtp.conf.j2', smtp=config)
+        etc_smtp.write(filled)
+    with open('/etc/box4s/msmtprc', 'w') as etc_msmtp:
+        filled = render_template('application/msmtprc.j2', smtp=config)
+        etc_msmtp.write(filled)
 
 
 class BPF(Resource):
@@ -687,6 +711,89 @@ class APIUserLock(Resource):
             return {'user': user_id, 'active': user.active}, 200
         else:
             abort(404, message="User with ID {} not found. Nothing changed.".format(user_id))
+
+
+class APISMTP(Resource):
+    """Endpoint to interact with the SMTP config."""
+
+    SMTP_MARSHAL = {
+        'SMTP_HOST': fields.String,
+        'SMTP_PORT': fields.Integer,
+        'SMTP_USE_TLS': fields.Boolean,
+        'SMTP_USERNAME': fields.String,
+        'SMTP_SENDER_MAIL': fields.String,
+    }
+
+    def __init__(self):
+        """Register Parser."""
+        self.parser = reqparse.RequestParser()
+
+    @roles_required(['Super Admin', 'Config'])
+    def get(self):
+        """Return the current SMTP configuration."""
+        # Read current SMTP configuration from environment variables.
+        config = {
+            'SMTP_HOST': os.getenv('MAIL_SERVER'),
+            'SMTP_PORT': os.getenv('MAIL_PORT'),
+            'SMTP_USE_TLS': os.getenv('MAIL_USE_TLS'),
+            'SMTP_USERNAME': os.getenv('MAIL_USERNAME'),
+            'SMTP_SENDER_MAIL': os.getenv('MAIL_DEFAULT_SENDER'),
+        }
+        # marshal = apply described format
+        return marshal(config, self.SMTP_MARSHAL), 200
+
+    @roles_required(['Super Admin', 'Config'])
+    def post(self):
+        """Set (replace) the SMTP configuration.
+
+        Parameters:
+            - senderName
+            - senderMail
+            - host
+            - port
+            - tls
+            - username
+            - password
+        """
+        # self.parser.add_argument('senderName', type=str)
+        self.parser.add_argument('senderMail', type=str, required=True)
+        self.parser.add_argument('host', type=str, required=True)
+        self.parser.add_argument('port', type=int, required=True)
+        self.parser.add_argument('tls', type=bool, required=True)
+        self.parser.add_argument('username', type=str, required=True)
+        self.parser.add_argument('password', type=str, required=True)
+        self.args = self.parser.parse_args()
+        writeSMTPConfig(self.args)
+        restartBOX4s(sleep=5)
+        return {"message": "SMTP config successfully updated."}, 200
+
+
+class APISMTPCertificate(Resource):
+    """Endpoint to interact with the SMTP certificate.
+
+    POST accepts non-json form-data.
+    """
+    @roles_required(['Super Admin', 'Config'])
+    def get(self):
+        """Return not implemented."""
+        abort(501, message="Certificate retrieval not implemented.")
+
+    @roles_required(['Super Admin', 'Config'])
+    def post(self):
+        """Replace the current SMTP certificate."""
+        print(request.files)
+        if 'cert' in request.files:
+            file = request.files['cert']
+            if file.filename == '':
+                return {"message": "No SMTP Certificate supplied."}, 204
+            file.save('/etc/ssl/certs/BOX4s-SMTP.pem')
+            # Update update /etc/ssl/certs and ca-certificates.crt
+            #  on docker host
+            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo cp /etc/ssl/certs/BOX4s-SMTP.pem /usr/local/share/ca-certificates/BOX4s-SMTP.crt', shell=True)
+            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo update-ca-certificates', shell=True)
+            return {"message": "SMTP Certificate saved."}, 200
+        else:
+            return {"message": "No SMTP Certificate supplied."}, 204
 
 
 class APIWizardReset(Resource):
