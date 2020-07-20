@@ -31,6 +31,9 @@ sleep 10
 cd /home/amadmin/box4s/
 blackbox_postdeploy
 
+# Making sure to be logged in with the correct account
+sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
+
 # Set the nameserver temporarily
 cp /var/lib/box4s/resolv.personal /etc/resolv.conf
 
@@ -80,9 +83,6 @@ sudo systemctl stop box4security.service
 sudo docker rm  $(docker ps -q -a) || :
 # Remove all images, that are on the target system on every update
 sudo docker rmi $(sudo docker images -a -q) || :
-
-# Making sure to be logged in with the correct account
-sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
 
 # Create dummy certificate file
 sudo touch /etc/ssl/certs/BOX4s-SMTP.pem
