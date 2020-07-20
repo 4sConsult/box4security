@@ -302,6 +302,9 @@ sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
 
+# Create a folder for the alerting rules
+sudo mkdir -p /var/lib/elastalert/rules
+
 echo "### Setting up interfaces"
 # Find dhcp and remove everything after
 sudo cp /home/amadmin/box4s/config/etc/network/interfaces /etc/network/interfaces
