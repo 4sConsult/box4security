@@ -28,6 +28,7 @@ sleep 10
 # Remove passphrase from secret key to allow decryptions without a passphrase.
 # printf "passwd\n$token\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
 # Unlock the files
+cd /home/amadmin/box4s/
 blackbox_postdeploy
 
 # Copy the smtp.conf to /etc/box4s
