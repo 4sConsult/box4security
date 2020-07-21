@@ -4,31 +4,30 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [xxx](https://gitlab.com/4sconsult/box4s/-/tags/xxx) - xxxx-xx-xx
 
 ### Added
-* Neue Rolle *Config* zur Verwaltung der Konfiguration hinzugefügt.
-* Oberfläche zur Konfiguration hinzugefügt.
-* Konfigurationsoberfläche SMTP-Server hinzugefügt.
-* Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer existiert.
+* Neue Rolle *Config* zur Verwaltung der Konfiguration hinzugefügt
+* Oberfläche zur Konfiguration der BOX4s hinzugefügt
+* Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer existiert
 * Rate Limiting zur Abwehr von Brute-Forcing beim Einloggen eingeführt
 
 ### Changed
 * Gesperrte Nutzer werden nun sofort ausgeloggt
-* SSH via Passwort zur BOX4s nicht länger erlaubt. Stattdessen wird nur noch SSH mit Public-Key-Authentifikation durch 4sConsult-Mitarbeiter zugelassen.
+* SSH via Passwort zur BOX4s nicht länger erlaubt - stattdessen wird nur noch SSH mit Public-Key-Authentifikation durch 4sConsult-Mitarbeiter zugelassen
 * Hostsystem auf Ubuntu 20.04 LTS aktualisiert
-* HTTPS-Zertifikat erneuert. Durch die Erneuerung kann es zu Beeinträchtigungen in der visuellen Darstellung des Update-Prozesses kommen. Sie können nach 10-15 Minuten, den Update-Tab neuladen. Das Update wird auch ohne korrekte Darstellung durchgeführt.
+* HTTPS-Zertifikat erneuert
 
 ### Optimized
 * Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
 * API-Endpunkte des Update-Prozesses weiter gegen unauthorisierten Zugriff gehärtet
-* Ein bei der initialen Registrierung nicht erreichbarer SMTP-Server führt nicht mehr dazu, dass die Registrierung fehlschlägt. Für weitere Nutzer sollte der SMTP-Server dann über die oberfläche angepasst werden.
+* Ein bei der initialen Registrierung nicht erreichbarer SMTP-Server führt nicht mehr dazu, dass die Registrierung fehlschlägt
 
 ### Fixed
-* Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen, ein Templatestring nicht ausgefüllt wurde.
+* Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen ein Templatestring nicht ausgefüllt wurde
 * Bug behoben, der dazu führte, dass Events aus Suricata nicht gespeichert wurden
 
 ### Deprecated
 
 ### Removed
-* Geheimisse aus Source Code entfernt
+* Geheimnisse aus Source Code entfernt
 
 ## [1.8.4](https://gitlab.com/4sconsult/box4s/-/tags/1.8.4) - 2020-06-23
 
