@@ -487,3 +487,8 @@ sudo apt-fast autoremove -y
 # Lets update both openvas and suricata
 sudo docker exec suricata /root/scripts/update.sh > /dev/null
 sudo docker exec openvas /root/update.sh > /dev/null
+
+# Make sure the permissions for filebeat are correct
+# This line may be put into the correct position within this script once we figured out where it has to be.
+# For now, so the update works, we stick with this.
+sudo chmod 777 /data/suricata/ -R
