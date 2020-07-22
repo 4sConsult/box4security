@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [xxx](https://gitlab.com/4sconsult/box4s/-/tags/xxx) - xxxx-xx-xx
+## [1.8.5](https://gitlab.com/4sconsult/box4s/-/tags/1.8.5) - 2020-07-22
 
 ### Added
 * Neue Rolle *Config* zur Verwaltung der Konfiguration hinzugefügt
