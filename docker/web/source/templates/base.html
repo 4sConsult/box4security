@@ -74,6 +74,9 @@
                  {% if current_user.has_role('User-Management') %}
                  <a class="item" href="/user">Benutzer</a>
                  {% endif %}
+                 {% if current_user.has_role('User-Management') %}
+                 <a class="item" href="/config">Konfiguration</a>
+                 {% endif %}
                  {% if current_user.has_role('Filter') %}
                  <a class="item" href="/filter">Filter</a>
                  {% endif %}

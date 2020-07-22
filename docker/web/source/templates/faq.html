@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="ui main text container">
+      {# One-time system messages called Flash messages #}
+      {% block flash_messages %}
+          {%- with messages = get_flashed_messages(with_categories=true) -%}
+              {% if messages %}
+                  {% for category, message in messages %}
+                      <div class="ui message {{category}}">{{ message|safe }}</div>
+                  {% endfor %}
+              {% endif %}
+          {%- endwith %}
+      {% endblock %}
       <h1 class="ui header">BOX4Security - FAQ</h1>
       <div class="ui inverted section divider"></div>
       <div id="faq" class="ui fluid styled accordion">

@@ -1,12 +1,14 @@
 """Module to handle all webapp routes."""
 from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
+from source.api import APIWizardReset
+from source.api import APISMTP, APISMTPCertificate
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
 from source.config import Dashboards
 import source.error
 from flask_restful import Api
-from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for
+from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for, flash
 from flask_user import login_required, current_user, roles_required
 from flask_mail import Message
 from source.forms import AddUserForm
@@ -51,6 +53,25 @@ api.add_resource(AlertsQuick, '/rules/alerts_quick/')
 api.add_resource(Alert, '/rules/alerts/<alert_id>')
 api.add_resource(Alerts, '/rules/alerts/')
 api.add_resource(AlertMailer, '/api/alerts/mailer/')
+
+# Wizard
+api.add_resource(APIWizardReset, '/api/wizard/reset')
+
+# SMTP
+api.add_resource(APISMTP, '/api/config/smtp')
+api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
+
+
+@app.before_request
+def check_if_user_active():
+    """Check if authenticated user is active before every request.
+    Will just log user out if no longer active.
+    Exclude the authenticate endpoint, as it checks for itself.
+    """
+    if current_user.is_authenticated:
+        if request.endpoint not in ['user.logout', 'authenticate'] and not current_user.active:
+            flash('Your access was disabled. You have been logged out automatically.', 'error')
+            return redirect(url_for('user.logout'))
 
 
 @app.route('/')
@@ -200,6 +221,14 @@ def update_post():
 def rules():
     """Return the filter page."""
     return render_template("filter.html")
+
+
+@app.route('/config', methods=['GET'])
+@login_required
+@roles_required(['Super Admin'])
+def config():
+    """Return the configuration page."""
+    return render_template("config.html")
 
 
 @app.route('/alerts', methods=['GET'])

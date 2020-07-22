@@ -1,12 +1,13 @@
 """Module for webapp API."""
 from source import models, db
-from flask_restful import Resource, reqparse, abort
+from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
 import requests
 import os
 import subprocess
 import json
+from shlex import quote
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 
@@ -49,8 +50,8 @@ def writeBPFFile():
         rules = models.BPFRule.query.all()
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
-        # read pw from $SSHPASS and login to dockerhost to execute restartSuricata
-        os.system('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/restartSuricata.sh')
+        # login to dockerhost using ssh key and execute restartSuricata
+        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /home/amadmin/restartSuricata.sh')
 
 
 def writeAlertFile(alert):
@@ -67,6 +68,29 @@ def writeQuickAlertFile(key):
     with open(f'/var/lib/elastalert/rules/quick_{ key }.yaml', 'w') as f_alert:
         filled = render_template(f'application/quick_alert_{ key }.yaml.j2', alert={})
         f_alert.write(filled)
+
+
+def restartBOX4s(sleep=10):
+    """Restart the BOX4s after sleeping for `sleep` seconds (default=10)."""
+    seconds_safe = quote(str(sleep))
+    subprocess.Popen(f'sleep {seconds_safe}; ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo systemctl restart box4security', shell=True)
+
+
+def writeSMTPConfig(config):
+    """Write the SMTP config to the corresponding files.
+
+    Writes:
+        - /etc/box4s
+        - /etc/msmtprc
+
+    Expects a Python dictionary that has the keys for config.
+    """
+    with open('/etc/box4s/smtp.conf', 'w') as etc_smtp:
+        filled = render_template('application/smtp.conf.j2', smtp=config)
+        etc_smtp.write(filled)
+    with open('/etc/box4s/msmtprc', 'w') as etc_msmtp:
+        filled = render_template('application/msmtprc.j2', smtp=config)
+        etc_msmtp.write(filled)
 
 
 class BPF(Resource):
@@ -232,18 +256,32 @@ class Version(Resource):
         """
         GET currently installed version and environment.
 
+        Allowed for `Updates`, `Super Admin` role or request from the docker host.
+
         version is a semantic version string
         env specifies the environment: prod (default) or dev
         """
         CURRVER = os.getenv('VERSION')
-        return {'version': CURRVER, 'env': os.getenv('BOX4s_ENV', 'production')}
+        if request.headers.get('x-forwarded-for') == '172.20.8.1':
+            # request from docker host, allow
+            return {'version': CURRVER, 'env': os.getenv('BOX4s_ENV', 'production')}
+        elif current_user.is_authenticated and current_user.has_role('Updates'):
+            # request from allowed role
+            return {'version': CURRVER, 'env': os.getenv('BOX4s_ENV', 'production')}
+        else:
+            abort(403, message="Forbidden.")
 
 
 class AvailableReleases(Resource):
     """API Resource for working with all available releases."""
 
     def get(self):
-        """GET: fetch and return all available releases with their relevant info from GitLab."""
+        """GET: fetch and return all available releases with their relevant info from GitLab.
+        Allowed for `Updates`, `Super Admin` role or request from the docker host.
+        """
+        if not (current_user.is_authenticated and current_user.has_role('Updates')) and not request.headers.get('x-forwarded-for') == '172.20.8.1':
+            abort(403, message="Forbidden.")
+
         try:
             git = requests.get('https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags',
                                headers={'PRIVATE-TOKEN': os.getenv('GIT_TOKEN')}).json()
@@ -275,7 +313,7 @@ class LaunchUpdate(Resource):
     def post(self):
         """Launch update.sh."""
         # targetVersion = self.args['target']
-        subprocess.Popen('sshpass -e ssh -o StrictHostKeyChecking=no amadmin@dockerhost sudo /home/amadmin/box4s/main/update.sh', shell=True)
+        subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo /home/amadmin/box4s/scripts/Automation/update.sh', shell=True)
         return {"message": "accepted"}, 200
 
 
@@ -300,6 +338,7 @@ class UpdateStatus(Resource):
         """Initialize Request Parser."""
         self.parser = reqparse.RequestParser()
 
+    @roles_required(['Super Admin', 'Updates'])
     def get(self):
         """Get update status."""
         with open('/var/lib/box4s/.update.state', 'r') as f:
@@ -308,15 +347,25 @@ class UpdateStatus(Resource):
             return {'status': status}, 200
 
     def post(self):
-        """Set new update status."""
+        """Set new update status.
+        Allowed for `Updates`, `Super Admin` role or request from the docker host.
+        """
         self.parser.add_argument('status', type=str)
         self.args = self.parser.parse_args()
+
+        if not (current_user.is_authenticated and current_user.has_role('Updates')) and not request.headers.get('x-forwarded-for') == '172.20.8.1':
+            abort(403, message="Forbidden.")
+
         with open('/var/lib/box4s/.update.state', 'w') as f:
             f.write(self.args['status'])
             return {}, 200
 
     def delete(self):
-        """Empty update state file."""
+        """Empty update state file.
+        Allowed for `Updates`, `Super Admin` role or request from the docker host.
+        """
+        if not (current_user.is_authenticated and current_user.has_role('Updates')) and not request.headers.get('x-forwarded-for') == '172.20.8.1':
+            abort(403, message="Forbidden.")
         f = open('/var/lib/box4s/.update.state', 'w')
         f.close()
         return {}, 205
@@ -662,6 +711,118 @@ class APIUserLock(Resource):
             return {'user': user_id, 'active': user.active}, 200
         else:
             abort(404, message="User with ID {} not found. Nothing changed.".format(user_id))
+
+
+class APISMTP(Resource):
+    """Endpoint to interact with the SMTP config."""
+
+    SMTP_MARSHAL = {
+        'SMTP_HOST': fields.String,
+        'SMTP_PORT': fields.Integer,
+        'SMTP_USE_TLS': fields.Boolean,
+        'SMTP_USERNAME': fields.String,
+        'SMTP_SENDER_MAIL': fields.String,
+    }
+
+    def __init__(self):
+        """Register Parser."""
+        self.parser = reqparse.RequestParser()
+
+    @roles_required(['Super Admin', 'Config'])
+    def get(self):
+        """Return the current SMTP configuration."""
+        # Read current SMTP configuration from environment variables.
+        config = {
+            'SMTP_HOST': os.getenv('MAIL_SERVER'),
+            'SMTP_PORT': os.getenv('MAIL_PORT'),
+            'SMTP_USE_TLS': os.getenv('MAIL_USE_TLS'),
+            'SMTP_USERNAME': os.getenv('MAIL_USERNAME'),
+            'SMTP_SENDER_MAIL': os.getenv('MAIL_DEFAULT_SENDER'),
+        }
+        # marshal = apply described format
+        return marshal(config, self.SMTP_MARSHAL), 200
+
+    @roles_required(['Super Admin', 'Config'])
+    def post(self):
+        """Set (replace) the SMTP configuration.
+
+        Parameters:
+            - senderName
+            - senderMail
+            - host
+            - port
+            - tls
+            - username
+            - password
+        """
+        # self.parser.add_argument('senderName', type=str)
+        self.parser.add_argument('senderMail', type=str, required=True)
+        self.parser.add_argument('host', type=str, required=True)
+        self.parser.add_argument('port', type=int, required=True)
+        self.parser.add_argument('tls', type=bool, required=True)
+        self.parser.add_argument('username', type=str, required=True)
+        self.parser.add_argument('password', type=str, required=True)
+        self.args = self.parser.parse_args()
+        writeSMTPConfig(self.args)
+        restartBOX4s(sleep=5)
+        return {"message": "SMTP config successfully updated."}, 200
+
+
+class APISMTPCertificate(Resource):
+    """Endpoint to interact with the SMTP certificate.
+
+    POST accepts non-json form-data.
+    """
+    @roles_required(['Super Admin', 'Config'])
+    def get(self):
+        """Return not implemented."""
+        abort(501, message="Certificate retrieval not implemented.")
+
+    @roles_required(['Super Admin', 'Config'])
+    def post(self):
+        """Replace the current SMTP certificate."""
+        print(request.files)
+        if 'cert' in request.files:
+            file = request.files['cert']
+            if file.filename == '':
+                return {"message": "No SMTP Certificate supplied."}, 204
+            file.save('/etc/ssl/certs/BOX4s-SMTP.pem')
+            # Update update /etc/ssl/certs and ca-certificates.crt
+            #  on docker host
+            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo cp /etc/ssl/certs/BOX4s-SMTP.pem /usr/local/share/ca-certificates/BOX4s-SMTP.crt', shell=True)
+            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo update-ca-certificates', shell=True)
+            return {"message": "SMTP Certificate saved."}, 200
+        else:
+            return {"message": "No SMTP Certificate supplied."}, 204
+
+
+class APIWizardReset(Resource):
+    """Endpoint to reset the Wizard and start anew."""
+
+    def get(self):
+        """Return if a wizard reset should be available.
+
+        Resetting is only allowed, if there exists one user AND this user's mail is not verified.
+        200 => Allowed, 403 => Forbidden.
+        """
+        if models.User.query.count() == 1:
+            user = models.User.query.first()
+            if not user.email_confirmed_at:
+                return {'message': 'Resetting Wizard allowed.'}, 200
+        abort(403, message="Resetting Wizard not allowed at this stage.")
+
+    def post(self):
+        """Reset the Wizard and start anew.
+
+        Resetting is only allowed, if there exists one user AND this user's mail is not verified (else return 403).
+        Resetting is done by deleting this user, thus, wizard will start anew."""
+        if models.User.query.count() == 1:
+            user = models.User.query.first()
+            if not user.email_confirmed_at:
+                db.session.delete(user)
+                db.session.commit()
+                return {'message': 'success'}, 200
+        abort(403, message="Resetting Wizard not allowed at this stage.")
 
 
 class Health(Resource):

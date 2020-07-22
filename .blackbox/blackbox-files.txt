@@ -1,0 +1,10 @@
+config/secrets/box4security.key.pem
+config/secrets/db.conf
+config/secrets/msmtprc
+config/secrets/openvas.conf
+config/secrets/secrets.conf
+config/secrets/smtp.conf
+docker/elastalert/etc/elastalert/smtp_auth_file.yaml
+config/secrets/wazuh.conf
+config/secrets/web.conf
+docker/web/web.key

@@ -1,14 +1,27 @@
 """Flask middleware to initialize app with an admin user."""
 from werkzeug.wrappers import Request, Response
-from flask_user import UserManager
+from flask_user import UserManager, EmailError
 from source.models import User, Role
 from source.extensions import db
 from flask import redirect, url_for, flash, request
 from urllib.parse import quote
+from flask_mail import Mail
+from datetime import datetime
 
 
 class CreatorUserMan(UserManager):
     """Extended UserManager class."""
+
+    def trySMTP(self):
+        """Test the SMTP Connection.
+
+        Returns True if sending mails works, else False.
+        """
+        try:
+            self.email_adapter.send_email_message("box@4sconsult.de", "SMTP-TEST", "", "", "box@4sconsult.de", "BOX4security")
+        except EmailError:
+            return False
+        return True
 
     def unauthenticated_view(self):
         """Prepare a Flash message and redirect to USER_UNAUTHORIZED_ENDPOINT."""
@@ -36,6 +49,11 @@ class CreatorUserMan(UserManager):
                 # Only one user => add to Super Admin if not already is
                 sa = User.query.first()
                 if Role.query.get(1) not in sa.roles:
+                    # Likely the first time this method is called => also check for SMTP
+                    smtpState = self.trySMTP()
+                    if not smtpState:
+                        # SMTP not working => need to mark the user as confirmed
+                        sa.email_confirmed_at = datetime.now()
                     sa.roles.append(Role.query.get(1))
                     db.session.add(sa)
                     db.session.commit()
@@ -43,6 +61,12 @@ class CreatorUserMan(UserManager):
             return super().login_view()
         else:
             # First time, offer registration
+            # try SMTP
+            smtpState = self.trySMTP()
+            if not smtpState:
+                # SMTP not working => don't require to send "Welcome E-Mail"
+                # Still need to confirm the user.
+                self.USER_SEND_REGISTERED_EMAIL = False
             return super().register_view()
 
     def register_view(self):
