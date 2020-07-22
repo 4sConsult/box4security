@@ -15,3 +15,11 @@ video {
     background-color: #36515A !important;
     color: white !important;
 }
+
+small.helper {
+  color: #36515A !important;
+}
+
+.ui.action.input.cert input[type="file"] {
+  display: none;
+}

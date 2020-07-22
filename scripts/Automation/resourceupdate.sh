@@ -3,8 +3,7 @@
 /bin/bash $BASEDIR$GITDIR/scripts/Automation/ASN_update.sh
 
 # Updating Geo-IP
-# IP2LOCATION Token
-IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
+source $BASEDIR$GITDIR/config/secrets/secrets.conf
 cd /tmp/
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN.zip
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip

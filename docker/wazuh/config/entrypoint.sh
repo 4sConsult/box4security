@@ -14,7 +14,7 @@ done
 
 #set new password
 cd /var/ossec/api/configuration/auth/
-node htpasswd -b -c user box4s wa3hz0hPW
+node htpasswd -b -c user ${WAZUH_USER} ${WAZUH_PASS}
 service wazuh-api restart
 
 /sbin/my_init
