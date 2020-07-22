@@ -1,4 +1,4 @@
-from python:latest as builder
+from python:3.8.2-slim-buster as builder
 
 # Prevents Python from writing pyc files to disc
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -6,12 +6,13 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /usr/src/app
+ADD requirements.txt /usr/src/app/requirements.txt
 RUN pip install --upgrade pip && \
-  pip install flake8
+  pip install flake8 && \
+  pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 COPY . /usr/src/app
-RUN flake8 --ignore=E501,F401 . && \
-  pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+RUN flake8 --ignore=E501,F401 .
 
 
 # Final
@@ -23,10 +24,14 @@ RUN mkdir -p /home/app && \
   addgroup app && useradd -g app app && \
   mkdir $APP_HOME
 WORKDIR $APP_HOME
+RUN mkdir $HOME/.ssh
+COPY web.key $HOME/.ssh/web.key
+COPY web.pub $HOME/.ssh/web.pub
 
-# Install sshpass
+
+# Install curl & ssh
 RUN apt update && \
-  apt install -y sshpass curl && \
+  apt install -y curl ssh && \
   rm -rf /var/lib/apt/lists/*
 
 
@@ -42,7 +47,10 @@ RUN chown -R app:app $HOME && \
   mkdir -p /var/log/box4s/ && \
   chown -R app:app /var/log/box4s/ && \
   mkdir -p /var/lib/box4s && \
-  chown -R app:app /var/lib/box4s/
+  chown -R app:app /var/lib/box4s/ && \
+  chmod 600 /home/app/.ssh/web.key && \
+  mkdir -p /etc/box4s && \
+  chown -R app:app /etc/box4s
 
 # change to the app user
 USER app

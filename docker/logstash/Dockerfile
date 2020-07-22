@@ -41,3 +41,4 @@ RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /us
 
 USER logstash:logstash
 HEALTHCHECK --retries=10 CMD curl -s -XGET '127.0.0.1:9600/?pretty'
+CMD ["/usr/share/logstash/bin/logstash" , "--path.settings", "/etc/logstash"]

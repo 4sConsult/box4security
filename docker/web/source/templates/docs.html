@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
+    {# One-time system messages called Flash messages #}
+    {% block flash_messages %}
+        {%- with messages = get_flashed_messages(with_categories=true) -%}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="ui message {{category}}">{{ message|safe }}</div>
+                {% endfor %}
+            {% endif %}
+        {%- endwith %}
+    {% endblock %}
 {# Default content: render the page as iframe #}
 {# Overwrite this by including block content in a derived template, like in faq.html #}
 <iframe  style="width: 100%; border: none;" height="87%" scrolling="yes" frameborder="0" id="frame" src="{{docs_url}}" name="frame"></iframe>

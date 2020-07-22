@@ -1,6 +1,34 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [1.8.5](https://gitlab.com/4sconsult/box4s/-/tags/1.8.5) - 2020-07-22
+
+### Added
+* Neue Rolle *Config* zur Verwaltung der Konfiguration hinzugefügt
+* Oberfläche zur Konfiguration der BOX4s hinzugefügt
+* Neustart der BOX4s-Einrichtung nun erlaubt, solange nur ein, nicht per E-Mail bestätigter Nutzer existiert
+* Rate Limiting zur Abwehr von Brute-Forcing beim Einloggen eingeführt
+
+### Changed
+* Gesperrte Nutzer werden nun sofort ausgeloggt
+* SSH via Passwort zur BOX4s nicht länger erlaubt - stattdessen wird nur noch SSH mit Public-Key-Authentifikation durch 4sConsult-Mitarbeiter zugelassen
+* Hostsystem auf Ubuntu 20.04 LTS aktualisiert
+* HTTPS-Zertifikat erneuert
+
+### Optimized
+* Geheimnisse werden erst bei Installation entschlüsselt und liegen zuvor nur verschlüsselt vor
+* API-Endpunkte des Update-Prozesses weiter gegen unauthorisierten Zugriff gehärtet
+* Ein bei der initialen Registrierung nicht erreichbarer SMTP-Server führt nicht mehr dazu, dass die Registrierung fehlschlägt
+
+### Fixed
+* Fehler behoben, bei dem bei nicht zuzuordnenden öffentlichen IP-Adressbereichen ein Templatestring nicht ausgefüllt wurde
+* Bug behoben, der dazu führte, dass Events aus Suricata nicht gespeichert wurden
+
+### Deprecated
+
+### Removed
+* Geheimnisse aus Source Code entfernt
+
 ## [1.8.4](https://gitlab.com/4sconsult/box4s/-/tags/1.8.4) - 2020-06-23
 
 ### Added
