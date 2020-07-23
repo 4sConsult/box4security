@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Changed
 
 ### Optimized
+* Das Betriebssystem der BOX4security wird sich nun regelmäßig automatisch aktualisieren
 
 ### Fixed
 
