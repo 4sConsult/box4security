@@ -482,6 +482,9 @@ if [[ "$*" == *runner* ]]; then
   exit 0
 fi
 
+echo "### Activating unattended upgrades"
+printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
+
 echo "### Continue cleaning up and updating the tools"
 sudo apt-fast autoremove -y
 # Lets update both openvas and suricata

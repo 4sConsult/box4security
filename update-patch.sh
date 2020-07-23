@@ -32,7 +32,8 @@ sudo chmod 777 -R /data/suricata/eve.json
 ###################
 # Changes here
 
-
+echo "### Activating unattended upgrades"
+printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
 
 ###################
 
