@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Optimized
 
 ### Fixed
+* Bug behoben, der unter bestimmten Umständen das Installieren der Box verhinderte
 
 ### Deprecated
 
