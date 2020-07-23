@@ -371,6 +371,7 @@ sudo docker login registry.gitlab.com -u deploy -p mPwNxthpxvmQSaZnv3xZ
 
 # Download IP2Location DBs for the first time
 echo "### Setup geolocation database"
+IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
 cd /tmp/
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN.zip
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
