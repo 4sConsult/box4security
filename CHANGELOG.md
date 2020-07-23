@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Optimized
 
 ### Fixed
+* Internen Berechtigungsfehler behoben
 
 ### Deprecated
 
