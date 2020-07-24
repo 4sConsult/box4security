@@ -9,7 +9,7 @@ from source.config import Dashboards
 import source.error
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for, flash
-from flask_user import login_required, current_user, roles_required
+from flask_user import login_required, current_user, roles_required, EmailError
 from flask_mail import Message
 from source.forms import AddUserForm
 import os
@@ -152,6 +152,11 @@ def user():
                 userman.email_manager._render_and_send_email(current_user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
             # send confirmation E-Mail
             userman.email_manager.send_confirm_email_email(user, None)
+        except EmailError:
+            flash('Beim Versenden der Registrationsemail ist ein Fehler aufgetreten. Eine Prüfung der SMTP-Einstellungen ist notwendig. Der Nutzer wurde nicht angelegt.', 'error')
+            # delete new User object if send fails
+            userman.db_manager.delete_object(user)
+            userman.db_manager.commit()
         except Exception:
             # delete new User object if send fails
             userman.db_manager.delete_object(user)

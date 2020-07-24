@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Optimized
 * Das Betriebssystem der BOX4security wird sich nun regelmäßig automatisch aktualisieren
+* Darstellung eines Hinweises, sollte das Anlegen eines Nutzers aufgrund fehlerhafter SMTP-Konfiguration fehlschlagen.
 
 ### Fixed
 * Internen Berechtigungsfehler behoben
