@@ -6,6 +6,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 
 ### Changed
+* Änderungen an der Einstufung und Bewertung von Schwachstellen vorgenommen
 
 ### Optimized
 
