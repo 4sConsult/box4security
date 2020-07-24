@@ -153,7 +153,7 @@ def user():
             # send confirmation E-Mail
             userman.email_manager.send_confirm_email_email(user, None)
         except EmailError:
-            flash('Fehler beim Versenden der Registrationsemail für den Nutzer. Eine Prüfung der SMTP-Einstellungen ist notwendig. Der User wurde nicht angelegt.', 'error')
+            flash('Beim Versenden der Registrationsemail ist ein Fehler aufgetreten. Eine Prüfung der SMTP-Einstellungen ist notwendig. Der Nutzer wurde nicht angelegt.', 'error')
             # delete new User object if send fails
             userman.db_manager.delete_object(user)
             userman.db_manager.commit()
