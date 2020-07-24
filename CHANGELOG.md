@@ -9,6 +9,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Änderungen an der Einstufung und Bewertung von Schwachstellen vorgenommen
 
 ### Optimized
+* Das Betriebssystem der BOX4security wird sich nun regelmäßig automatisch aktualisieren
 
 ### Fixed
 * Internen Berechtigungsfehler behoben

@@ -8,6 +8,8 @@ set -e
 # Making sure to be logged in with the correct account
 sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
 
+sudo apt install -y unattended-upgrades
+
 # Set the nameserver temporarily
 cp /var/lib/box4s/resolv.personal /etc/resolv.conf
 
@@ -32,7 +34,8 @@ sudo chmod 777 -R /data/suricata/eve.json
 ###################
 # Changes here
 
-
+echo "### Activating unattended upgrades"
+printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
 
 ###################
 
