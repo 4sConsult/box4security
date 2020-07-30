@@ -7,6 +7,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Änderungen an der Einstufung und Bewertung von Schwachstellen vorgenommen
+* Alle API-Endpunkte auf gemeinsamen Präfix `/api` verschoben.
 
 ### Optimized
 * Das Betriebssystem der BOX4security wird sich nun regelmäßig automatisch aktualisieren
@@ -16,6 +17,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Internen Berechtigungsfehler behoben
 
 ### Deprecated
+* Ursprüngliche Endpunkte die das Update betreffen erhalten. Diese werden jedoch mit dem folgenden Release entfernt.
 
 ### Removed
 
