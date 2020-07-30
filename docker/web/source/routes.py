@@ -43,16 +43,12 @@ api.add_resource(LSRs, '/api//rules/logstash/')
 api.add_resource(Version, '/api/ver/')
 api.add_resource(AvailableReleases, '/api/ver/releases/')
 api.add_resource(LaunchUpdate, '/api/update/launch/')
-api.add_resource(UpdateLog, '/api/update/log/')
-api.add_resource(UpdateStatus, '/api/update/status/')
+api.add_resource(UpdateLog, '/api/update/log/', endpoint='api.update.log')
+api.add_resource(UpdateStatus, '/api/update/status/', endpoint='api.update.status')
 api.add_resource(Health, '/api/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 
-# Deprecated binds to keep update API working over releases:
-
-api.add_resource(UpdateLog, '/update/log/')
-api.add_resource(UpdateStatus, '/update/status/')
 
 api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
 api.add_resource(Alert, '/api/rules/alerts/<alert_id>')
@@ -65,6 +61,18 @@ api.add_resource(APIWizardReset, '/api/wizard/reset')
 # SMTP
 api.add_resource(APISMTP, '/api/config/smtp')
 api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
+
+
+# Deprecated binds to keep update API working over releases. Will be removed in next release.
+@app.route('/update/log')
+def deprecated_update_log():
+    return redirect(url_for('api.update.log'), 301)
+
+
+# Deprecated binds to keep update API working over releases. Will be removed in next release.
+@app.route('/update/status')
+def deprecated_update_status():
+    return redirect(url_for('api.update.status'), 301)
 
 
 @app.before_request
