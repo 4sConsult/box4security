@@ -49,6 +49,11 @@ api.add_resource(Health, '/api/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 
+# Deprecated binds to keep update API working over releases:
+
+api.add_resource(UpdateLog, '/update/log/')
+api.add_resource(UpdateStatus, '/update/status/')
+
 api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
 api.add_resource(Alert, '/api/rules/alerts/<alert_id>')
 api.add_resource(Alerts, '/api/rules/alerts/')
@@ -244,7 +249,7 @@ def alarms():
     return render_template("alert.html")
 
 
-@app.route('/update/log/download', methods=['GET'])
+@app.route('api/update/log/download', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Updates'])
 def updatelogdl():

@@ -60,7 +60,7 @@
     <div class="ui segment">
       <p id="logLines"><br> </p>
     </div>
-    <a class="ui labeled icon button transition hidden" href="//{{request.host}}/update/log/download"><i class="icon green download"></i>Download Update-Log</a>
+    <a class="ui labeled icon button transition hidden" href="//{{request.host}}/api/update/log/download"><i class="icon green download"></i>Download Update-Log</a>
   </div>
 </div>
 {% endblock %}
@@ -225,10 +225,10 @@
       while (running) {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        getEndpoint('update/log/').then((rs) => {
+        getEndpoint('api/update/log/').then((rs) => {
           modal.find('#logLines').html(rs.lines.join(' <br/>'));
         });
-        const resStatus = await getEndpoint('update/status/');
+        const resStatus = await getEndpoint('api/update/status/');
         if(resStatus){
           // successfully received, else just query again in 1.5s
           switch (resStatus.status) {
