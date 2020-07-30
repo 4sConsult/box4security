@@ -153,14 +153,14 @@ curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/
 sleep 2
 
 # Current version is the first "prior" version - get it from endpoint
-PRIOR=$(curl -sLk -XGET https://localhost/ver/ | jq -r .version)
+PRIOR=$(curl -sLk -XGET https://localhost/api/ver/ | jq -r .version)
 VERSIONS=()
 # Use Python Script to create array of versions that have to be installed
 # versions between current and the latest
 cd $BASEDIR$GITDIR/main
 mapfile -t VERSIONS < <(python3 /home/amadmin/box4s/scripts/Automation/versions.py)
 # GET env from local endpoint and extract it so we can keep it
-ENV=$(curl -sLk localhost/ver/ | jq -r '.env')
+ENV=$(curl -sLk localhost/api/ver/ | jq -r '.env')
 TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
 source /home/amadmin/box4s/config/secrets/db.conf
