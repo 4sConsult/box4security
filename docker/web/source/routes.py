@@ -248,8 +248,9 @@ def alarms():
     """Return the alert page."""
     return render_template("alert.html")
 
-
-@app.route('api/update/log/download', methods=['GET'])
+# Deprecated route without /api/ prefix, will be removed soon.
+@app.route('/update/log/download', methods=['GET'])
+@app.route('/api/update/log/download', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Updates'])
 def updatelogdl():
