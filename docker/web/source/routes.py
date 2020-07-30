@@ -37,7 +37,7 @@ def generate_password():
 api = Api(app)
 
 api.add_resource(BPF, '/api/rules/bpf/<int:rule_id>')
-api.add_resource(BPFs, 'api//rules/bpf/')
+api.add_resource(BPFs, 'api/rules/bpf/')
 api.add_resource(LSR, '/api/rules/logstash/<int:rule_id>')
 api.add_resource(LSRs, '/api//rules/logstash/')
 api.add_resource(Version, '/api/ver/')
