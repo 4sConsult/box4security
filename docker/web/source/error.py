@@ -10,11 +10,15 @@ from source.config import RoleURLs
 @app.route('/403/<e>')
 def forbidden(e):
     """Handle 403 Forbidden Error."""
-    userRoleURLs = [d for d in RoleURLs if d['name'] in current_user.roles]
+    userRoleURLs = []
+    # loop over all roles
     for r in current_user.roles:
         for d in RoleURLs:
             if d['name'] == r.name:
+                # and create a copy of the Role URL configuration
                 d_copy = d.copy()
+                # add the text description of role to the Role URL element
                 d_copy['description'] = r.description
                 userRoleURLs.append(d_copy)
+    # render the 403 navigation page with the user roles, their description and URL
     return render_template('errors/403.html', roleURLs=userRoleURLs), 403
