@@ -11,9 +11,8 @@
           {% if current_user and current_user.roles%}
           <p class="">Ihre Berechtigungen:</p>
                 <div class="ui two link cards">
-                    {% for r in current_user.roles %}
-                    {% set role_url = r.name|lower|urlencode|replace('wiki','docs') %}
-                    <a class="ui card" href=//{{request.host}}/{{role_url}}>
+                    {% for r in roleURLs %}
+                    <a class="ui card" href="{{r.url}}">
                       <div class="content">
                       <div class="header">
                         {{r.name}}
