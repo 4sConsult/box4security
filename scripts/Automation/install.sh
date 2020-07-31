@@ -353,6 +353,11 @@ sudo systemctl disable systemd-resolved
 sudo systemctl enable resolvconf
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 
+echo "### Enabling/Disabling Modules"
+sudo mkdir -p /etc/box4s/
+sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
+sudo chmod 444 /etc/box4s/modules.conf
+
 # Setup the new Box4Security Service and enable it
 sudo cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 sudo systemctl daemon-reload
