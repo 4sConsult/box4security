@@ -4,6 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [x.x.x](https://gitlab.com/4sconsult/box4s/-/tags/x.x.x) - 2020-xx-xx
 
 ### Added
+* Modulare Konfiguration der BOX4security eingefügt.
 
 ### Changed
 * Änderungen an der Einstufung und Bewertung von Schwachstellen vorgenommen
