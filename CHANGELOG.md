@@ -15,6 +15,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Internen Berechtigungsfehler behoben
+* Bug behoben, bei dem das IDS die Filterregeln (BPF) nicht direkt übernahm.
 
 ### Deprecated
 * Ursprüngliche Endpunkte die das Update betreffen erhalten. Diese werden jedoch mit dem folgenden Release entfernt.
