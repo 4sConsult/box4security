@@ -829,7 +829,7 @@ class APIModules(Resource):
     """Endpoint to work with modules."""
     def get(self):
         """Get all modules and their state.
-        Example:
+        Example: [{"name": "BOX4s_WAZUH", "enabled": "false"}, {"name": "BOX4s_INCMAN", "enabled": "false"}]
         """
         modules = []
         try:
