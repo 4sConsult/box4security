@@ -15,6 +15,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Internen Berechtigungsfehler behoben
+* Fehler behoben, bei dem Nutzer trotz Config-Rolle nicht die Konfiguration einsehen durften.
 
 ### Deprecated
 

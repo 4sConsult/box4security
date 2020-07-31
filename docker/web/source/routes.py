@@ -230,7 +230,7 @@ def rules():
 
 @app.route('/config', methods=['GET'])
 @login_required
-@roles_required(['Super Admin'])
+@roles_required(['Super Admin', 'Config'])
 def config():
     """Return the configuration page."""
     return render_template("config.html")
