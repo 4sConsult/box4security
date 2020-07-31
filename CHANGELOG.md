@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Änderungen an der Einstufung und Bewertung von Schwachstellen vorgenommen
+* Wazuh nun als Modul außerhalb des Standards implementiert.
 
 ### Optimized
 * Das Betriebssystem der BOX4security wird sich nun regelmäßig automatisch aktualisieren
