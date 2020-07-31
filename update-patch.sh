@@ -37,6 +37,11 @@ sudo chmod 777 -R /data/suricata/eve.json
 echo "### Activating unattended upgrades"
 printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
 
+echo "### Enabling/Disabling Modules"
+sudo mkdir -p /etc/box4s/
+sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
+sudo chmod 444 /etc/box4s/modules.conf
+
 ###################
 
 # Start des Services
