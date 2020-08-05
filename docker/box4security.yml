@@ -135,6 +135,7 @@ services:
       - web/web.env
       - ../config/secrets/web.conf
       - /etc/box4s/smtp.conf
+      - /etc/box4s/modules.conf
       - ../VERSION
     environment:
       - KUNDE
@@ -194,6 +195,7 @@ services:
       - "55000:55000"
     env_file:
       - ../config/secrets/wazuh.conf
+      - /etc/box4s/modules.conf
   elastalert:
     container_name: elastalert
     image: "registry.gitlab.com/4sconsult/box4s/elastalert:dev"
