@@ -118,6 +118,7 @@ services:
        - varlib_box4s/:/var/lib/box4s/
        - varlib_elastalert_rules:/var/lib/elastalert/rules/
        - /etc/box4s/smtp.conf:/etc/box4s/smtp.conf
+       - /etc/box4s/modules.conf:/etc/box4s/modules.conf
        - /etc/msmtprc:/etc/box4s/msmtprc
        - /etc/ssl/certs/BOX4s-SMTP.pem:/etc/ssl/certs/BOX4s-SMTP.pem
        - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
@@ -182,20 +183,6 @@ services:
       - 53:5353/udp
     volumes:
       - varlib_box4s:/var/lib/box4s/
-  wazuh:
-    container_name: wazuh
-    image: "registry.gitlab.com/4sconsult/box4s/wazuh:dev"
-    build: wazuh/.
-    hostname: wazuh-manager
-    restart: always
-    ports:
-      - "1514:1514/udp"
-      - "1515:1515"
-      - "514:514/udp"
-      - "55000:55000"
-    env_file:
-      - ../config/secrets/wazuh.conf
-      - /etc/box4s/modules.conf
   elastalert:
     container_name: elastalert
     image: "registry.gitlab.com/4sconsult/box4s/elastalert:dev"

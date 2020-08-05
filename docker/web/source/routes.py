@@ -2,6 +2,7 @@
 from source import app, mail, db, userman
 from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.api import APIWizardReset
+from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
@@ -62,6 +63,9 @@ api.add_resource(APIWizardReset, '/api/wizard/reset')
 api.add_resource(APISMTP, '/api/config/smtp')
 api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
 
+# Modules
+api.add_resource(APIModules, '/api/modules')
+
 
 # Deprecated binds to keep update API working over releases. Will be removed in next release.
 @app.route('/update/log')
@@ -108,7 +112,11 @@ def staticfiles(filename):
 
 @app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
 def send_wazuh_files(filename):
-    return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
+    if os.getenv('BOX4s_WAZUH', 'false') == 'true':
+        return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
+    else:
+        # Wazuh Module not enabled
+        abort(403)
 
 
 @app.route('/faq', methods=['GET'])
