@@ -82,3 +82,19 @@ Dashboards = [
     Dashboard(name='network-asn', url='/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276?embed=true&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30d,to:now))', parent_id='#net', role='Netzwerk'),
     Dashboard(name='wazuh', url='/kibana/app/wazuh#?embed=true', parent_id='#siem', role='SIEM'),
 ]
+
+RoleURLs = [
+    # role : url
+    {'name': 'Super Admin', 'url': '/user'},
+    {'name': 'Filter', 'url': '/filter'},
+    {'name': 'Updates', 'url': '/update'},
+    {'name': 'User-Management', 'url': '/user'},
+    {'name': 'FAQ', 'url': '/faq'},
+    {'name': 'Dashboards-Master', 'url': '/start'},
+    {'name': 'SIEM', 'url': '/siem-overview'},
+    {'name': 'Schwachstellen', 'url': '/vuln-overview'},
+    {'name': 'Netzwerk', 'url': '/network-overview'},
+    {'name': 'Wiki', 'url': '/docs'},
+    {'name': 'Alerts', 'url': '/alerts'},
+    {'name': 'Config', 'url': '/config'},
+]
