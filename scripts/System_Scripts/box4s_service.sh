@@ -1,5 +1,5 @@
 #!/bin/bash
-if if [ $1 == "up" ]
+if [ $1 == "up" ]
 then
     # perform commands to set the service up
     # Stop and remove old container
