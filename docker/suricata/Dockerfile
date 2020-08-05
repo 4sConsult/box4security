@@ -21,7 +21,6 @@ RUN apt update && \
     touch /var/lib/box4s/suricata_suppress.bpf && \
     mv /root/etc/* /etc/suricata/ && \
     mv /root/var_lib/quickcheck.rules /var/lib/suricata/rules/ && \
-    mv /root/var_lib/* /var/lib/suricata/ && \
     chmod 777 /var/lib/suricata/rules -R && \
     chmod +x /root/scripts/update.sh
 
