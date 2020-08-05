@@ -60,7 +60,7 @@
     <div class="ui segment">
       <p id="logLines"><br> </p>
     </div>
-    <a class="ui labeled icon button transition hidden" href="//{{request.host}}/update/log/download"><i class="icon green download"></i>Download Update-Log</a>
+    <a class="ui labeled icon button transition hidden" href="//{{request.host}}/api/update/log/download"><i class="icon green download"></i>Download Update-Log</a>
   </div>
 </div>
 {% endblock %}
@@ -93,7 +93,7 @@
   </script>
   <script type="text/javascript">
       // fetch all available releases and add to table
-      $.ajax('//{{ request.host }}/ver/releases/', {
+      $.ajax('//{{ request.host }}/api/ver/releases/', {
         dataType: "json",
         timeout: 5000,
         success: (data) => {
@@ -112,7 +112,7 @@
       })
       async function addToTable(data) {
         // Fetch current version from api
-        const currver = await getEndpoint('ver/');
+        const currver = await getEndpoint('api/ver/');
         let tbody = $(`#tbl tbody`);
         // For each available version, populate fields and add to table
         data.forEach((version, i) => {
@@ -225,10 +225,10 @@
       while (running) {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        getEndpoint('update/log/').then((rs) => {
+        getEndpoint('api/update/log/').then((rs) => {
           modal.find('#logLines').html(rs.lines.join(' <br/>'));
         });
-        const resStatus = await getEndpoint('update/status/');
+        const resStatus = await getEndpoint('api/update/status/');
         if(resStatus){
           // successfully received, else just query again in 1.5s
           switch (resStatus.status) {
@@ -240,7 +240,7 @@
               {
                 // empty version table
                 $('#tbl').children('tbody').empty();
-                getEndpoint('ver/releases/').then((ret) => {
+                getEndpoint('api/ver/releases/').then((ret) => {
                   addToTable(ret);
                   // update version table
                 });
@@ -266,7 +266,7 @@
               {
                 // empty version table
                 $('#tbl').children('tbody').empty();
-                getEndpoint('ver/releases/').then((ret) => {
+                getEndpoint('api/ver/releases/').then((ret) => {
                   addToTable(ret);
                   // update version table
                 });
