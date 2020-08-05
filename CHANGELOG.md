@@ -7,14 +7,18 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Änderungen an der Einstufung und Bewertung von Schwachstellen vorgenommen
+* Änderungen am rollenbasierten Routing der WebApp vorgenommen. Vorherige Lesezeichen könnten jetzt nicht mehr funktionieren.
 * Alle API-Endpunkte auf gemeinsamen Präfix `/api` verschoben.
+
 
 ### Optimized
 * Das Betriebssystem der BOX4security wird sich nun regelmäßig automatisch aktualisieren
 * Darstellung eines Hinweises, sollte das Anlegen eines Nutzers aufgrund fehlerhafter SMTP-Konfiguration fehlschlagen.
+* Konfiguration der WebApp-URLs, die den Rollen zugeordnet sind, verbessert.
 
 ### Fixed
 * Internen Berechtigungsfehler behoben
+* Fehler behoben, bei dem Nutzer trotz Config-Rolle nicht die Konfiguration einsehen durften.
 * Bug behoben, bei dem das IDS die Filterregeln (BPF) nicht direkt übernahm.
 
 ### Deprecated

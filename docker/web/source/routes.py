@@ -5,7 +5,7 @@ from source.api import APIWizardReset
 from source.api import APISMTP, APISMTPCertificate
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
-from source.config import Dashboards
+from source.config import Dashboards, RoleURLs
 import source.error
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for, flash
@@ -93,18 +93,7 @@ def index():
     """Return the start dashboard."""
     if not current_user.has_role('Startseite'):
         # User does not have privileges to read the start page => redirect to the first he can or implicitly to 403 by trying to access start
-        for rdict in [
-            {'name': 'Super Admin', 'url': url_for('user')},
-            {'name': 'Filter', 'url': url_for('rules')},
-            {'name': 'Updates', 'url': url_for('update')},
-            {'name': 'User-Management', 'url': url_for('user')},
-            {'name': 'FAQ', 'url': url_for('faq')},
-            {'name': 'Dashboards-Master', 'url': '/startseite'},
-            {'name': 'SIEM', 'url': '/siem-overview'},
-            {'name': 'Schwachstellen', 'url': '/vuln-overview'},
-            {'name': 'Netzwerk', 'url': '/network-overview'},
-            {'name': 'Wiki', 'url': '/docs'},
-        ]:
+        for rdict in RoleURLs:
             if current_user.has_role(rdict['name']):
                 return redirect(rdict['url'])
     return catchall('start')
@@ -136,8 +125,6 @@ def faq():
     return render_template('faq.html', client=client)
 
 
-@app.route('/super admin')
-@app.route('/user-management')
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 @roles_required(['Super Admin', 'User-Management'])
@@ -216,7 +203,6 @@ def faq_mail():
     return render_template('faq.html', client=client, mailsent=True)
 
 
-@app.route('/updates')
 @app.route('/update', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Updates'])
@@ -243,7 +229,7 @@ def rules():
 
 @app.route('/config', methods=['GET'])
 @login_required
-@roles_required(['Super Admin'])
+@roles_required(['Super Admin', 'Config'])
 def config():
     """Return the configuration page."""
     return render_template("config.html")
@@ -329,11 +315,6 @@ def authenticate():
 # must be the last one (catchall)
 # let variable r hold the path
 # Redirects for permission pages from 403
-@app.route('/dashboards-master', defaults={'r': 'start'})
-@app.route('/schwachstellen', defaults={'r': 'vuln-overview'})
-@app.route('/siem', defaults={'r': 'siem-overview'})
-@app.route('/netzwerk', defaults={'r': 'network-overview'})
-@app.route('/startseite', defaults={'r': 'start'})
 @app.route('/<path:r>')
 @login_required
 def catchall(r):
