@@ -36,22 +36,23 @@ def generate_password():
 
 api = Api(app)
 
-api.add_resource(BPF, '/rules/bpf/<int:rule_id>')
-api.add_resource(BPFs, '/rules/bpf/')
-api.add_resource(LSR, '/rules/logstash/<int:rule_id>')
-api.add_resource(LSRs, '/rules/logstash/')
-api.add_resource(Version, '/ver/')
-api.add_resource(AvailableReleases, '/ver/releases/')
-api.add_resource(LaunchUpdate, '/update/launch/')
-api.add_resource(UpdateLog, '/update/log/')
-api.add_resource(UpdateStatus, '/update/status/')
-api.add_resource(Health, '/_health')
+api.add_resource(BPF, '/api/rules/bpf/<int:rule_id>')
+api.add_resource(BPFs, '/api/rules/bpf/')
+api.add_resource(LSR, '/api/rules/logstash/<int:rule_id>')
+api.add_resource(LSRs, '/api//rules/logstash/')
+api.add_resource(Version, '/api/ver/')
+api.add_resource(AvailableReleases, '/api/ver/releases/')
+api.add_resource(LaunchUpdate, '/api/update/launch/')
+api.add_resource(UpdateLog, '/api/update/log/', endpoint='api.update.log')
+api.add_resource(UpdateStatus, '/api/update/status/', endpoint='api.update.status')
+api.add_resource(Health, '/api/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 
-api.add_resource(AlertsQuick, '/rules/alerts_quick/')
-api.add_resource(Alert, '/rules/alerts/<alert_id>')
-api.add_resource(Alerts, '/rules/alerts/')
+
+api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
+api.add_resource(Alert, '/api/rules/alerts/<alert_id>')
+api.add_resource(Alerts, '/api/rules/alerts/')
 api.add_resource(AlertMailer, '/api/alerts/mailer/')
 
 # Wizard
@@ -60,6 +61,18 @@ api.add_resource(APIWizardReset, '/api/wizard/reset')
 # SMTP
 api.add_resource(APISMTP, '/api/config/smtp')
 api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
+
+
+# Deprecated binds to keep update API working over releases. Will be removed in next release.
+@app.route('/update/log')
+def deprecated_update_log():
+    return redirect(url_for('api.update.log'), 301)
+
+
+# Deprecated binds to keep update API working over releases. Will be removed in next release.
+@app.route('/update/status')
+def deprecated_update_status():
+    return redirect(url_for('api.update.status'), 301)
 
 
 @app.before_request
@@ -230,7 +243,9 @@ def alarms():
     return render_template("alert.html")
 
 
+# Deprecated route without /api/ prefix, will be removed soon.
 @app.route('/update/log/download', methods=['GET'])
+@app.route('/api/update/log/download', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Updates'])
 def updatelogdl():
