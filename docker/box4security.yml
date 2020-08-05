@@ -124,7 +124,7 @@ services:
     expose:
       - 5000
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/_health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/_health"]
       interval: 10s
       timeout: 5s
       retries: 5

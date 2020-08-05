@@ -4,10 +4,10 @@ import requests
 import semver
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-API_VER = requests.get('http://localhost/ver/', verify=False).json()
+API_VER = requests.get('http://localhost/api/ver/', verify=False).json()
 CURRVER = str(API_VER['version'])
 ENV = str(API_VER['env'])
-tags = requests.get('http://localhost/ver/releases/', verify=False).json()
+tags = requests.get('http://localhost/api/ver/releases/', verify=False).json()
 VERSIONS = []
 # Source: https://stackoverflow.com/questions/11887762/how-do-i-compare-version-numbers-in-python
 for t in tags:
