@@ -89,3 +89,19 @@ try:
 except Exception:
     # BOX4s_WAZUH environment variable not defined. Ignored here.
     pass
+
+RoleURLs = [
+    # role : url
+    {'name': 'Super Admin', 'url': '/user'},
+    {'name': 'Filter', 'url': '/filter'},
+    {'name': 'Updates', 'url': '/update'},
+    {'name': 'User-Management', 'url': '/user'},
+    {'name': 'FAQ', 'url': '/faq'},
+    {'name': 'Dashboards-Master', 'url': '/start'},
+    {'name': 'SIEM', 'url': '/siem-overview'},
+    {'name': 'Schwachstellen', 'url': '/vuln-overview'},
+    {'name': 'Netzwerk', 'url': '/network-overview'},
+    {'name': 'Wiki', 'url': '/docs'},
+    {'name': 'Alerts', 'url': '/alerts'},
+    {'name': 'Config', 'url': '/config'},
+]

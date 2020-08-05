@@ -51,7 +51,7 @@ def writeBPFFile():
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
         # login to dockerhost using ssh key and execute restartSuricata
-        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /home/amadmin/restartSuricata.sh')
+        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml restart suricata')
 
 
 def writeAlertFile(alert):
