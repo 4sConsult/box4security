@@ -42,6 +42,13 @@ sudo mkdir -p /etc/box4s/
 sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
 sudo chmod 444 /etc/box4s/modules.conf
 
+echo "### Updating BOX4security service for modules."
+sudo mkdir -p /usr/bin/box4s/
+sudo cp /home/amadmin/box4s/scripts/System_Scripts/box4s_service.sh /usr/bin/box4s/box4s_service.sh
+sudo chmod +x /usr/bin/box4s/box4s_service.sh
+sudo cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
+sudo systemctl daemon-reload
+
 ###################
 
 # Start des Services
