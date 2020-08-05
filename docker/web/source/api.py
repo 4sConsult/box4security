@@ -825,6 +825,28 @@ class APIWizardReset(Resource):
         abort(403, message="Resetting Wizard not allowed at this stage.")
 
 
+class APIModules(Resource):
+    """Endpoint to work with modules."""
+    def get(self):
+        """Get all modules and their state.
+        Example: [{"name": "BOX4s_WAZUH", "enabled": "false"}, {"name": "BOX4s_INCMAN", "enabled": "false"}]
+        """
+        modules = []
+        try:
+            with open('/etc/box4s/modules.conf', 'r') as fm:
+                for line in fm:
+                    if not line.startswith('#'):
+                        # not a comment
+                        env = line.rstrip().split('=')
+                        # module is the name before =
+                        module = env[0]
+                        state = env[1]
+                        modules.append({'name': module, 'enabled': state})
+        except Exception:
+            abort(500, message="Failed to read the list of modules.")
+        return modules, 200
+
+
 class Health(Resource):
     """Health endpoint."""
 

@@ -80,8 +80,15 @@ Dashboards = [
     Dashboard(name='network-overview', url='/kibana/app/kibana#/dashboard/dc847fd0-3dd9-11ea-bbd4-bb7e0278945f?embed=true&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30d,to:now))', parent_id='#net', role='Netzwerk'),
     Dashboard(name='network-streams', url='/kibana/app/kibana#/dashboard/e5fbd440-ce2c-11e9-943f-fdbfa2556276?embed=true&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30d,to:now))', parent_id='#net', role='Netzwerk'),
     Dashboard(name='network-asn', url='/kibana/app/kibana#/dashboard/c2b4c450-ce46-11e9-943f-fdbfa2556276?embed=true&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30d,to:now))', parent_id='#net', role='Netzwerk'),
-    Dashboard(name='wazuh', url='/kibana/app/wazuh#?embed=true', parent_id='#siem', role='SIEM'),
 ]
+
+# Enable Wazuh Dashboard only, if module is active
+try:
+    if os.getenv('BOX4s_WAZUH') == "true":
+        Dashboards.append(Dashboard(name='wazuh', url='/kibana/app/wazuh#?embed=true', parent_id='#siem', role='SIEM'))
+except Exception:
+    # BOX4s_WAZUH environment variable not defined. Ignored here.
+    pass
 
 RoleURLs = [
     # role : url
