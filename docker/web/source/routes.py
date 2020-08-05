@@ -110,14 +110,10 @@ def staticfiles(filename):
 
 @app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
 def send_wazuh_files(filename):
-    try:
-        if os.getenv('BOX4s_WAZUH') == 'true':
-            return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
-        else:
-            # Wazuh Module not enabled
-            abort(403)
-    except Exception:
-        # Environment variable not defined or sending file failed.
+    if os.getenv('BOX4s_WAZUH', 'false') == 'true':
+        return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
+    else:
+        # Wazuh Module not enabled
         abort(403)
 
 
