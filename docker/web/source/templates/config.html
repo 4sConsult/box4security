@@ -15,11 +15,14 @@
     <div class="ui inverted section divider"></div>
     <div class="section">
         <div class="ui top attached secondary pointing tabular menu">
-            <a class="item active">
+            <a data-tab="mail" class="item active">
               Mail
             </a>
+            <a data-tab="wazuh" class="item">
+              Wazuh
+            </a>
           </div>
-          <div class="ui bottom attached active tab segment">
+          <div data-tab="mail" class="ui bottom attached active tab segment">
             <!-- Mail -->
             <form id="formSMTP" method="get" class="ui form" enctype="multipart/form-data">
                 <h4 class="ui dividing header">SMTP-Konfiguration</h4>
@@ -90,6 +93,10 @@
                 <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
               </form>
           </div>
+          <div data-tab="wazuh" class="ui bottom attached tab segment">
+            <!-- Wazuh-->
+            <h4 class="ui dividing header">Endgeräte-IDS-Konfiguration</h4>
+          </div>
     </div>
   <div class="ui vertical footer segment">
     <div class="ui center aligned container">
@@ -101,6 +108,8 @@
   <script type="text/javascript">
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
+
+  $('.menu .item').tab();
 
   $("#cert-text, .ui.action.input.cert>.button").click(function() {
     $(this).parent().find("#cert-file").click();
