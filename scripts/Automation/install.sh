@@ -121,6 +121,8 @@ sudo apt-fast remove --purge -y apache2 nginx
 waitForNet
 echo "### Installing all dependencies"
 sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
+sudo apt-fast install -y suricata # TODO: remove in #375
+sudo systemctl disable suricata || :
 git lfs install --skip-smudge
 pip3 install semver elasticsearch-curator requests
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -301,6 +303,10 @@ cd /home/amadmin/box4s
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
+
+# TODO: remove in #375
+sudo mkdir -p /var/lib/suricata/rules
+sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/suricata/rules/quickcheck.rules
 
 # Create a folder for the alerting rules
 sudo mkdir -p /var/lib/elastalert/rules
