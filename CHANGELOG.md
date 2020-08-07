@@ -23,6 +23,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Fehler behoben, bei dem Nutzer trotz Config-Rolle nicht die Konfiguration einsehen durften.
 * Bug behoben, bei dem das IDS die Filterregeln (BPF) nicht direkt übernahm.
 * BSI-Alarme des IDS werden wieder angewandt und nicht länger zu hoch evaluiert.
+* Leere Felder bei der Filtererstellung werden nun korrekt als Wildcard (`*`) interpretiert.
 
 ### Deprecated
 * Ursprüngliche Endpunkte die das Update betreffen erhalten. Diese werden jedoch mit dem folgenden Release entfernt.

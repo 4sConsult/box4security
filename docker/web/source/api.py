@@ -148,10 +148,10 @@ class BPFs(Resource):
         """Implement a new BPF Rule."""
         d = request.json
         newRule = models.BPFRule(
-            src_ip=d['src_ip'],
-            src_port=d['src_port'],
-            dst_ip=d['dst_ip'],
-            dst_port=d['dst_port'],
+            src_ip=d['src_ip'] if d['src_ip'] else "0.0.0.0",
+            src_port=d['src_port'] if d['src_port'] else 0,
+            dst_ip=d['dst_ip'] if d['dst_ip'] else "0.0.0.0",
+            dst_port=d['dst_port'] if d['dst_port'] else 0,
             proto=d['proto'],
         )
         # Add new rule to db
@@ -225,10 +225,10 @@ class LSRs(Resource):
         """Implement new Logstash Rule."""
         d = request.json
         newRule = models.LogstashRule(
-            src_ip=d['src_ip'],
-            src_port=d['src_port'],
-            dst_ip=d['dst_ip'],
-            dst_port=d['dst_port'],
+            src_ip=d['src_ip'] if d['src_ip'] else "0.0.0.0",
+            src_port=d['src_port'] if d['src_port'] else 0,
+            dst_ip=d['dst_ip'] if d['dst_ip'] else "0.0.0.0",
+            dst_port=d['dst_port'] if d['dst_port'] else 0,
             proto=d['proto'],
             signature_id=d['signature_id'],
             signature=d['signature']
