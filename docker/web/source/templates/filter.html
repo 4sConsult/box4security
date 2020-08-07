@@ -245,6 +245,8 @@
     // Submit Filter Script
     $('button._add').click(async (e) => {
       e.preventDefault();
+      $(e.currentTarget).html('<div class="ui active centered inline loader"></div>');
+      $(e.currentTarget).addClass('disabled');
       // Parse form data into json object
       var fd = new FormData($('form.ui.form')[0])
       var json = {};
