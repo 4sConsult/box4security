@@ -17,6 +17,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Darstellung eines Hinweises, sollte das Anlegen eines Nutzers aufgrund fehlerhafter SMTP-Konfiguration fehlschlagen.
 * Konfiguration der WebApp-URLs, die den Rollen zugeordnet sind, verbessert.
 * IDS-Alarme werden nun zeitlich exakt indiziert.
+* Wazuh-Endgeräte-Registrierung nun per Passwort gegen Missbrauch geschützt.
 
 ### Fixed
 * Internen Berechtigungsfehler behoben
