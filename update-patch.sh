@@ -49,6 +49,10 @@ sudo chmod +x /usr/bin/box4s/box4s_service.sh
 sudo cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 sudo systemctl daemon-reload
 
+# Remove old quickcheck.rules and apply new
+sudo rm /var/lib/suricata/quickcheck.rules
+sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/suricata/rules/quickcheck.rules
+
 ###################
 
 # Start des Services
