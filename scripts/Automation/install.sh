@@ -304,6 +304,7 @@ sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
 
+# TODO: remove in #375
 sudo mkdir -p /var/lib/suricata/rules
 sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/suricata/rules/quickcheck.rules
 
