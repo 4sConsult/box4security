@@ -12,5 +12,5 @@ services:
         - "514:514/udp"
         - "55000:55000"
         env_file:
-        - ../config/secrets/wazuh.conf
+        - /home/amadmin/box4s/config/secrets/wazuh.conf
         - /etc/box4s/modules.conf
