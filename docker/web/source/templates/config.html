@@ -89,7 +89,7 @@
                     <i class="key icon"></i>
                   </div>
                 </div>
-                <button class="ui green button" type="submit">Änderungen anwenden</button>
+                <button class="ui green button" disabled="" type="submit">Änderungen anwenden</button>
                 <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
               </form>
           </div>
@@ -213,6 +213,9 @@
     // Scripts for Wazuh Config
     var wazuhSegment = document.getElementById('wazuh-segment');
     var inPass = $('#formWazuh input:password');
+    inPass.change(e => {
+        $('#formWazuh > .ui.green.button').removeProp('disabled');
+    });
     document.getElementById('copy-wazuh-pass').addEventListener('click', async (e) => {
         e.preventDefault();
         var temp = $("<input>");
@@ -229,13 +232,20 @@
         }).then(r => r.json())
         .then(d => {
             inPass.val(d.password);
+            var temp = $("<input>");
+            $("body").append(temp);
+            temp.val(d.password).select();
+            document.execCommand("copy");
+            temp.remove();
+            var oldNodes = wazuhSegment.querySelectorAll('.inverted.segment');
+            oldNodes.forEach(node => wazuhSegment.removeChild(node));
+            var successNode = document.createElement('div');
+            ['ui', 'inverted', 'green', 'segment']
+                .forEach(cl => successNode.classList.add(cl));
+            successNode.innerHTML = '<p><i class="ui icon check"></i> Passwort der Wazuh-Agents erfolgreich aktualisiert.</p>';
+            wazuhSegment.insertBefore(successNode, wazuhSegment.getElementsByTagName('h4')[0].nextSibling);
+            alert('Neues Wazuh-Agent-Passwort generiert und in die Zwischenablage kopiert.');
         });
-        var temp = $("<input>");
-        $("body").append(temp);
-        temp.val(inPass.val()).select();
-        document.execCommand("copy");
-        temp.remove();
-        alert('Neues Wazuh-Agent-Passwort generiert und in die Zwischenablage kopiert.');
     });
     fetch('/api/config/wazuh')
         .then(r => r.json())
