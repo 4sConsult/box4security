@@ -849,17 +849,26 @@ class APIModules(Resource):
 
 class APIWazuhAgentPass(Resource):
     """Endpoint to interact with the Wazuh agent password."""
+    def __init__(self):
+        """Register Parser."""
+        self.parser = reqparse.RequestParser()
+
+    @roles_required(['Super Admin', 'Config'])
     def get(self):
         """GET whether the wazuh agent password was not changed (after installation)."""
-        return {'passwordChanged': False}
+        return {'password': '', 'passwordChanged': False}
 
+    @roles_required(['Super Admin', 'Config'])
     def post(self):
         """Generate, set and return a new, random wazuh agent password."""
         pass
 
+    @roles_required(['Super Admin', 'Config'])
     def put(self):
         """Set the supplied password as wazuh agent password."""
-        pass
+        self.parser.add_argument('password', type=str, required=True)
+        self.args = self.parser.parse_args()
+        return {'password': self.args['password']}
 
 
 class Health(Resource):

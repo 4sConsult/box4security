@@ -93,15 +93,17 @@
                 <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
               </form>
           </div>
-          <div data-tab="wazuh" class="ui bottom attached tab segment">
+          <div id='wazuh-segment' data-tab="wazuh" class="ui bottom attached tab segment">
             <!-- Wazuh-->
             <h4 class="ui dividing header">Endgeräte-IDS-Konfiguration</h4>
-            <div id='wazuh-segment' class="ui segment">
-                <form id="formWazuh" method="get">
-
-                </form>
+            <div class="ui form" id="formWazuh">
+                <div class="field">
+                    <label>Passwort für Wazuh-Agents</label>
+                    <input type="password">
+                </div>
+                <div class="ui green button">Änderungen anwenden</div>
+            </div>
           </div>
-    </div>
     </div>
   <div class="ui vertical footer segment">
     <div class="ui center aligned container">
@@ -199,17 +201,45 @@
   </script>
   <script>
     // Scripts for Wazuh Config
+    var wazuhSegment = document.getElementById('wazuh-segment');
     fetch('/api/config/wazuh')
         .then(r => r.json())
         .then(d => {
             if(!d.passwordChanged) {
-                var wazuhSegment = document.getElementById('wazuh-segment');
                 var dangerNode = document.createElement('div');
                 ['ui', 'inverted', 'red', 'segment']
                     .forEach(cl => dangerNode.classList.add(cl));
                 dangerNode.innerHTML = '<p><i class="ui icon exclamation triangle"></i> Wichtig: Sie verwenden das Standardpasswort für Wazuh-Agents. Aktualisieren Sie es schnellstmöglich!</p>'
-                wazuhSegment.appendChild(dangerNode);
+                wazuhSegment.insertBefore(dangerNode, wazuhSegment.getElementsByTagName('h4')[0].nextSibling)
             }
+            var 
         });
+    $('#formWazuh > .ui.green.button').on('click', async (e) => {
+        const newPass = $('#formWazuh input:password').val();
+        e.preventDefault();
+        if(!newPass.length > 0)
+        {
+            alert("Das Passwort für die Wazuh-Agents kann nicht leer sein.")
+        } else {
+            fetch('/api/config/wazuh', {
+                method: "PUT",
+                body: JSON.stringify({password: newPass}),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(r => r.json())
+                .then(d => {
+                    var oldNodes = wazuhSegment.querySelectorAll('.inverted.segment');
+                    oldNodes.forEach(node => wazuhSegment.removeChild(node));
+                    var successNode = document.createElement('div');
+                    ['ui', 'inverted', 'green', 'segment']
+                        .forEach(cl => successNode.classList.add(cl));
+                        successNode.innerHTML = '<p><i class="ui icon check"></i> Passwort der Wazuh-Agents erfolgreich aktualisiert.</p>'
+                    wazuhSegment.insertBefore(successNode, wazuhSegment.getElementsByTagName('h4')[0].nextSibling)
+            });
+        }
+    });
   </script>
 {% endblock %}
