@@ -4,6 +4,7 @@ from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchU
 from source.api import APIWizardReset
 from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
+from source.api import APIWazuhAgentPass
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
 from source.config import Dashboards, RoleURLs
@@ -65,6 +66,8 @@ api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
 
 # Modules
 api.add_resource(APIModules, '/api/modules')
+
+api.add_resource(APIWazuhAgentPass, '/api/config/wazuh')
 
 
 # Deprecated binds to keep update API working over releases. Will be removed in next release.

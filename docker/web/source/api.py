@@ -847,6 +847,21 @@ class APIModules(Resource):
         return modules, 200
 
 
+class APIWazuhAgentPass(Resource):
+    """Endpoint to interact with the Wazuh agent password."""
+    def get(self):
+        """GET whether the wazuh agent password was not changed (after installation)."""
+        return {'passwordChanged': False}
+
+    def post(self):
+        """Generate, set and return a new, random wazuh agent password."""
+        pass
+
+    def put(self):
+        """Set the supplied password as wazuh agent password."""
+        pass
+
+
 class Health(Resource):
     """Health endpoint."""
 
