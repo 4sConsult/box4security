@@ -89,7 +89,7 @@
                     <i class="key icon"></i>
                   </div>
                 </div>
-                <button class="ui green button" disabled="" type="submit">Änderungen anwenden</button>
+                <button class="ui green button" type="submit">Änderungen anwenden</button>
                 <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
               </form>
           </div>
@@ -111,7 +111,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ui green button">Änderungen anwenden</div>
+                <button disabled class="ui green button">Änderungen anwenden</button>
             </div>
           </div>
     </div>
@@ -214,7 +214,7 @@
     var wazuhSegment = document.getElementById('wazuh-segment');
     var inPass = $('#formWazuh input:password');
     inPass.change(e => {
-        $('#formWazuh > .ui.green.button').removeProp('disabled');
+        $('#formWazuh > .ui.green.button').prop("disabled", false);
     });
     document.getElementById('copy-wazuh-pass').addEventListener('click', async (e) => {
         e.preventDefault();
