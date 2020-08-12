@@ -1,5 +1,5 @@
 """Module for webapp API."""
-from source import models, db
+from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
@@ -861,7 +861,8 @@ class APIWazuhAgentPass(Resource):
     @roles_required(['Super Admin', 'Config'])
     def post(self):
         """Generate, set and return a new, random wazuh agent password."""
-        pass
+        password = helpers.generate_password()
+        return {'password': password}
 
     @roles_required(['Super Admin', 'Config'])
     def put(self):
