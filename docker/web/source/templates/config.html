@@ -99,7 +99,17 @@
             <div class="ui form" id="formWazuh">
                 <div class="field">
                     <label>Passwort für Wazuh-Agents</label>
-                    <input type="password">
+                    <div class="ui action input">
+                        <input type="password">
+                        <a id="copy-wazuh-pass" class="ui primary left labeled icon button">
+                            <i class="ui icon copy"></i>
+                            Kopieren
+                        </a>
+                        <a id="renew-wazuh-pass" class="ui secondary left labeled icon button">
+                            <i class="ui icon random"></i>
+                            Erneuern
+                        </a>
+                    </div>
                 </div>
                 <div class="ui green button">Änderungen anwenden</div>
             </div>
@@ -202,6 +212,31 @@
   <script>
     // Scripts for Wazuh Config
     var wazuhSegment = document.getElementById('wazuh-segment');
+    var inPass = $('#formWazuh input:password');
+    document.getElementById('copy-wazuh-pass').addEventListener('click', async (e) => {
+        e.preventDefault();
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(inPass.val()).select();
+        document.execCommand("copy");
+        temp.remove();
+        alert('Wazuh-Agent-Passwort in die Zwischenablage kopiert.');
+    });
+    document.getElementById('renew-wazuh-pass').addEventListener('click', async (e) => {
+        e.preventDefault();
+        fetch('/api/config/wazuh', {
+            method: 'POST'
+        }).then(r => r.json())
+        .then(d => {
+            inPass.val(d.password);
+        });
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(inPass.val()).select();
+        document.execCommand("copy");
+        temp.remove();
+        alert('Neues Wazuh-Agent-Passwort generiert und in die Zwischenablage kopiert.');
+    });
     fetch('/api/config/wazuh')
         .then(r => r.json())
         .then(d => {
@@ -212,18 +247,16 @@
                 dangerNode.innerHTML = '<p><i class="ui icon exclamation triangle"></i> Wichtig: Sie verwenden das Standardpasswort für Wazuh-Agents. Aktualisieren Sie es schnellstmöglich!</p>'
                 wazuhSegment.insertBefore(dangerNode, wazuhSegment.getElementsByTagName('h4')[0].nextSibling)
             }
-            var 
         });
     $('#formWazuh > .ui.green.button').on('click', async (e) => {
-        const newPass = $('#formWazuh input:password').val();
         e.preventDefault();
-        if(!newPass.length > 0)
+        if(!inPass.val().length > 0)
         {
             alert("Das Passwort für die Wazuh-Agents kann nicht leer sein.")
         } else {
             fetch('/api/config/wazuh', {
                 method: "PUT",
-                body: JSON.stringify({password: newPass}),
+                body: JSON.stringify({password: inPass.val()}),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -238,6 +271,7 @@
                         .forEach(cl => successNode.classList.add(cl));
                         successNode.innerHTML = '<p><i class="ui icon check"></i> Passwort der Wazuh-Agents erfolgreich aktualisiert.</p>'
                     wazuhSegment.insertBefore(successNode, wazuhSegment.getElementsByTagName('h4')[0].nextSibling)
+                    inPass.val(d.password);
             });
         }
     });
