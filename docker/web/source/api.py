@@ -850,7 +850,12 @@ class APIModules(Resource):
 class APIWazuhAgentPass(Resource):
     """Endpoint to interact with the Wazuh agent password."""
     def __init__(self):
-        """Register Parser."""
+        """Register Parser.
+
+        Always abort if Wazuh module not enabled.
+        """
+        if not os.getenv('BOX4s_WAZUH') == 'true':
+            abort(403, message="BOX4security is not configured to use Wazuh.")
         self.parser = reqparse.RequestParser()
 
     @roles_required(['Super Admin', 'Config'])
@@ -874,6 +879,11 @@ class APIWazuhAgentPass(Resource):
         except Exception:
             abort(500, message="Failed to write the Wazuh password file.")
 
+        try:
+            os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart wazuh')
+        except Exception:
+            abort(500, message="Failed to restart the Wazuh service.")
+
     @roles_required(['Super Admin', 'Config'])
     def put(self):
         """Set the supplied password as wazuh agent password."""
@@ -883,9 +893,12 @@ class APIWazuhAgentPass(Resource):
         try:
             with open('/var/lib/box4s/wazuh-authd.pass', 'w') as f:
                 f.write(password)
-                return {'password': password}
         except Exception:
             abort(500, message="Failed to write the Wazuh password file.")
+        try:
+            os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart wazuh')
+        except Exception:
+            abort(500, message="Failed to restart the Wazuh service.")
         return {'password': self.args['password']}
 
 
