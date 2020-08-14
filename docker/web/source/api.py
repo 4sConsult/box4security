@@ -871,7 +871,7 @@ class APIWazuhAgentPass(Resource):
         try:
             with open('/var/lib/box4s/wazuh-authd.pass', 'w') as f:
                 f.write(password)
-        return {'password': password}
+                return {'password': password}
         except Exception:
             abort(500, message="Failed to write the Wazuh password file.")
 
@@ -880,6 +880,13 @@ class APIWazuhAgentPass(Resource):
         """Set the supplied password as wazuh agent password."""
         self.parser.add_argument('password', type=str, required=True)
         self.args = self.parser.parse_args()
+        password = self.args['password']
+        try:
+            with open('/var/lib/box4s/wazuh-authd.pass', 'w') as f:
+                f.write(password)
+                return {'password': password}
+        except Exception:
+            abort(500, message="Failed to write the Wazuh password file.")
         return {'password': self.args['password']}
 
 
