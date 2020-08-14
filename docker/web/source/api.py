@@ -855,12 +855,11 @@ class APIWazuhAgentPass(Resource):
 
     @roles_required(['Super Admin', 'Config'])
     def get(self):
-        """GET the current wazuh agent password and whether it was changed after installation."""
+        """GET the current wazuh agent password."""
         try:
             with open('/var/lib/box4s/wazuh-authd.pass', 'r') as f:
                 password = f.read().strip()
-                passwordChanged = '-insecure-' not in password
-            return {'password': password, 'passwordChanged': passwordChanged}
+            return {'password': password}
         except Exception:
             abort(500, message="Failed to read the Wazuh password file.")
 

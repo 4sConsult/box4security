@@ -250,13 +250,6 @@
     fetch('/api/config/wazuh')
         .then(r => r.json())
         .then(d => {
-            if(!d.passwordChanged) {
-                var dangerNode = document.createElement('div');
-                ['ui', 'inverted', 'red', 'segment']
-                    .forEach(cl => dangerNode.classList.add(cl));
-                dangerNode.innerHTML = '<p><i class="ui icon exclamation triangle"></i> Wichtig: Sie verwenden das Standardpasswort für Wazuh-Agents. Aktualisieren Sie es schnellstmöglich!</p>'
-                wazuhSegment.insertBefore(dangerNode, wazuhSegment.getElementsByTagName('h4')[0].nextSibling)
-            }
             inPass.val(d.password);
         });
     $('#formWazuh > .ui.green.button').on('click', async (e) => {
