@@ -11,7 +11,7 @@ services:
         - "1515:1515"
         - "514:514/udp"
         - "55000:55000"
-        volume:
+        volumes:
         - /var/lib/box4s/wazuh-authd.pass:/var/ossec/etc/authd.pass
         env_file:
         - /home/amadmin/box4s/config/secrets/wazuh.conf
