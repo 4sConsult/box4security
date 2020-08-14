@@ -53,6 +53,10 @@ sudo systemctl daemon-reload
 sudo rm /var/lib/suricata/quickcheck.rules
 sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/suricata/rules/quickcheck.rules
 
+# Set Wazuh Agent standard password
+blackbox_postdeploy
+sudo cp /home/amadmin/box4s/config/secrets/wazuh-authd.pass /var/lib/box4s/wazuh-authd.pass
+
 ###################
 
 # Start des Services
