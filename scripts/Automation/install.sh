@@ -366,6 +366,7 @@ sudo chmod 444 /etc/box4s/modules.conf
 
 echo "### Generating Wazuh Agent-Password"
 strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 14 | tr -d '\n' > /var/lib/box4s/wazuh-authd.pass
+sudo chmod 755 /var/lib/box4s/wazuh-authd.pass
 
 # Setup the new Box4Security Service and enable it
 sudo mkdir -p /usr/bin/box4s/

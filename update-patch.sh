@@ -55,6 +55,7 @@ sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/su
 
 # Generate a random password for Wazuh agents
 strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 14 | tr -d '\n' > /var/lib/box4s/wazuh-authd.pass
+sudo chmod 755 /var/lib/box4s/wazuh-authd.pass
 
 ###################
 
