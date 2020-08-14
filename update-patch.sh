@@ -53,6 +53,10 @@ sudo systemctl daemon-reload
 sudo rm /var/lib/suricata/quickcheck.rules
 sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/suricata/rules/quickcheck.rules
 
+# Generate a random password for Wazuh agents
+strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 14 | tr -d '\n' > /var/lib/box4s/wazuh-authd.pass
+sudo chmod 755 /var/lib/box4s/wazuh-authd.pass
+
 ###################
 
 # Start des Services
@@ -64,6 +68,8 @@ sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh el
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx || sleep 30
+
+
 
 # Import Dashboard
 echo "### Install dashboards"

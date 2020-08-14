@@ -173,6 +173,7 @@ do
    cp /home/amadmin/box4s/docker/logstash/.env.ls /var/lib/box4s/backup/.env.ls
    cp /home/amadmin/box4s/docker/elasticsearch/.env.es /var/lib/box4s/backup/.env.es
    git checkout -f $v >/dev/null 2>&1
+   blackbox_postdeploy
    # Restore Memory Settings for JVM
    cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4s/docker/logstash/.env.ls
    cp /var/lib/box4s/backup/.env.es /home/amadmin/box4s/docker/elasticsearch/.env.es

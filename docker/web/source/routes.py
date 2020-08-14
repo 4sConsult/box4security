@@ -1,9 +1,10 @@
 """Module to handle all webapp routes."""
-from source import app, mail, db, userman
+from source import app, mail, db, userman, helpers
 from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.api import APIWizardReset
 from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
+from source.api import APIWazuhAgentPass
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
 from source.config import Dashboards, RoleURLs
@@ -15,24 +16,6 @@ from flask_mail import Message
 from source.forms import AddUserForm
 import os
 import re
-import string
-import secrets
-
-
-def generate_password():
-    """Generate a ten-character alphanumeric password.
-
-    with at least one lowercase character,
-    at least one uppercase character,
-    and at least three digits
-    See: https://docs.python.org/3/library/secrets.html#recipes-and-best-practices
-    """
-    alphabet = string.ascii_letters + string.digits
-    while True:
-        password = ''.join(secrets.choice(alphabet) for i in range(10))
-        if (any(c.islower() for c in password) and any(c.isupper() for c in password) and sum(c.isdigit() for c in password) >= 3):
-            break
-    return password
 
 
 api = Api(app)
@@ -65,6 +48,8 @@ api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
 
 # Modules
 api.add_resource(APIModules, '/api/modules')
+
+api.add_resource(APIWazuhAgentPass, '/api/config/wazuh')
 
 
 # Deprecated binds to keep update API working over releases. Will be removed in next release.
@@ -149,7 +134,7 @@ def user():
         user = User()
         adduser.populate_obj(user)  # Copies matching attributes from form onto user
         user.roles = [Role.query.get(rid) for rid in user.roles]  # Get actual role objects from their IDs
-        rndpass = generate_password()
+        rndpass = helpers.generate_password()
         hash = userman.hash_password(rndpass)
         user.password = hash
         db.session.add(user)
