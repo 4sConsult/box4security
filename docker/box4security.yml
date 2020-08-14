@@ -7,7 +7,7 @@ services:
     restart: always
     ports:
      - 9200:9200
-    image: "registry.gitlab.com/4sconsult/box4s/elasticsearch:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/elasticsearch:1.8.6-rc"
     volumes:
      - data:/data
     env_file:
@@ -22,7 +22,7 @@ services:
      - ../config/secrets/wazuh.conf
     ports:
      - 127.0.0.1:5601:5601
-    image: "registry.gitlab.com/4sconsult/box4s/kibana:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/kibana:1.8.6-rc"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -38,14 +38,14 @@ services:
     volumes:
       - varlib_openvas:/var/lib/openvas
       - varlib_logstash:/var/lib/logstash
-    image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/openvas:1.8.6-rc"
     env_file:
       - ../config/secrets/openvas.conf
   suricata:
     build: suricata/.
     container_name: suricata
     restart: always
-    image: "registry.gitlab.com/4sconsult/box4s/suricata:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/suricata:1.8.6-rc"
     network_mode: "host"
     env_file:
       - suricata/.env
@@ -59,14 +59,14 @@ services:
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
-    image: "registry.gitlab.com/4sconsult/box4s/metricbeat:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/metricbeat:1.8.6-rc"
     depends_on:
       elasticsearch:
         condition: service_healthy
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat
-    image: "registry.gitlab.com/4sconsult/box4s/heartbeat:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/heartbeat:1.8.6-rc"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -87,7 +87,7 @@ services:
       - 9600:9600
       - 5044:5044
       - 5046:5046
-    image: "registry.gitlab.com/4sconsult/box4s/logstash:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/logstash:1.8.6-rc"
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - etcbox4s_logstash:/etc/logstash/conf.d/general/
@@ -98,7 +98,7 @@ services:
     depends_on:
       logstash:
         condition: service_healthy
-    image: "registry.gitlab.com/4sconsult/box4s/filebeat:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/filebeat:1.8.6-rc"
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - data:/data
@@ -107,7 +107,7 @@ services:
     networks:
       default:
         ipv4_address: 172.20.08.11
-    image: "registry.gitlab.com/4sconsult/box4s/web:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/web:1.8.6-rc"
     build: web/.
     command: >
      bash -c "python main.py db upgrade head &&
@@ -145,7 +145,7 @@ services:
         condition: service_healthy
   db:
     container_name: db
-    image: "registry.gitlab.com/4sconsult/box4s/db:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/db:1.8.6-rc"
     build: db/.
     volumes:
       - varlib_postgresql/:/var/lib/postgresql/data
@@ -160,7 +160,7 @@ services:
       retries: 5
   nginx:
     container_name: nginx
-    image: "registry.gitlab.com/4sconsult/box4s/nginx:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/nginx:1.8.6-rc"
     build: nginx/.
     ports:
       - 80:80
@@ -176,7 +176,7 @@ services:
 
   dnsmasq:
     container_name: dnsmasq
-    image: "registry.gitlab.com/4sconsult/box4s/dnsmasq:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/dnsmasq:1.8.6-rc"
     build: dnsmasq/.
     ports:
       - 53:5353/tcp
@@ -185,7 +185,7 @@ services:
       - varlib_box4s:/var/lib/box4s/
   elastalert:
     container_name: elastalert
-    image: "registry.gitlab.com/4sconsult/box4s/elastalert:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/elastalert:1.8.6-rc"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -198,7 +198,7 @@ services:
       - 3333
   wiki:
     container_name: wiki
-    image: "registry.gitlab.com/4sconsult/box4s/wiki:dev"
+    image: "registry.gitlab.com/4sconsult/box4s/wiki:1.8.6-rc"
     build: wiki/.
     restart: always
     volumes:
