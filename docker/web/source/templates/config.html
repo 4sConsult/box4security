@@ -257,6 +257,7 @@
                 dangerNode.innerHTML = '<p><i class="ui icon exclamation triangle"></i> Wichtig: Sie verwenden das Standardpasswort für Wazuh-Agents. Aktualisieren Sie es schnellstmöglich!</p>'
                 wazuhSegment.insertBefore(dangerNode, wazuhSegment.getElementsByTagName('h4')[0].nextSibling)
             }
+            inPass.val(d.password);
         });
     $('#formWazuh > .ui.green.button').on('click', async (e) => {
         e.preventDefault();
