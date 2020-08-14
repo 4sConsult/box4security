@@ -213,7 +213,7 @@
     // Scripts for Wazuh Config
     var wazuhSegment = document.getElementById('wazuh-segment');
     var inPass = $('#formWazuh input:password');
-    inPass.change(e => {
+    inPass.on('keyup', e => {
         $('#formWazuh > .ui.green.button').prop("disabled", false);
     });
     document.getElementById('copy-wazuh-pass').addEventListener('click', async (e) => {
