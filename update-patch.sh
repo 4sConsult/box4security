@@ -57,6 +57,17 @@ sudo chmod 755 /var/lib/box4s/wazuh-authd.pass
 
 ###################
 
+echo "### Detecting available memory and distribute it to the containers"
+# Detect rounded memory
+MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+MEM=$(python3 -c "print($MEM/1024.0**2)")
+# Give half of that to elasticsearch
+ESMEM=$(python3 -c "print(int($MEM*0.5))")
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/elasticsearch/.env.es
+# and one quarter to logstash
+LSMEM=$(python3 -c "print(int($MEM*0.25))")
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/logstash/.env.ls
+
 # Get the current images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
