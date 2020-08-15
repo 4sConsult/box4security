@@ -22,8 +22,6 @@ sudo docker rm  $(docker ps -q -a) || :
 # Remove all images, that are on the target system on every update
 sudo docker rmi $(sudo docker images -a -q) || :
 
-# Get the current images
-sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Make sure elasticsearch can write
 sudo chmod 777 -R /data/elasticsearch
@@ -58,6 +56,9 @@ strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 14 | tr -d '\n' > /var/li
 sudo chmod 755 /var/lib/box4s/wazuh-authd.pass
 
 ###################
+
+# Get the current images
+sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
