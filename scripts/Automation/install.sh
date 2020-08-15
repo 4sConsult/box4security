@@ -320,6 +320,15 @@ echo "### Setting up interfaces"
 sudo cp /home/amadmin/box4s/config/etc/network/interfaces /etc/network/interfaces
 sudo sed -i '/.*dhcp/q' /etc/network/interfaces
 
+set +e
+echo "### Setup system variables"
+IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
+IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
+INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
+echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
+source /etc/environment
+set -e
+
 IF_MGMT=$(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | head -n 1)
 awk "NR==1,/auto ens[0-9]*/{sub(/auto ens[0-9]*/, \"auto $IF_MGMT\")} 1" /etc/network/interfaces > /tmp/4s-ifaces
 sudo mv /tmp/4s-ifaces /etc/network/interfaces
@@ -345,15 +354,6 @@ do
   ip link set $iface down
   ip link set $iface up
 done
-
-set +e
-echo "### Setup system variables"
-IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
-IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
-INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
-source /etc/environment
-set -e
 
 # Find the portmirror interface for suricata
 touch /home/amadmin/box4s/docker/suricata/.env
