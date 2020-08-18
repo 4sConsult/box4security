@@ -56,9 +56,6 @@
 - [ ] Alle Label korrekt gesetzt
 - [ ] Bearbeitung innerhalb eines Sprints möglich
 
-~"stage::ready product owner"
-- [ ] Akzeptanzkriterien überprüft
-
 ## Sprint Backlog Items
 Die folgenden Aufgaben müssen erledigt werden, um die User Story zu implementieren:
 - [ ] ...
