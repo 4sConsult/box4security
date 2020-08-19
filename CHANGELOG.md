@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.8.6-rc](https://gitlab.com/4sconsult/box4s/-/tags/1.8.6-rc) - 2020-08-19
+## [1.8.6](https://gitlab.com/4sconsult/box4s/-/tags/1.8.6) - 2020-08-19
 
 ### Added
 * Modulare Konfiguration der BOX4security eingefügt
