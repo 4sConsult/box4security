@@ -9,7 +9,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Changed
 * Änderungen an der Einstufung und Bewertung von Schwachstellen vorgenommen
 * Wazuh nun als freischaltbares Modul außerhalb des Standards implementiert
-* Änderungen am rollenbasierten Routing der WebApp vorgenommen. Vorherige Lesezeichen könnten jetzt nicht mehr funktionieren
+* Änderungen am rollenbasierten Routing der WebApp vorgenommen - vorherige Lesezeichen könnten jetzt nicht mehr funktionieren
 * Alle API-Endpunkte auf gemeinsamen Präfix `/api` verschoben
 
 ### Optimized
