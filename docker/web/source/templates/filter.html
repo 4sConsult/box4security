@@ -192,10 +192,10 @@
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
   (async function() {
-    getEndpoint('rules/bpf/').then((ret) => {
+    getEndpoint('api/rules/bpf/').then((ret) => {
       addToTable('bpf', ret);
     })
-    getEndpoint('rules/logstash/').then((ret => {
+    getEndpoint('api/rules/logstash/').then((ret => {
       addToTable('logstash', ret)
     }))
   function addToTable(set, data) {
@@ -219,7 +219,7 @@
       tbody.append(row);
     })
     $( `#tbl-${set} tbody tr td a` ).on('click', (e) => {
-      getEndpoint(`rules/${set}/${$(e.delegateTarget).data('rule-id')}`, method='DELETE')
+      getEndpoint(`api/rules/${set}/${$(e.delegateTarget).data('rule-id')}`, method='DELETE')
       $(e.delegateTarget).closest('tr').remove();
 
     })
@@ -229,7 +229,7 @@
   $("a._flush").click((e) => {
     var set = $(e.delegateTarget).data('set');
     if (confirm(`Sind Sie sicher alle Regeln des ${set}-Filters unwiderruflich zu LÖSCHEN?`)) {
-      getEndpoint(`rules/${set}/`, method='DELETE');
+      getEndpoint(`api/rules/${set}/`, method='DELETE');
       $( `#tbl-${set} tbody` ).empty()
     }
   });
@@ -245,12 +245,14 @@
     // Submit Filter Script
     $('button._add').click(async (e) => {
       e.preventDefault();
+      $(e.currentTarget).html('<div class="ui active centered inline loader"></div>');
+      $(e.currentTarget).addClass('disabled');
       // Parse form data into json object
       var fd = new FormData($('form.ui.form')[0])
       var json = {};
       fd.forEach((value, key) => {json[key] = value});
       var set = $(e.delegateTarget).data('set');
-      const response = await fetch(`rules/${set}/`, {
+      const response = await fetch(`api/rules/${set}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

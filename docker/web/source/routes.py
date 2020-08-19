@@ -1,57 +1,42 @@
 """Module to handle all webapp routes."""
-from source import app, mail, db, userman
+from source import app, mail, db, userman, helpers
 from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.api import APIWizardReset
+from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
+from source.api import APIWazuhAgentPass
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.models import User, Role
-from source.config import Dashboards
+from source.config import Dashboards, RoleURLs
 import source.error
 from flask_restful import Api
 from flask import render_template, send_from_directory, request, abort, send_file, Response, redirect, url_for, flash
-from flask_user import login_required, current_user, roles_required
+from flask_user import login_required, current_user, roles_required, EmailError
 from flask_mail import Message
 from source.forms import AddUserForm
 import os
 import re
-import string
-import secrets
-
-
-def generate_password():
-    """Generate a ten-character alphanumeric password.
-
-    with at least one lowercase character,
-    at least one uppercase character,
-    and at least three digits
-    See: https://docs.python.org/3/library/secrets.html#recipes-and-best-practices
-    """
-    alphabet = string.ascii_letters + string.digits
-    while True:
-        password = ''.join(secrets.choice(alphabet) for i in range(10))
-        if (any(c.islower() for c in password) and any(c.isupper() for c in password) and sum(c.isdigit() for c in password) >= 3):
-            break
-    return password
 
 
 api = Api(app)
 
-api.add_resource(BPF, '/rules/bpf/<int:rule_id>')
-api.add_resource(BPFs, '/rules/bpf/')
-api.add_resource(LSR, '/rules/logstash/<int:rule_id>')
-api.add_resource(LSRs, '/rules/logstash/')
-api.add_resource(Version, '/ver/')
-api.add_resource(AvailableReleases, '/ver/releases/')
-api.add_resource(LaunchUpdate, '/update/launch/')
-api.add_resource(UpdateLog, '/update/log/')
-api.add_resource(UpdateStatus, '/update/status/')
-api.add_resource(Health, '/_health')
+api.add_resource(BPF, '/api/rules/bpf/<int:rule_id>')
+api.add_resource(BPFs, '/api/rules/bpf/')
+api.add_resource(LSR, '/api/rules/logstash/<int:rule_id>')
+api.add_resource(LSRs, '/api//rules/logstash/')
+api.add_resource(Version, '/api/ver/')
+api.add_resource(AvailableReleases, '/api/ver/releases/')
+api.add_resource(LaunchUpdate, '/api/update/launch/')
+api.add_resource(UpdateLog, '/api/update/log/', endpoint='api.update.log')
+api.add_resource(UpdateStatus, '/api/update/status/', endpoint='api.update.status')
+api.add_resource(Health, '/api/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 
-api.add_resource(AlertsQuick, '/rules/alerts_quick/')
-api.add_resource(Alert, '/rules/alerts/<alert_id>')
-api.add_resource(Alerts, '/rules/alerts/')
+
+api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
+api.add_resource(Alert, '/api/rules/alerts/<alert_id>')
+api.add_resource(Alerts, '/api/rules/alerts/')
 api.add_resource(AlertMailer, '/api/alerts/mailer/')
 
 # Wizard
@@ -60,6 +45,23 @@ api.add_resource(APIWizardReset, '/api/wizard/reset')
 # SMTP
 api.add_resource(APISMTP, '/api/config/smtp')
 api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
+
+# Modules
+api.add_resource(APIModules, '/api/modules')
+
+api.add_resource(APIWazuhAgentPass, '/api/config/wazuh')
+
+
+# Deprecated binds to keep update API working over releases. Will be removed in next release.
+@app.route('/update/log')
+def deprecated_update_log():
+    return redirect(url_for('api.update.log'), 301)
+
+
+# Deprecated binds to keep update API working over releases. Will be removed in next release.
+@app.route('/update/status')
+def deprecated_update_status():
+    return redirect(url_for('api.update.status'), 301)
 
 
 @app.before_request
@@ -80,18 +82,7 @@ def index():
     """Return the start dashboard."""
     if not current_user.has_role('Startseite'):
         # User does not have privileges to read the start page => redirect to the first he can or implicitly to 403 by trying to access start
-        for rdict in [
-            {'name': 'Super Admin', 'url': url_for('user')},
-            {'name': 'Filter', 'url': url_for('rules')},
-            {'name': 'Updates', 'url': url_for('update')},
-            {'name': 'User-Management', 'url': url_for('user')},
-            {'name': 'FAQ', 'url': url_for('faq')},
-            {'name': 'Dashboards-Master', 'url': '/startseite'},
-            {'name': 'SIEM', 'url': '/siem-overview'},
-            {'name': 'Schwachstellen', 'url': '/vuln-overview'},
-            {'name': 'Netzwerk', 'url': '/network-overview'},
-            {'name': 'Wiki', 'url': '/docs'},
-        ]:
+        for rdict in RoleURLs:
             if current_user.has_role(rdict['name']):
                 return redirect(rdict['url'])
     return catchall('start')
@@ -106,7 +97,11 @@ def staticfiles(filename):
 
 @app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
 def send_wazuh_files(filename):
-    return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
+    if os.getenv('BOX4s_WAZUH', 'false') == 'true':
+        return send_from_directory(app.config["WAZUH_FOLDER"], filename, as_attachment=True)
+    else:
+        # Wazuh Module not enabled
+        abort(403)
 
 
 @app.route('/faq', methods=['GET'])
@@ -123,8 +118,6 @@ def faq():
     return render_template('faq.html', client=client)
 
 
-@app.route('/super admin')
-@app.route('/user-management')
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 @roles_required(['Super Admin', 'User-Management'])
@@ -141,7 +134,7 @@ def user():
         user = User()
         adduser.populate_obj(user)  # Copies matching attributes from form onto user
         user.roles = [Role.query.get(rid) for rid in user.roles]  # Get actual role objects from their IDs
-        rndpass = generate_password()
+        rndpass = helpers.generate_password()
         hash = userman.hash_password(rndpass)
         user.password = hash
         db.session.add(user)
@@ -152,6 +145,11 @@ def user():
                 userman.email_manager._render_and_send_email(current_user.email, user, userman.USER_INVITE_USER_EMAIL_TEMPLATE, user_pass=rndpass)
             # send confirmation E-Mail
             userman.email_manager.send_confirm_email_email(user, None)
+        except EmailError:
+            flash('Beim Versenden der Registrationsemail ist ein Fehler aufgetreten. Eine Prüfung der SMTP-Einstellungen ist notwendig. Der Nutzer wurde nicht angelegt.', 'error')
+            # delete new User object if send fails
+            userman.db_manager.delete_object(user)
+            userman.db_manager.commit()
         except Exception:
             # delete new User object if send fails
             userman.db_manager.delete_object(user)
@@ -198,7 +196,6 @@ def faq_mail():
     return render_template('faq.html', client=client, mailsent=True)
 
 
-@app.route('/updates')
 @app.route('/update', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Updates'])
@@ -225,7 +222,7 @@ def rules():
 
 @app.route('/config', methods=['GET'])
 @login_required
-@roles_required(['Super Admin'])
+@roles_required(['Super Admin', 'Config'])
 def config():
     """Return the configuration page."""
     return render_template("config.html")
@@ -239,7 +236,9 @@ def alarms():
     return render_template("alert.html")
 
 
+# Deprecated route without /api/ prefix, will be removed soon.
 @app.route('/update/log/download', methods=['GET'])
+@app.route('/api/update/log/download', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Updates'])
 def updatelogdl():
@@ -309,11 +308,6 @@ def authenticate():
 # must be the last one (catchall)
 # let variable r hold the path
 # Redirects for permission pages from 403
-@app.route('/dashboards-master', defaults={'r': 'start'})
-@app.route('/schwachstellen', defaults={'r': 'vuln-overview'})
-@app.route('/siem', defaults={'r': 'siem-overview'})
-@app.route('/netzwerk', defaults={'r': 'network-overview'})
-@app.route('/startseite', defaults={'r': 'start'})
 @app.route('/<path:r>')
 @login_required
 def catchall(r):

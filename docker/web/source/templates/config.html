@@ -15,11 +15,16 @@
     <div class="ui inverted section divider"></div>
     <div class="section">
         <div class="ui top attached secondary pointing tabular menu">
-            <a class="item active">
+            <a data-tab="mail" class="item active">
               Mail
             </a>
+            {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}
+            <a data-tab="wazuh" class="item">
+              Wazuh
+            </a>
+            {% endif %}
           </div>
-          <div class="ui bottom attached active tab segment">
+          <div data-tab="mail" class="ui bottom attached active tab segment">
             <!-- Mail -->
             <form id="formSMTP" method="get" class="ui form" enctype="multipart/form-data">
                 <h4 class="ui dividing header">SMTP-Konfiguration</h4>
@@ -87,8 +92,32 @@
                   </div>
                 </div>
                 <button class="ui green button" type="submit">Änderungen anwenden</button>
+                <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
               </form>
           </div>
+          {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}
+          <div id='wazuh-segment' data-tab="wazuh" class="ui bottom attached tab segment">
+            <!-- Wazuh-->
+            <h4 class="ui dividing header">Endgeräte-IDS-Konfiguration</h4>
+            <div class="ui form" id="formWazuh">
+                <div class="field">
+                    <label>Passwort für Wazuh-Agents</label>
+                    <div class="ui action input">
+                        <input type="password">
+                        <a id="copy-wazuh-pass" class="ui primary left labeled icon button">
+                            <i class="ui icon copy"></i>
+                            Kopieren
+                        </a>
+                        <a id="renew-wazuh-pass" class="ui secondary left labeled icon button">
+                            <i class="ui icon random"></i>
+                            Erneuern
+                        </a>
+                    </div>
+                </div>
+                <button disabled class="ui green button">Änderungen anwenden</button>
+            </div>
+          </div>
+          {% endif %}
     </div>
   <div class="ui vertical footer segment">
     <div class="ui center aligned container">
@@ -100,6 +129,8 @@
   <script type="text/javascript">
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
+
+  $('.menu .item').tab();
 
   $("#cert-text, .ui.action.input.cert>.button").click(function() {
     $(this).parent().find("#cert-file").click();
@@ -182,4 +213,77 @@
     
     });
   </script>
+{% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}
+  <script>
+    // Scripts for Wazuh Config
+    var wazuhSegment = document.getElementById('wazuh-segment');
+    var inPass = $('#formWazuh input:password');
+    inPass.on('keyup', e => {
+        $('#formWazuh > .ui.green.button').prop("disabled", false);
+    });
+    document.getElementById('copy-wazuh-pass').addEventListener('click', async (e) => {
+        e.preventDefault();
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(inPass.val()).select();
+        document.execCommand("copy");
+        temp.remove();
+        alert('Wazuh-Agent-Passwort in die Zwischenablage kopiert.');
+    });
+    document.getElementById('renew-wazuh-pass').addEventListener('click', async (e) => {
+        e.preventDefault();
+        fetch('/api/config/wazuh', {
+            method: 'POST'
+        }).then(r => r.json())
+        .then(d => {
+            inPass.val(d.password);
+            var temp = $("<input>");
+            $("body").append(temp);
+            temp.val(d.password).select();
+            document.execCommand("copy");
+            temp.remove();
+            var oldNodes = wazuhSegment.querySelectorAll('.inverted.segment');
+            oldNodes.forEach(node => wazuhSegment.removeChild(node));
+            var successNode = document.createElement('div');
+            ['ui', 'inverted', 'green', 'segment']
+                .forEach(cl => successNode.classList.add(cl));
+            successNode.innerHTML = '<p><i class="ui icon check"></i> Passwort der Wazuh-Agents erfolgreich aktualisiert.</p>';
+            wazuhSegment.insertBefore(successNode, wazuhSegment.getElementsByTagName('h4')[0].nextSibling);
+            alert('Neues Wazuh-Agent-Passwort generiert und in die Zwischenablage kopiert.');
+        });
+    });
+    fetch('/api/config/wazuh')
+        .then(r => r.json())
+        .then(d => {
+            inPass.val(d.password);
+        });
+    $('#formWazuh > .ui.green.button').on('click', async (e) => {
+        e.preventDefault();
+        if(!inPass.val().length > 0)
+        {
+            alert("Das Passwort für die Wazuh-Agents kann nicht leer sein.")
+        } else {
+            fetch('/api/config/wazuh', {
+                method: "PUT",
+                body: JSON.stringify({password: inPass.val()}),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(r => r.json())
+                .then(d => {
+                    var oldNodes = wazuhSegment.querySelectorAll('.inverted.segment');
+                    oldNodes.forEach(node => wazuhSegment.removeChild(node));
+                    var successNode = document.createElement('div');
+                    ['ui', 'inverted', 'green', 'segment']
+                        .forEach(cl => successNode.classList.add(cl));
+                        successNode.innerHTML = '<p><i class="ui icon check"></i> Passwort der Wazuh-Agents erfolgreich aktualisiert.</p>'
+                    wazuhSegment.insertBefore(successNode, wazuhSegment.getElementsByTagName('h4')[0].nextSibling)
+                    inPass.val(d.password);
+            });
+        }
+    });
+  </script>
+{% endif %}
 {% endblock %}
