@@ -120,7 +120,13 @@ sudo apt-fast remove --purge -y apache2 nginx
 # Lets install all dependencies
 waitForNet
 echo "### Installing all dependencies"
-sudo apt-fast install -y curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
+sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
+
+sudo add-apt-repository -y ppa:oisf/suricata-stable
+sudo apt-get update
+sudo apt-fast install -y software-properties-common suricata # TODO: remove in #375
+sudo systemctl disable suricata || :
+
 git lfs install --skip-smudge
 pip3 install semver elasticsearch-curator requests
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -302,6 +308,10 @@ sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
 
+# TODO: remove in #375
+sudo mkdir -p /var/lib/suricata/rules
+sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/suricata/rules/quickcheck.rules
+
 # Create a folder for the alerting rules
 sudo mkdir -p /var/lib/elastalert/rules
 
@@ -309,6 +319,15 @@ echo "### Setting up interfaces"
 # Find dhcp and remove everything after
 sudo cp /home/amadmin/box4s/config/etc/network/interfaces /etc/network/interfaces
 sudo sed -i '/.*dhcp/q' /etc/network/interfaces
+
+set +e
+echo "### Setup system variables"
+IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
+IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
+INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
+echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
+source /etc/environment
+set -e
 
 IF_MGMT=$(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | head -n 1)
 awk "NR==1,/auto ens[0-9]*/{sub(/auto ens[0-9]*/, \"auto $IF_MGMT\")} 1" /etc/network/interfaces > /tmp/4s-ifaces
@@ -336,13 +355,6 @@ do
   ip link set $iface up
 done
 
-echo "### Setup system variables"
-IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
-IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
-INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
-source /etc/environment
-
 # Find the portmirror interface for suricata
 touch /home/amadmin/box4s/docker/suricata/.env
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
@@ -353,7 +365,19 @@ sudo systemctl disable systemd-resolved
 sudo systemctl enable resolvconf
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 
+echo "### Enabling/Disabling Modules"
+sudo mkdir -p /etc/box4s/
+sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
+sudo chmod 444 /etc/box4s/modules.conf
+
+echo "### Generating Wazuh Agent-Password"
+strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 14 | tr -d '\n' > /var/lib/box4s/wazuh-authd.pass
+sudo chmod 755 /var/lib/box4s/wazuh-authd.pass
+
 # Setup the new Box4Security Service and enable it
+sudo mkdir -p /usr/bin/box4s/
+sudo cp /home/amadmin/box4s/scripts/System_Scripts/box4s_service.sh /usr/bin/box4s/box4s_service.sh
+sudo chmod +x /usr/bin/box4s/box4s_service.sh
 sudo cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 sudo systemctl daemon-reload
 sudo systemctl enable box4security.service
@@ -450,8 +474,10 @@ sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
 
+sleep 300
+
 echo "### Wait for kibana to become available ..."
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || echo ''
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 || echo ''
 
 # Import Dashboard
 echo "### Install dashboards"
@@ -481,6 +507,9 @@ if [[ "$*" == *runner* ]]; then
 # If in a runner environment exit now (successfully)
   exit 0
 fi
+
+echo "### Activating unattended upgrades"
+printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
 
 echo "### Continue cleaning up and updating the tools"
 sudo apt-fast autoremove -y

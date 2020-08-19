@@ -9,16 +9,13 @@ RestartSec=5
 TimeoutSec=infinity
 # Pass environmentfile to service
 EnvironmentFile=/etc/environment
-
-# Stop and remove old container
-ExecStartPre=-/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml down -v
-ExecStartPre=-/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml rm -v
+EnvironmentFile=/etc/box4s/modules.conf
 
 # Compose Box4Security up
-ExecStart=/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml up --no-color --no-build --remove-orphans
+ExecStart=/usr/bin/box4s/box4s_service.sh up
 
 # Compose Box4Security down
-ExecStop=/usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml down -v
+ExecStop=/usr/bin/box4s/box4s_service.sh down
 
 [Install]
 WantedBy=multi-user.target

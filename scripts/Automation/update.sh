@@ -105,7 +105,7 @@ function rollback() {
   # Prepare new update.sh for next update
   chown amadmin:amadmin $BASEDIR$GITDIR/scripts/Automation/update.sh
   chmod +x $BASEDIR$GITDIR/scripts/Automation/update.sh
-  curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
+  curl -sLk -XDELETE https://localhost/api/update/status/ > /dev/null
   sleep 5
   # Exit update with error code
   exit 1
@@ -149,18 +149,18 @@ function backup() {
 exec 1>/var/log/box4s/update.log && exec 2>&1
 # Notify API that we're starting
 # Follow redirects, accept invalid certificate and dont produce output
-curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"running"}' > /dev/null
+curl -sLk -XPOST https://localhost/api/update/status/ -H "Content-Type: application/json" -d '{"status":"running"}' > /dev/null
 sleep 2
 
 # Current version is the first "prior" version - get it from endpoint
-PRIOR=$(curl -sLk -XGET https://localhost/ver/ | jq -r .version)
+PRIOR=$(curl -sLk -XGET https://localhost/api/ver/ | jq -r .version)
 VERSIONS=()
 # Use Python Script to create array of versions that have to be installed
 # versions between current and the latest
 cd $BASEDIR$GITDIR/main
 mapfile -t VERSIONS < <(python3 /home/amadmin/box4s/scripts/Automation/versions.py)
 # GET env from local endpoint and extract it so we can keep it
-ENV=$(curl -sLk localhost/ver/ | jq -r '.env')
+ENV=$(curl -sLk localhost/api/ver/ | jq -r '.env')
 TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
 source /home/amadmin/box4s/config/secrets/db.conf
@@ -173,6 +173,7 @@ do
    cp /home/amadmin/box4s/docker/logstash/.env.ls /var/lib/box4s/backup/.env.ls
    cp /home/amadmin/box4s/docker/elasticsearch/.env.es /var/lib/box4s/backup/.env.es
    git checkout -f $v >/dev/null 2>&1
+   blackbox_postdeploy
    # Restore Memory Settings for JVM
    cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4s/docker/logstash/.env.ls
    cp /var/lib/box4s/backup/.env.es /home/amadmin/box4s/docker/elasticsearch/.env.es
@@ -183,7 +184,7 @@ do
    if  [[ ! $? -eq 0 ]]; then
      echo "Update auf $v fehlgeschlagen"
      # Notify API that we're starting to roll back
-     curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-running"}' > /dev/null
+     curl -sLk -XPOST https://localhost/api/update/status/ -H "Content-Type: application/json" -d '{"status":"rollback-running"}' > /dev/null
      rollback $PRIOR $v
    fi
    # successfully updated version
@@ -201,10 +202,10 @@ echo "Update auf $TAG abgeschlossen."
 echo "VERSION=$TAG" > /home/amadmin/box4s/VERSION
 echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
 # Notify API that we're finished
-curl -sLk -XPOST https://localhost/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
+curl -sLk -XPOST https://localhost/api/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
 # Prepare new update.sh for next update
 chown amadmin:amadmin $BASEDIR$GITDIR/scripts/Automation/update.sh
 chmod +x $BASEDIR$GITDIR/scripts/Automation/update.sh
 sleep 15 # sleep for API <-> Webbrowser communication
-curl -sLk -XDELETE https://localhost/update/status/ > /dev/null
+curl -sLk -XDELETE https://localhost/api/update/status/ > /dev/null
 exit 0

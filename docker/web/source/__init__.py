@@ -12,5 +12,6 @@ mail.init_app(app)
 migrate.init_app(app, db)
 userman = CreatorUserMan(app, db, User)
 
+from . import helpers # noqa
 from . import routes  # noqa
 # disable pep8 checks for this one

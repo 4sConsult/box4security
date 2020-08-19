@@ -1,6 +1,37 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [1.8.6-rc](https://gitlab.com/4sconsult/box4s/-/tags/1.8.6-rc) - 2020-08-19
+
+### Added
+* Modulare Konfiguration der BOX4security eingefügt
+
+### Changed
+* Änderungen an der Einstufung und Bewertung von Schwachstellen vorgenommen
+* Wazuh nun als freischaltbares Modul außerhalb des Standards implementiert
+* Änderungen am rollenbasierten Routing der WebApp vorgenommen - vorherige Lesezeichen könnten jetzt nicht mehr funktionieren
+* Alle API-Endpunkte auf gemeinsamen Präfix `/api` verschoben
+
+### Optimized
+* Das Betriebssystem der BOX4security wird sich nun regelmäßig automatisch aktualisieren
+* Darstellung eines Hinweises, sollte das Anlegen eines Nutzers aufgrund fehlerhafter SMTP-Konfiguration fehlschlagen
+* Konfiguration der WebApp-URLs, die den Rollen zugeordnet sind, verbessert
+* IDS-Alarme werden nun ohne Verzögerung zeitlich exakt indiziert
+* Wazuh-Endgeräte-Registrierung nun per Passwort gegen Missbrauch geschützt - das Passwort wird bei Update automatisch zufällig gewählt und ist über die Konfigurationsseite einzusehen und zu ändern
+
+### Fixed
+* Internen Berechtigungsfehler behoben
+* Fehler behoben, bei dem Nutzer trotz Config-Rolle nicht die Konfiguration einsehen durften
+* Bug behoben, bei dem das IDS die Filterregeln (BPF) nicht direkt übernahm.
+* BSI-Alarme des IDS werden wieder angewandt und nicht länger zu hoch evaluiert
+* Leere Felder bei der Filtererstellung werden nun korrekt als Wildcard (`*`) interpretiert
+
+### Deprecated
+* Ursprüngliche Endpunkte die das Update betreffen erhalten - diese werden jedoch mit dem folgenden Release entfernt
+
+### Removed
+
+
 ## [1.8.5](https://gitlab.com/4sconsult/box4s/-/tags/1.8.5) - 2020-07-22
 
 ### Added

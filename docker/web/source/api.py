@@ -1,5 +1,5 @@
 """Module for webapp API."""
-from source import models, db
+from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
@@ -51,7 +51,7 @@ def writeBPFFile():
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
         # login to dockerhost using ssh key and execute restartSuricata
-        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /home/amadmin/restartSuricata.sh')
+        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml restart suricata')
 
 
 def writeAlertFile(alert):
@@ -148,10 +148,10 @@ class BPFs(Resource):
         """Implement a new BPF Rule."""
         d = request.json
         newRule = models.BPFRule(
-            src_ip=d['src_ip'],
-            src_port=d['src_port'],
-            dst_ip=d['dst_ip'],
-            dst_port=d['dst_port'],
+            src_ip=d['src_ip'] if d['src_ip'] else "0.0.0.0",
+            src_port=d['src_port'] if d['src_port'] else 0,
+            dst_ip=d['dst_ip'] if d['dst_ip'] else "0.0.0.0",
+            dst_port=d['dst_port'] if d['dst_port'] else 0,
             proto=d['proto'],
         )
         # Add new rule to db
@@ -225,10 +225,10 @@ class LSRs(Resource):
         """Implement new Logstash Rule."""
         d = request.json
         newRule = models.LogstashRule(
-            src_ip=d['src_ip'],
-            src_port=d['src_port'],
-            dst_ip=d['dst_ip'],
-            dst_port=d['dst_port'],
+            src_ip=d['src_ip'] if d['src_ip'] else "0.0.0.0",
+            src_port=d['src_port'] if d['src_port'] else 0,
+            dst_ip=d['dst_ip'] if d['dst_ip'] else "0.0.0.0",
+            dst_port=d['dst_port'] if d['dst_port'] else 0,
             proto=d['proto'],
             signature_id=d['signature_id'],
             signature=d['signature']
@@ -823,6 +823,83 @@ class APIWizardReset(Resource):
                 db.session.commit()
                 return {'message': 'success'}, 200
         abort(403, message="Resetting Wizard not allowed at this stage.")
+
+
+class APIModules(Resource):
+    """Endpoint to work with modules."""
+    def get(self):
+        """Get all modules and their state.
+        Example: [{"name": "BOX4s_WAZUH", "enabled": "false"}, {"name": "BOX4s_INCMAN", "enabled": "false"}]
+        """
+        modules = []
+        try:
+            with open('/etc/box4s/modules.conf', 'r') as fm:
+                for line in fm:
+                    if not line.startswith('#'):
+                        # not a comment
+                        env = line.rstrip().split('=')
+                        # module is the name before =
+                        module = env[0]
+                        state = env[1]
+                        modules.append({'name': module, 'enabled': state})
+        except Exception:
+            abort(500, message="Failed to read the list of modules.")
+        return modules, 200
+
+
+class APIWazuhAgentPass(Resource):
+    """Endpoint to interact with the Wazuh agent password."""
+    def __init__(self):
+        """Register Parser.
+
+        Always abort if Wazuh module not enabled.
+        """
+        if not os.getenv('BOX4s_WAZUH') == 'true':
+            abort(403, message="BOX4security is not configured to use Wazuh.")
+        self.parser = reqparse.RequestParser()
+
+    @roles_required(['Super Admin', 'Config'])
+    def get(self):
+        """GET the current wazuh agent password."""
+        try:
+            with open('/var/lib/box4s/wazuh-authd.pass', 'r') as f:
+                password = f.read().strip()
+            return {'password': password}
+        except Exception:
+            abort(500, message="Failed to read the Wazuh password file.")
+
+    @roles_required(['Super Admin', 'Config'])
+    def post(self):
+        """Generate, set and return a new, random wazuh agent password."""
+        password = helpers.generate_password()
+        try:
+            with open('/var/lib/box4s/wazuh-authd.pass', 'w') as f:
+                f.write(password)
+                return {'password': password}
+        except Exception:
+            abort(500, message="Failed to write the Wazuh password file.")
+
+        try:
+            os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart wazuh')
+        except Exception:
+            abort(500, message="Failed to restart the Wazuh service.")
+
+    @roles_required(['Super Admin', 'Config'])
+    def put(self):
+        """Set the supplied password as wazuh agent password."""
+        self.parser.add_argument('password', type=str, required=True)
+        self.args = self.parser.parse_args()
+        password = self.args['password']
+        try:
+            with open('/var/lib/box4s/wazuh-authd.pass', 'w') as f:
+                f.write(password)
+        except Exception:
+            abort(500, message="Failed to write the Wazuh password file.")
+        try:
+            os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart wazuh')
+        except Exception:
+            abort(500, message="Failed to restart the Wazuh service.")
+        return {'password': self.args['password']}
 
 
 class Health(Resource):
