@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Optimized
 
 ### Fixed
+* Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.
 
 ### Deprecated
 
