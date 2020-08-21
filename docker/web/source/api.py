@@ -62,12 +62,18 @@ def writeAlertFile(alert):
         f_alert.write(filled)
 
 
-def writeQuickAlertFile(key):
+def enableQuickAlert(key, email):
     """Write a quick alert to file."""
     # TODO: check permissions / Try error
-    with open(f'/var/lib/elastalert/rules/quick_{ key }.yaml', 'w') as f_alert:
-        filled = render_template(f'application/quick_alert_{ key }.yaml.j2', alert={})
-        f_alert.write(filled)
+    smtp = {
+        'host': os.getenv('MAIL_SERVER'),
+        'port': os.getenv('MAIL_PORT'),
+        'useTLS': os.getenv('MAIL_USE_TLS'),
+        'sender': os.getenv('MAIL_DEFAULT_SENDER'),
+    }
+    yaml = render_template(f"application/quick_alert_{  key }.yaml.j2", target=email, smtp=smtp)
+    response = requests.post(f"http://elastalert:3030/rules/quick_{  key }", json={'yaml': yaml})
+    return response
 
 
 def restartBOX4s(sleep=10):
@@ -92,8 +98,8 @@ def writeSMTPConfig(config):
     with open('/etc/box4s/msmtprc', 'w') as etc_msmtp:
         filled = render_template('application/msmtprc.j2', smtp=config)
         etc_msmtp.write(filled)
-    with open('/var/lib/box4s/elastalertsmtp.yaml', 'w') as varlib_elastalertsmtp:
-        filled = render_template('application/elastalertsmtp.yaml.j2', smtp=config)
+    with open('/var/lib/box4s/elastalert_smtp.yaml', 'w') as varlib_elastalertsmtp:
+        filled = render_template('application/elastalert_smtp.yaml.j2', smtp=config)
         varlib_elastalertsmtp.write(filled)
 
 
@@ -505,8 +511,7 @@ class AlertsQuick(Resource):
             return {'key': self.args['key']}, 400
         if "email" not in self.args:
             abort(400, message="Bad Request. Missing email parameter.")
-        yaml = render_template(f"application/quick_alert_{  self.args['key'] }.yaml.j2", target=self.args['email'])
-        response = requests.post(f"http://elastalert:3030/rules/quick_{  self.args['key'] }", json={'yaml': yaml})
+        response = enableQuickAlert(key=self.args['key'], email=self.args['email'])
         return response.json(), 202
 
     @roles_required(['Super Admin', 'Alerts'])
