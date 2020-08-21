@@ -194,6 +194,7 @@ services:
     volumes:
       - varlib_elastalert_rules:/opt/elastalert/rules
       - /var/lib/box4s/elastalert_smtp.yaml:/opt/elastalert/smtp_auth_file.yaml
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
     expose:
       - 3030
       - 3333
