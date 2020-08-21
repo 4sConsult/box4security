@@ -316,7 +316,7 @@ sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/su
 sudo mkdir -p /var/lib/elastalert/rules
 
 # Copy default elastalert smtp auth file
-sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalertsmtp.yaml
+sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalerts_mtp.yaml
 
 echo "### Setting up interfaces"
 # Find dhcp and remove everything after
