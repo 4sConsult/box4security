@@ -109,10 +109,13 @@ def writeSMTPConfig(config):
         except FileNotFoundError:
             alert_mail = "box@4sconsult.de"
         try:
-            ea = requests.get("http://elastalert:3030/rules")
-            rules = ea.json()
-            for key in rules:
-                enableQuickAlert(key, email=alert_mail, smtp=config)
+            ea = requests.get("http://elastalert:3030/rules").json()
+            for key in ea['rules']:
+                if key.startswith('quick'):
+                    key = key.replace('quick_', '')
+                    # Check key whitelist
+                    if key in ['malware', 'ids', 'vuln', 'netuse']:
+                        enableQuickAlert(key=key, email=alert_mail, smtp=config)
         except Timeout:
             abort(504, message="Alert API Timeout")
         except ConnectionError:
