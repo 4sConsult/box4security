@@ -32,6 +32,9 @@ sudo chmod 777 -R /data/suricata/eve.json
 ###################
 # Changes here
 
+#remove unused script from system
+sudo rm /home/amadmin/box4s/scripts/Elastic_Scripts/ -R
+
 
 ###################
 
