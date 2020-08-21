@@ -82,6 +82,7 @@ def writeSMTPConfig(config):
     Writes:
         - /etc/box4s
         - /etc/msmtprc
+        - /var/lib/box4s/elastalertsmtp.yaml
 
     Expects a Python dictionary that has the keys for config.
     """
@@ -91,6 +92,9 @@ def writeSMTPConfig(config):
     with open('/etc/box4s/msmtprc', 'w') as etc_msmtp:
         filled = render_template('application/msmtprc.j2', smtp=config)
         etc_msmtp.write(filled)
+    with open('/var/lib/box4s/elastalertsmtp.yaml', 'w') as varlib_elastalertsmtp:
+        filled = render_template('application/elastalertsmtp.yaml.j2', smtp=config)
+        varlib_elastalertsmtp.write(filled)
 
 
 class BPF(Resource):
