@@ -2,9 +2,9 @@ alert:
     - email
 email:
     - "{{ target }}"
-from_addr: "box@4sconsult.de"
+from_addr: "{{ smtp['senderMail'] }}"
 smtp_host: "{{ smtp['host'] }}"
 smtp_port: "{{ smtp['port'] }}"
-smtp_ssl: {{ smtp['useTLS'] }}
+smtp_ssl: {{ smtp['tls'] }}
 smtp_auth_file: "/opt/elastalert/smtp_auth_file.yaml"
 ca_certs: "/etc/ssl/certs/ca-certificates.crt"

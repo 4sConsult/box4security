@@ -62,15 +62,16 @@ def writeAlertFile(alert):
         f_alert.write(filled)
 
 
-def enableQuickAlert(key, email):
+def enableQuickAlert(key, email, smtp={}):
     """Write a quick alert to file."""
     # TODO: check permissions / Try error
-    smtp = {
-        'host': os.getenv('MAIL_SERVER'),
-        'port': os.getenv('MAIL_PORT'),
-        'useTLS': os.getenv('MAIL_USE_TLS'),
-        'sender': os.getenv('MAIL_DEFAULT_SENDER'),
-    }
+    if not smtp:
+        smtp = {
+            'host': os.getenv('MAIL_SERVER'),
+            'port': os.getenv('MAIL_PORT'),
+            'tls': os.getenv('MAIL_USE_TLS'),
+            'sender': os.getenv('MAIL_DEFAULT_SENDER'),
+        }
     yaml = render_template(f"application/quick_alert_{  key }.yaml.j2", target=email, smtp=smtp)
     response = requests.post(f"http://elastalert:3030/rules/quick_{  key }", json={'yaml': yaml})
     return response
@@ -101,6 +102,23 @@ def writeSMTPConfig(config):
     with open('/var/lib/box4s/elastalert_smtp.yaml', 'w') as varlib_elastalertsmtp:
         filled = render_template('application/elastalert_smtp.yaml.j2', smtp=config)
         varlib_elastalertsmtp.write(filled)
+        # Newly set rules with changed smtp config
+        try:
+            with open('/var/lib/box4s/alert_mail.conf') as fd:
+                alert_mail = fd.read().strip()
+        except FileNotFoundError:
+            alert_mail = "box@4sconsult.de"
+        try:
+            ea = requests.get("http://elastalert:3030/rules")
+            rules = ea.json()
+            for key in rules:
+                enableQuickAlert(key, email=alert_mail, smtp=config)
+        except Timeout:
+            abort(504, message="Alert API Timeout")
+        except ConnectionError:
+            abort(503, message="Alert API unreachable")
+        except Exception:
+            abort(502, message="Alert API Failure")
 
 
 class BPF(Resource):
