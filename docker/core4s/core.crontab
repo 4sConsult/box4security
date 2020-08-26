@@ -4,7 +4,7 @@
 @daily  $BASEDIR/$GITDIR/scripts/Automation/diskspacealert.sh && sh /scripts/croncheck.sh disk_space SUCCESS || sh /scripts/croncheck.sh disk_space FAILURE
 
 # Execute Curator Daily
-@daily curator --config /core4s/curator/curator.yml /core4s/curator/actions.yml
+@daily curator --config /core4s/curator/curator.yml /core4s/curator/actions.yml && sh /core4s/scripts/croncheck.sh curator SUCCESS || sh /core4s/scripts/croncheck.sh curator FAILURE
 
 # Score calculation
 */15 * * * * $BASEDIR/$GITDIR/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1
