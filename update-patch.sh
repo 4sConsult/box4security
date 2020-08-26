@@ -32,7 +32,8 @@ sudo chmod 777 -R /data/suricata/eve.json
 ###################
 # Changes here
 
-
+#remove curator because it is moved to core4s
+pip3 uninstall elasticsearch-curator
 ###################
 
 echo "### Detecting available memory and distribute it to the containers"

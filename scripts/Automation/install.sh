@@ -128,7 +128,7 @@ sudo apt-fast install -y software-properties-common suricata # TODO: remove in #
 sudo systemctl disable suricata || :
 
 git lfs install --skip-smudge
-pip3 install semver elasticsearch-curator requests
+pip3 install semver requests
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 

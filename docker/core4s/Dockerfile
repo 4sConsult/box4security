@@ -9,6 +9,6 @@ ADD scripts /core4s/scripts
 ADD curator /core4s/curator
 ADD entry.sh /core4s/entry.sh
 
-RUN chmod 755 /entry.sh
+RUN chmod 755 /core4s/entry.sh
 
 CMD ["sh", "-c", "tail -f /dev/null"]
