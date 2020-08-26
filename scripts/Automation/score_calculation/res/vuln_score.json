@@ -1,3 +1,33 @@
-{ 
-  "query": " SELECT COUNT(cvss), cvss FROM \"logstash-vulnwhisperer-*\" WHERE cvss IS NOT NULL GROUP BY 2 "
-}
+{
+    "query": {
+        "range": {
+            "@timestamp": {
+                "gte": "now-1d/d",
+                "lt": "now"
+            }
+        }
+    }, 
+    "size": 0,
+    "aggs": {
+        "uniqueVul": {                                                 
+           "terms": {                                                         
+                "field": "uniqueVul",
+                "size": 5000
+            },
+            "aggs": { 
+                "uniqueVul": {                                             
+                    "top_hits": {                                                  
+                        "sort": [                                                    
+                            {                                                        
+                            "@timestamp": "asc"                                     
+                            }                                                        
+                        ],
+                        "_source": ["uniqueVul", "client.domain", "cvss", "@timestamp"],
+                        "size": 1                                                    
+                    }                                                            
+                }                                                              
+            }                                                                
+        }                                                                  
+    }                                                                    
+} 
+  
