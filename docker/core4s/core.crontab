@@ -1,0 +1,25 @@
+# m h  dom mon dow   command
+
+# Check Disk Space Daily
+@daily  $BASEDIR/$GITDIR/scripts/Automation/diskspacealert.sh && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh disk_space SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh disk_space FAILURE
+
+# Execute Curator Daily
+@daily curator --config ~/curator.yml ~/actions.yml
+
+# Score calculation
+*/15 * * * * $BASEDIR/$GITDIR/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1
+
+# Leere eve.json
+0 */6 * * *  echo "" > /data/suricata/eve.json  && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log FAILURE
+
+# Collect OpenVAS Reports
+*/30 * * * *  docker exec openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh vulnwhisp SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh vulnwhisp FAILURE
+
+# Update Resources on Sunday at 9 am
+0 9 * * 0 $BASEDIR/$GITDIR/scripts/Automation/resourceupdate.sh && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh resourceupdate_sunday SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh resourceupdate_sunday FAILURE
+
+# Suricata update
+@daily docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh suricata_update FAILURE
+
+# OpenVAS update
+@daily docker exec openvas /root/update.sh > /dev/null 2>&1 && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh openvas_update SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh openvas_update FAILURE
