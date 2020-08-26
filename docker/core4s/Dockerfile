@@ -1,5 +1,14 @@
-FROM alpine:latest
+FROM ubuntu:latest
 
-COPY entry.sh /entry.sh
+RUN apt-get update && apt-get install -y \
+    python3-pip
 
-CMD ["/entry.sh"]
+RUN pip3 install elasticsearch-curator
+
+ADD scripts /core4s/scripts
+ADD curator /core4s/curator
+ADD entry.sh /core4s/entry.sh
+
+RUN chmod 755 /entry.sh
+
+CMD ["sh", "-c", "tail -f /dev/null"]

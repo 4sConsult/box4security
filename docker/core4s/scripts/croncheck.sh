@@ -3,13 +3,12 @@
 #$1 contains name of the cronjob
 #$2 contains variable to show cronjob failure/success
 #usage: replace name and cronjob:
-###################cronjob && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh NAME SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh NAME FAILURE
+###################cronjob && sh /scripts/croncheck.sh NAME SUCCESS || sh /scripts/croncheck.sh NAME FAILURE
 #
 #########Changable Variables################
-user=$(whoami)
 loglocation="/var/log/cronchecker"
-logfile="$loglocation/cronjobchecker_"$user".json"
-tempfile="$loglocation/cronjobchecker_"$user".json.tmp"
+logfile="$loglocation/cronjobchecker.json"
+tempfile="$loglocation/cronjobchecker.json.tmp"
 email_reciever="box@4sconsult.de"
 vulnwhisp_log="$loglocation/vulnwhisp.log"
 ########################################

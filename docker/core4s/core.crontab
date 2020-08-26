@@ -1,7 +1,7 @@
 # m h  dom mon dow   command
 
 # Check Disk Space Daily
-@daily  $BASEDIR/$GITDIR/scripts/Automation/diskspacealert.sh && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh disk_space SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh disk_space FAILURE
+@daily  $BASEDIR/$GITDIR/scripts/Automation/diskspacealert.sh && sh /scripts/croncheck.sh disk_space SUCCESS || sh /scripts/croncheck.sh disk_space FAILURE
 
 # Execute Curator Daily
 @daily curator --config ~/curator.yml ~/actions.yml
