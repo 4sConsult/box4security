@@ -2,7 +2,9 @@
     "score_type": "%1",
 	"value": %2,
 	"timestamp": %3,
-    "rule": {
-        "text": "%4"
-    }
+    "rules": [
+        {
+            "text": "%4"
+        }
+    ]
 }
