@@ -19,7 +19,6 @@ initialize()
 if [ ! -f "$logfile" ];then
         if [ ! -d "$loglocation" ];then
                 mkdir $loglocation
-                chown amadmin:amadmin $loglocation
         fi
         {
         echo '{'
