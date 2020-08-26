@@ -2,7 +2,8 @@ FROM ubuntu:latest
 
 RUN apt-get update && apt-get install -y \
     python3-pip\
-    jq
+    jq\
+    msmtp
 
 RUN pip3 install elasticsearch-curator
 

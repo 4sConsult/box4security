@@ -3,7 +3,7 @@
 #$1 contains name of the cronjob
 #$2 contains variable to show cronjob failure/success
 #usage: replace name and cronjob:
-###################cronjob && sh /scripts/croncheck.sh NAME SUCCESS || sh /scripts/croncheck.sh NAME FAILURE
+###################cronjob && sh /scripts/croncheck.sh NAME SUCCESS || sh /core4s/scripts/croncheck.sh NAME FAILURE
 #
 #########Changable Variables################
 loglocation="/var/log/cronchecker"
@@ -38,14 +38,13 @@ alert()
 {
         #TODO: send email with boxname and error code(name of the cronjob, maybe also include output of sudo grep CRON /var/log/syslog)
         if [ $1 = "unexpected_error" ];then
-                echo "Unerwarteter Fehler beim Ausführen vom Cronjobchecker Script\nInput Cronjob: $1" | $BASEDIR$GITDIR/scripts/System_Scripts/sendmail.sh $email_reciever "Cronjob Skript endetete mit unerwartetem Fehler"
+                echo "Unerwarteter Fehler beim Ausführen vom Cronjobchecker Script\nInput Cronjob: $1" | /core4s/scripts/sendmail.sh $email_reciever "Cronjob Skript endetete mit unerwartetem Fehler"
         else
                 #try the job again, mark error but do not send email
-                #TODO: extract cronjob information
                 last_success=$(jq -r '.cronjobs[] | select(.title == "'$1'")| .run_last' "$logfile")
                 last_fail=$(jq -r '.cronjobs[] | select(.title == "'$1'")| .fail_last_prev' "$logfile")
 				loginfo=$(sudo grep "$1" /var/log/syslog)
-                echo "Fehler beim Ausführen von Cronjob $1\nFehler trat um $last_fail auf!\nLetzte Erfolgreiche Ausführung war um: $last_success\nLogs:\n\n$loginfo" | $BASEDIR$GITDIR/scripts/System_Scripts/sendmail.sh $email_reciever "Cronjob Fehler für $1"
+                echo "Fehler beim Ausführen von Cronjob $1\nFehler trat um $last_fail auf!\nLetzte Erfolgreiche Ausführung war um: $last_success\nLogs:\n\n$loginfo" | /core4s/scripts/sendmail.sh $email_reciever "Cronjob Fehler für $1"
         fi
 }
 ###
@@ -79,11 +78,12 @@ update_values()
                 alertctr=$(jq -r '.cronjobs[] | select(.title == "'$1'")| .alert_ctr' "$logfile")
                 alertctr=$((alertctr+1))
                 insert_json $1 alert_ctr $alertctr
+########EMAIL ALERTS DISABLED FOR NOW###########
                 #send alert
-                alert $1
-        else
-                #something wrent wrong with the script send corresponding alert
-                alert unexpected_error
+#                alert $1
+#        else
+#                #something wrent wrong with the script send corresponding alert
+#                alert unexpected_error
         fi
 }
 ###
