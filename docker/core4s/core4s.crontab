@@ -1,5 +1,13 @@
 # m h  dom mon dow   command
 
+# Execute Curator Daily
+@daily /usr/local/bin/curator --config /core4s/curator/curator.yml /core4s/curator/actions.yml && sh /core4s/scripts/croncheck.sh curator SUCCESS || sh /core4s/scripts/croncheck.sh curator FAILURE
+
+
+
+
+###NOT WORKING YET:
+
 # Check Disk Space Daily
 @daily  $BASEDIR/$GITDIR/scripts/Automation/diskspacealert.sh && sh /scripts/croncheck.sh disk_space SUCCESS || sh /scripts/croncheck.sh disk_space FAILURE
 
