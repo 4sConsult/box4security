@@ -74,5 +74,8 @@ result = {
     "rules": offendingRules
 }
 
+with open('/tmp/vuln.scores.json', 'w') as tmpVuln:
+    json.dump(result, tmpVuln)
+
 print(result)
 exit(0)
