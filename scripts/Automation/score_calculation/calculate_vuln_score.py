@@ -1,10 +1,64 @@
 import json
+from datetime import datetime
 
+
+WEIGHT = {
+    'critical': 15,
+    'high': 5,
+    'medium': 1,
+    'low': 0.1
+}
+
+THRESHOLD = {
+    'critical': 5,
+    'high': 10,
+    'medium': 50,
+    'low': 500
+}
+
+passed = {
+    'critical': 0,
+    'high': 0,
+    'medium': 0,
+    'low': 0,
+}
+
+totalWeight = sum(WEIGHT.values())
+vulnscore = 0.0
 # Read the contents of the result
 file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/vuln_score_result.json", "r")
-
 # Load content into a json datastore
 datastore = json.load(file)
+
+cvssbuckets = datastore['aggregations']['cvss']['buckets']
+
+
+for bucket in cvssbuckets:
+    severity = bucket['key']
+    numUnique = bucket['doc_count'] - bucket['cvssUniqueVul']['sum_other_doc_count']
+    print(f'{severity}: {numUnique}')
+    if numUnique < THRESHOLD[severity]:
+        temp = numUnique / THRESHOLD[severity]
+    else:
+        temp = 1
+    temp *= WEIGHT[severity]
+    vulnscore += temp
+
+vulnscore = vulnscore / totalWeight
+vulnscore = 1 - vulnscore
+vulnscore = round(vulnscore, 4)
+
+
+result = {
+    "score_type": "vuln_score",
+    "value": vulnscore,
+    "timestamp": int(datetime.now().timestamp()),
+    # "rules": offendingRules
+}
+
+print(result)
+exit(0)
+
 
 uniqueVuln = datastore['aggregations']['uniqueVul']['buckets']
 offendingRules = []
@@ -51,8 +105,8 @@ result = {
 print(result)
 
 exit(0)
+
 # Init all the values as floats, so i will definitely be precise enough
-vulnscore = 0.0
 count = 0.0
 severity = 0.0
 weight = 0.0
@@ -102,9 +156,9 @@ if "rows" in datastore:
         else:
             isZero = 1
 
-# If no threshold exceeds, print the score readable
-if isZero == 0:
-    print((1 - vulnscore) * 100)
-# If the threshold exceeds, the value must be 0
-else:
-    print(0)
+# # If no threshold exceeds, print the score readable
+# if isZero == 0:
+#     print((1 - vulnscore) * 100)
+# # If the threshold exceeds, the value must be 0
+# else:
+#     print(0)
