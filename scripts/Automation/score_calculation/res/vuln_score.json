@@ -2,7 +2,7 @@
     "query": {
         "range": {
             "@timestamp": {
-                "gte": "now-1d/d",
+                "gte": "now-30d/d",
                 "lt": "now"
             }
         }
@@ -15,7 +15,7 @@
                 "size": 5000
             },
             "aggs": { 
-                "uniqueVul": {                                             
+                "topUniqueVul": {                                             
                     "top_hits": {                                                  
                         "sort": [                                                    
                             {                                                        
