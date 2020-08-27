@@ -7,7 +7,7 @@ DIR=$(echo "/home/amadmin/box4s/scripts/Automation/score_calculation")
 curl -s -H "Content-type: application/json" -X POST http://localhost:9200/_sql --data-binary @$DIR/res/alert_score.json > $DIR/alert_score_result.json
 
 # Get the data for the vuln score
-curl -s -H "Content-type: application/json" -X POST http://localhost:9200/_sql --data-binary @$DIR/res/vuln_score.json > $DIR/vuln_score_result.json
+curl -s -H "Content-type: application/json" -X POST http://localhost:9200/logstash-vulnwhisperer-*/_search --data-binary @$DIR/res/vuln_score.json > $DIR/vuln_score_result.json
 
 # Calculate the scores and current time
 EPOCHTIMESTAMP=$(($(date +%s%N)/1000000))
