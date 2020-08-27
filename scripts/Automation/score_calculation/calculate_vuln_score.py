@@ -6,6 +6,51 @@ file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/vuln_score
 # Load content into a json datastore
 datastore = json.load(file)
 
+uniqueVuln = datastore['aggregations']['uniqueVul']['buckets']
+offendingRules = []
+RULES = {
+    'criticalVuln': {'text': 'Im Netzwerk existiert mindestens eine kritische Schwachstelle.'},
+    'highVuln': {'text': 'Im Netzwerk existiert mindestens eine Schwachstelle mit hoher Schwere.'},
+    'mediumVuln': {'text': 'Im Netzwerk existiert mindestens eine mittlere Schwachstelle.'},
+    'lowVuln': {'text': 'Im Netzwerk existiert mindestens eine geringe Schwachstelle.'},
+}
+for v in uniqueVuln:
+    # e.g.: vData= {'@timestamp': '2020-07-30T10:54:44.010Z', 'uniqueVul': 'a9099e91203d147055c70a311ca33667', 'client': {'domain': '185.163.79.10'}, 'cvss': 8.5}
+    vData = v['topUniqueVul']['hits']['hits'][0]['_source']
+    try:
+        if vData['cvss'] >= 7.5:
+            vulnscore -= 0.25
+            if RULES['criticalVuln'] not in offendingRules:
+                offendingRules.append(RULES['criticalVuln'])
+        elif 5 <= vData['cvss'] < 7.5:
+            vulnscore -= 0.10
+            if RULES['highVuln'] not in offendingRules:
+                offendingRules.append(RULES['highVuln'])
+        elif 2.5 <= vData['cvss'] < 5:
+            vulnscore -= 0.05
+            if RULES['mediumVuln'] not in offendingRules:
+                offendingRules.append(RULES['mediumVuln'])
+        elif 0 < vData['cvss'] < 2.5:
+            vulnscore -= 0.01
+            if RULES['lowVuln'] not in offendingRules:
+                offendingRules.append(RULES['lowVuln'])
+        else:
+            pass
+    except KeyError:
+        pass
+
+if vulnscore < 0:
+    vulnscore = 0.0
+
+result = {
+    "score_type": "vuln_score",
+    "value": vulnscore,
+    "timestamp": int(datetime.now().timestamp()),
+    "rules": offendingRules
+}
+print(result)
+
+exit(0)
 # Init all the values as floats, so i will definitely be precise enough
 vulnscore = 0.0
 count = 0.0
