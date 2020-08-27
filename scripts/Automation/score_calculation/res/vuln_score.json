@@ -2,7 +2,7 @@
     "query": {
         "range": {
             "@timestamp": {
-                "gte": "now-30d/d",
+                "gte": "now-7d/d",
                 "lt": "now"
             }
         }
@@ -15,6 +15,11 @@
                 "size": 5000
             },
             "aggs": { 
+                "cvssUniqueVul": {
+                    "term": {
+                        "field": "cvss"
+                    }
+                },
                 "topUniqueVul": {                                             
                     "top_hits": {                                                  
                         "sort": [                                                    
