@@ -3,28 +3,34 @@ set -e
 # Log file to use
 # Create path if allowed or do NOP
 mkdir -p /var/log/box4s/ || :
-LOG_FILE="/var/log/box4s/install"
-if [[ ! -w $LOG_FILE ]]; then
-  LOG_FILE="$HOME/install"
+
+# Determine log dir, if writable use /var/log else user's home.
+LOG_DIR="/var/log/box4s"
+if [[ ! -w $LOG_DIR ]]; then
+  LOG_DIR="$HOME"
 fi
 
-# Please no interaction
+FULL_LOG=$LOG_DIR/install.log
+ERROR_LOG=$LOG_DIR/install.err.log
+
+# Do not use interactive debian frontend.
 export DEBIAN_FRONTEND=noninteractive
 
-# Little help text to display if something goes wrong
+# HELP text
 HELP="\
 
 
 ###########################################
-### Box4s Installer                     ###
+### BOX4s Installer                     ###
 ###########################################
 
 Disclaimer:
-This script will install the Box4Security on this system.
-By running the script you know what you are doing:
-1. Your box will get new packages
-2. A new folder called '/data' will be created in your root directory
-3. A new sudo user called 'amadmin' will be created on this system
+This script will install the BOX4security on this system.
+By running the script you confirm to know what you are doing:
+1. New packages will be installed.
+2. A new folder called '/data' will be created in your root directory.
+3. A new sudo user called 'amadmin' will be created on this system.
+4. The BOX4s service will be enabled.
 
 ########################################
 Usage:
@@ -102,8 +108,7 @@ sudo mkdir -p /data
 sudo chown root:root /data
 sudo chmod 777 /data
 
-# Create Box4s Log Path
-sudo mkdir -p /var/log/box4s/
+# Create update log
 sudo touch /var/log/box4s/update.log
 
 # Lets install apt-fast for quick package installation
@@ -193,9 +198,8 @@ fi
 ##################################################
 banner "Repository ..."
 
-#exec 1>>$LOG_FILE && exec 2>&1
-exec 2> >(tee "$LOG_FILE.err")
-exec > >(tee "$LOG_FILE.log")
+exec 2> >(tee "$ERR_LOG")
+exec > >(tee "$FULL_LOG")
 
 cd /home/amadmin
 git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s -b $TAG
