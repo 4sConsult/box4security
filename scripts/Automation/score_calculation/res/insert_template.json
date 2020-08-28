@@ -1,10 +1,5 @@
 {
     "score_type": "%1",
 	"value": %2,
-	"timestamp": %3,
-    "rules": [
-        {
-            "text": "%4"
-        }
-    ]
+	"timestamp": %3
 }
