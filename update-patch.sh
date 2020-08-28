@@ -34,6 +34,8 @@ sudo chmod 777 -R /data/suricata/eve.json
 
 # Copy default elastalert smtp auth file
 sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalert_smtp.yaml
+# Remove unused folder and script
+sudo rm /home/amadmin/box4s/scripts/Elastic_Scripts/ -R
 
 
 ###################
