@@ -17,12 +17,12 @@ ERROR_LOG=$LOG_DIR/install.err.log
 export DEBIAN_FRONTEND=noninteractive
 
 # Forward fd3 to the console
-exec 3>&1 
-# Forward stderr to $ERR_LOG
-exec 2> >(tee "$ERR_LOG")
+# exec 3>&1 
+# Forward stderr to $ERROR_LOG
+# exec 2> >(tee "$ERROR_LOG")
 # Forward stdout to $FULL_LOG
-exec > >(tee "$FULL_LOG")
-
+# exec > >(tee "$FULL_LOG")
+exec 3>&1 1>>${FULL_LOG} 2>>$ERROR_LOG
 # HELP text
 HELP="\
 
@@ -53,7 +53,7 @@ Options:
 
 # This needs toilet to be installed
 function banner {
-  toilet -f ivrit "$1"
+  toilet -f ivrit "$1" 1>&3
 }
 
 function testNet() {
@@ -67,14 +67,14 @@ function waitForNet() {
   HOST=${1:-"google.com"}
   while ! testNet $HOST; do
     # while testNet returns non zero value
-    echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s"
+    echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s" 1>&3
     sleep 15s
   done
 }
 
 function printHelp() {
-  toilet -f ivrit 'BOX4security' | boxes -d cat -a hc -p h8 | lolcat
-  echo "$HELP"
+  toilet -f ivrit 'BOX4security' | boxes -d cat -a hc -p h8 1>&3
+  echo "$HELP" 1>&3
 }
 
 # Lets make sure some basic tools are available
@@ -98,60 +98,75 @@ fi
 banner "Dependencies ..."
 
 # Are we root?
-echo -n "### Checking for root: "
+echo -n "Checking for root: " 1>&3
 if [ "$(whoami)" != "root" ];
   then
-    echo "[ NOT OK ]"
-    echo "### Please run as root."
+    echo "[ NOT OK ]" 1>&3
+    echo -e "Script must be run as root."
     printHelp
     exit 1
   else
-    echo "[ OK ]"
+    echo "[ OK ]" 1>&3
 fi
 
-echo "### Setting up the environment"
+echo -n "Creating the /data directory.. " 1>&3
 # Create the /data directory if it does not exist and make it readable
 sudo mkdir -p /data
 sudo chown root:root /data
 sudo chmod 777 /data
+echo "[ OK ]" 1>&3
 
 # Create update log
 sudo touch /var/log/box4s/update.log
 
 # Lets install apt-fast for quick package installation
 waitForNet
-echo "### Installing apt-fast"
+echo -n "Installing apt-fast.. " 1>&3
 sudo /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
-
+echo "[ OK ]" 1>&3
 # Remove services, that might be present, but are not needed.
 # But don't fail if they arent.
-echo "### Removing some services"
-sudo systemctl disable apache2 nginx systemd-resolved || echo ""
+echo -n "Removing standard services.. " 1>&3
+sudo systemctl disable apache2 nginx systemd-resolved || :
 sudo apt-fast remove --purge -y apache2 nginx
+echo "[ OK ]" 1>&3
 
 # Lets install all dependencies
 waitForNet
-echo "### Installing all dependencies"
+echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
 sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
 
 sudo add-apt-repository -y ppa:oisf/suricata-stable
 sudo apt-get update
 sudo apt-fast install -y software-properties-common suricata # TODO: remove in #375
 sudo systemctl disable suricata || :
+echo "[ OK ]" 1>&3
 
+echo -n "Enabling git lfs.. " 1>&3
 git lfs install --skip-smudge
+echo "[ OK ]" 1>&3
+
+echo -n "Installing Python3 modules from PyPi.. " 1>&3
 pip3 install semver elasticsearch-curator requests
+echo "[ OK ]" 1>&3
+
+echo -n "Installing Docker-Compose.. " 1>&3
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
+echo "[ OK ]" 1>&3
 
 # Install BlackBox to decrypt stuff
+echo -n "Installing BlackBox for secret encryption/decryption.. " 1>&3
 git clone https://github.com/StackExchange/blackbox.git /opt/blackbox
 cd /opt/blackbox
 sudo make symlinks-install
+echo "[ OK ]" 1>&3
 
 # Change to path from snippet
 cd /tmp/box4s
+
 # Import Secret Key and use the deploy token as password
+echo -n "Import BOX4security secret key and decrypting secrets.. " 1>&3
 echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
 # Remove passphrase from secret key to allow decryptions without a passphrase.
 printf "passwd\n$token\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
@@ -163,11 +178,15 @@ source config/secrets/secrets.conf
 source config/secrets/db.conf
 # For security reasons, remove decrypted versions
 blackbox_shred_all_files
+echo "[ OK ]" 1>&3
+
 # Create the user $HOST_USER only if he does not exist
 # The used password is known to the whole dev-team
+echo -n "Creating BOX4security user on the host.. " 1>&3
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
 sudo usermod -aG sudo $HOST_USER
 echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+echo "[ OK ]" 1>&3
 
 ##################################################
 #                                                #
