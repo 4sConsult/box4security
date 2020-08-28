@@ -7,6 +7,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Changed
 * Schwachstellenscores werden nun regelbasiert transparent berechnet.
+* Maßnahmen zur Besserung des Scores als Handlungsgrundlage auf der Startseite eingebettet.
 
 ### Optimized
 * Formel zur Berechnung der Scores vereinfacht und transparenter gemacht.
