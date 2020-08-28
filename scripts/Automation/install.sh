@@ -16,6 +16,13 @@ ERROR_LOG=$LOG_DIR/install.err.log
 # Do not use interactive debian frontend.
 export DEBIAN_FRONTEND=noninteractive
 
+# Forward fd3 to the console
+exec 3>&1 
+# Forward stderr to $ERR_LOG
+exec 2> >(tee "$ERR_LOG")
+# Forward stdout to $FULL_LOG
+exec > >(tee "$FULL_LOG")
+
 # HELP text
 HELP="\
 
@@ -197,9 +204,6 @@ fi
 #                                                #
 ##################################################
 banner "Repository ..."
-
-exec 2> >(tee "$ERR_LOG")
-exec > >(tee "$FULL_LOG")
 
 cd /home/amadmin
 git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s -b $TAG
