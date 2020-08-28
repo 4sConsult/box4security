@@ -39,7 +39,7 @@ vulnscore = 0.0
 offendingRules = []
 
 # Read the contents of the result from Elasticsearch API query
-file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/vuln_score_result.json", "r")
+file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/cvss_buckets.json", "r")
 # Load content into a json datastore
 datastore = json.load(file)
 
@@ -64,13 +64,13 @@ for bucket in cvssbuckets:
 
 vulnscore = vulnscore / totalWeight  # weighted arithmetic mean, step 3
 vulnscore = 1 - vulnscore  # turn the percentage of not fulfilled into fulfilled 100%-X
-vulnscore = round(vulnscore, 4)  # 0.0047234234 => 0.0047 (so 0.47%)
+vulnscore = round(vulnscore * 100, 2)  # 0.0047234234 => 0.0047 => 0.47%
 
 
 result = {
     "score_type": "vuln_score",
     "value": vulnscore,
-    "timestamp": int(datetime.now().timestamp()),
+    "timestamp": int(datetime.utcnow().timestamp()) * 1000,
     "rules": offendingRules
 }
 
