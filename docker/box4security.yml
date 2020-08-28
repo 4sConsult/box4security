@@ -209,6 +209,9 @@ services:
     container_name: core4s
     build: core4s/.
     restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
     #image: "registry.gitlab.com/4sconsult/box4s/core4s:dev"
 networks:
   default:
