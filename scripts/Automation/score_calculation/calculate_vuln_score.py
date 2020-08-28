@@ -10,7 +10,7 @@ WEIGHT = {
     'high': 5,
     'medium': 1,
     'low': 0.1,
-    'disabled': 2
+    'disabled': 2,
 }
 
 # Threshold of vulnerability severity.
@@ -21,7 +21,7 @@ THRESHOLD = {
     'high': 10,
     'medium': 50,
     'low': 500,
-    'disabled': 0
+    'disabled': 0,
 }
 
 # List of rules
@@ -31,7 +31,7 @@ RULES = {
     'high': {'text': 'Im Netzwerk existiert mindestens eine Schwachstelle mit hoher Schwere.'},
     'medium': {'text': 'Im Netzwerk existiert mindestens eine mittlere Schwachstelle.'},
     'low': {'text': 'Im Netzwerk existiert mindestens eine geringe Schwachstelle.'},
-    'disabled': {'text': 'Es werden keine Schwachstellenscans durchgeführt.'}
+    'disabled': {'text': 'Es werden keine Schwachstellenscans durchgeführt.'},
 }
 
 # Calculate the total weight by summing up the dictionary.
@@ -91,5 +91,4 @@ result = {
 with open('/tmp/vuln.scores.json', 'w') as tmpVuln:
     json.dump(result, tmpVuln)
 
-print(result)
-exit(0)
+print(result['value'])
