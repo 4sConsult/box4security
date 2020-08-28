@@ -9,6 +9,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Optimized
 * SMTP-Konfiguration wird nun auch auf das Alarmierungsfeature übertragen.
+* Loggingverhalten bei Installation der BOX4s optimiert und Ausgabe erheblich vereinfacht.
 
 ### Fixed
 * Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.
