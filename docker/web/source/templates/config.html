@@ -161,7 +161,7 @@
       var done = false;
       while (!done) {
         await new Promise(resolve => setTimeout(resolve, 2000));
-        fetch('//{{ request.host }}/_health')
+        fetch('//{{ request.host }}/api/_health')
         .then(resp => {
           if(resp.ok) {
             done = true;

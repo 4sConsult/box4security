@@ -11,8 +11,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Optimized
 * Formel zur Berechnung der Scores vereinfacht und transparenter gemacht.
+* SMTP-Konfiguration wird nun auch auf das Alarmierungsfeature übertragen.
 
 ### Fixed
+* Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.
 
 ### Deprecated
 
