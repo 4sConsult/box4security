@@ -12,7 +12,6 @@ curl -s -H "Content-type: application/json" -X POST http://localhost:9200/logsta
 # Calculate the scores and current time
 EPOCHTIMESTAMP=$(($(date +%s%N)/1000000))
 ALERTSCORE=$(python3 $DIR/calculate_alert_score.py)
-ITSECSCORE=$(echo "scale=2; ($ALERTSCORE + $VULNSCORE) / 2" | bc)
 
 # Print the scores just in case for debugging
 echo "Alertscore: $ALERTSCORE"
@@ -28,9 +27,10 @@ sed -i "s/%3/$EPOCHTIMESTAMP/g" $DIR/insert_alert_score.json
 curl -s -H "Content-type: application/json" -X POST http://localhost:9200/scores/_doc --data-binary @$DIR/insert_alert_score.json
 
 # ... the vulnscore
-python3 $DIR/calculate_vuln_score.py
+VULNSCORE=$(python3 $DIR/calculate_vuln_score.py)
 curl -s -H "Content-type: application/json" -X POST http://localhost:9200/scores/_doc --data-binary @/tmp/vuln.scores.json
 
+ITSECSCORE=$(echo "scale=2; ($ALERTSCORE + $VULNSCORE) / 2" | bc)
 # and the it-sec-score
 cp $DIR/res/insert_template.json $DIR/insert_itsec_score.json
 sed -i 's/%1/itsec_score/g' $DIR/insert_itsec_score.json
@@ -40,7 +40,7 @@ curl -s -H "Content-type: application/json" -X POST http://localhost:9200/scores
 
 # Delete all temp files to keep the directory clean
 rm $DIR/alert_score_result.json
-rm $DIR/vuln_score_result.json
+rm $DIR/cvss_buckets.json
 rm $DIR/insert_alert_score.json
-rm $DIR/insert_vuln_score.json
+rm /tmp/vuln.scores.json
 rm $DIR/insert_itsec_score.json
