@@ -10,7 +10,7 @@
                 {
                     "range": {
                         "@timestamp": {
-                            "gte": "now-1d/d",
+                            "gte": "now-16m/m",
                             "lte": "now"
                         }
                     }
