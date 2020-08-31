@@ -70,7 +70,7 @@ alertscore = round(alertscore * 100, 2)  # 0.0047234234 => 0.0047 => 0.47%
 
 
 result = {
-    "score_type": "vuln_score",
+    "score_type": "alert_score",
     "value": alertscore,
     "timestamp": int(datetime.utcnow().timestamp()) * 1000,
     "rules": offendingRules
