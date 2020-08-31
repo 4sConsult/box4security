@@ -1,64 +1,82 @@
 import json
+from datetime import datetime
 
-# Read the contents of the result
-file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/alert_score_result.json", "r")
+# Setup variables for calculation.
+# Each is dictionary, accessed by the keys gotten from Elasticsearch query. Refer to the query json.
 
+# Weight of alarm severity.
+WEIGHT = {
+    'critical': 250,
+    'high': 40,
+    'medium': 1,
+    'low': 0.1,
+    'info': 0,
+}
+
+# Threshold of alarm severity.
+# Define here above which state the severity category flags as 0.
+# E.g. multiply num of vulnerabilities by their weight until THRESHOLD, then just set 0.
+THRESHOLD = {
+    'critical': 50,
+    'high': 125,
+    'medium': 10000,
+    'low': 30000,
+    'info': 1,
+}
+
+# List of rules
+# Hold a dictionary which must have a `text` member for displaying measures to increase score.
+RULES = {
+    'critical': {'text': 'Mindestens ein Alarm von sehr hoher Schwere ist aufgetreten.'},
+    'high': {'text': 'Mindestens ein Alarm von hoher Schwere ist aufgetreten.'},
+    'medium': {'text': 'Mindestens ein Alarm von mittlere Schwere ist aufgetreten.'},
+    'low': {'text': 'Mindestens ein Alarm von geringer Schwere ist aufgetreten.'},
+    'info': {'text': 'Mindestens ein informativer Alarm ist aufgetreten.'},
+}
+
+# Calculate the total weight by summing up the dictionary.
+totalWeight = sum(WEIGHT.values())
+# Initialize score as 0
+alertscore = 0.0
+# List of offended rules from RULES.
+offendingRules = []
+
+# Read the contents of the result from Elasticsearch API query
+file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/alerts_buckets.json", "r")
 # Load content into a json datastore
 datastore = json.load(file)
 
-# Init all the values as floats, so i will definitely be precise enough
-alarmscore = 0.0
-count = 0.0
-severity = 0.0
-weight = 0.0
-threshold = 0.0
-percent = 0.0
-weighted = 0.0
-isZero = 0
+# the information is under this key. It is a list of buckets by severity
+# 1, 2, 3, 4, 5
+# as defined in the query json.
+severitybuckets = datastore['aggregations']['severity']['buckets']
 
-# If the result contains values, for each row ...
-if "rows" in datastore:
-    for row in datastore["rows"]:
-        count = row[0]
-        severity = row[1]
+# for each severity bucket
+for bucket in severitybuckets:
+    severity = bucket['key']  # find out exactly which bucket we are looking at
+    numAlerts = bucket['doc_count']
+    if numAlerts:
+        offendingRules.append(RULES[severity])  # RULE offended, add it.
+    if numAlerts < THRESHOLD[severity]:  # Threshold not exceeded
+        temp = numAlerts / THRESHOLD[severity]  # Calulate fraction of threshold that was exceeded.
+    else:
+        temp = 1  # Threshold exceeded => must take whole weight into account.
+    temp *= WEIGHT[severity]  # multiply the fraction by weight e.g. weighted arithmetic mean, step 1
+    alertscore += temp  # add the product to the alertscore e.g. weighted arithmetic mean, step 2
 
-        # ... detemine the threshold value and the weight the severity has, ...
-        if severity == 1:
-                threshold = 5000
-                weight = 0.05
-        if severity == 2:
-                threshold = 2500
-                weight = 0.1
-        if severity == 3:
-                threshold = 500
-                weight = 0.15
-        if severity == 4:
-                threshold = 100
-                weight = 0.2
-        if severity == 5:
-                threshold = 30
-                weight = 0.5
+alertscore = alertscore / totalWeight  # weighted arithmetic mean, step 3
+alertscore = 1 - alertscore  # turn the percentage of not fulfilled into fulfilled 100%-X
+alertscore = round(alertscore * 100, 2)  # 0.0047234234 => 0.0047 => 0.47%
 
-        # ... calculate what the ratio between the vuln count and the threshold is, ...
-        percent = count / threshold
 
-        # ... calculate the weighted value ...
-        weighted = percent * weight
+result = {
+    "score_type": "vuln_score",
+    "value": alertscore,
+    "timestamp": int(datetime.utcnow().timestamp()) * 1000,
+    "rules": offendingRules
+}
 
-        # ... and finally add the weighted score to the overall score.
-        alarmscore = alarmscore + weighted
+with open('/tmp/alerts.scores.json', 'w') as tmpAlerts:
+    json.dump(result, tmpAlerts)
 
-        # If the count exceeds the threshold the score must be 0.
-        # As this is a for-loop it can happen, that the first iteration will make `isZero` = 1,
-        # but the next will make it 0 again. To prevent that, the state will be check evertime.
-        if count < threshold and isZero != 1:
-            isZero = 0
-        else:
-            isZero = 1
-
-# If no threshold exceeds, print the score readable
-if isZero == 0:
-    print((1 - alarmscore) * 100)
-# If the threshold exceeds, the value must be 0
-else:
-    print(0)
+print(result['value'])
