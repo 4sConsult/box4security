@@ -465,7 +465,7 @@ echo " [ OK ] " 1>&3
 ##################################################
 banner "Docker ..."
 
-echo -n "Download BOX4security software images. This may take a long time.. " 1>&3
+echo -n "Downloading BOX4security software images. This may take a long time.. " 1>&3
 # Login to docker registry
 sudo docker login registry.gitlab.com -u deploy -p mPwNxthpxvmQSaZnv3xZ
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
@@ -473,7 +473,7 @@ sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 echo " [ OK ] " 1>&3
 
 # Download IP2Location DBs for the first time
-echo -n "Download and unpacking geolocation database. This may take some time.. " 1>&3
+echo -n "Downloading and unpacking geolocation database. This may take some time.. " 1>&3
 cd /tmp/
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN.zip
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
