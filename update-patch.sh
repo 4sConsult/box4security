@@ -86,5 +86,8 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 # Installiere Suricata Index Pattern
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/suricata.ndjson
 
+# Update Score Mapping
+curl -s -H "Content-type: application/json" -X PUT http://localhost:9200/scores/_mapping --data-binary @$DIR/res/index_mapping.json
+
 # Erstelle initialen VulnWhisperer Index
 curl -XPUT "localhost:9200/logstash-vulnwhisperer-$(date +%Y.%m)"
