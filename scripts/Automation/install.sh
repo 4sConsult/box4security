@@ -530,18 +530,18 @@ banner "Starting BOX4security..."
 
 sudo systemctl start box4security
 
-echo -n "Wait for Elasticsearch to become available.. " 1>&3
+echo -n "Waiting for Elasticsearch to become available.. " 1>&3
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 echo " [ OK ] " 1>&3
 
-echo -n "Install the scores index.. " 1>&3
+echo -n "Installing the scores index.. " 1>&3
 sleep 5
 # Install the scores index
 cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh
 echo " [ OK ] " 1>&3
 
-echo -n "Install new cronjobs.. " 1>&3
+echo -n "Installing new cronjobs.. " 1>&3
 cd /home/amadmin/box4s/config/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 sudo crontab root.crontab
