@@ -495,7 +495,7 @@ sudo touch /var/lib/box4s/suricata_suppress.bpf
 sudo chmod -R 777 /var/lib/box4s/
 echo " [ OK ] " 1>&3
 
-echo -n "Detecting available memory and distribute it to the containers.. " 1>&3
+echo -n "Detecting available memory and distributing it to the containers.. " 1>&3
 # Detect rounded memory
 MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MEM=$(python3 -c "print($MEM/1024.0**2)")
