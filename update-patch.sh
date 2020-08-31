@@ -53,6 +53,7 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 
 # Get the current images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
