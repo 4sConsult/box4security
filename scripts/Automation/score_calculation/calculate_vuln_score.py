@@ -17,9 +17,9 @@ WEIGHT = {
 # Define here above which state the severity category flags as 0.
 # E.g. multiply num of vulnerabilities by their weight until THRESHOLD, then just set 0.
 THRESHOLD = {
-    'critical': 5,
-    'high': 10,
-    'medium': 50,
+    'critical': 10,
+    'high': 50,
+    'medium': 100,
     'low': 500,
     'disabled': 0,
 }
