@@ -6,9 +6,13 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 
 ### Changed
+* Schwachstellenscores werden nun regelbasiert transparent berechnet.
+* Maßnahmen zur Besserung des Scores als Handlungsgrundlage auf der Startseite eingebettet.
 
 ### Optimized
+* Formel zur Berechnung der Scores vereinfacht und transparenter gemacht.
 * SMTP-Konfiguration wird nun auch auf das Alarmierungsfeature übertragen.
+* Schwachstellenscore zeigt nun nur den zuletzt berechneten Stand an, nicht länger den Tagesdurchschnitt.
 
 ### Fixed
 * Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.
