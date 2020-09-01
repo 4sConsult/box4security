@@ -1,0 +1,38 @@
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "exists": {
+                        "field": "alert.severity"
+                    }
+                },
+                {
+                    "range": {
+                        "@timestamp": {
+                            "gte": "now-16m/m",
+                            "lte": "now"
+                        }
+                    }
+                }
+            ]
+        }
+    }, 
+    "size": 0,
+    "aggs":
+    {
+        "severity": {
+            "range": {
+              "field": "alert.severity",
+              "ranges": [
+                { "key": "critical" , "from": 4.1 },
+                { "key": "high" , "from": 3.1, "to": 4.1 },
+                { "key": "medium" , "from": 2.1, "to": 3.1 },
+                { "key": "low" , "from": 1.1, "to": 2.1 },
+                { "key": "info", "to": 1.1}
+              ]
+            }
+        }
+    }
+} 
+  

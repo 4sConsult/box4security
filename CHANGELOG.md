@@ -1,15 +1,20 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [x.x.x](https://gitlab.com/4sconsult/box4s/-/tags/x.x.x) - xxxx-xx-xx
+## [1.8.7-rc](https://gitlab.com/4sconsult/box4s/-/tags/1.8.7-rc) - xxxx-xx-xx
 
 ### Added
 * Monitoring der BOX4s-Docker-Container hinzugefügt.
 
 ### Changed
+* Schwachstellenscores werden nun regelbasiert transparent berechnet.
+* IDS-Alarmierungsscores werden nun regelbasiert transparent berechnet.
+* Maßnahmen zur Besserung des Scores als Handlungsgrundlage auf der Startseite eingebettet.
 
 ### Optimized
+* Formel zur Berechnung der Scores vereinfacht und transparenter gemacht.
 * SMTP-Konfiguration wird nun auch auf das Alarmierungsfeature übertragen.
+* Score-Dashboards zeigen statt des Tagessdurchschnitts nun ausschließlich den zuletzt berechneten Wert.
 
 ### Fixed
 * Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.
