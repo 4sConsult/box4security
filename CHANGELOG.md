@@ -4,7 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [1.8.7-rc](https://gitlab.com/4sconsult/box4s/-/tags/1.8.7-rc) - xxxx-xx-xx
 
 ### Added
-* Monitoring der BOX4s-Docker-Container hinzugefügt.
+* Monitoring der BOX4s-Docker-Container hinzugefügt. Die Oberfläche sehen *Super Admins* als Menüpunkt der Administration.
 
 ### Changed
 * Schwachstellenscores werden nun regelbasiert transparent berechnet.
