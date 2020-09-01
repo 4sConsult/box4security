@@ -31,6 +31,7 @@ sudo chmod 777 -R /data/suricata/eve.json
 
 ###################
 # Changes here
+su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 
 # Copy default elastalert smtp auth file
 sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalert_smtp.yaml
@@ -53,6 +54,7 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 
 # Get the current images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
@@ -84,6 +86,7 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Details.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/System/docker.ndjson
 
 # Installiere Suricata Index Pattern
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/suricata.ndjson

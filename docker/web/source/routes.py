@@ -118,6 +118,18 @@ def faq():
     return render_template('faq.html', client=client)
 
 
+@app.route('/system', methods=['GET'])
+@login_required
+@roles_required(['Super Admin'])
+def system():
+    """Return the system overview page.
+
+    Required Role: Super Admin
+    Embeds Kibana Docker Metricbeat visuals to monitor the BOX4s.
+    """
+    return render_template('system.html')
+
+
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 @roles_required(['Super Admin', 'User-Management'])

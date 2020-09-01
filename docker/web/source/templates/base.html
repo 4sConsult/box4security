@@ -74,7 +74,7 @@
                  {% if current_user.has_role('User-Management') %}
                  <a class="item" href="/user">Benutzer</a>
                  {% endif %}
-                 {% if current_user.has_role('User-Management') %}
+                 {% if current_user.has_role('Config') %}
                  <a class="item" href="/config">Konfiguration</a>
                  {% endif %}
                  {% if current_user.has_role('Filter') %}
@@ -85,6 +85,9 @@
                  {% endif %}
                  {% if current_user.has_role('Updates') %}
                  <a class="item" href="/update">Updates</a>
+                 {% endif %}
+                 {% if current_user.has_role('Super Admin') %}
+                 <a class="item" href="/system">System</a>
                  {% endif %}
                </div>
              </div>

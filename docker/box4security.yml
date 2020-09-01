@@ -63,6 +63,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat

@@ -44,3 +44,18 @@ actions:
                         - filtertype: pattern
                           kind: regex
                           value: '^(wazuh-alerts-3.x-).*$'
+        4:
+                action: delete_indices
+                options:
+                    ignore_empty_list: True
+                    continue_if_exception: True
+                description: "Delete BOX4security metricbeat indices older than 3 days"
+                filters:
+                        - filtertype: age
+                          source: creation_date
+                          direction: older
+                          unit: days
+                          unit_count: 3
+                        - filtertype: pattern
+                          kind: regex
+                          value: '^(metricbeat-).*$'
