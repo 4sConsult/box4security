@@ -18,6 +18,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.
+* Bug behoben, durch den zur Einsicht der Konfiguration die User-Management-Rolle statt der Konfigurationsrolle benötigt wurde.
 
 ### Deprecated
 
