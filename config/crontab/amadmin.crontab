@@ -2,10 +2,10 @@ MAILTO=box@4sconsult.de
 # m h  dom mon dow   command
 
 # Check Disk Space Daily
-@daily  $BASEDIR/$GITDIR/scripts/Automation/diskspacealert.sh && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh disk_space SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh disk_space FAILURE
+0 6 * * * *  $BASEDIR/$GITDIR/scripts/Automation/diskspacealert.sh && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh disk_space SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh disk_space FAILURE
 
 # Execute Curator Daily
-@daily curator --config ~/box4s/config/home/curator.yml ~/box4s/config/home/actions.yml
+30 23 * * * curator --config ~/box4s/config/home/curator.yml ~/box4s/config/home/actions.yml
 
 # Score calculation
 */15 * * * * $BASEDIR/$GITDIR/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1
