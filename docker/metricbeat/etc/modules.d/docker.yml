@@ -11,7 +11,7 @@
     - info
     - memory
     - network
-  period: 60s
+  period: 15s
   hosts: ["unix:///var/run/docker.sock"]
 
   # If set to true, replace dots in labels with `_`.
