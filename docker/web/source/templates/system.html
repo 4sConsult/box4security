@@ -17,3 +17,9 @@
     </div>
 </div>
 {% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $('div.item.active').removeClass('active');
+    $('#administration').addClass('active');
+</script>
+{% endblock %}
