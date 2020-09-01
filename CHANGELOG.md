@@ -4,6 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [x.x.x](https://gitlab.com/4sconsult/box4s/-/tags/x.x.x) - xxxx-xx-xx
 
 ### Added
+* Monitoring der BOX4s-Docker-Container hinzugefügt.
 
 ### Changed
 
