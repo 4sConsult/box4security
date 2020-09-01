@@ -86,6 +86,9 @@
                  {% if current_user.has_role('Updates') %}
                  <a class="item" href="/update">Updates</a>
                  {% endif %}
+                 {% if current_user.has_role('Super Admin') %}
+                 <a class="item" href="/system">System</a>
+                 {% endif %}
                </div>
              </div>
            </div>
