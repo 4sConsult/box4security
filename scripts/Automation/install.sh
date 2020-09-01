@@ -561,6 +561,8 @@ echo " [ OK ] " 1>&3
 echo -n "Waiting for Kibana to become available.. " 1>&3
 sleep 300
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo " [ OK ] " 1>&3 || echo " [ NOT OK ] " 1>&3
+sleep 30
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo " [ OK ] " 1>&3 || echo " [ NOT OK ] " 1>&3
 
 # Import Dashboard
 echo -n "Installing Dashboards und Patterns.. " 1>&3
