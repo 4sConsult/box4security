@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ui main text container">
+    {% block flash_messages %}
+      {%- with messages = get_flashed_messages(with_categories=true) -%}
+          {% if messages %}
+              {% for category, message in messages %}
+                  <div class="ui message {{category}}">{{ message|safe }}</div>
+              {% endfor %}
+          {% endif %}
+      {%- endwith %}
+    {% endblock %}
+    <h1 class="ui header">BOX4security - System<div class="sub header">Monitoring & Verwaltung</div></h1>
+    <div class="ui inverted section divider"></div>
+        <div class="section">
+        </div>
+    </div>
+</div>
+{% endblock %}
