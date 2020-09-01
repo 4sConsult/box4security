@@ -8,18 +8,22 @@
         }
     }, 
     "size": 0,
-    "aggs": {
-        "uniqueVul": {                                                 
-           "terms": {                                                         
-                "field": "uniqueVul",
-                "size": 5000
-            },
-            "aggs": { 
-                "cvssUniqueVul": {
-                    "term": {
-                        "field": "cvss"
-                    }
-                },
+    "aggs":
+    {
+      "cvss": {
+          "range": {
+            "field": "cvss",
+            "ranges": [
+              { "key": "critical" , "from": 7.5 },
+              { "key": "high" , "from": 5, "to": 7.5 },
+              { "key": "medium" , "from": 2.5, "to": 5 },
+              { "key": "low" , "to": 2.5 }
+            ]
+          },
+          "aggs": {
+            "cvssUniqueVul": {
+              "terms": {"field": "uniqueVul" },
+              "aggs": {
                 "topUniqueVul": {                                             
                     "top_hits": {                                                  
                         "sort": [                                                    
@@ -30,9 +34,11 @@
                         "_source": ["uniqueVul", "client.domain", "cvss", "@timestamp"],
                         "size": 1                                                    
                     }                                                            
-                }                                                              
-            }                                                                
-        }                                                                  
-    }                                                                    
+                }     
+              }
+            }
+          }
+      }
+    }
 } 
   
