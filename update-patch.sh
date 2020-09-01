@@ -31,6 +31,7 @@ sudo chmod 777 -R /data/suricata/eve.json
 
 ###################
 # Changes here
+su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 
 # Copy default elastalert smtp auth file
 sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalert_smtp.yaml
