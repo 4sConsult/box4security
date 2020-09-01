@@ -480,7 +480,9 @@ echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto)
 sleep 300
 
 echo "### Wait for kibana to become available ..."
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 || echo ''
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || echo ''
+sleep 30
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || echo ''
 
 # Import Dashboard
 echo "### Install dashboards"
