@@ -4,11 +4,21 @@
 			"type": "text"
 		},
 		"value": {
-			"type": "long"
+			"type": "float"
 		},
 		"timestamp": {
 			"type": "date",
 			"format": "epoch_millis"
+        },
+        "rules": {
+            "properties" : {
+                "text":{
+                    "type": "keyword"
+                },
+                "weight":{
+                    "type": "float"
+                }
+            }
 		}
 	}
 }
