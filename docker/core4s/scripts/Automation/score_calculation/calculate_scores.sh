@@ -4,10 +4,10 @@
 DIR=$(echo "/core4s/scripts/Automation/score_calculation")
 
 # Get the data for the alert score
-curl -s -H "Content-type: application/json" -X POST http://localhost:9200/_sql --data-binary @$DIR/res/alert_score.json > $DIR/alert_score_result.json
+curl -s -H "Content-type: application/json" -X POST http://elasticsearch:9200/_sql --data-binary @$DIR/res/alert_score.json > $DIR/alert_score_result.json
 
 # Get the data for the vuln score
-curl -s -H "Content-type: application/json" -X POST http://localhost:9200/_sql --data-binary @$DIR/res/vuln_score.json > $DIR/vuln_score_result.json
+curl -s -H "Content-type: application/json" -X POST http://elasticsearch:9200/_sql --data-binary @$DIR/res/vuln_score.json > $DIR/vuln_score_result.json
 
 # Calculate the scores and current time
 EPOCHTIMESTAMP=$(($(date +%s%N)/1000000))

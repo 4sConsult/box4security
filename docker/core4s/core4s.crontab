@@ -27,4 +27,4 @@
 @daily  $BASEDIR/$GITDIR/scripts/Automation/diskspacealert.sh && sh /scripts/croncheck.sh disk_space SUCCESS || sh /scripts/croncheck.sh disk_space FAILURE
 
 # Score calculation
-*/15 * * * * $BASEDIR/$GITDIR/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1
+*/15 * * * * /bin/bash /core4s/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1 & sh /core4s/scripts/Automation/croncheck.sh score_calc SUCCESS || sh /core4s/scripts/Automation/croncheck.sh score_calc FAILURE
