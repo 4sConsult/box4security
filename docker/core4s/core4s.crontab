@@ -1,16 +1,16 @@
 # m h  dom mon dow   command
 
 # Execute Curator Daily
-@daily /usr/local/bin/curator --config /core4s/curator/curator.yml /core4s/curator/actions.yml && sh /core4s/scripts/croncheck.sh curator SUCCESS || sh /core4s/scripts/croncheck.sh curator FAILURE
+@daily /usr/local/bin/curator --config /core4s/curator/curator.yml /core4s/curator/actions.yml && sh /core4s/scripts/Automation/croncheck.sh curator SUCCESS || sh /core4s/scripts/Automation/croncheck.sh curator FAILURE
 
 # Suricata update
-@daily docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh /core4s/scripts/croncheck.sh suricata_update SUCCESS || sh /core4s/scripts/croncheck.sh suricata_update FAILURE
+@daily docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh /core4s/scripts/Automation/croncheck.sh suricata_update FAILURE
 
 # OpenVAS update
-@daily docker exec openvas /root/update.sh > /dev/null 2>&1 && sh /core4s/scripts/croncheck.sh openvas_update SUCCESS || sh /core4s/scripts/croncheck.sh openvas_update FAILURE
+@daily docker exec openvas /root/update.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh openvas_update SUCCESS || sh /core4s/scripts/Automation/croncheck.sh openvas_update FAILURE
 
 # Collect OpenVAS Reports
-*/30 * * * *  docker exec openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh /core4s/scripts/croncheck.sh vulnwhisperer SUCCESS || sh /core4s/scripts/croncheck.sh vulnwhisperer FAILURE
+*/30 * * * *  docker exec openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer SUCCESS || sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer FAILURE
 
 # Leere eve.json
 0 */6 * * *  echo "" > /core4s/workfolder/suricata/eve.json  && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log FAILURE
@@ -33,11 +33,11 @@
 
 #Testing:
 
-* * * * * /usr/local/bin/curator --config /core4s/curator/curator.yml /core4s/curator/actions.yml && sh /core4s/scripts/croncheck.sh curator SUCCESS || sh /core4s/scripts/croncheck.sh curator FAILURE
+* * * * * /usr/local/bin/curator --config /core4s/curator/curator.yml /core4s/curator/actions.yml && sh /core4s/scripts/Automation/croncheck.sh curator SUCCESS || sh /core4s/scripts/Automation/croncheck.sh curator FAILURE
 
-* * * * * /usr/bin/docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh /core4s/scripts/croncheck.sh suricata_update SUCCESS || sh /core4s/scripts/croncheck.sh suricata_update FAILURE
+* * * * * /usr/bin/docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh /core4s/scripts/Automation/croncheck.sh suricata_update FAILURE
 
-* * * * * /usr/bin/docker exec openvas /root/update.sh > /dev/null 2>&1 && sh /core4s/scripts/croncheck.sh openvas_update SUCCESS || sh /core4s/scripts/croncheck.sh openvas_update FAILURE
+* * * * * /usr/bin/docker exec openvas /root/update.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh openvas_update SUCCESS || sh /core4s/scripts/Automation/croncheck.sh openvas_update FAILURE
 
-* * * * * /usr/bin/docker exec openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh /core4s/scripts/croncheck.sh vulnwhisperer SUCCESS || sh /core4s/scripts/croncheck.sh vulnwhisperer FAILURE
-* * * * * /usr/bin/docker exec openvas ps && sh /core4s/scripts/croncheck.sh docker_tester SUCCESS || sh /core4s/scripts/croncheck.sh docker_tester FAILURE
+* * * * * /usr/bin/docker exec openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer SUCCESS || sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer FAILURE
+* * * * * /usr/bin/docker exec openvas ps && sh /core4s/scripts/Automation/croncheck.sh docker_tester SUCCESS || sh /core4s/scripts/Automation/croncheck.sh docker_tester FAILURE
