@@ -32,8 +32,7 @@ RUN crontab /core4s/core4s.crontab
 RUN touch /var/log/cron.log
 
 #Check health
-HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \
- CMD node /healthcheck.js
+HEALTHCHECK CMD curl --fail http://localhost:2981/ || exit 1
 
 # Run the command on container startup
 CMD cron &&\
