@@ -28,15 +28,3 @@
 
 # Score calculation
 */15 * * * * $BASEDIR/$GITDIR/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1
-
-
-#Testing:
-
-* * * * * /usr/local/bin/curator --config /core4s/curator/curator.yml /core4s/curator/actions.yml && sh /core4s/scripts/Automation/croncheck.sh curator SUCCESS || sh /core4s/scripts/Automation/croncheck.sh curator FAILURE
-
-* * * * * /usr/bin/docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh /core4s/scripts/Automation/croncheck.sh suricata_update FAILURE
-
-* * * * * /usr/bin/docker exec openvas /root/update.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh openvas_update SUCCESS || sh /core4s/scripts/Automation/croncheck.sh openvas_update FAILURE
-
-* * * * * /usr/bin/docker exec openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer SUCCESS || sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer FAILURE
-* * * * * /usr/bin/docker exec openvas ps && sh /core4s/scripts/Automation/croncheck.sh docker_tester SUCCESS || sh /core4s/scripts/Automation/croncheck.sh docker_tester FAILURE

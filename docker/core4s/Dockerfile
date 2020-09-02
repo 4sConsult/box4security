@@ -2,13 +2,17 @@ FROM ubuntu:latest
 
 # Install all programs
 RUN apt-get update && apt-get install -y \
+    bc\
+    python3\
+    python3-venv\
     python3-pip\
     curl\
     jq\
     msmtp\
     cron\
     postgresql-client\
-    unzip
+    unzip\
+    wget
 
 # Install docker
 RUN curl -sSL https://get.docker.com/ | sh
