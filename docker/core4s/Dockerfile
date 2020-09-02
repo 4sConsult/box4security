@@ -12,20 +12,18 @@ RUN apt-get update && apt-get install -y \
     cron\
     postgresql-client\
     unzip\
-    nodejs\
     wget
 
 # Install docker
 RUN curl -sSL https://get.docker.com/ | sh
 
-# Install Elastic curator
-RUN pip3 install elasticsearch-curator
+# Install Elastic curator and Flask
+RUN pip3 install elasticsearch-curator Flask
 
 # Add files from git
 ADD scripts /core4s/scripts
 ADD curator /core4s/curator
 ADD core4s.crontab /core4s/core4s.crontab
-ADD healthcheck.js /healthcheck.js
 
 # Add Crontab
 RUN crontab /core4s/core4s.crontab
