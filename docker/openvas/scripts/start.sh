@@ -8,7 +8,6 @@ echo "Setting VulnWhisperer Authentication"
 # Add OpenVAS Authentication to vulnwhisperer
 sed -i "s/username=.*/username=$OPENVAS_USER/g" /etc/vulnwhisperer/vulnwhisperer.ini
 sed -i "s/password=.*/password=$OPENVAS_PASS/g" /etc/vulnwhisperer/vulnwhisperer.ini
-# echo -e "username=$OPENVAS_USER\npassword=$OPENVAS_PASS" >> /etc/vulnwhisperer/vulnwhisperer.ini
 
 echo "Starting OpenVAS Manager ..."
 /usr/sbin/openvasmd --create-user amadmin
