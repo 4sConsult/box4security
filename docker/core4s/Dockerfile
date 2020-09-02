@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     cron\
     postgresql-client\
     unzip\
-    node\
+    nodejs\
     wget
 
 # Install docker
