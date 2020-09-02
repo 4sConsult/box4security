@@ -27,5 +27,5 @@ RUN touch /var/log/cron.log
 
 # Run the command on container startup
 CMD cron &&\
-bash /core4s/Automation/scripts/croncheck.sh init_cronchecker SUCCESS &&\
+bash /core4s/scripts/Automation/croncheck.sh init_cronchecker SUCCESS &&\
 tail -f /var/log/cron.log
