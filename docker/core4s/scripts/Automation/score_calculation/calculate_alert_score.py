@@ -1,7 +1,7 @@
 import json
 
 # Read the contents of the result
-file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/alert_score_result.json", "r")
+file = open("/core4s/scripts/Automation/score_calculation/alert_score_result.json", "r")
 
 # Load content into a json datastore
 datastore = json.load(file)

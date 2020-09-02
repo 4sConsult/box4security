@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Make the commands a little easier to read by putting the much used path into a variable
-DIR=$(echo "/home/amadmin/box4s/scripts/Automation/score_calculation")
+DIR=$(echo "/core4s/scripts/Automation/score_calculation")
 
 # Get the data for the alert score
-curl -s -H "Content-type: application/json" -X POST http://localhost:9200/_sql --data-binary @$DIR/res/alert_score.json > $DIR/alert_score_result.json
+curl -s -H "Content-type: application/json" -X POST http://elastics:9200/_sql --data-binary @$DIR/res/alert_score.json > $DIR/alert_score_result.json
 
 # Get the data for the vuln score
 curl -s -H "Content-type: application/json" -X POST http://localhost:9200/_sql --data-binary @$DIR/res/vuln_score.json > $DIR/vuln_score_result.json
-
+echo 1
 # Calculate the scores and current time
 EPOCHTIMESTAMP=$(($(date +%s%N)/1000000))
 ALERTSCORE=$(python3 $DIR/calculate_alert_score.py)
