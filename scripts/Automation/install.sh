@@ -404,7 +404,7 @@ sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 
 # Download wazuh clients
-sudo sh /home/amadmin/box4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
+sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
 
 # Filter Functionality
 echo "### Setting up suricata filter functionality"
