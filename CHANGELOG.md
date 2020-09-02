@@ -21,6 +21,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Fixed
 * Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.
 * Bug behoben, durch den zur Einsicht der Konfiguration die User-Management-Rolle statt der Konfigurationsrolle benötigt wurde.
+* Bug behoben, durch den Schwachstellendaten nach 1.8.5 nicht mehr in die Auswertung einflossen. Die Daten werden automatisch rückwirkend eingespeist.
 
 ### Deprecated
 
