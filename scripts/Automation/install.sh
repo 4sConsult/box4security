@@ -431,10 +431,6 @@ sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 
-#Make new directory for cronjobchecker
-sudo mkdir /var/log/cronchecker
-sudo chown amadmin:amadmin /var/log/cronchecker
-
 echo "### Make scripts executable"
 chmod +x -R /home/amadmin/box4s/scripts
 
@@ -458,10 +454,6 @@ sudo docker exec core4s /bin/bash /core4s/scripts/Automation/score_calculation/i
 
 cd /home/amadmin/box4s
 
-echo "### Install new cronjobs ..."
-cd /home/amadmin/box4s/config/crontab
-su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
-sudo crontab root.crontab
 
 source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
