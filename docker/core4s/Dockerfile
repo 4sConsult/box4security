@@ -6,7 +6,9 @@ RUN apt-get update && apt-get install -y \
     curl\
     jq\
     msmtp\
-    cron
+    cron\
+    postgresql\
+    unzip
 
 # Install docker
 RUN curl -sSL https://get.docker.com/ | sh
