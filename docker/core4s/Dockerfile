@@ -24,6 +24,7 @@ RUN pip3 install elasticsearch-curator Flask
 ADD scripts /core4s/scripts
 ADD curator /core4s/curator
 ADD core4s.crontab /core4s/core4s.crontab
+ADD healthcehck.py /healthcehck.py
 
 # Add Crontab
 RUN crontab /core4s/core4s.crontab
@@ -37,4 +38,5 @@ HEALTHCHECK CMD curl --fail http://localhost:2981/ || exit 1
 # Run the command on container startup
 CMD cron &&\
 bash /core4s/scripts/Automation/croncheck.sh init_cronchecker SUCCESS &&\
+python3 healthceck.py &&\
 tail -f /var/log/cron.log
