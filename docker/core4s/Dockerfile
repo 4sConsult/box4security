@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     cron\
     postgresql-client\
     unzip\
+    node\
     wget
 
 # Install docker
@@ -24,12 +25,17 @@ RUN pip3 install elasticsearch-curator
 ADD scripts /core4s/scripts
 ADD curator /core4s/curator
 ADD core4s.crontab /core4s/core4s.crontab
+ADD healthcheck.js /healthcheck.js
 
 # Add Crontab
 RUN crontab /core4s/core4s.crontab
 
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
+
+#Check health
+HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \
+ CMD node /healthcheck.js
 
 # Run the command on container startup
 CMD cron &&\
