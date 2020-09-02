@@ -209,13 +209,16 @@ services:
     container_name: core4s
     build: core4s/.
     restart: always
+    env_file:
+     - ../config/secrets/db.conf
+     - ../config/secrets/secrets.conf
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
       - /data/suricata/eve.json:/core4s/workfolder/suricata/eve.json
       - /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN:/core4s/workfolder/var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
       - /var/lib/box4s/IP2LOCATION-LITE-DB5.BIN:/core4s/workfolder/var/lib/box4s/IP2LOCATION-LITE-DB5.BIN
-      - /home/amadmin/box4s/config/secrets:/core4s/secrets
+      #- /home/amadmin/box4s/config/secrets:/core4s/secrets
     #image: "registry.gitlab.com/4sconsult/box4s/core4s:dev"
 networks:
   default:

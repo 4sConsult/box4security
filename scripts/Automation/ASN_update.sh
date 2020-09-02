@@ -1,4 +1,4 @@
-source core4s/config/secrets/db.conf
+#source core4s/config/secrets/db.conf
 cd /tmp/
 curl -O -s https://iptoasn.com/data/ip2asn-combined.tsv.gz
 gunzip -f ip2asn-combined.tsv.gz
