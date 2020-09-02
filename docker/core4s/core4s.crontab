@@ -15,6 +15,8 @@
 # Leere eve.json
 0 */6 * * *  echo "" > /core4s/workfolder/suricata/eve.json  && sh /core4s/scripts/Automation/croncheck.sh delete_suricata_log SUCCESS || sh /core4s/scripts/Automation/croncheck.sh delete_suricata_log FAILURE
 
+# Update Resources on Sunday at 9 am
+0 9 * * 0 /bin/bash /core4s/scripts/Automation/resourceupdate.sh && sh /core4s/scripts/Automation/croncheck.sh resourceupdate_sunday SUCCESS || sh /core4s/scripts/Automation/croncheck.sh resourceupdate_sunday FAILURE
 
 
 
@@ -26,9 +28,6 @@
 
 # Score calculation
 */15 * * * * $BASEDIR/$GITDIR/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1
-
-# Update Resources on Sunday at 9 am
-0 9 * * 0 $BASEDIR/$GITDIR/scripts/Automation/resourceupdate.sh && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh resourceupdate_sunday SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh resourceupdate_sunday FAILURE
 
 
 #Testing:
