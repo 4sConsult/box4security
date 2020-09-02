@@ -438,9 +438,6 @@ sudo chown amadmin:amadmin /var/log/cronchecker
 echo "### Make scripts executable"
 chmod +x -R /home/amadmin/box4s/scripts
 
-#Owner der Skripte zur score Berechnung anpassen
-sudo chown -R amadmin:amadmin /home/amadmin/box4s/scripts/Automation/score_calculation/
-
 ##################################################
 #                                                #
 # Box4s start                                    #
@@ -456,8 +453,9 @@ sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh el
 echo "### Install the scores index ..."
 sleep 5
 # Install the scores index
-cd /home/amadmin/box4s/scripts/Automation/score_calculation/
-./install_index.sh
+
+sudo docker exec core4s /bin/bash /core4s/scripts/Automation/score_calculation/install_index.sh
+
 cd /home/amadmin/box4s
 
 echo "### Install new cronjobs ..."
