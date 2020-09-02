@@ -13,7 +13,10 @@
 */30 * * * *  docker exec openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh /core4s/scripts/croncheck.sh vulnwhisperer SUCCESS || sh /core4s/scripts/croncheck.sh vulnwhisperer FAILURE
 
 # Leere eve.json
-0 */6 * * *  echo "" > /core4s/suricata/eve.json  && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log FAILURE
+0 */6 * * *  echo "" > /core4s/workfolder/suricata/eve.json  && sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log SUCCESS || sh $BASEDIR/$GITDIR/scripts/Automation/croncheck.sh delete_suricata_log FAILURE
+
+
+
 
 
 ### NOT WORKING YET:
