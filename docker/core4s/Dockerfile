@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     jq\
     msmtp\
     cron\
-    postgresql\
+    postgresql-client\
     unzip
 
 # Install docker

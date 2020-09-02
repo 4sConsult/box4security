@@ -219,7 +219,6 @@ services:
       - /var/lib/box4s:/core4s/workfolder/var/lib/box4s
       - /:/core4s/workfolder/disks/main:ro
       - /data:/core4s/workfolder/disks/data:ro
-      #- /home/amadmin/box4s/config/secrets:/core4s/secrets
     #image: "registry.gitlab.com/4sconsult/box4s/core4s:dev"
 networks:
   default:
