@@ -3,7 +3,7 @@
 #$1 contains name of the cronjob
 #$2 contains variable to show cronjob failure/success
 #usage: replace name and cronjob:
-###################cronjob && sh /scripts/croncheck.sh NAME SUCCESS || sh /core4s/scripts/croncheck.sh NAME FAILURE
+###################cronjob && sh /core4s/scripts/Automation/croncheck.sh NAME SUCCESS || sh /core4s/scripts/Automation/croncheck.sh NAME FAILURE
 #
 #########Changable Variables################
 loglocation="/var/log/cronchecker"
