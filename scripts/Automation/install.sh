@@ -452,8 +452,9 @@ sleep 5
 
 sudo docker exec core4s /bin/bash /core4s/scripts/Automation/score_calculation/install_index.sh
 
-cd /home/amadmin/box4s
-
+echo "### Install new cronjobs ..."
+cd /home/amadmin/box4s/config/crontab
+su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 
 source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
