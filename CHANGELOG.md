@@ -4,6 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [1.8.7-rc](https://gitlab.com/4sconsult/box4s/-/tags/1.8.7-rc) - xxxx-xx-xx
 
 ### Added
+* Monitoring der BOX4s-Docker-Container hinzugefügt. Die Oberfläche sehen *Super Admins* als Menüpunkt der Administration.
 
 ### Changed
 * Schwachstellenscores werden nun regelbasiert transparent berechnet.
@@ -19,6 +20,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.
+* Bug behoben, durch den zur Einsicht der Konfiguration die User-Management-Rolle statt der Konfigurationsrolle benötigt wurde.
+* Bug behoben, durch den Schwachstellendaten nach 1.8.5 nicht mehr in die Auswertung einflossen. Die Daten werden automatisch rückwirkend eingespeist.
 
 ### Deprecated
 

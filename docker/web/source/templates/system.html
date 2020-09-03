@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ui main text container">
+    {% block flash_messages %}
+      {%- with messages = get_flashed_messages(with_categories=true) -%}
+          {% if messages %}
+              {% for category, message in messages %}
+                  <div class="ui message {{category}}">{{ message|safe }}</div>
+              {% endfor %}
+          {% endif %}
+      {%- endwith %}
+    {% endblock %}
+    <h1 class="ui header">BOX4security - System<div class="sub header">Monitoring & Verwaltung</div></h1>
+    <div class="ui inverted section divider"></div>
+        <div class="section">
+            <iframe src="//{{request.host}}/kibana/app/kibana#/dashboard/2fef9ad0-ec42-11ea-9540-037024fb989a?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))" height="2000" width="800"></iframe>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $('div.item.active').removeClass('active');
+    $('#administration').addClass('active');
+</script>
+{% endblock %}
