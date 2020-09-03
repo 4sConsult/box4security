@@ -31,8 +31,9 @@
                  <a class="item" href="/siem-http">HTTP</a>
                  <a class="item" href="/siem-dns">DNS</a>
                  <a class="item" href="/siem-proto">Protokolle & Dienste</a>
-                 {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}<a class="item" href="/wazuh">Endgeräte</a>{% endif %}
                  <a class="item" href="/siem-social-media">Social Media (Alpha)</a>
+                 {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}<a class="item" href="/wazuh">Endgeräte</a>{% endif %}
+                 <a class="item" href="/intelligence">Intelligence</a>
                </div>
              </div>
            </div>

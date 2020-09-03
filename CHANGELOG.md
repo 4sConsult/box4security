@@ -5,6 +5,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 * Monitoring der BOX4s-Docker-Container hinzugefügt. Die Oberfläche sehen *Super Admins* als Menüpunkt der Administration.
+* SpiderFoot als ausgewählte Intelligence-Lösung der BOX4security für *Super Admins* und Nutzer der *SIEM*-Rolle hinzugefügt. 
 
 ### Changed
 * Schwachstellenscores werden nun regelbasiert transparent berechnet.
