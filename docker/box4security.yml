@@ -36,6 +36,7 @@ services:
     ports:
       - 9392:9392
     volumes:
+      - gvm-data:/data
       - varlib_openvas:/var/lib/openvas
       - varlib_logstash:/var/lib/logstash
     image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
@@ -217,6 +218,7 @@ networks:
       - subnet: 172.20.08.0/24
 volumes:
   # to persist data beyond container's life
+  gvm-data:
   static_volume:
   data:
     external: true
