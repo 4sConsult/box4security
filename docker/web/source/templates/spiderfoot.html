@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+{# Default content: render the page as iframe #}
+{# Overwrite this by including block content in a derived template, like in faq.html #}
+<iframe  style="width: 100%; border: none;" height="87%" scrolling="yes" frameborder="0" id="frame" src="//{{request.host}}/spiderfoot" name="frame"></iframe>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $('div.item.active').removeClass('active');
+    $(`#siem`).addClass('active');
+</script>
+{% endblock %}
