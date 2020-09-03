@@ -25,5 +25,5 @@ RUN pip2 install -r requirements.txt && \
     openvas-stop
 
 EXPOSE 9392
-HEALTHCHECK --retries=10 CMD curl -s -XGET 'https://127.0.0.1:9392'
+HEALTHCHECK --retries=10 CMD curl -sLk -XGET 'https://127.0.0.1:9392'
 CMD /root/start.sh
