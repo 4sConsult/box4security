@@ -1,7 +1,7 @@
 #!/bin/bash
 # Must be run as root.
 
-CONTAINERS_WITH_HEALTHCHECK=(elasticsearch nginx logstash kibana web wazuh db openvas suricata)
+CONTAINERS_WITH_HEALTHCHECK=(elasticsearch nginx db logstash kibana web wazuh openvas)
 
 # Define the time how long containers must stay healthy (after being healthy for the first time) to accept state.
 SAFETY_TIME=300
