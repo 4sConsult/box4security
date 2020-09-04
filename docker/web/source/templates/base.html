@@ -68,6 +68,7 @@
             <div class="ui dropdown pointing link item">
       	       <i class="cogs icon"></i> Administration
                <i class="dropdown icon"></i>
+               <div class="floating ui teal label">2</div>
                <div class="menu">
                  {% if current_user.has_role('FAQ') %}
                  <a class="item" href="/faq">FAQ</a>
@@ -85,7 +86,8 @@
                  <a class="item" href="/alerts">Alarme</a>
                  {% endif %}
                  {% if current_user.has_role('Updates') %}
-                 <a class="item" href="/update">Updates</a>
+                 <a class="item" href="/update">Updates
+                 <a class="ui basic right pointing label">2</a></a>
                  {% endif %}
                  {% if current_user.has_role('Super Admin') %}
                  <a class="item" href="/system">System</a>
