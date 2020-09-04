@@ -34,6 +34,14 @@ sudo chmod 777 -R /data/suricata/eve.json
 
 #remove curator because it is moved to core4s
 pip3 uninstall elasticsearch-curator
+
+#remove all crontabs
+crontab -r
+sudo crontab -r
+#insert new crontab that is used for now
+cd /home/amadmin/box4s/config/crontab
+su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
+
 ###################
 
 echo "### Detecting available memory and distribute it to the containers"

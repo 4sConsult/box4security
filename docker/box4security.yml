@@ -209,9 +209,6 @@ services:
     container_name: core4s
     build: core4s/.
     restart: always
-    env_file:
-     - ../config/secrets/db.conf
-     - ../config/secrets/secrets.conf
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
