@@ -14,5 +14,3 @@ fi
 echo "ASN Daten aktualisiert."
 rm ip2asn-combined.tsv
 docker exec db /bin/bash -c "rm /tmp/ip2asn-combined.tsv*"
-
-export IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
