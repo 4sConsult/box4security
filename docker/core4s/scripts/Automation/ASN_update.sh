@@ -1,4 +1,4 @@
-#source $BASEDIR$GITDIR/config/secrets/db.conf
+source /core4s/config/secrets/db.conf
 cd /tmp/
 curl -O -s https://iptoasn.com/data/ip2asn-combined.tsv.gz
 gunzip -f ip2asn-combined.tsv.gz
@@ -14,3 +14,5 @@ fi
 echo "ASN Daten aktualisiert."
 rm ip2asn-combined.tsv
 docker exec db /bin/bash -c "rm /tmp/ip2asn-combined.tsv*"
+
+export IP2TOKEN="MyrzO6sxNLvoSEaGtpXoreC1x50bRGmDfNd3UFBIr66jKhZeGXD7cg9Jl9VdQhQ5"
