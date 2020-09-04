@@ -16,4 +16,3 @@ services:
         env_file:
         - /home/amadmin/box4s/config/secrets/wazuh.conf
         - /etc/box4s/modules.conf
-        user: "1000:44269"

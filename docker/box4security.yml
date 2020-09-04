@@ -78,7 +78,7 @@ services:
         condition: service_healthy
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-    user: "1000:44269"
+    user: "0:44269"
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat
@@ -86,7 +86,6 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
-    user: "1000:44269"
   logstash:
     build: logstash/.
     container_name: logstash
@@ -109,7 +108,7 @@ services:
       - varlib_logstash:/var/lib/logstash/
       - etcbox4s_logstash:/etc/logstash/conf.d/general/
       - varlib_box4s:/var/lib/box4s/
-    user: "1000:44269"
+    user: "0:44269"
   filebeat:
     build: filebeat/.
     container_name: filebeat
@@ -120,7 +119,6 @@ services:
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - data:/data
-    user: "1000:44269"
   web:
     container_name: web
     networks:
