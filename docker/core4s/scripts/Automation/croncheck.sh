@@ -7,8 +7,8 @@
 #
 #########Changable Variables################
 loglocation="/var/log/cronchecker"
-logfile="$loglocation/cronjobchecker.json"
-tempfile="$loglocation/cronjobchecker.json.tmp"
+logfile="$loglocation/cronjobchecker_$1.json"
+tempfile="$loglocation/cronjobchecker_$1.json.tmp"
 email_reciever="box@4sconsult.de"
 vulnwhisp_log="$loglocation/vulnwhisp.log"
 ########################################
