@@ -42,7 +42,7 @@ alertscore = 0.0
 offendingRules = []
 
 # Read the contents of the result from Elasticsearch API query
-file = open("/home/amadmin/box4s/scripts/Automation/score_calculation/alerts_buckets.json", "r")
+file = open("/core4s/scripts/Automation/score_calculation/alerts_buckets.json", "r")
 # Load content into a json datastore
 datastore = json.load(file)
 
