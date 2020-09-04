@@ -3,28 +3,41 @@ set -e
 # Log file to use
 # Create path if allowed or do NOP
 mkdir -p /var/log/box4s/ || :
-LOG_FILE="/var/log/box4s/install"
-if [[ ! -w $LOG_FILE ]]; then
-  LOG_FILE="$HOME/install"
+
+# Determine log dir, if writable use /var/log else user's home.
+LOG_DIR="/var/log/box4s"
+if [[ ! -w $LOG_DIR ]]; then
+  LOG_DIR="$HOME"
 fi
 
-# Please no interaction
+FULL_LOG=$LOG_DIR/install.log
+ERROR_LOG=$LOG_DIR/install.err.log
+
+# Do not use interactive debian frontend.
 export DEBIAN_FRONTEND=noninteractive
 
-# Little help text to display if something goes wrong
+# Forward fd3 to the console
+# exec 3>&1
+# Forward stderr to $ERROR_LOG
+# exec 2> >(tee "$ERROR_LOG")
+# Forward stdout to $FULL_LOG
+# exec > >(tee "$FULL_LOG")
+exec 3>&1 1>>${FULL_LOG} 2>>$ERROR_LOG
+# HELP text
 HELP="\
 
 
 ###########################################
-### Box4s Installer                     ###
+### BOX4s Installer                     ###
 ###########################################
 
 Disclaimer:
-This script will install the Box4Security on this system.
-By running the script you know what you are doing:
-1. Your box will get new packages
-2. A new folder called '/data' will be created in your root directory
-3. A new sudo user called 'amadmin' will be created on this system
+This script will install the BOX4security on this system.
+By running the script you confirm to know what you are doing:
+1. New packages will be installed.
+2. A new folder called '/data' will be created in your root directory.
+3. A new sudo user called 'amadmin' will be created on this system.
+4. The BOX4s service will be enabled.
 
 ########################################
 Usage:
@@ -40,7 +53,7 @@ Options:
 
 # This needs toilet to be installed
 function banner {
-  toilet -f ivrit "$1"
+  toilet -f ivrit "$1" 1>&3
 }
 
 function testNet() {
@@ -54,14 +67,14 @@ function waitForNet() {
   HOST=${1:-"google.com"}
   while ! testNet $HOST; do
     # while testNet returns non zero value
-    echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s"
+    echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s" 1>&3
     sleep 15s
   done
 }
 
 function printHelp() {
-  toilet -f ivrit 'BOX4security' | boxes -d cat -a hc -p h8 | lolcat
-  echo "$HELP"
+  toilet -f ivrit 'BOX4security' | boxes -d cat -a hc -p h8 1>&3
+  echo "$HELP" 1>&3
 }
 
 # Lets make sure some basic tools are available
@@ -85,61 +98,75 @@ fi
 banner "Dependencies ..."
 
 # Are we root?
-echo -n "### Checking for root: "
+echo -n "Checking for root: " 1>&3
 if [ "$(whoami)" != "root" ];
   then
-    echo "[ NOT OK ]"
-    echo "### Please run as root."
+    echo "[ NOT OK ]" 1>&3
+    echo -e "Script must be run as root."
     printHelp
     exit 1
   else
-    echo "[ OK ]"
+    echo "[ OK ]" 1>&3
 fi
 
-echo "### Setting up the environment"
+echo -n "Creating the /data directory.. " 1>&3
 # Create the /data directory if it does not exist and make it readable
 sudo mkdir -p /data
 sudo chown root:root /data
 sudo chmod 777 /data
+echo "[ OK ]" 1>&3
 
-# Create Box4s Log Path
-sudo mkdir -p /var/log/box4s/
+# Create update log
 sudo touch /var/log/box4s/update.log
 
 # Lets install apt-fast for quick package installation
 waitForNet
-echo "### Installing apt-fast"
+echo -n "Installing apt-fast.. " 1>&3
 sudo /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
-
+echo "[ OK ]" 1>&3
 # Remove services, that might be present, but are not needed.
 # But don't fail if they arent.
-echo "### Removing some services"
-sudo systemctl disable apache2 nginx systemd-resolved || echo ""
+echo -n "Removing standard services.. " 1>&3
+sudo systemctl disable apache2 nginx systemd-resolved || :
 sudo apt-fast remove --purge -y apache2 nginx
+echo "[ OK ]" 1>&3
 
 # Lets install all dependencies
 waitForNet
-echo "### Installing all dependencies"
+echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
 sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
 
 sudo add-apt-repository -y ppa:oisf/suricata-stable
 sudo apt-get update
 sudo apt-fast install -y software-properties-common suricata # TODO: remove in #375
 sudo systemctl disable suricata || :
+echo "[ OK ]" 1>&3
 
+echo -n "Enabling git lfs.. " 1>&3
 git lfs install --skip-smudge
+echo "[ OK ]" 1>&3
+
+echo -n "Installing Python3 modules from PyPi.. " 1>&3
 pip3 install semver requests
+echo "[ OK ]" 1>&3
+
+echo -n "Installing Docker-Compose.. " 1>&3
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
+echo "[ OK ]" 1>&3
 
 # Install BlackBox to decrypt stuff
+echo -n "Installing BlackBox for secret encryption/decryption.. " 1>&3
 git clone https://github.com/StackExchange/blackbox.git /opt/blackbox
 cd /opt/blackbox
 sudo make symlinks-install
+echo "[ OK ]" 1>&3
 
 # Change to path from snippet
 cd /tmp/box4s
+
 # Import Secret Key and use the deploy token as password
+echo -n "Import BOX4security secret key and decrypting secrets.. " 1>&3
 echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
 # Remove passphrase from secret key to allow decryptions without a passphrase.
 printf "passwd\n$token\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
@@ -151,11 +178,15 @@ source config/secrets/secrets.conf
 source config/secrets/db.conf
 # For security reasons, remove decrypted versions
 blackbox_shred_all_files
+echo "[ OK ]" 1>&3
+
 # Create the user $HOST_USER only if he does not exist
 # The used password is known to the whole dev-team
+echo -n "Creating BOX4security user on the host.. " 1>&3
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
 sudo usermod -aG sudo $HOST_USER
 echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+echo "[ OK ]" 1>&3
 
 ##################################################
 #                                                #
@@ -171,21 +202,21 @@ mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s
 if [[ "$*" == *manual* ]]
 then
   # --manual supplied => ask user which to install
-  echo "Available tags:"
-  printf '%s\n' "${TAGS[@]}"
-  echo "Choose tag to install"
+  echo "Available tags:" 1>&3
+  printf '%s\n' "${TAGS[@]}" 1>&3
+  echo "Type tag to install:" 1>&3
   read TAG
   while [[ ! " ${TAGS[@]} " =~ " ${TAG} " ]]; do
-    echo "$TAG is not in ${TAGS[@]}. Try again."
+    echo "$TAG is not in ${TAGS[@]}. Try again." 1>&3
     read TAG
   done
-  echo "$TAG will be installed."
+  echo "$TAG will be installed.. [ OK ]" 1>&3
 else
   # not manual, install most recent and valid tag
   TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: $GIT_API_TOKEN" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
-  echo "Tag $TAG is the most recent available tag."
+  echo "Installing the most recent tag $TAG.. [ OK ]" 1>&3
 fi
-
+echo "Installing $TAG."
 ##################################################
 #                                                #
 # Clone Repository                               #
@@ -193,30 +224,37 @@ fi
 ##################################################
 banner "Repository ..."
 
-#exec 1>>$LOG_FILE && exec 2>&1
-exec 2> >(tee "$LOG_FILE.err")
-exec > >(tee "$LOG_FILE.log")
-
+echo -n "Cloning the repository.. " 1>&3
 cd /home/amadmin
 git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s -b $TAG
+echo "[ OK ]" 1>&3
 
 # Decrypt all secrets via postdeploy
+echo -n "Decrypting secrets.. " 1>&3
 cd box4s
 blackbox_postdeploy
+echo "[ OK ]" 1>&3
 
 # Set SSH allowed keys
+echo -n "Enabling allowed SSH keys.. " 1>&3
 sudo mkdir -p /home/amadmin/.ssh
 sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
+echo "[ OK ]" 1>&3
+
 # Copy certificates over
+echo -n "Copying SSL certificates.. " 1>&3
 sudo mkdir -p /etc/nginx/certs
 sudo chown root:root /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
 sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
+echo "[ OK ]" 1>&3
 
 # Copy the smtp.conf to /etc/box4s
+echo -n "Enabling default SMTP config.. " 1>&3
 sudo mkdir -p /etc/box4s/
 sudo cp /home/amadmin/box4s/config/secrets/smtp.conf /etc/box4s/smtp.conf
+echo "[ OK ]" 1>&3
 
 ##################################################
 #                                                #
@@ -226,24 +264,30 @@ sudo cp /home/amadmin/box4s/config/secrets/smtp.conf /etc/box4s/smtp.conf
 sudo systemctl start docker
 banner "Volumes ..."
 
+echo -n "Creating volumes.. " 1>&3
 # Setup data volume
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
+echo -n "[ data " 1>&3
 
 # Setup Suricata volume
 sudo mkdir -p /var/lib/suricata
 sudo chown root:root /var/lib/suricata
 sudo chmod -R 777 /var/lib/suricata
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/suricata/ --opt o=bind varlib_suricata
+echo -n " varlib_suricata " 1>&3
 
 # Setup Box4s volume
 sudo mkdir -p /var/lib/box4s
 sudo chown root:root /var/lib/box4s
 sudo chmod -R 777 /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
+echo -n " varlib_box4s " 1>&3
 
 # Setup PostgreSQL volume
 sudo mkdir -p /var/lib/postgresql/data
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
+echo -n " varlib_postgresql " 1>&3
+
 
 # Setup Box4s Settings volume
 sudo mkdir -p /etc/box4s/logstash
@@ -251,18 +295,21 @@ sudo cp -R /home/amadmin/box4s/config/etc/logstash/* /etc/box4s/logstash/
 sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
+echo -n " etcbox4s_logstash " 1>&3
 
 # Setup Logstash volume
 sudo mkdir -p /var/lib/logstash
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
+echo -n " varlib_logstash " 1>&3
 
 # Setup OpenVAS volume
 sudo mkdir -p /var/lib/openvas
 sudo chown root:root /var/lib/openvas
 sudo chmod -R 777 /var/lib/openvas
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
+echo -n " varlib_openvas " 1>&3
 
 # Setup Elasticsearch volume
 sudo mkdir /data/elasticsearch -p
@@ -274,12 +321,14 @@ sudo mkdir -p /var/lib/elastalert/rules
 sudo chown root:root /var/lib/elastalert/rules
 sudo chmod -R 777 /var/lib/elastalert/rules
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
+echo -n " varlib_elastalert_rules " 1>&3
 
 # Setup Wiki volume
 sudo mkdir -p /var/lib/box4s_docs
 sudo chown root:root /var/lib/box4s_docs
 sudo chmod -R 777 /var/lib/box4s_docs
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_docs --opt o=bind varlib_docs
+echo " varlib_docs ]" 1>&3
 
 ##################################################
 #                                                #
@@ -288,19 +337,30 @@ sudo docker volume create --driver local --opt type=none --opt device=/var/lib/b
 ##################################################
 banner "BOX4security ..."
 
+echo -n "Setting hostname.. " 1>&3
+hostname box4security
+echo "127.0.0.1 box4security" >> /etc/hosts
+echo " [ OK ]" 1>&3
+
 # No longer allow SSH with password login
+echo -n "Configuring SSH server.. " 1>&3
 sudo sed -i 's/#\?PasswordAuthentication .*$/PasswordAuthentication no/g' /etc/ssh/sshd_config
 sudo sed -i 's/#\?ChallengeResponseAuthentication .*$/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config
 sudo sed -i 's/#\?UsePAM .*$/UsePAM no/g' /etc/ssh/sshd_config
 sudo sed -i 's/#\?PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
 sudo systemctl restart sshd
+echo " [ OK ]" 1>&3
 
 # Initially clone the Wiki repo
+echo -n "Downloading documentation.. " 1>&3
 cd /var/lib/box4s_docs
 sudo git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/docs.git .
+echo " [ OK ]" 1>&3
 
+echo -n "Configuring BOX4s.. " 1>&3
 # Copy gollum config to wiki root
 cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
+
 
 # Copy config files
 cd /home/amadmin/box4s
@@ -315,11 +375,11 @@ sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/su
 # Create a folder for the alerting rules
 sudo mkdir -p /var/lib/elastalert/rules
 
-echo "### Setting up interfaces"
-# Find dhcp and remove everything after
-sudo cp /home/amadmin/box4s/config/etc/network/interfaces /etc/network/interfaces
-sudo sed -i '/.*dhcp/q' /etc/network/interfaces
+# Copy default elastalert smtp auth file
+sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalert_smtp.yaml
+echo " [ OK ]" 1>&3
 
+echo -n "Setting system environment variables.. " 1>&3
 set +e
 echo "### Setup system variables"
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
@@ -328,6 +388,12 @@ INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
 echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
 source /etc/environment
 set -e
+echo " [ OK ] " 1>&3
+
+echo -n "Setting network configuration and restarting network.. " 1>&3
+# Find dhcp and remove everything after
+sudo cp /home/amadmin/box4s/config/etc/network/interfaces /etc/network/interfaces
+sudo sed -i '/.*dhcp/q' /etc/network/interfaces
 
 IF_MGMT=$(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | head -n 1)
 awk "NR==1,/auto ens[0-9]*/{sub(/auto ens[0-9]*/, \"auto $IF_MGMT\")} 1" /etc/network/interfaces > /tmp/4s-ifaces
@@ -339,6 +405,7 @@ sudo mv /tmp/4s-ifaces /etc/network/interfaces
 # Apply the new config without a restart
 ip link set $IF_MGMT down
 ip link set $IF_MGMT up
+
 
 # Set other interfaces
 for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
@@ -354,26 +421,34 @@ do
   ip link set $iface down
   ip link set $iface up
 done
+echo " [ OK ] " 1>&3
 
+echo -n "Setting the portmirror interface.. " 1>&3
 # Find the portmirror interface for suricata
 touch /home/amadmin/box4s/docker/suricata/.env
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
 echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
+echo " [ OK ] " 1>&3
 
+echo -n "Enabling BOX4s internal DNS server.. " 1>&3
 # DNSMasq Setup
 sudo systemctl disable systemd-resolved
 sudo systemctl enable resolvconf
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
+echo " [ OK ] " 1>&3
 
-echo "### Enabling/Disabling Modules"
+echo -n "Enabling/Disabling Modules.. " 1>&3
 sudo mkdir -p /etc/box4s/
 sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
 sudo chmod 444 /etc/box4s/modules.conf
+echo " [ OK ] " 1>&3
 
-echo "### Generating Wazuh Agent-Password"
+echo -n "Generating Wazuh Agent-Password.. " 1>&3
 strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 14 | tr -d '\n' > /var/lib/box4s/wazuh-authd.pass
 sudo chmod 755 /var/lib/box4s/wazuh-authd.pass
+echo " [ OK ] " 1>&3
 
+echo -n "BOX4security service setup and enabling.. " 1>&3
 # Setup the new Box4Security Service and enable it
 sudo mkdir -p /usr/bin/box4s/
 sudo cp /home/amadmin/box4s/scripts/System_Scripts/box4s_service.sh /usr/bin/box4s/box4s_service.sh
@@ -381,6 +456,7 @@ sudo chmod +x /usr/bin/box4s/box4s_service.sh
 sudo cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 sudo systemctl daemon-reload
 sudo systemctl enable box4security.service
+echo " [ OK ] " 1>&3
 
 ##################################################
 #                                                #
@@ -389,12 +465,15 @@ sudo systemctl enable box4security.service
 ##################################################
 banner "Docker ..."
 
+echo -n "Downloading BOX4security software images. This may take a long time.. " 1>&3
 # Login to docker registry
-echo "### Download docker images"
 sudo docker login registry.gitlab.com -u deploy -p mPwNxthpxvmQSaZnv3xZ
+sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
+echo " [ OK ] " 1>&3
 
 # Download IP2Location DBs for the first time
-echo "### Setup geolocation database"
+echo -n "Downloading and unpacking geolocation database. This may take some time.. " 1>&3
 cd /tmp/
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBIN" -o IP2LOCATION-LITE-DB5.BIN.zip
 curl -sL "https://www.ip2location.com/download/?token=$IP2TOKEN&file=DB5LITEBINIPV6" -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
@@ -402,17 +481,21 @@ sudo unzip -o IP2LOCATION-LITE-DB5.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.BIN
 sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
+echo " [ OK ] " 1>&3
 
+echo -n "Downloading Wazuh clients.. " 1>&3
 # Download wazuh clients
 sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
+echo " [ OK ] " 1>&3
 
 # Filter Functionality
-echo "### Setting up suricata filter functionality"
+echo -n "Setting up BOX4security Filters.. " 1>&3
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
 sudo touch /var/lib/box4s/suricata_suppress.bpf
 sudo chmod -R 777 /var/lib/box4s/
+echo " [ OK ] " 1>&3
 
-echo "### Detecting available memory and distribute it to the containers"
+echo -n "Detecting available memory and distributing it to the containers.. " 1>&3
 # Detect rounded memory
 MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MEM=$(python3 -c "print($MEM/1024.0**2)")
@@ -422,37 +505,37 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /
 # and one quarter to logstash
 LSMEM=$(python3 -c "print(int($MEM*0.25))")
 sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/logstash/.env.ls
+echo " [ OK ] " 1>&3
 
-echo "### Download Docker images"
-sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
-hostname box4security
-echo "127.0.0.1 box4security" >> /etc/hosts
+echo -n "Making scripts executable.. " 1>&3
+chmod +x -R /home/amadmin/box4s/scripts
+echo " [ OK ] " 1>&3
+
+echo -n "Enabling BOX4security internal DNS.. " 1>&3
 sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
-
-echo "### Make scripts executable"
-chmod +x -R /home/amadmin/box4s/scripts
-
+echo " [ OK ] " 1>&3
 ##################################################
 #                                                #
 # Box4s start                                    #
 #                                                #
 ##################################################
-banner "Starting ..."
+banner "Starting BOX4security..."
 
 sudo systemctl start box4security
 
-echo "### Wait for elasticsearch to become available ..."
+echo -n "Waiting for Elasticsearch to become available.. " 1>&3
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+echo " [ OK ] " 1>&3
 
-echo "### Install the scores index ..."
+echo -n "Installing the scores index.. " 1>&3
 sleep 5
 # Install the scores index
 
 sudo docker exec core4s /bin/bash /core4s/scripts/Automation/score_calculation/install_index.sh
 
-echo "### Install new cronjobs ..."
+echo -n "Installing new cronjobs.. " 1>&3
 cd /home/amadmin/box4s/config/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 
@@ -461,17 +544,20 @@ echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 sudo systemctl daemon-reload
 
 #Ignore own INT_IP
+echo -n "Enabling filter to ignore own IP.. " 1>&3
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
+echo " [ OK ] " 1>&3
 
+echo -n "Waiting for Kibana to become available.. " 1>&3
 sleep 300
-
-echo "### Wait for kibana to become available ..."
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 || echo ''
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo " [ OK ] " 1>&3 || echo " [ NOT OK ] " 1>&3
+sleep 30
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo " [ OK ] " 1>&3 || echo " [ NOT OK ] " 1>&3
 
 # Import Dashboard
-echo "### Install dashboards"
+echo -n "Installing Dashboards und Patterns.. " 1>&3
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Startseite/Startseite-Uebersicht.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/SIEM/SIEM-Alarme.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/SIEM/SIEM-ASN.ndjson
@@ -486,12 +572,14 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Details.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/System/docker.ndjson
 
 # Installiere Suricata Index Pattern
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/suricata.ndjson
 
 # Erstelle initialen VulnWhisperer Index
 curl -XPUT "localhost:9200/logstash-vulnwhisperer-$(date +%Y.%m)"
+echo " [ OK ] " 1>&3
 
 toilet -f ivrit 'Ready!' | boxes -d cat -a hc -p h8 | /usr/games/lolcat
 if [[ "$*" == *runner* ]]; then
@@ -499,10 +587,11 @@ if [[ "$*" == *runner* ]]; then
   exit 0
 fi
 
-echo "### Activating unattended upgrades"
+echo -n "Activating unattended (automatic) Ubuntu upgrades.. " 1>&3
 printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
+echo " [ OK ] " 1>&3
 
-echo "### Continue cleaning up and updating the tools"
+echo -n "Cleaning up and updating tools.. " 1>&3
 sudo apt-fast autoremove -y
 # Lets update both openvas and suricata
 sudo docker exec suricata /root/scripts/update.sh > /dev/null
@@ -512,3 +601,5 @@ sudo docker exec openvas /root/update.sh > /dev/null
 # This line may be put into the correct position within this script once we figured out where it has to be.
 # For now, so the update works, we stick with this.
 sudo chmod 777 /data/suricata/ -R
+echo " [ OK ] " 1>&3
+echo -n "BOX4security.. [ READY ]" | /usr/games/lolcat 1>&3

@@ -118,6 +118,18 @@ def faq():
     return render_template('faq.html', client=client)
 
 
+@app.route('/system', methods=['GET'])
+@login_required
+@roles_required(['Super Admin'])
+def system():
+    """Return the system overview page.
+
+    Required Role: Super Admin
+    Embeds Kibana Docker Metricbeat visuals to monitor the BOX4s.
+    """
+    return render_template('system.html')
+
+
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 @roles_required(['Super Admin', 'User-Management'])
@@ -257,6 +269,14 @@ def wiki_index():
     return render_template('docs.html', docs_url="/wiki/gollum/overview")
 
 
+@app.route('/intelligence', methods=['GET'])
+@login_required
+@roles_required(['Super Admin', 'SIEM'])
+def spiderfoot():
+    """Show the spiderfoot index."""
+    return render_template('spiderfoot.html')
+
+
 @app.route('/auth')
 def authenticate():
     """Authenticate against the webapp."""
@@ -300,6 +320,15 @@ def authenticate():
                 return resp
             else:
                 # User is not permitted to request the Wiki
+                abort(403)
+        elif re.match(r'^/(spiderfoot).*$', original_uri):
+            if not set(['Super Admin', 'SIEM']).isdisjoint([a.name for a in current_user.roles]):
+                # User is Super Admin or has the SIEM role
+                resp = Response("")
+                resp.headers['X-Auth-Username'] = current_user.getName()
+                return resp
+            else:
+                # User is not permitted to request Spiderfoot
                 abort(403)
     else:
         abort(401)

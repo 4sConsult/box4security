@@ -1,65 +1,94 @@
 import json
+from datetime import datetime
 
-# Read the contents of the result
-file = open("/core4s/scripts/Automation/score_calculation/vuln_score_result.json", "r")
+# Setup variables for calculation.
+# Each is dictionary, accessed by the keys gotten from Elasticsearch query. Refer to the query json.
 
+# Weight of vulnerability severity.
+WEIGHT = {
+    'critical': 15,
+    'high': 5,
+    'medium': 1,
+    'low': 0.1,
+    'disabled': 2,
+}
+
+# Threshold of vulnerability severity.
+# Define here above which state the severity category flags as 0.
+# E.g. multiply num of vulnerabilities by their weight until THRESHOLD, then just set 0.
+THRESHOLD = {
+    'critical': 10,
+    'high': 50,
+    'medium': 100,
+    'low': 500,
+    'disabled': 0,
+}
+
+# List of rules
+# Hold a dictionary which must have a `text` member for displaying measures to increase score.
+RULES = {
+    'critical': {'text': 'Im Netzwerk existiert mindestens eine kritische Schwachstelle.'},
+    'high': {'text': 'Im Netzwerk existiert mindestens eine Schwachstelle mit hoher Schwere.'},
+    'medium': {'text': 'Im Netzwerk existiert mindestens eine mittlere Schwachstelle.'},
+    'low': {'text': 'Im Netzwerk existiert mindestens eine geringe Schwachstelle.'},
+    'disabled': {'text': 'Es werden keine Schwachstellenscans durchgeführt.'},
+}
+
+# Calculate the total weight by summing up the dictionary.
+totalWeight = sum(WEIGHT.values())
+# Initialize score as 0
+vulnscore = 0.0
+# List of offended rules from RULES.
+offendingRules = []
+
+# Boolean variable to identify if scans were even made => used to validate the rule of actually performing vulnerability scans.
+scansEnabled = False
+
+# Read the contents of the result from Elasticsearch API query
+file = open("/core4s/scripts/Automation/score_calculation/cvss_buckets.json", "r")
 # Load content into a json datastore
 datastore = json.load(file)
 
-# Init all the values as floats, so i will definitely be precise enough
-vulnscore = 0.0
-count = 0.0
-severity = 0.0
-weight = 0.0
-threshold = 0.0
-percent = 0.0
-weighted = 0.0
-isZero = 0
+# the information is under this key. It is a list of buckets by cvss range
+# 0-2.5, 2.5-5, 5-7.5, 7.5-
+# as defined in the query json.
+# the right value is not included, the left is.
+cvssbuckets = datastore['aggregations']['cvss']['buckets']
 
-# If the result contains values, for each row ...
-if "rows" in datastore:
-    for row in datastore["rows"]:
-        count = row[0]
-        severity = row[1]
+# for each severity bucket
+for bucket in cvssbuckets:
+    severity = bucket['key']  # find out exactly which bucket we are looking at
+    numUnique = bucket['doc_count'] - bucket['cvssUniqueVul']['sum_other_doc_count']  # calculate the number of unique vulnerabilities
+    if numUnique:
+        scansEnabled = True
+        offendingRules.append(RULES[severity])  # RULE offended, add it.
+    if numUnique < THRESHOLD[severity]:  # Threshold not exceeded
+        temp = numUnique / THRESHOLD[severity]  # Calulate fraction of threshold that was exceeded.
+    else:
+        temp = 1  # Threshold exceeded => must take whole weight into account.
+    temp *= WEIGHT[severity]  # multiply the fraction by weight e.g. weighted arithmetic mean, step 1
+    vulnscore += temp  # add the product to the vulnscore e.g. weighted arithmetic mean, step 2
 
-        # ... detemine the standardized severity, the threshold value and the weight the severity has, ...
-        if severity < 2.5:
-                severity = 2.5
-                threshold = 5000
-                weight = 0.05
-        if severity < 5:
-                severity = 5
-                threshold = 2500
-                weight = 0.1
-        if severity < 7.5:
-                severity = 7.5
-                threshold = 500
-                weight = 0.15
-        if severity >= 7.5:
-                severity = 10
-                threshold = 100
-                weight = 0.2
+# Rule: Vulnerability Scans must be performed, else: Penalty of WEIGHT['disabled']
+if not scansEnabled:
+    temp = 1  # Actually include the penalty. Can only be 0,1. In case of 0 => no effect, so left out here.
+    temp *= WEIGHT['disabled']  # Multiply by weight
+    vulnscore += temp  # add the product to the vulnscore e.g. weighted arithmetic mean, step 2
+    offendingRules.append(RULES['disabled'])  # Vulnerabilty scans must be performed rule offended, add it.
 
-        # ... calculate what the ratio between the vuln count and the threshold is, ...
-        percent = count / threshold
+vulnscore = vulnscore / totalWeight  # weighted arithmetic mean, step 3
+vulnscore = 1 - vulnscore  # turn the percentage of not fulfilled into fulfilled 100%-X
+vulnscore = round(vulnscore * 100, 2)  # 0.0047234234 => 0.0047 => 0.47%
 
-        # ... calculate the weighted value ...
-        weighted = percent * weight
 
-        # ... and finally add the weighted score to the overall score.
-        vulnscore = vulnscore + weighted
+result = {
+    "score_type": "vuln_score",
+    "value": vulnscore,
+    "timestamp": int(datetime.utcnow().timestamp()) * 1000,
+    "rules": offendingRules
+}
 
-        # If the count exceeds the threshold the score must be 0.
-        # As this is a for-loop it can happen, that the first iteration will make `isZero` = 1,
-        # but the next will make it 0 again. To prevent that, the state will be check evertime.
-        if count < threshold and isZero != 1:
-            isZero = 0
-        else:
-            isZero = 1
+with open('/tmp/vuln.scores.json', 'w') as tmpVuln:
+    json.dump(result, tmpVuln)
 
-# If no threshold exceeds, print the score readable
-if isZero == 0:
-    print((1 - vulnscore) * 100)
-# If the threshold exceeds, the value must be 0
-else:
-    print(0)
+print(result['value'])

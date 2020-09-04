@@ -31,6 +31,12 @@ sudo chmod 777 -R /data/suricata/eve.json
 
 ###################
 # Changes here
+su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
+
+# Copy default elastalert smtp auth file
+sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalert_smtp.yaml
+# Remove unused folder and script
+sudo rm /home/amadmin/box4s/scripts/Elastic_Scripts/ -R
 
 #remove all crontabs
 crontab -r
@@ -60,6 +66,7 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 
 # Get the current images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
+sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
@@ -68,6 +75,8 @@ sudo systemctl restart box4security.service
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash || sleep 30
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || sleep 30
+sleep 20
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx || sleep 30
 
@@ -89,9 +98,13 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Details.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/System/docker.ndjson
 
 # Installiere Suricata Index Pattern
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/suricata.ndjson
+
+# Update Score Mapping
+curl -s -H "Content-type: application/json" -X PUT http://localhost:9200/scores/_mapping --data-binary @$DIR/res/index_mapping.json
 
 # Erstelle initialen VulnWhisperer Index
 curl -XPUT "localhost:9200/logstash-vulnwhisperer-$(date +%Y.%m)"

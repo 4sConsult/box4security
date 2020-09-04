@@ -6,9 +6,19 @@
         "properties": {
             "score_type": {
                 "type": "text"
-	    },
+        },
+        "rules": {
+            "properties" : {
+                "text":{
+                    "type": "keyword"
+                },
+                "weight":{
+                    "type": "float"
+                }
+            }
+		},
 	    "value": {
-                "type": "long"
+                "type": "float"
             },
 	    "timestamp": {
 	    	"type": "date",

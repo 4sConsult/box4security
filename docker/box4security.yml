@@ -27,6 +27,14 @@ services:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+  spiderfoot:
+    build: spiderfoot
+    container_name: spiderfoot
+    restart: always
+    volumes:
+        - spiderfoot_data:/var/lib/spiderfoot
+    ports:
+        - 5001:8080
   openvas:
     build: openvas
     container_name: openvas
@@ -63,6 +71,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat
@@ -96,8 +106,8 @@ services:
     build: filebeat/.
     container_name: filebeat
     depends_on:
-      logstash:
-        condition: service_healthy
+        elasticsearch:
+            condition: service_healthy
     image: "registry.gitlab.com/4sconsult/box4s/filebeat:dev"
     volumes:
       - varlib_logstash:/var/lib/logstash/
@@ -193,6 +203,8 @@ services:
     restart: always
     volumes:
       - varlib_elastalert_rules:/opt/elastalert/rules
+      - /var/lib/box4s/elastalert_smtp.yaml:/opt/elastalert/smtp_auth_file.yaml
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
     expose:
       - 3030
       - 3333
@@ -225,6 +237,7 @@ networks:
       - subnet: 172.20.08.0/24
 volumes:
   # to persist data beyond container's life
+  spiderfoot_data:
   static_volume:
   data:
     external: true

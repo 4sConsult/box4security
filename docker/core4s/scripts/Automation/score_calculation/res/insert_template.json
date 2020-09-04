@@ -1,5 +1,5 @@
 {
-	"score_type": "%1",
+    "score_type": "%1",
 	"value": %2,
 	"timestamp": %3
 }

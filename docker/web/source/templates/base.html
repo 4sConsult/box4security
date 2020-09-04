@@ -31,8 +31,9 @@
                  <a class="item" href="/siem-http">HTTP</a>
                  <a class="item" href="/siem-dns">DNS</a>
                  <a class="item" href="/siem-proto">Protokolle & Dienste</a>
-                 {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}<a class="item" href="/wazuh">Endgeräte</a>{% endif %}
                  <a class="item" href="/siem-social-media">Social Media (Alpha)</a>
+                 {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}<a class="item" href="/wazuh">Endgeräte</a>{% endif %}
+                 <a class="item" href="/intelligence">Intelligence</a>
                </div>
              </div>
            </div>
@@ -74,7 +75,7 @@
                  {% if current_user.has_role('User-Management') %}
                  <a class="item" href="/user">Benutzer</a>
                  {% endif %}
-                 {% if current_user.has_role('User-Management') %}
+                 {% if current_user.has_role('Config') %}
                  <a class="item" href="/config">Konfiguration</a>
                  {% endif %}
                  {% if current_user.has_role('Filter') %}
@@ -85,6 +86,9 @@
                  {% endif %}
                  {% if current_user.has_role('Updates') %}
                  <a class="item" href="/update">Updates</a>
+                 {% endif %}
+                 {% if current_user.has_role('Super Admin') %}
+                 <a class="item" href="/system">System</a>
                  {% endif %}
                </div>
              </div>
