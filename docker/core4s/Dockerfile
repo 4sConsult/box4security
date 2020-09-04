@@ -29,15 +29,9 @@ ADD healthcheck.py /healthcheck.py
 # Add Crontab
 RUN crontab /core4s/core4s.crontab
 
-# Create the log file to be able to run tail
-RUN touch /var/log/cron.log
-
 #Check health
 HEALTHCHECK CMD curl --fail http://localhost:2981/ || exit 1
 
-ENTRYPOINT python3 healthcheck.py
-
 # Run the command on container startup
 CMD cron &&\
-bash /core4s/scripts/Automation/croncheck.sh init_cronchecker SUCCESS &&\
-tail -f /var/log/cron.log
+python3 healthcheck.py
