@@ -54,7 +54,7 @@ sudo chown -R root:44269 /etc/box4s/smtp.conf
 sudo chmod 760 -R /etc/box4s/smtp.conf
 
 sudo chown -R root:44269 /etc/box4s/modules.conf
-sudo chmod 760 -R etc/box4s/modules.conf
+sudo chmod 760 -R /etc/box4s/modules.conf
 
 sudo chown -R root:44269 /etc/msmtprc
 sudo chmod 760 -R /etc/msmtprc
