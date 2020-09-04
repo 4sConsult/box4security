@@ -39,8 +39,11 @@ sudo crontab -r
 cd /home/amadmin/box4s/config/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 
-#remove curator because it is moved to core4s
+#remove curator because it is moved to core4s; also remove curator config files
 sudo pip3 uninstall elasticsearch-curator
+sudo rm /home/amadmin/curator.yml
+sudo rm /home/amadmin/actions.yml
+
 
 ###################
 
