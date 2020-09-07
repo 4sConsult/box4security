@@ -6,11 +6,13 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 * Monitoring der BOX4s-Docker-Container hinzugefügt. Die Oberfläche sehen *Super Admins* als Menüpunkt der Administration.
 * SpiderFoot als ausgewählte Intelligence-Lösung der BOX4security für *Super Admins* und Nutzer der *SIEM*-Rolle hinzugefügt. 
+* Alarmierung von Social Media und Streaming-Sites hinzugefügt.
 
 ### Changed
 * Schwachstellenscores werden nun regelbasiert transparent berechnet.
 * IDS-Alarmierungsscores werden nun regelbasiert transparent berechnet.
 * Maßnahmen zur Besserung des Scores als Handlungsgrundlage auf der Startseite eingebettet.
+* Datengrundlage des Social-Media-Dashboards an neue Alarmierungen angepasst. Das Dashboard verlässt damit den Status einer Alpha-Version.
 
 ### Optimized
 * Formel zur Berechnung der Scores vereinfacht und transparenter gemacht.
