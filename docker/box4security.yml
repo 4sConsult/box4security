@@ -119,6 +119,7 @@ services:
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - data:/data
+    user: root:44269
   web:
     container_name: web
     networks:
