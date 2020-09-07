@@ -35,6 +35,8 @@ services:
         - spiderfoot_data:/var/lib/spiderfoot
     ports:
         - 5001:8080
+    user: "2000:44269"
+    image: "registry.gitlab.com/4sconsult/box4s/spiderfoot:dev"
   openvas:
     build: openvas
     container_name: openvas
