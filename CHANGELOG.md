@@ -18,6 +18,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Loggingverhalten bei Installation der BOX4s optimiert und Ausgabe erheblich vereinfacht.
 * Die Einsatzbereitschaft der Container wird nun verlässlicher und eindeutig bestimmt.
 * Score-Dashboards zeigen statt des Tagessdurchschnitts nun ausschließlich den zuletzt berechneten Wert.
+* Interne Dateisystemberechtigungen auf ein Minimum begrenzt um die interne Security zu steigern.
 
 ### Fixed
 * Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.

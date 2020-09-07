@@ -9,7 +9,8 @@ services:
      - 9200:9200
     image: "registry.gitlab.com/4sconsult/box4s/elasticsearch:dev"
     volumes:
-     - data:/data
+     - /data/elasticsearch:/data/elasticsearch
+     - /data/elasticsearch_backup:/data/elasticsearch_backup
     env_file:
       - elasticsearch/.env.es
   kibana:
@@ -27,6 +28,7 @@ services:
       elasticsearch:
         condition: service_healthy
     stop_signal: SIGKILL
+    user: "1000:44269"
   spiderfoot:
     build: spiderfoot
     container_name: spiderfoot
@@ -35,6 +37,7 @@ services:
         - spiderfoot_data:/var/lib/spiderfoot
     ports:
         - 5001:8080
+    user: "2000:44269"
   openvas:
     build: openvas
     container_name: openvas
@@ -49,6 +52,7 @@ services:
     image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
     env_file:
       - ../config/secrets/openvas.conf
+    user: "0:44269"
   suricata:
     build: suricata/.
     container_name: suricata
@@ -64,6 +68,7 @@ services:
       - data:/data
       - varlib_suricata:/var/lib/suricata/
       - varlib_box4s:/var/lib/box4s/
+    user: "0:44269"
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
@@ -73,6 +78,7 @@ services:
         condition: service_healthy
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+    user: "0:44269"
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat
@@ -102,6 +108,7 @@ services:
       - varlib_logstash:/var/lib/logstash/
       - etcbox4s_logstash:/etc/logstash/conf.d/general/
       - varlib_box4s:/var/lib/box4s/
+    user: "0:44269"
   filebeat:
     build: filebeat/.
     container_name: filebeat
@@ -112,6 +119,7 @@ services:
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - data:/data
+    user: root:44269
   web:
     container_name: web
     networks:
@@ -153,6 +161,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    user: "app:44269"
   db:
     container_name: db
     image: "registry.gitlab.com/4sconsult/box4s/db:dev"
@@ -168,6 +177,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    user: "0:44269"
   nginx:
     container_name: nginx
     image: "registry.gitlab.com/4sconsult/box4s/nginx:dev"
@@ -183,7 +193,7 @@ services:
       - web
       - kibana
       - wiki
-
+    user: "0:44269"
   dnsmasq:
     container_name: dnsmasq
     image: "registry.gitlab.com/4sconsult/box4s/dnsmasq:dev"
@@ -193,6 +203,7 @@ services:
       - 53:5353/udp
     volumes:
       - varlib_box4s:/var/lib/box4s/
+    user: "dnsmasq:44269"
   elastalert:
     container_name: elastalert
     image: "registry.gitlab.com/4sconsult/box4s/elastalert:dev"
@@ -208,6 +219,7 @@ services:
     expose:
       - 3030
       - 3333
+    user: "0:44269"
   wiki:
     container_name: wiki
     image: "registry.gitlab.com/4sconsult/box4s/wiki:dev"
@@ -217,6 +229,7 @@ services:
       - varlib_docs:/wiki/
     expose:
       - 80
+    user: "0:44269"
 networks:
   default:
     driver: bridge
