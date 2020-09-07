@@ -22,15 +22,71 @@ sudo docker rm  $(docker ps -q -a) || :
 # Remove all images, that are on the target system on every update
 sudo docker rmi $(sudo docker images -a -q) || :
 
-
-# Make sure elasticsearch can write
-sudo chmod 777 -R /data/elasticsearch
-sudo chmod 777 -R /var/lib/logstash
-sudo chmod 777 -R /var/lib/openvas
-sudo chmod 777 -R /data/suricata/eve.json
-
 ###################
 # Changes here
+sudo addgroup --gid 44269 boxforsecurity # Create group
+sudo usermod -a -G boxforsecurity amadmin # Add amadmin to created group
+
+# Set root:group as owner
+# Let group read and write.
+sudo chown -R root:44269 /var/lib/openvas
+sudo chmod 760 -R /var/lib/openvas
+
+sudo chown -R root:44269 /var/lib/logstash
+sudo chmod 760 -R /var/lib/logstash
+
+sudo chown -R root:44269 /data
+sudo chmod 760 -R /data
+
+sudo chown -R root:44269 /var/lib/box4s
+sudo chmod 760 -R /var/lib/openvas
+
+sudo chown -R root:44269 /etc/box4s/logstash
+sudo chmod 760 -R /etc/box4s/logstash
+
+sudo chown -R root:44269 /var/log/box4s
+sudo chmod 760 -R /var/log/box4s
+
+sudo chown -R root:44269 /var/lib/elastalert/rules
+sudo chmod 760 -R /var/lib/elastalert/rules
+
+sudo chown -R root:44269 /etc/box4s/smtp.conf
+sudo chmod 760 -R /etc/box4s/smtp.conf
+
+sudo chown -R root:44269 /etc/box4s/modules.conf
+sudo chmod 760 -R /etc/box4s/modules.conf
+
+sudo chown -R root:44269 /etc/msmtprc
+sudo chmod 760 -R /etc/msmtprc
+
+sudo chown -R root:44269 /etc/ssl/certs/BOX4s-SMTP.pem
+sudo chmod 760 -R /etc/ssl/certs/BOX4s-SMTP.pem
+
+sudo chown -R root:44269 /etc/ssl/certs/ca-certificates.crt
+sudo chmod 760 -R /etc/ssl/certs/ca-certificates.crt
+
+sudo chown -R root:44269 /var/lib/postgresql/data
+sudo chmod 760 -R /var/lib/postgresql/data
+
+sudo chown -R root:44269 /etc/nginx/certs
+sudo chmod 760 -R /etc/nginx/certs
+
+sudo chown -R root:44269 /var/lib/box4s/elastalert_smtp.yaml
+sudo chmod 760 -R /var/lib/box4s/elastalert_smtp.yaml
+
+sudo chown -R root:44269 /etc/ssl/certs/ca-certificates.crt
+sudo chmod 760 -R /etc/ssl/certs/ca-certificates.crt
+
+sudo chown -R root:44269 /var/lib/box4s_docs/
+sudo chmod 760 -R /var/lib/box4s_docs/
+
+# Elasticsearch is somewhat special...
+sudo chown -R 1000:0 /data/elasticsearch
+sudo chown -R 1000:0 /data/elasticsearch_backup
+sudo chmod 760 -R /data/elasticsearch
+sudo chmod 760 -R /data/elasticsearch_backup
+
+# Apply a new crontab for amadmin
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 
 # Copy default elastalert smtp auth file
@@ -38,6 +94,8 @@ sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml
 # Remove unused folder and script
 sudo rm /home/amadmin/box4s/scripts/Elastic_Scripts/ -R
 
+# Copy new suricata rule file
+sudo cp /home/amadmin/box4s/docker/suricata/var_lib/social_media.rules /var/lib/suricata/rules/social_media.rules
 
 ###################
 
