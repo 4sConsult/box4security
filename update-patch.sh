@@ -97,6 +97,9 @@ sudo rm /home/amadmin/box4s/scripts/Elastic_Scripts/ -R
 # Copy new suricata rule file
 sudo cp /home/amadmin/box4s/docker/suricata/var_lib/social_media.rules /var/lib/suricata/rules/social_media.rules
 
+# Create an suricata index of the current month. score calculation will fail without an existing index.
+curl -sLkX PUT localhost:9200/suricata-$(date +%Y.%m) > /dev/null
+
 ###################
 
 echo "### Detecting available memory and distribute it to the containers"

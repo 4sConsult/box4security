@@ -570,7 +570,7 @@ echo " [ OK ] " 1>&3
 
 echo -n "Installing the scores index.. " 1>&3
 sleep 5
-# Install the scores index
+# Install the scores indices
 cd /home/amadmin/box4s/scripts/Automation/score_calculation/
 ./install_index.sh
 echo " [ OK ] " 1>&3

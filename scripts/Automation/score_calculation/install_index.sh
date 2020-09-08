@@ -10,3 +10,6 @@ curl -s -X DELETE http://localhost:9200/scores
 # Also apply a specific mapping, so everything stays the same all the time
 curl -s -H "Content-type: application/json" -X PUT http://localhost:9200/scores --data-binary @$DIR/res/index_settings.json
 curl -s -H "Content-type: application/json" -X PUT http://localhost:9200/scores/_mapping --data-binary @$DIR/res/index_mapping.json
+
+# Create an suricata index of the current month. score calculation will fail without an existing index.
+curl -sLkX PUT localhost:9200/suricata-$(date +%Y.%m) > /dev/null
