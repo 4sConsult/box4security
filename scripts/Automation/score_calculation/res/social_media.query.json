@@ -1,0 +1,26 @@
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                "term": {
+                "alert.category.keyword": "Social Media Alerts by 4sConsult"
+                }
+                },
+                {
+                "range": {
+                        "@timestamp": {
+                            "gte": "now-1d/d",
+                            "lte": "now"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+} 
+  
+  
+
+
+  
