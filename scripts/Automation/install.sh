@@ -10,6 +10,9 @@ if [[ ! -w $LOG_DIR ]]; then
   LOG_DIR="$HOME"
 fi
 
+sudo chown -R root:44269 /var/log/box4s
+sudo chmod 760 -R /var/log/box4s
+
 FULL_LOG=$LOG_DIR/install.log
 ERROR_LOG=$LOG_DIR/install.err.log
 
@@ -17,7 +20,7 @@ ERROR_LOG=$LOG_DIR/install.err.log
 export DEBIAN_FRONTEND=noninteractive
 
 # Forward fd3 to the console
-# exec 3>&1 
+# exec 3>&1
 # Forward stderr to $ERROR_LOG
 # exec 2> >(tee "$ERROR_LOG")
 # Forward stdout to $FULL_LOG
@@ -147,7 +150,7 @@ git lfs install --skip-smudge
 echo "[ OK ]" 1>&3
 
 echo -n "Installing Python3 modules from PyPi.. " 1>&3
-pip3 install semver elasticsearch-curator requests
+pip3 install semver requests
 echo "[ OK ]" 1>&3
 
 echo -n "Installing Docker-Compose.. " 1>&3
@@ -186,6 +189,8 @@ echo -n "Creating BOX4security user on the host.. " 1>&3
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
 sudo usermod -aG sudo $HOST_USER
 echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+sudo addgroup --gid 44269 boxforsecurity # Create group
+sudo usermod -a -G boxforsecurity $HOST_USER # Add HOST_USER to created group
 echo "[ OK ]" 1>&3
 
 ##################################################
@@ -204,13 +209,13 @@ then
   # --manual supplied => ask user which to install
   echo "Available tags:" 1>&3
   printf '%s\n' "${TAGS[@]}" 1>&3
-  echo "Type tag to install:" 1>&3 
+  echo "Type tag to install:" 1>&3
   read TAG
   while [[ ! " ${TAGS[@]} " =~ " ${TAG} " ]]; do
     echo "$TAG is not in ${TAGS[@]}. Try again." 1>&3
     read TAG
   done
-  echo "$TAG will be installed.. [ OK ]" 1>&3 
+  echo "$TAG will be installed.. [ OK ]" 1>&3
 else
   # not manual, install most recent and valid tag
   TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: $GIT_API_TOKEN" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
@@ -244,10 +249,10 @@ echo "[ OK ]" 1>&3
 # Copy certificates over
 echo -n "Copying SSL certificates.. " 1>&3
 sudo mkdir -p /etc/nginx/certs
-sudo chown root:root /etc/nginx/certs
+sudo chown -R root:44269 /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
-sudo chmod 744 -R /etc/nginx/certs # TODO: insecure
+sudo chmod 760 -R /etc/nginx/certs
 echo "[ OK ]" 1>&3
 
 # Copy the smtp.conf to /etc/box4s
@@ -264,9 +269,11 @@ echo "[ OK ]" 1>&3
 sudo systemctl start docker
 banner "Volumes ..."
 
-echo -n "Creating volumes.. " 1>&3
+echo -n "Creating volumes and setting permissions.. " 1>&3
 # Setup data volume
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
+sudo chown -R root:44269 /data
+sudo chmod 760 -R /data
 echo -n "[ data " 1>&3
 
 # Setup Suricata volume
@@ -281,11 +288,15 @@ sudo mkdir -p /var/lib/box4s
 sudo chown root:root /var/lib/box4s
 sudo chmod -R 777 /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
+sudo chown -R root:44269 /var/lib/box4s
+sudo chmod 760 -R /var/lib/openvas
 echo -n " varlib_box4s " 1>&3
 
 # Setup PostgreSQL volume
 sudo mkdir -p /var/lib/postgresql/data
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
+sudo chown -R root:44269 /var/lib/postgresql/data
+sudo chmod 760 -R /var/lib/postgresql/data
 echo -n " varlib_postgresql " 1>&3
 
 
@@ -295,6 +306,8 @@ sudo cp -R /home/amadmin/box4s/config/etc/logstash/* /etc/box4s/logstash/
 sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
+sudo chown -R root:44269 /etc/box4s/logstash
+sudo chmod 760 -R /etc/box4s/logstash
 echo -n " etcbox4s_logstash " 1>&3
 
 # Setup Logstash volume
@@ -302,6 +315,8 @@ sudo mkdir -p /var/lib/logstash
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
+sudo chown -R root:44269 /var/lib/logstash
+sudo chmod 760 -R /var/lib/logstash
 echo -n " varlib_logstash " 1>&3
 
 # Setup OpenVAS volume
@@ -309,18 +324,26 @@ sudo mkdir -p /var/lib/openvas
 sudo chown root:root /var/lib/openvas
 sudo chmod -R 777 /var/lib/openvas
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
+sudo chown -R root:44269 /var/lib/openvas
+sudo chmod 760 -R /var/lib/openvas
 echo -n " varlib_openvas " 1>&3
 
 # Setup Elasticsearch volume
 sudo mkdir /data/elasticsearch -p
 sudo mkdir /data/elasticsearch_backup/Snapshots -p
-sudo chmod 777 /data/elasticsearch*
+# Elasticsearch is somewhat special...
+sudo chown -R 1000:0 /data/elasticsearch
+sudo chown -R 1000:0 /data/elasticsearch_backup
+sudo chmod 760 -R /data/elasticsearch
+sudo chmod 760 -R /data/elasticsearch_backup
 
 # Setup ElastAlert volume
 sudo mkdir -p /var/lib/elastalert/rules
 sudo chown root:root /var/lib/elastalert/rules
 sudo chmod -R 777 /var/lib/elastalert/rules
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
+sudo chown -R root:44269 /var/lib/elastalert/rules
+sudo chmod 760 -R /var/lib/elastalert/rules
 echo -n " varlib_elastalert_rules " 1>&3
 
 # Setup Wiki volume
@@ -328,7 +351,18 @@ sudo mkdir -p /var/lib/box4s_docs
 sudo chown root:root /var/lib/box4s_docs
 sudo chmod -R 777 /var/lib/box4s_docs
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_docs --opt o=bind varlib_docs
+sudo chown -R root:44269 /var/lib/box4s_docs/
+sudo chmod 760 -R /var/lib/box4s_docs/
 echo " varlib_docs ]" 1>&3
+
+echo -n "Initializing important files and setting permissions.. ["
+VIF=(/var/lib/box4s/elastalert_smtp.yaml /etc/box4s/smtp.conf /etc/ssl/certs/ca-certificates.crt /var/lib/box4s/elastalert_smtp.yaml /etc/box4s/modules.conf /etc/ssl/certs/BOX4s-SMTP.pem)
+for $f in "${VIF[@]}"
+do
+    sudo touch $f
+    sudo chown -R root:44269 $f
+    sudo chmod 760 -R $f
+done
 
 ##################################################
 #                                                #
@@ -483,11 +517,6 @@ sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 echo " [ OK ] " 1>&3
 
-echo -n "Downloading Wazuh clients.. " 1>&3
-# Download wazuh clients
-sudo sh /home/amadmin/box4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
-echo " [ OK ] " 1>&3
-
 # Filter Functionality
 echo -n "Setting up BOX4security Filters.. " 1>&3
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
@@ -508,12 +537,7 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 echo " [ OK ] " 1>&3
 
 echo -n "Making scripts executable.. " 1>&3
-#Make new directory for cronjobchecker
-sudo mkdir /var/log/cronchecker
-sudo chown amadmin:amadmin /var/log/cronchecker
 chmod +x -R /home/amadmin/box4s/scripts
-#Owner der Skripte zur score Berechnung anpassen
-sudo chown -R amadmin:amadmin /home/amadmin/box4s/scripts/Automation/score_calculation/
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling BOX4security internal DNS.. " 1>&3
@@ -537,14 +561,13 @@ echo " [ OK ] " 1>&3
 echo -n "Installing the scores index.. " 1>&3
 sleep 5
 # Install the scores index
-cd /home/amadmin/box4s/scripts/Automation/score_calculation/
-./install_index.sh
+
+sudo docker exec core4s /bin/bash /core4s/scripts/Automation/score_calculation/install_index.sh
 echo " [ OK ] " 1>&3
 
 echo -n "Installing new cronjobs.. " 1>&3
 cd /home/amadmin/box4s/config/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
-sudo crontab root.crontab
 echo " [ OK ] " 1>&3
 
 source /etc/environment
@@ -597,6 +620,11 @@ fi
 
 echo -n "Activating unattended (automatic) Ubuntu upgrades.. " 1>&3
 printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
+echo " [ OK ] " 1>&3
+
+echo -n "Downloading Wazuh clients.. " 1>&3
+# Download wazuh clients
+sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
 echo " [ OK ] " 1>&3
 
 echo -n "Cleaning up and updating tools.. " 1>&3

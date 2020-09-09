@@ -6,7 +6,7 @@ if [ $# -eq 0 ]
     WAZUH_VERSION=$1
 fi
 echo "Downloadindg Wazuh Client Files of Version" $WAZUH_VERSION
-workdir=/home/amadmin/box4s/docker/web/source/wazuh
+workdir=/core4s/workfolder/wazuh_files
 if [ ! -d "$workdir" ];then
         mkdir $workdir
 fi
