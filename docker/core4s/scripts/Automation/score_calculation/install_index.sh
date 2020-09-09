@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=$(echo "/home/amadmin/box4s/scripts/Automation/score_calculation")
+DIR=$(echo "/core4s/scripts/Automation/score_calculation")
 
 echo "Install the 'scores' index"
 # Delete an old index, which might exist, so there is no conflict
