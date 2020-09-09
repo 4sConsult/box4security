@@ -1,3 +1,0 @@
-{
-  "query": " SELECT COUNT(\"alert.severity\"), \"alert.severity\" FROM \"suricata-*\" WHERE \"alert.severity\" IS NOT NULL AND \"@timestamp\" < CURRENT_TIMESTAMP - INTERVAL 15 MINUTES AND \"@timestamp\" > CURRENT_TIMESTAMP - INTERVAL 30 MINUTES GROUP BY 2"
-}

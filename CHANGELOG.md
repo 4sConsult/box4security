@@ -16,6 +16,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Optimized
 * Formel zur Berechnung der Scores vereinfacht und transparenter gemacht.
+* Social-Media-Aktivität zur Berechnung der Scores hinzugezogen.
 * SMTP-Konfiguration wird nun auch auf das Alarmierungsfeature übertragen.
 * Loggingverhalten bei Installation der BOX4s optimiert und Ausgabe erheblich vereinfacht.
 * Die Einsatzbereitschaft der Container wird nun verlässlicher und eindeutig bestimmt.

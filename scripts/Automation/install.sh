@@ -568,6 +568,7 @@ sleep 5
 # Install the scores index
 
 sudo docker exec core4s /bin/bash /core4s/scripts/Automation/score_calculation/install_index.sh
+echo " [ OK ] " 1>&3
 
 echo -n "Installing new cronjobs.. " 1>&3
 cd /home/amadmin/box4s/config/crontab
