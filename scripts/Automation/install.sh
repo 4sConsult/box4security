@@ -117,6 +117,8 @@ echo -n "Creating the /data directory.. " 1>&3
 sudo mkdir -p /data
 sudo chown root:root /data
 sudo chmod 777 /data
+sudo mkdir -p /data/suricata/
+sudo touch /data/suricata/eve.json
 echo "[ OK ]" 1>&3
 
 # Create update log
@@ -632,10 +634,5 @@ sudo apt-fast autoremove -y
 # Lets update both openvas and suricata
 sudo docker exec suricata /root/scripts/update.sh > /dev/null
 sudo docker exec openvas /root/update.sh > /dev/null
-
-# Make sure the permissions for filebeat are correct
-# This line may be put into the correct position within this script once we figured out where it has to be.
-# For now, so the update works, we stick with this.
-sudo chmod 777 /data/suricata/ -R
 echo " [ OK ] " 1>&3
 echo -n "BOX4security.. [ READY ]" | /usr/games/lolcat 1>&3
