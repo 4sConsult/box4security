@@ -86,8 +86,17 @@ sudo chown -R 1000:0 /data/elasticsearch_backup
 sudo chmod 760 -R /data/elasticsearch
 sudo chmod 760 -R /data/elasticsearch_backup
 
-# Apply a new crontab for amadmin
+#remove all crontabs
+crontab -r
+sudo crontab -r
+#insert new crontab that is used for now
+cd /home/amadmin/box4s/config/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
+
+#remove curator because it is moved to core4s; also remove curator config files
+sudo pip3 uninstall elasticsearch-curator
+sudo rm /home/amadmin/curator.yml
+sudo rm /home/amadmin/actions.yml
 
 # Copy default elastalert smtp auth file
 sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalert_smtp.yaml
@@ -96,7 +105,6 @@ sudo rm /home/amadmin/box4s/scripts/Elastic_Scripts/ -R
 
 # Copy new suricata rule file
 sudo cp /home/amadmin/box4s/docker/suricata/var_lib/social_media.rules /var/lib/suricata/rules/social_media.rules
-
 # Create an suricata index of the current month. score calculation will fail without an existing index.
 curl -sLkX PUT localhost:9200/suricata-$(date +%Y.%m) > /dev/null
 

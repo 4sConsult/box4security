@@ -221,6 +221,18 @@ services:
       - 3030
       - 3333
     user: "0:44269"
+  core4s:
+    container_name: core4s
+    build: core4s/.
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - /data/suricata/eve.json:/core4s/workfolder/suricata/eve.json
+      - /var/lib/box4s:/core4s/workfolder/var/lib/box4s
+      - /home/amadmin/box4s/docker/web/source/wazuh:/core4s/workfolder/wazuh_files
+      - /home/amadmin/box4s/config/secrets:/core4s/config/secrets:ro
+    image: "registry.gitlab.com/4sconsult/box4s/core4s:dev"
   wiki:
     container_name: wiki
     image: "registry.gitlab.com/4sconsult/box4s/wiki:dev"

@@ -20,7 +20,7 @@ ERROR_LOG=$LOG_DIR/install.err.log
 export DEBIAN_FRONTEND=noninteractive
 
 # Forward fd3 to the console
-# exec 3>&1 
+# exec 3>&1
 # Forward stderr to $ERROR_LOG
 # exec 2> >(tee "$ERROR_LOG")
 # Forward stdout to $FULL_LOG
@@ -150,7 +150,7 @@ git lfs install --skip-smudge
 echo "[ OK ]" 1>&3
 
 echo -n "Installing Python3 modules from PyPi.. " 1>&3
-pip3 install semver elasticsearch-curator requests
+pip3 install semver requests
 echo "[ OK ]" 1>&3
 
 echo -n "Installing Docker-Compose.. " 1>&3
@@ -209,13 +209,13 @@ then
   # --manual supplied => ask user which to install
   echo "Available tags:" 1>&3
   printf '%s\n' "${TAGS[@]}" 1>&3
-  echo "Type tag to install:" 1>&3 
+  echo "Type tag to install:" 1>&3
   read TAG
   while [[ ! " ${TAGS[@]} " =~ " ${TAG} " ]]; do
     echo "$TAG is not in ${TAGS[@]}. Try again." 1>&3
     read TAG
   done
-  echo "$TAG will be installed.. [ OK ]" 1>&3 
+  echo "$TAG will be installed.. [ OK ]" 1>&3
 else
   # not manual, install most recent and valid tag
   TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: $GIT_API_TOKEN" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
@@ -517,11 +517,6 @@ sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 echo " [ OK ] " 1>&3
 
-echo -n "Downloading Wazuh clients.. " 1>&3
-# Download wazuh clients
-sudo sh /home/amadmin/box4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
-echo " [ OK ] " 1>&3
-
 # Filter Functionality
 echo -n "Setting up BOX4security Filters.. " 1>&3
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
@@ -542,12 +537,7 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 echo " [ OK ] " 1>&3
 
 echo -n "Making scripts executable.. " 1>&3
-#Make new directory for cronjobchecker
-sudo mkdir /var/log/cronchecker
-sudo chown amadmin:amadmin /var/log/cronchecker
 chmod +x -R /home/amadmin/box4s/scripts
-#Owner der Skripte zur score Berechnung anpassen
-sudo chown -R amadmin:amadmin /home/amadmin/box4s/scripts/Automation/score_calculation/
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling BOX4security internal DNS.. " 1>&3
@@ -570,15 +560,14 @@ echo " [ OK ] " 1>&3
 
 echo -n "Installing the scores index.. " 1>&3
 sleep 5
-# Install the scores indices
-cd /home/amadmin/box4s/scripts/Automation/score_calculation/
-./install_index.sh
+# Install the scores index
+
+sudo docker exec core4s /bin/bash /core4s/scripts/Automation/score_calculation/install_index.sh
 echo " [ OK ] " 1>&3
 
 echo -n "Installing new cronjobs.. " 1>&3
 cd /home/amadmin/box4s/config/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
-sudo crontab root.crontab
 echo " [ OK ] " 1>&3
 
 source /etc/environment
@@ -631,6 +620,11 @@ fi
 
 echo -n "Activating unattended (automatic) Ubuntu upgrades.. " 1>&3
 printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
+echo " [ OK ] " 1>&3
+
+echo -n "Downloading Wazuh clients.. " 1>&3
+# Download wazuh clients
+sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
 echo " [ OK ] " 1>&3
 
 echo -n "Cleaning up and updating tools.. " 1>&3
