@@ -544,7 +544,8 @@ echo " [ OK ] " 1>&3
 
 echo -n "Enabling BOX4security internal DNS.. " 1>&3
 sudo systemctl stop systemd-resolved
-sudo systemctl start resolvconf
+sleep 5
+sudo systemctl restart resolvconf
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 echo " [ OK ] " 1>&3
 ##################################################
