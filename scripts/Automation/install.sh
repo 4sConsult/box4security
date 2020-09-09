@@ -289,7 +289,7 @@ sudo chown root:root /var/lib/box4s
 sudo chmod -R 777 /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
 sudo chown -R root:44269 /var/lib/box4s
-sudo chmod 760 -R /var/lib/openvas
+sudo chmod 760 -R /var/lib/box4s
 echo -n " varlib_box4s " 1>&3
 
 # Setup PostgreSQL volume
