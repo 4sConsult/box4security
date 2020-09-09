@@ -29,6 +29,9 @@ ADD healthcheck.py /healthcheck.py
 # Add Crontab
 RUN crontab /core4s/core4s.crontab
 
+# Create cronchecker directory
+RUN mkdir -p /var/log/cronchecker/
+
 #Check health
 HEALTHCHECK CMD curl --fail http://localhost:2981/ || exit 1
 

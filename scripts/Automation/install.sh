@@ -517,11 +517,6 @@ sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 echo " [ OK ] " 1>&3
 
-echo -n "Downloading Wazuh clients.. " 1>&3
-# Download wazuh clients
-sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
-echo " [ OK ] " 1>&3
-
 # Filter Functionality
 echo -n "Setting up BOX4security Filters.. " 1>&3
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
@@ -573,6 +568,7 @@ echo " [ OK ] " 1>&3
 echo -n "Installing new cronjobs.. " 1>&3
 cd /home/amadmin/box4s/config/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
+echo " [ OK ] " 1>&3
 
 source /etc/environment
 echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
@@ -624,6 +620,11 @@ fi
 
 echo -n "Activating unattended (automatic) Ubuntu upgrades.. " 1>&3
 printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
+echo " [ OK ] " 1>&3
+
+echo -n "Downloading Wazuh clients.. " 1>&3
+# Download wazuh clients
+sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
 echo " [ OK ] " 1>&3
 
 echo -n "Cleaning up and updating tools.. " 1>&3

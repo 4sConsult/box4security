@@ -19,4 +19,4 @@
 0 9 * * 0 /bin/bash /core4s/scripts/Automation/resourceupdate.sh && sh /core4s/scripts/Automation/croncheck.sh resourceupdate_sunday SUCCESS || sh /core4s/scripts/Automation/croncheck.sh resourceupdate_sunday FAILURE
 
 # Score calculation
-*/15 * * * * /bin/bash /core4s/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1 & sh /core4s/scripts/Automation/croncheck.sh score_calc SUCCESS || sh /core4s/scripts/Automation/croncheck.sh score_calc FAILURE
+*/15 * * * * /bin/bash /core4s/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh score_calc SUCCESS || sh /core4s/scripts/Automation/croncheck.sh score_calc FAILURE
