@@ -68,7 +68,7 @@ for bucket in severitybuckets:
     alertscore += temp  # add the product to the alertscore e.g. weighted arithmetic mean, step 2
 
 # social media rule
-with open("/home/amadmin/box4s/scripts/Automation/score_calculation/social_media_count.json", "r") as fsocial:
+with open("/core4s/scripts/Automation/score_calculation/social_media_count.json", "r") as fsocial:
     dsSocial = json.load(fsocial)
     numSocial = dsSocial['count']
     if numSocial:
