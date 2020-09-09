@@ -11,6 +11,7 @@ WEIGHT = {
     'medium': 1,
     'low': 0.1,
     'info': 0,
+    'socialmedia': 15,
 }
 
 # Threshold of alarm severity.
@@ -22,6 +23,7 @@ THRESHOLD = {
     'medium': 10000,
     'low': 30000,
     'info': 1,
+    'socialmedia': 9,
 }
 
 # List of rules
@@ -32,6 +34,7 @@ RULES = {
     'medium': {'text': 'Mindestens ein Alarm von mittlere Schwere ist aufgetreten.'},
     'low': {'text': 'Mindestens ein Alarm von geringer Schwere ist aufgetreten.'},
     'info': {'text': 'Mindestens ein informativer Alarm ist aufgetreten.'},
+    'socialmedia': {'text': 'Es wurde Social-Media-Aktivität erkannt.'}
 }
 
 # Calculate the total weight by summing up the dictionary.
@@ -63,6 +66,20 @@ for bucket in severitybuckets:
         temp = 1  # Threshold exceeded => must take whole weight into account.
     temp *= WEIGHT[severity]  # multiply the fraction by weight e.g. weighted arithmetic mean, step 1
     alertscore += temp  # add the product to the alertscore e.g. weighted arithmetic mean, step 2
+
+# social media rule
+with open("/home/amadmin/box4s/scripts/Automation/score_calculation/social_media_count.json", "r") as fsocial:
+    dsSocial = json.load(fsocial)
+    numSocial = dsSocial['count']
+    if numSocial:
+        offendingRules.append(RULES['socialmedia'])
+    if numSocial < THRESHOLD['socialmedia']:
+        temp = numSocial / THRESHOLD['socialmedia']
+    else:
+        temp = 1
+    temp *= WEIGHT['socialmedia']
+    alertscore += temp
+
 
 alertscore = alertscore / totalWeight  # weighted arithmetic mean, step 3
 alertscore = 1 - alertscore  # turn the percentage of not fulfilled into fulfilled 100%-X

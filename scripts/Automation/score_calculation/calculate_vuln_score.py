@@ -58,7 +58,7 @@ cvssbuckets = datastore['aggregations']['cvss']['buckets']
 # for each severity bucket
 for bucket in cvssbuckets:
     severity = bucket['key']  # find out exactly which bucket we are looking at
-    numUnique = bucket['doc_count'] - bucket['cvssUniqueVul']['sum_other_doc_count']  # calculate the number of unique vulnerabilities
+    numUnique = bucket['cvssUniqueVul']['value']  # assign the number of unique vulnerabilities / cardinality
     if numUnique:
         scansEnabled = True
         offendingRules.append(RULES[severity])  # RULE offended, add it.

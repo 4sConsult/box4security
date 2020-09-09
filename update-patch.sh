@@ -97,6 +97,30 @@ sudo rm /home/amadmin/box4s/scripts/Elastic_Scripts/ -R
 # Copy new suricata rule file
 sudo cp /home/amadmin/box4s/docker/suricata/var_lib/social_media.rules /var/lib/suricata/rules/social_media.rules
 
+# Create an suricata index of the current month. score calculation will fail without an existing index.
+curl -sLkX PUT localhost:9200/suricata-$(date +%Y.%m) > /dev/null
+
+# Delete Findings of outdated, local openvas version
+curl -slKX POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "match": {
+      "nvt_oid": "1.3.6.1.4.1.25623.1.0.108560"
+    }
+  }
+}
+' > /dev/null
+# Delete Findings of outdated openvas feed
+curl -sLkX POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "match": {
+      "nvt_oid": "1.3.6.1.4.1.25623.1.0.108560"
+    }
+  }
+}
+' > /dev/null
+
 ###################
 
 echo "### Detecting available memory and distribute it to the containers"

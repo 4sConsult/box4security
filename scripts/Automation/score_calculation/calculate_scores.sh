@@ -5,6 +5,8 @@ DIR=$(echo "/home/amadmin/box4s/scripts/Automation/score_calculation")
 
 # Get the data for the alert score
 curl -s -H "Content-type: application/json" -X POST http://localhost:9200/suricata*/_search --data-binary @$DIR/res/alerts_buckets.query.json > $DIR/alerts_buckets.json
+# Social Media count of last 24hr:
+curl -s -H "Content-type: application/json" -X POST http://localhost:9200/suricata*/_count --data-binary @$DIR/res/social_media.query.json > $DIR/social_media_count.json
 
 # Get the data for the vuln score
 curl -s -H "Content-type: application/json" -X POST http://localhost:9200/logstash-vulnwhisperer-*/_search --data-binary @$DIR/res/cvss_buckets.query.json > $DIR/cvss_buckets.json
@@ -34,6 +36,7 @@ echo "IT-Sec-Score $ITSECSCORE"
 # Delete all temp files to keep the directory clean
 rm $DIR/cvss_buckets.json
 rm $DIR/alerts_buckets.json
+rm $DIR/social_media_count.json
 rm /tmp/alerts.scores.json
 rm /tmp/vuln.scores.json
 rm $DIR/insert_itsec_score.json

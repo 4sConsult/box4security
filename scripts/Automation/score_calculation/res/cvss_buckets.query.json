@@ -22,20 +22,7 @@
           },
           "aggs": {
             "cvssUniqueVul": {
-              "terms": {"field": "uniqueVul" },
-              "aggs": {
-                "topUniqueVul": {                                             
-                    "top_hits": {                                                  
-                        "sort": [                                                    
-                            {                                                        
-                            "@timestamp": "asc"                                     
-                            }                                                        
-                        ],
-                        "_source": ["uniqueVul", "client.domain", "cvss", "@timestamp"],
-                        "size": 1                                                    
-                    }                                                            
-                }     
-              }
+              "cardinality": {"field": "uniqueVul" }
             }
           }
       }
