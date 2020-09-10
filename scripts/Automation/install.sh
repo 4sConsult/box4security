@@ -612,6 +612,9 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 # Installiere Suricata Index Pattern
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/suricata.ndjson
 
+# Installiere Scores Index Pattern
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/scores.ndjson
+
 # Erstelle initialen VulnWhisperer Index
 curl -XPUT "localhost:9200/logstash-vulnwhisperer-$(date +%Y.%m)"
 echo " [ OK ] " 1>&3
