@@ -71,6 +71,7 @@ sudo chmod 760 -R /var/lib/postgresql/data
 sudo chown -R root:44269 /etc/nginx/certs
 sudo chmod 760 -R /etc/nginx/certs
 
+sudo touch /var/lib/box4s/elastalert_smtp.yaml
 sudo chown -R root:44269 /var/lib/box4s/elastalert_smtp.yaml
 sudo chmod 760 -R /var/lib/box4s/elastalert_smtp.yaml
 
