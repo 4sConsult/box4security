@@ -587,9 +587,9 @@ echo " [ OK ] " 1>&3
 
 echo -n "Waiting for Kibana to become available.. " 1>&3
 sleep 300
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo " [ OK ] " 1>&3 || echo " [ NOT OK ] " 1>&3
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo -n " [ OK  " 1>&3 || echo -n " [ NOT OK " 1>&3
 sleep 30
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo " [ OK ] " 1>&3 || echo " [ NOT OK ] " 1>&3
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo "  OK ] " 1>&3 || echo "  NOT OK ] " 1>&3
 
 # Import Dashboard
 echo -n "Installing Dashboards und Patterns.. " 1>&3
@@ -621,6 +621,10 @@ if [[ "$*" == *runner* ]]; then
 # If in a runner environment exit now (successfully)
   exit 0
 fi
+echo -n "Waiting for restoring DNS connection.. "
+waitForNet gitlab.com
+sleep 5
+echo "[ OK ]"
 
 echo -n "Activating unattended (automatic) Ubuntu upgrades.. " 1>&3
 printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
