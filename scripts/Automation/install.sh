@@ -548,6 +548,8 @@ sleep 5
 sudo systemctl start resolvconf
 sudo resolvconf -u
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
+waitForNet gitlab.com
+sleep 5
 echo " [ OK ] " 1>&3
 ##################################################
 #                                                #
@@ -621,10 +623,6 @@ if [[ "$*" == *runner* ]]; then
 # If in a runner environment exit now (successfully)
   exit 0
 fi
-echo -n "Waiting for restoring DNS connection.. "
-waitForNet gitlab.com
-sleep 5
-echo "[ OK ]"
 
 echo -n "Activating unattended (automatic) Ubuntu upgrades.. " 1>&3
 printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";' > /etc/apt/apt.conf.d/20auto-upgrades
@@ -635,14 +633,14 @@ echo -n "Downloading Wazuh clients.. " 1>&3
 sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
 echo " [ OK ] " 1>&3
 
-echo -n "Cleaning up.. " 1>&3
-sudo apt-fast autoremove -y
-echo " [ OK ] " 1>&3
-
 echo -n "Updating tools.. " 1>&3
 sudo docker exec openvas /root/update.sh > /dev/null
 echo -n " [ openvas " 1>&3
 sudo docker exec suricata /root/scripts/update.sh > /dev/null
 echo " suricata ] " 1>&3
+
+echo -n "Cleaning up.. " 1>&3
+sudo apt-fast autoremove -y
+echo " [ OK ] " 1>&3
 
 echo "BOX4security.. [ READY ]" | /usr/games/lolcat 1>&3
