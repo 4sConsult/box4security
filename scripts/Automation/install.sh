@@ -632,8 +632,12 @@ sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clie
 echo " [ OK ] " 1>&3
 
 echo -n "Updating tools.. " 1>&3
+sudo docker container restart openvas
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh openvas
 sudo docker exec openvas /root/update.sh > /dev/null
 echo -n " [ openvas " 1>&3
+sudo docker container restart suricata
+sleep 30
 sudo docker exec suricata /root/scripts/update.sh > /dev/null
 echo " suricata ] " 1>&3
 
