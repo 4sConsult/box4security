@@ -87,9 +87,9 @@ sudo chown -R 1000:0 /data/elasticsearch_backup
 sudo chmod 760 -R /data/elasticsearch
 sudo chmod 760 -R /data/elasticsearch_backup
 
-#remove all crontabs
-crontab -r
-sudo crontab -r
+#remove all crontabs but dont fail if doesnt exist!
+crontab -r || :
+sudo crontab -r || :
 #insert new crontab that is used for now
 cd /home/amadmin/box4s/config/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
