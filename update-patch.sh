@@ -102,7 +102,7 @@ sudo rm /home/amadmin/actions.yml
 # Copy default elastalert smtp auth file
 sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalert_smtp.yaml
 # Remove unused folder and script
-sudo rm /home/amadmin/box4s/scripts/Elastic_Scripts/ -R
+sudo rm /home/amadmin/box4s/scripts/Elastic_Scripts/ -R || :
 
 # Copy new suricata rule file
 sudo cp /home/amadmin/box4s/docker/suricata/var_lib/social_media.rules /var/lib/suricata/rules/social_media.rules
