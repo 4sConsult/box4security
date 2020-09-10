@@ -70,7 +70,7 @@ function waitForNet() {
   HOST=${1:-"google.com"}
   while ! testNet $HOST; do
     # while testNet returns non zero value
-    echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s" 1>&3
+    echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s" 1>&2
     sleep 15s
   done
 }
