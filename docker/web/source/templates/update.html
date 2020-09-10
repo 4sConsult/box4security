@@ -194,7 +194,7 @@
         $('a.green.button').on('click', async (e) => {
           // Launch update process to most selected version
           selectedVersion = $(e.delegateTarget).data('version')
-          const resp = await fetch('//{{request.host}}/update/launch/', {
+          const resp = await fetch('//{{request.host}}/api/update/launch/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
