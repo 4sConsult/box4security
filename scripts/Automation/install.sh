@@ -548,8 +548,6 @@ sleep 5
 sudo systemctl start resolvconf
 sudo resolvconf -u
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
-waitForNet gitlab.com
-sleep 5
 echo " [ OK ] " 1>&3
 ##################################################
 #                                                #
