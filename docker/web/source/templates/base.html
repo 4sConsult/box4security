@@ -31,8 +31,9 @@
                  <a class="item" href="/siem-http">HTTP</a>
                  <a class="item" href="/siem-dns">DNS</a>
                  <a class="item" href="/siem-proto">Protokolle & Dienste</a>
+                 <a class="item" href="/siem-social-media">Social Media</a>
                  {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}<a class="item" href="/wazuh">Endgeräte</a>{% endif %}
-                 <a class="item" href="/siem-social-media">Social Media (Alpha)</a>
+                 <a class="item" href="/intelligence">Intelligence</a>
                </div>
              </div>
            </div>
@@ -64,7 +65,7 @@
         {% endif %}
         {% if current_user.has_role('FAQ') or current_user.has_role('User-Management') or current_user.has_role('Filter') or current_user.has_role('Updates') or current_user.has_role('Alerts') %}
           <div class="item" id="administration">
-            <div class="ui dropdown pointing link item">
+            <div id="dropdownLink" class="ui dropdown pointing link item">
       	       <i class="cogs icon"></i> Administration
                <i class="dropdown icon"></i>
                <div class="menu">
@@ -74,7 +75,7 @@
                  {% if current_user.has_role('User-Management') %}
                  <a class="item" href="/user">Benutzer</a>
                  {% endif %}
-                 {% if current_user.has_role('User-Management') %}
+                 {% if current_user.has_role('Config') %}
                  <a class="item" href="/config">Konfiguration</a>
                  {% endif %}
                  {% if current_user.has_role('Filter') %}
@@ -84,7 +85,10 @@
                  <a class="item" href="/alerts">Alarme</a>
                  {% endif %}
                  {% if current_user.has_role('Updates') %}
-                 <a class="item" href="/update">Updates</a>
+                 <a class="item" href="/update" id="upd">Updates  </a>
+                 {% endif %}
+                 {% if current_user.has_role('Super Admin') %}
+                 <a class="item" href="/system">System</a>
                  {% endif %}
                </div>
              </div>
@@ -122,7 +126,52 @@
     {% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-    <script type="text/javascript"> $('.ui.dropdown').dropdown(); </script>
+    <script src="/static/semver.js" charset="utf-8"></script>
+    <script type="text/javascript">
+    $('.ui.dropdown').dropdown();
+
+    //Get current Version
+    $.ajax('//{{ request.host }}/api/ver/', {
+      dataType: "json",
+      timeout: 5000,
+      success: (data) => {
+        getAllVersion(data.version);
+      }
+    })
+
+    //Get all available Versions
+    function getAllVersion(curr_version){
+      $.ajax('//{{ request.host }}/api/ver/releases/', {
+        dataType: "json",
+        timeout: 5000,
+        success: (data) => {
+          updateNotification(curr_version,data);
+        }
+      })
+    }
+
+    function updateNotification(curr_version, data){
+      let updatectr = 0;
+      data.forEach((version, i) => {
+        //increase counter for each newer version
+        if (semver.compare(curr_version, version.version) == -1){
+          updatectr++;
+        }
+      })
+
+      if ( updatectr > 0 ){
+        //Add Update Notification if newer version found
+        let updateBar = $(`#upd`);
+        let AdminBar = $(`#dropdownLink`);
+        let updatesUpdateBar = `<div class="ui grey label">${updatectr}</div>`;
+        let updatesAdminBar = `<div class="floating ui grey label">${updatectr}</div>`;
+        updateBar.append(updatesUpdateBar);
+        AdminBar.append(updatesAdminBar)
+
+      }
+    }
+
+    </script>
     {% block scripts %}{% endblock %}
   </body>
 </html>

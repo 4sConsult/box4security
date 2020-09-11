@@ -157,7 +157,6 @@ PRIOR=$(curl -sLk -XGET https://localhost/api/ver/ | jq -r .version)
 VERSIONS=()
 # Use Python Script to create array of versions that have to be installed
 # versions between current and the latest
-cd $BASEDIR$GITDIR/main
 mapfile -t VERSIONS < <(python3 /home/amadmin/box4s/scripts/Automation/versions.py)
 # GET env from local endpoint and extract it so we can keep it
 ENV=$(curl -sLk localhost/api/ver/ | jq -r '.env')

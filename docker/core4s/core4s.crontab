@@ -1,0 +1,22 @@
+# m h  dom mon dow   command
+
+# Execute Curator Daily
+@daily /usr/local/bin/curator --config /core4s/curator/curator.yml /core4s/curator/actions.yml && sh /core4s/scripts/Automation/croncheck.sh curator SUCCESS || sh /core4s/scripts/Automation/croncheck.sh curator FAILURE
+
+# Suricata update
+@daily docker exec suricata /root/scripts/update.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh suricata_update SUCCESS || sh /core4s/scripts/Automation/croncheck.sh suricata_update FAILURE
+
+# OpenVAS update
+@daily docker exec openvas /root/update.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh openvas_update SUCCESS || sh /core4s/scripts/Automation/croncheck.sh openvas_update FAILURE
+
+# Collect OpenVAS Reports
+*/30 * * * *  docker exec openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer SUCCESS || sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer FAILURE
+
+# Leere eve.json
+0 */6 * * *  echo "" > /core4s/workfolder/suricata/eve.json  && sh /core4s/scripts/Automation/croncheck.sh delete_suricata_log SUCCESS || sh /core4s/scripts/Automation/croncheck.sh delete_suricata_log FAILURE
+
+# Update Resources on Sunday at 9 am
+0 9 * * 0 /bin/bash /core4s/scripts/Automation/resourceupdate.sh && sh /core4s/scripts/Automation/croncheck.sh resourceupdate_sunday SUCCESS || sh /core4s/scripts/Automation/croncheck.sh resourceupdate_sunday FAILURE
+
+# Score calculation
+*/15 * * * * /bin/bash /core4s/scripts/Automation/score_calculation/calculate_scores.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh score_calc SUCCESS || sh /core4s/scripts/Automation/croncheck.sh score_calc FAILURE

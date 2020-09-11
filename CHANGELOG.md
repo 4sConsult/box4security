@@ -1,6 +1,38 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [1.8.7](https://gitlab.com/4sconsult/box4s/-/tags/1.8.7) - 2020-09-11
+
+### Added
+* Monitoring der BOX4s-Docker-Container hinzugefügt. Die Oberfläche sehen *Super Admins* als Menüpunkt der Administration.
+* SpiderFoot als ausgewählte Intelligence-Lösung der BOX4security für *Super Admins* und Nutzer der *SIEM*-Rolle hinzugefügt.
+* Alarmierung von Social Media und Streaming-Sites hinzugefügt.
+* Notification für neue Version der BOX4security eingefügt.
+
+### Changed
+* Schwachstellenscores werden nun regelbasiert transparent berechnet.
+* IDS-Alarmierungsscores werden nun regelbasiert transparent berechnet.
+* Maßnahmen zur Besserung des Scores als Handlungsgrundlage auf der Startseite eingebettet.
+* Datengrundlage des Social-Media-Dashboards an neue Alarmierungen angepasst. Das Dashboard verlässt damit den Status einer Alpha-Version.
+
+### Optimized
+* Formel zur Berechnung der Scores vereinfacht und transparenter gemacht.
+* Social-Media-Aktivität zur Berechnung der Scores hinzugezogen.
+* SMTP-Konfiguration wird nun auch auf das Alarmierungsfeature übertragen.
+* Loggingverhalten bei Installation der BOX4s optimiert und Ausgabe erheblich vereinfacht.
+* Die Einsatzbereitschaft der Container wird nun verlässlicher und eindeutig bestimmt.
+* Score-Dashboards zeigen statt des Tagessdurchschnitts nun ausschließlich den zuletzt berechneten Wert.
+* Interne Dateisystemberechtigungen auf ein Minimum begrenzt um die interne Security zu steigern.
+
+### Fixed
+* Bug behoben, durch den die Alerting-API nicht von der Konfiguration genutzt werden konnte.
+* Bug behoben, durch den zur Einsicht der Konfiguration die User-Management-Rolle statt der Konfigurationsrolle benötigt wurde.
+* Bug behoben, durch den Schwachstellendaten nach 1.8.5 nicht mehr in die Auswertung einflossen. Die Daten werden automatisch rückwirkend eingespeist.
+
+### Deprecated
+
+### Removed
+
 ## [1.8.6](https://gitlab.com/4sconsult/box4s/-/tags/1.8.6) - 2020-08-19
 
 ### Added

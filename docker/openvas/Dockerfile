@@ -5,9 +5,6 @@ ADD etc/vuln_openvas.ini /etc/vulnwhisperer/vulnwhisperer.ini
 ADD etc/ /etc/openvas/
 ADD scripts/ /root/
 
-# Add OpenVAS Authentication to vulnwhisperer
-RUN echo -e "username=$OPENVAS_USER\npassword=$OPENVAS_PASS" >> /etc/vulnwhisperer/vulnwhisperer.ini
-
 RUN apt update && \
     apt install curl apt-transport-https software-properties-common git zlib1g-dev libxml2-dev libxslt1-dev virtualenv python python2 python3-venv python3-pip net-tools alien rpm nsis openvas -y -o Dpkg::Options::=--force-confnew && \
     rm -rf /var/lib/apt/lists/* && \
@@ -28,5 +25,5 @@ RUN pip2 install -r requirements.txt && \
     openvas-stop
 
 EXPOSE 9392
-HEALTHCHECK --retries=10 CMD curl -s -XGET 'https://127.0.0.1:9392'
+HEALTHCHECK --retries=10 CMD curl -sLk -XGET 'https://127.0.0.1:9392'
 CMD /root/start.sh

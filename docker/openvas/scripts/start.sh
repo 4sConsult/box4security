@@ -4,6 +4,16 @@ echo "Starting Redis ..."
 mkdir -p /var/run/redis-openvas/
 redis-server /etc/redis/redis-openvas.conf
 
+echo "Setting VulnWhisperer Authentication"
+# Add OpenVAS Authentication to vulnwhisperer
+sed -i "s/username=.*/username=$OPENVAS_USER/g" /etc/vulnwhisperer/vulnwhisperer.ini
+sed -i "s/password=.*/password=$OPENVAS_PASS/g" /etc/vulnwhisperer/vulnwhisperer.ini
+
+echo "Setting updated OpenVAS feeds.."
+# apply https://github.com/greenbone/gvmd/commit/acfc64c0600dd6b1f7d54ff5a53fdd7365f39103
+sed -i "s/COMMUNITY_CERT_RSYNC_FEED=rsync:\/\/feed.openvas.org:\/cert-data/COMMUNITY_CERT_RSYNC_FEED=rsync:\/\/feed.community.greenbone.net:\/cert-data"
+sed -i "s/COMMUNITY_SCAP_RSYNC_FEED=rsync:\/\/feed.openvas.org:\/scap-data/COMMUNITY_SCAP_RSYNC_FEED=rsync:\/\/feed.community.greenbone.net:\/scap-data"
+
 echo "Starting OpenVAS Manager ..."
 /usr/sbin/openvasmd --create-user amadmin
 /usr/sbin/openvasmd --user=$OPENVAS_USER --new-password=$OPENVAS_PASS
