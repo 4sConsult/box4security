@@ -11,7 +11,6 @@
 - [ ] Merges begutachten / schließen
 - [ ] Story Points berechnen
 - [ ] Sprint Goal prüfen
-- [ ] Issues in den Product Backlog überführen
 
 #### Release Checkliste
 - [ ] Versions-Tag erstellen
