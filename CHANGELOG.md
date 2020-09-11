@@ -1,11 +1,11 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.8.7-rc](https://gitlab.com/4sconsult/box4s/-/tags/1.8.7-rc) - xxxx-xx-xx
+## [1.8.7](https://gitlab.com/4sconsult/box4s/-/tags/1.8.7) - 2020-09-11
 
 ### Added
 * Monitoring der BOX4s-Docker-Container hinzugefügt. Die Oberfläche sehen *Super Admins* als Menüpunkt der Administration.
-* SpiderFoot als ausgewählte Intelligence-Lösung der BOX4security für *Super Admins* und Nutzer der *SIEM*-Rolle hinzugefügt. 
+* SpiderFoot als ausgewählte Intelligence-Lösung der BOX4security für *Super Admins* und Nutzer der *SIEM*-Rolle hinzugefügt.
 * Alarmierung von Social Media und Streaming-Sites hinzugefügt.
 * Notification für neue Version der BOX4security eingefügt.
 
