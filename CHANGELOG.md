@@ -1,6 +1,25 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [X.X.X](https://gitlab.com/4sconsult/box4s/-/tags/X.X.X) - XXXX-XX-XX
+
+### Added
+
+
+### Changed
+
+
+### Optimized
+
+
+### Fixed
+
+
+### Deprecated
+
+
+### Removed
+
 ## [1.8.7](https://gitlab.com/4sconsult/box4s/-/tags/1.8.7) - 2020-09-11
 
 ### Added
