@@ -1,0 +1,38 @@
+{
+    "query": {
+        "range": {
+            "@timestamp": {
+                "gte": "now-7d/d",
+                "lt": "now"
+            }
+        }
+    }, 
+    "size": 0,
+    "aggs": {
+        "uniqueVul": {                                                 
+           "terms": {                                                         
+                "field": "uniqueVul",
+                "size": 5000
+            },
+            "aggs": { 
+                "cvssUniqueVul": {
+                    "term": {
+                        "field": "cvss"
+                    }
+                },
+                "topUniqueVul": {                                             
+                    "top_hits": {                                                  
+                        "sort": [                                                    
+                            {                                                        
+                            "@timestamp": "asc"                                     
+                            }                                                        
+                        ],
+                        "_source": ["uniqueVul", "client.domain", "cvss", "@timestamp"],
+                        "size": 1                                                    
+                    }                                                            
+                }                                                              
+            }                                                                
+        }                                                                  
+    }                                                                    
+} 
+  

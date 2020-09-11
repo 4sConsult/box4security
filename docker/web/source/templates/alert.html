@@ -155,7 +155,7 @@
     element.innerText = text;
     return element.innerHTML;
   }
-fetch(`//{{ request.host }}/rules/alerts_quick/`)
+fetch(`//{{ request.host }}/api/rules/alerts_quick/`)
 .then((response) => response.json())
 .then((json) => {
   json.forEach(rule => {
@@ -194,7 +194,7 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
       .then((response) => response.json())
       .then((json) => {
         if ("email" in json ) {
-          fetch(`//{{ request.host }}/rules/alerts_quick/`, {
+          fetch(`//{{ request.host }}/api/rules/alerts_quick/`, {
             method: 'PUT',
             redirect: 'follow',
             headers: {
@@ -214,7 +214,7 @@ fetch(`//{{ request.host }}/rules/alerts_quick/`)
     },
     onUnchecked: function() {
       var key = this.dataset.key;
-      fetch(`//{{ request.host }}/rules/alerts_quick/`, {
+      fetch(`//{{ request.host }}/api/rules/alerts_quick/`, {
         method: 'DELETE',
         redirect: 'follow',
         headers: {

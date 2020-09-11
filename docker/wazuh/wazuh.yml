@@ -2,7 +2,7 @@ version: "2.3"
 services:
     wazuh:
         container_name: wazuh
-        image: "registry.gitlab.com/4sconsult/box4s/wazuh:1.8.6"
+        image: "registry.gitlab.com/4sconsult/box4s/wazuh:1.8.7"
         build: .
         hostname: wazuh-manager
         restart: always

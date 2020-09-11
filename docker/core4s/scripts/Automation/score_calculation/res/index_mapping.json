@@ -1,0 +1,24 @@
+{
+	"properties": {
+		"score_type": {
+			"type": "text"
+		},
+		"value": {
+			"type": "float"
+		},
+		"timestamp": {
+			"type": "date",
+			"format": "epoch_millis"
+        },
+        "rules": {
+            "properties" : {
+                "text":{
+                    "type": "keyword"
+                },
+                "weight":{
+                    "type": "float"
+                }
+            }
+		}
+	}
+}
