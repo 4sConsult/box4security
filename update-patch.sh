@@ -50,7 +50,9 @@ sudo docker rmi $(sudo docker images -a -q) || :
 # Changes here
 
 #Disable TCP Timestamps
-sudo sysctl -w net.ipv4.tcp_timestamps=0
+echo 'net.ipv4.tcp_timestamps = 0' | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
 
 ###################
 
