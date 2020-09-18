@@ -442,7 +442,7 @@ sudo mv /tmp/4s-ifaces /etc/network/interfaces
 ip link set $IF_MGMT down
 ip link set $IF_MGMT up
 
-#Remove TCP Timestamps
+#Disable TCP Timestamps
 sudo sysctl -w net.ipv4.tcp_timestamps=0
 
 # Set other interfaces
