@@ -49,6 +49,11 @@ sudo docker rmi $(sudo docker images -a -q) || :
 ###################
 # Changes here
 
+#Disable TCP Timestamps
+echo 'net.ipv4.tcp_timestamps = 0' | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+
 ###################
 
 echo "### Detecting available memory and distribute it to the containers"

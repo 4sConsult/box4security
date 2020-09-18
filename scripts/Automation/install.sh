@@ -442,6 +442,10 @@ sudo mv /tmp/4s-ifaces /etc/network/interfaces
 ip link set $IF_MGMT down
 ip link set $IF_MGMT up
 
+#Disable TCP Timestamps
+echo 'net.ipv4.tcp_timestamps = 0' | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
 
 # Set other interfaces
 for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
