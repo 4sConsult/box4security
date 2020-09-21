@@ -54,6 +54,17 @@ echo 'net.ipv4.tcp_timestamps = 0' | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 
 
+# Creating BOX4s openvas docker volume
+sudo mkdir -p /var/lib/box4s_openvas/
+sudo chown root:root /var/lib/box4s_openvas/
+sudo chmod -R 777 /var/lib/box4s_openvas/
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_openvas/ --opt o=bind gvm-data
+sudo chown -R root:root /var/lib/box4s_openvas
+
+# Remove previous openvas volume
+sudo docker volume rm varlib_openvas
+sudo rm -r /var/lib/openvas/
+
 ###################
 
 echo "### Detecting available memory and distribute it to the containers"
