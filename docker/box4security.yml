@@ -48,6 +48,7 @@ services:
     ports:
       - 9392:9392
     volumes:
+      - gvm-data:/data
       - varlib_openvas:/var/lib/openvas
       - varlib_logstash:/var/lib/logstash
     image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
@@ -252,6 +253,7 @@ networks:
 volumes:
   # to persist data beyond container's life
   spiderfoot_data:
+  gvm-data:
   static_volume:
   data:
     external: true
