@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 
 ### Optimized
+* Cookies der BOX4security nun gegen Diebstahl via XSS oder Sniffing unter HTTP geschützt.
 
 
 ### Fixed
