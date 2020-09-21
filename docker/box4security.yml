@@ -49,12 +49,10 @@ services:
       - 9392:9392
     volumes:
       - gvm-data:/data
-      - varlib_openvas:/var/lib/openvas
       - varlib_logstash:/var/lib/logstash
     image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
     env_file:
       - ../config/secrets/openvas.conf
-    user: "0:44269"
   suricata:
     build: suricata/.
     container_name: suricata
@@ -254,6 +252,7 @@ volumes:
   # to persist data beyond container's life
   spiderfoot_data:
   gvm-data:
+    external: true
   static_volume:
   data:
     external: true
@@ -264,8 +263,6 @@ volumes:
   varlib_logstash:
     external: true
   varlib_suricata:
-    external: true
-  varlib_openvas:
     external: true
   varlib_docs:
     external: true
