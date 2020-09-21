@@ -21,7 +21,7 @@ RUN mkdir -p /usr/share/kibana/optimize/wazuh/config && \
 
 RUN echo 'NODE_OPTIONS="--max-old-space-size=2048"' >> /etc/default/kibana
 
-USER kibana
+USER kibana_system
 WORKDIR /usr/share/kibana
 RUN     ./bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-${WAZUH_APP_VERSION}.zip && \
         echo -e "hosts:\n  - default:\n     url: https://${INT_IP}\n     port: 55000\n     user: ${WAZUH_USER}\n     password: ${WAZUH_PASS}\n" > /usr/share/kibana/optimize/wazuh/config/wazuh.yml
