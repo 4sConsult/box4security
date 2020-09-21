@@ -1,4 +1,4 @@
-FROM docker.elastic.co/logstash/logstash:7.9.1
+FROM docker.elastic.co/logstash/logstash:7.9.0
 
 USER root
 COPY --chown=logstash:logstash etc/ /etc/logstash/
