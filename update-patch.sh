@@ -75,7 +75,7 @@ source /etc/box4s/modules.conf
 sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh wazuh
 
-# Insert Wazuh template for Version 3.13.1 that allows kibana 7.9.0
+# Insert Wazuh template for Version 3.13.1 that allows kibana 7.9.1
 curl https://raw.githubusercontent.com/wazuh/wazuh/v3.13.1/extensions/elasticsearch/7.x/wazuh-template.json | curl -X PUT "http://localhost:9200/_template/wazuh" -H 'Content-Type: application/json' -d @-
 
 #Shutdown wazuh container if module not enabled
