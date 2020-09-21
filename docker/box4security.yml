@@ -6,7 +6,7 @@ services:
     container_name: elasticsearch
     restart: always
     ports:
-     - 9200:9200
+     - 127.0.0.1:9200:9200
     image: "registry.gitlab.com/4sconsult/box4s/elasticsearch:dev"
     volumes:
      - /data/elasticsearch:/data/elasticsearch
