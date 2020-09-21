@@ -1,4 +1,4 @@
-FROM docker.elastic.co/elasticsearch/elasticsearch:7.9.0
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.9.1
 
 RUN	mkdir -p /var/log/elasticsearch/ && \
 	mkdir -p /data && \
