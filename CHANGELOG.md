@@ -5,6 +5,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 
+* Stylesheets werden direkt lokal bereitgestellt. Dadurch ist ein direktes Laden ohne externe Anfragen möglich.
 
 ### Changed
 

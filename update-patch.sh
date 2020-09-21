@@ -83,6 +83,8 @@ sleep 20
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana || sleep 30
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh nginx || sleep 30
 
+# Copy folder that holds local copy of Stylesheets incase it was not inserted with static volume
+sudo docker cp /home/amadmin/box4s/docker/web/source/static/external web:/home/app/web/source/static/external
 
 
 # Import Dashboard
