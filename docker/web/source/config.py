@@ -12,6 +12,10 @@ class Config():
     WAZUH_FOLDER = "{}/source/wazuh".format(os.getenv('APP_FOLDER'))
 
     SECRET_KEY = os.getenv("SECRET_KEY")
+    SESSION_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_HTTPONLY = True
 
     # representation name
     USER_APP_NAME = "BOX4security"
