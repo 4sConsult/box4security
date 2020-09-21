@@ -47,7 +47,7 @@ sudo docker rm  $(docker ps -q -a) || :
 sudo docker rmi $(sudo docker images -a -q) || :
 
 ###################
-# Changes here
+# Changes here for standard module
 
 #Disable TCP Timestamps
 echo 'net.ipv4.tcp_timestamps = 0' | sudo tee -a /etc/sysctl.conf
@@ -70,6 +70,27 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 # Get the current images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
+
+###################
+# Changes for Wazuh module
+# Source modules configuration
+source /etc/box4s/modules.conf
+
+# Start Wazuh module and wait for it to become available
+sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart
+sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh wazuh
+
+# Insert Wazuh template for Version 3.13.1 that allows kibana 7.9.0
+curl https://raw.githubusercontent.com/wazuh/wazuh/v3.13.1/extensions/elasticsearch/7.x/wazuh-template.json | curl -X PUT "http://localhost:9200/_template/wazuh" -H 'Content-Type: application/json' -d @-
+
+#Shutdown wazuh container if module not enabled
+
+if [ "$BOX4s_WAZUH" == "false" ]; then
+  sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml stop
+fi
+
+###################
+
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
