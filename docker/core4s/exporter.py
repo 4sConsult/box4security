@@ -7,7 +7,9 @@ import xml.etree.ElementTree as ET
 import untangle
 import base64
 import configparser
+import sqlite3
 CONFIG_PATH = '/core4s/config/secrets/openvas.conf'
+DB_PATH = '/core4s/workfolder/var/lib/box4s/processed_vulns.db'
 
 config = configparser.ConfigParser()
 with open(CONFIG_PATH, 'r') as f:
@@ -50,13 +52,33 @@ def handleReports(reportIds, reportFormatId):
 
 
 def writeReport(resultId, data):
-    pass
+    if isReportFresh(resultId):
+        pass
 
 
+def isReportFresh(resultId):
+    dbCursor.execute("SELECT EXISTS(SELECT 1 FROM `reports` WHERE resultId='?')", (resultId, ))
+    return dbConn.fetchone()
+
+
+# Prepare TLS Connection to OpenVAS XML API
 connection = TLSConnection(hostname="openvas", port=9390)
+# Connect to local sqlite3 db
+dbConn = sqlite3.connect(DB_PATH)
+dbCursor = dbConn.cursor()
+# Create the needed table if it does not exist:
+dbCursor.execute('''CREATE TABLE IF NOT EXISTS `reports` ([id] INTEGER PRIMARY KEY AUTOINCREMENT,[resultId] text)''')
+dbConn.commit()
+dbCursor.execute('''CREATE INDEX IF NOT EXISTS `reports_by_ids` on `reports`([resultId])''')
+dbConn.commit()
+
 with Gmp(connection) as gmp:
     gmp.authenticate(config['config']['OPENVAS_USER'], config['config']['OPENVAS_PASS'])
     reportFormatId = getReportFormat()
     reportIds = getReportIds()
     numWritten = handleReports(reportIds, reportFormatId)
     print("{numWritten} vulnerabiltity reports written to disk.")
+
+# Close the connection once the script is done.
+dbConn.commit()
+dbConn.close()
