@@ -47,6 +47,8 @@ services:
       - INT_IP=${INT_IP}
     ports:
       - 9392:9392
+    expose:
+      - 9390
     volumes:
       - gvm-data:/data
       - varlib_logstash:/var/lib/logstash
