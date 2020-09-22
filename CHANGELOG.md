@@ -12,6 +12,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Optimized
 * Cookies der BOX4security nun gegen Diebstahl via XSS oder Sniffing unter HTTP geschützt.
+* Der Schwachstellenscanner OpenVAS wurde auf die aktuellste Version 11 aktualisiert.
 
 
 ### Fixed
