@@ -46,7 +46,7 @@ services:
     environment:
       - INT_IP=${INT_IP}
     ports:
-      - 9392:9392
+      - 127.0.0.1:9392:9392
     expose:
       - 9390
     volumes:
