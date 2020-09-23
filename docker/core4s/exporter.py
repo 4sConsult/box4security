@@ -27,10 +27,7 @@ def getReportFormat():
     """Get the CSV result format identifier from OpenVAS XML API."""
     reportFormats = gmp.get_report_formats()
     root = ET.fromstring(reportFormats)
-    for document in root:
-        for reportFormat in document:
-            if reportFormat.text == 'CSV result list.':
-                return document.attrib.get('id')
+    return root.find("./report_format[name='CSV Results']").attrib.get('id')
 
 
 def getReportIds():
@@ -42,7 +39,7 @@ def getReportIds():
         if document.tag == 'report':
             for report in document:
                 if report.tag == 'report':
-                    reports.append(report.attrib.get('id'))
+                    reports.append(document.attrib.get('id'))
     return reports
 
 
@@ -52,7 +49,6 @@ def handleReports(reportIds, reportFormatId):
     for reportId in reportIds:
         if isReportFresh(reportId):
             formattedReport = gmp.get_report(reportId, report_format_id=reportFormatId, filter="apply_overrides=0 min_qod=70", ignore_pagination=True, details=True)
-            print(formattedReport)
             untangledReport = untangle.parse(formattedReport)
             resultId = untangledReport.get_reports_response.report['id']
             base64CSV = untangledReport.get_reports_response.report.cdata
@@ -69,7 +65,6 @@ def writeReport(resultId, data):
     The file will be written to `REPORTS_PATH`/openvas_scan_TIMESTAMP_`resultId`.json
     Mark the report as processed by adding the `resultId` to the sqlite3 database `DB_PATH`."""
     # Parse data as csv
-    print(data)
     csvReader = csv.DictReader(data.splitlines())
     fileName = REPORT_NAME_TEMPLATE.format(
         int(time.time()),
