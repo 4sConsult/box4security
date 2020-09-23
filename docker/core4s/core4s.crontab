@@ -10,7 +10,7 @@
 @daily docker exec openvas /root/update.sh > /dev/null 2>&1 && sh /core4s/scripts/Automation/croncheck.sh openvas_update SUCCESS || sh /core4s/scripts/Automation/croncheck.sh openvas_update FAILURE
 
 # Collect OpenVAS Reports
-*/30 * * * *  docker exec openvas /root/vulnwhisp.sh > /var/log/cronchecker/vulnwhisp.log && sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer SUCCESS || sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer FAILURE
+50 * * * *  python3 core4s/openvas/exporter.py > /var/log/cronchecker/vulnwhisp.log && sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer SUCCESS || sh /core4s/scripts/Automation/croncheck.sh vulnwhisperer FAILURE
 
 # Leere eve.json
 0 */6 * * *  echo "" > /core4s/workfolder/suricata/eve.json  && sh /core4s/scripts/Automation/croncheck.sh delete_suricata_log SUCCESS || sh /core4s/scripts/Automation/croncheck.sh delete_suricata_log FAILURE
