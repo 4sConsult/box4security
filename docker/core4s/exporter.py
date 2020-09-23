@@ -63,9 +63,6 @@ def transformReport(reportData):
             print(f'Transformation for key "{k}" not found!!')
             print('\n')
         transformedReport[transformedK] = reportData[k]
-    # Debug
-    if "timestamps" in transformedReport['plugin_name']:
-        print(json.dumps(transformedReport))
     return transformedReport
 
 
@@ -116,6 +113,7 @@ def writeReport(resultId, data):
         int(time.time()),
         resultId.replace('-', '')
     )
+    print(data.splitlines())
     with open(path.join(REPORTS_PATH, fileName), "w") as jsonFile:
         for csvRow in csvReader:
             transformedData = transformReport(csvRow)
