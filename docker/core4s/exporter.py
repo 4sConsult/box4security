@@ -23,6 +23,52 @@ with open(CONFIG_PATH, 'r') as f:
 config.read_string(config_string)
 
 
+def transformReport(reportData):
+    """Apply transformations to the `reportData` to keep the original data structure of ES index and Logstash."""
+    transformedReport = dict()
+    dictTransform = {
+        'IP': 'asset',
+        'Hostname': 'hostname',
+        'Port': 'port',
+        'Port Protocol': 'protocol',
+        'CVSS': 'cvss',
+        'Severity': 'severity',
+        'Solution Type': 'category',
+        'NVT Name': 'plugin_name',
+        'Summary': 'synopsis',
+        'Specific Result': 'plugin_output',
+        'NVT OID': 'nvt_oid',
+        'CVEs': 'CVEs',
+        'Task ID': 'task_id',
+        'Task Name': 'task_name',
+        'Timestamp': 'timestamp',
+        'Result ID': 'result_id',
+        'Impact': 'description',
+        'Solution': 'solution',
+        'Affected Software/OS': 'affected_software',
+        'Vulnerability Insight': 'vulnerability_insight',
+        'Vulnerability Detection Method': 'vulnerability_detection_method',
+        "Product Detection Result": 'product_detection_result',
+        'BIDs': 'bids',
+        'CERTs': 'certs',
+        'Other References': 'see_also',
+    }
+    for k in reportData:
+        try:
+            transformedK = dictTransform[k]
+        except KeyError:
+            transformedK = k
+            # Warning: Non existent transformation for k.
+            print('#### WARNING ####')
+            print(f'Transformation for key "{k}" not found!!')
+            print('\n')
+        transformedReport[transformedK] = reportData[k]
+    # Debug
+    if "timestamps" in transformedReport['plugin_name']:
+        print(json.dumps(transformedReport))
+    return transformedReport
+
+
 def getReportFormat():
     """Get the CSV result format identifier from OpenVAS XML API."""
     reportFormats = gmp.get_report_formats()
@@ -72,7 +118,8 @@ def writeReport(resultId, data):
     )
     with open(path.join(REPORTS_PATH, fileName), "w") as jsonFile:
         for csvRow in csvReader:
-            jsonFile.write(json.dumps(csvRow))
+            transformedData = transformReport(csvRow)
+            jsonFile.write(json.dumps(transformedData))
             jsonFile.write('\n')
 
     # Mark the report as processed.
