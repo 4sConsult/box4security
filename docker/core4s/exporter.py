@@ -1,8 +1,6 @@
 #!/bin/python3
 from gvm.connections import TLSConnection
 from gvm.protocols.gmp import Gmp
-from gvm.transforms import EtreeTransform
-from gvm.xml import pretty_print
 import xml.etree.ElementTree as ET
 from os import path
 import time
@@ -96,21 +94,23 @@ def handleReports(reportIds, reportFormatId):
             resultId = untangledReport.get_reports_response.report['id']
             base64CSV = untangledReport.get_reports_response.report.cdata
             data = str(base64.b64decode(base64CSV), 'utf-8')
-            writeReport(resultId, data)
+            # Convert the report's creation date to a UNIX timestamp:
+            reportTimestamp = int(time.mktime(time.strptime(untangledReport.get_reports_response.report.creation_time.cdata, '%Y-%m-%dT%H:%M:%SZ')))
+            writeReport(resultId, data, reportTimestamp)
             numWritten += 1
         else:
             numSkipped += 1
     return (numWritten, numSkipped)
 
 
-def writeReport(resultId, data):
+def writeReport(resultId, data, reportTimestamp):
     """Write the report `resultId` with content `data` to disk.
-    The file will be written to `REPORTS_PATH`/openvas_scan_TIMESTAMP_`resultId`.json
+    The file will be written to `REPORTS_PATH`/openvas_scan_`reportTimestamp`_`resultId`.json.
     Mark the report as processed by adding the `resultId` to the sqlite3 database `DB_PATH`."""
     # Parse data as csv
     csvReader = csv.DictReader(data.splitlines())
     fileName = REPORT_NAME_TEMPLATE.format(
-        int(time.time()),
+        reportTimestamp,
         resultId.replace('-', '')
     )
     print(data.splitlines())
