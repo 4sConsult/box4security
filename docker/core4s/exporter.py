@@ -113,7 +113,6 @@ def writeReport(resultId, data, reportTimestamp):
         reportTimestamp,
         resultId.replace('-', '')
     )
-    print(data.splitlines())
     with open(path.join(REPORTS_PATH, fileName), "w") as jsonFile:
         for csvRow in csvReader:
             transformedData = transformReport(csvRow)
