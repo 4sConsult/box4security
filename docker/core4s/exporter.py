@@ -18,6 +18,7 @@ config.read_string(config_string)
 
 
 def getReportFormat():
+    """Get the CSV result format identifier from OpenVAS XML API."""
     reportFormats = gmp.get_report_formats()
     root = ET.fromstring(reportFormats)
     for document in root:
@@ -27,6 +28,7 @@ def getReportFormat():
 
 
 def getReportIds():
+    """Get the report ids from OpenVAS XML API."""
     reports = []
     allReports = gmp.get_reports()
     root = ET.fromstring(allReports)
@@ -53,11 +55,17 @@ def handleReports(reportIds, reportFormatId):
 
 
 def writeReport(resultId, data):
+    """Write the report `resultId` with content `data` to disk.
+
+    Mark the report as processed by adding the `resultId` to the sqlite3 database `DB_PATH`."""
     dbCursor.execute('''INSERT INTO `reports`(resultId) VALUES(?)''', (resultId, ))
     dbConn.commit()
 
 
 def isReportFresh(resultId):
+    """"Check if the report with id resultId is new.
+
+    Return true if the resultId does not exist in the sqlite3 database `DB_PATH` else false."""
     dbCursor.execute("SELECT EXISTS(SELECT 1 FROM `reports` WHERE resultId=?)", (resultId, ))
     return not dbCursor.fetchone()
 
