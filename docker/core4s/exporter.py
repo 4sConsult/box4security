@@ -113,8 +113,12 @@ def handleReports(reportIds, reportFormatId):
             base64CSV = untangledReport.get_reports_response.report.cdata
             # decode the CSV from base64.
             data = str(base64.b64decode(base64CSV), 'utf-8')
-            # Convert the report's creation date to a UNIX timestamp:
-            reportTimestamp = int(time.mktime(time.strptime(untangledReport.get_reports_response.report.creation_time.cdata, '%Y-%m-%dT%H:%M:%SZ')))
+            try:
+                # Convert the report's creation date to a UNIX timestamp:
+                reportTimestamp = int(time.mktime(time.strptime(untangledReport.get_reports_response.report.creation_time.cdata, '%Y-%m-%dT%H:%M:%SZ')))
+            except ValueError:
+                # Failed getting the report's creation date. Use current timestamp as a fallback.
+                reportTimestamp = int(time.time())
             # Call the function to write the report to disk.
             writeReport(resultId, data, reportTimestamp)
             numWritten += 1
