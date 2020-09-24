@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sSL https://get.docker.com/ | sh
 
 # Install Pyip dependencies
-RUN pip3 install elasticsearch-curator Flask gvm-tools untangle python-gvm
+RUN pip3 install elasticsearch-curator Flask untangle python-gvm
 
 # Add files from git
 ADD scripts /core4s/scripts
