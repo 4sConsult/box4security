@@ -8,6 +8,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Stylesheets werden direkt lokal bereitgestellt. Dadurch ist ein direktes Laden ohne externe Anfragen möglich.
 
 ### Changed
+* Das Dashboard *Schwachstellen - Details* blendet informative Schwachstellen nun standardmäßig über einen deaktiverbaren Filter aus.
 
 
 ### Optimized
