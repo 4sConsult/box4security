@@ -16,6 +16,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Verbesserung der Kibana Ladezeit durch Upgrade auf aktuelle Version des Elastic Stacks.
 
 ### Fixed
+* Die eingebettete Oberfläche wurde gekürzt, sodass keine doppelten Scrollbalken mehr entstehen.
 
 
 ### Deprecated
