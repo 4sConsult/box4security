@@ -12,11 +12,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Optimized
 * Cookies der BOX4security nun gegen Diebstahl via XSS oder Sniffing unter HTTP geschützt.
-
 * Verbesserung der Kibana Ladezeit durch Upgrade auf aktuelle Version des Elastic Stacks.
 
 ### Fixed
-* Die eingebettete Oberfläche wurde gekürzt, sodass keine doppelten Scrollbalken mehr entstehen.
+* Die Dashboards wurden wo erfordlich gekürzt, sodass keine vermeidbaren Scrollbalken mehr entstehen.
 
 
 ### Deprecated
