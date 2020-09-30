@@ -405,7 +405,6 @@ sudo cp config/home/* /home/amadmin -R || :
 
 # TODO: remove in #375
 sudo mkdir -p /var/lib/suricata/rules
-sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/suricata/rules/quickcheck.rules
 
 # Create a folder for the alerting rules
 sudo mkdir -p /var/lib/elastalert/rules
