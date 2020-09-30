@@ -8,10 +8,12 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Stylesheets werden direkt lokal bereitgestellt. Dadurch ist ein direktes Laden ohne externe Anfragen möglich.
 
 ### Changed
+* Das Dashboard *Schwachstellen - Details* blendet informative Schwachstellen nun standardmäßig über einen deaktiverbaren Filter aus.
 
 
 ### Optimized
 * Cookies der BOX4security nun gegen Diebstahl via XSS oder Sniffing unter HTTP geschützt.
+* Der Schwachstellenscanner OpenVAS wurde auf die aktuellste Version 11 aktualisiert.
 
 * Verbesserung der Kibana Ladezeit durch Upgrade auf aktuelle Version des Elastic Stacks.
 
