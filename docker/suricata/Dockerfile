@@ -10,7 +10,7 @@ RUN apt update && \
     apt install -y apt-transport-https software-properties-common && \
     add-apt-repository ppa:oisf/suricata-stable && \
     apt update && \
-    apt install -y curl wget sudo suricata oinkmaster && \
+    apt install -y curl wget sudo suricata && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/suricata/scripts/ && \
     mkdir -p /var/lib/suricata/rules/ && \

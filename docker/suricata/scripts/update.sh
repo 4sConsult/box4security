@@ -1,5 +1,4 @@
 #!/bin/bash
-oinkmaster -C /etc/suricata/oinkmaster.conf -o /var/lib/suricata/rules
 
 suricata-update update-sources
 suricata-update
