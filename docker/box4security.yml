@@ -67,6 +67,7 @@ services:
       - NET_ADMIN
       - SYS_NICE
     volumes:
+      - /home/amadmin/box4s/docker/suricata/var_lib:/var/lib/suricata/rules
       - data:/data
       - varlib_box4s:/var/lib/box4s/
     user: "0:44269"
