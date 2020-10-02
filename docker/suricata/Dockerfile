@@ -26,7 +26,7 @@ RUN apt update && \
     chmod +x /root/scripts/ingest_testdata.sh
 
 # Get Rules for first time on container build
-RUN /root/scripts/update.sh
+RUN /root/scripts/update.sh -z
 
 USER root
 CMD /usr/bin/suricata -vvv -c /etc/suricata/suricata.yaml -F /var/lib/box4s/suricata_suppress.bpf -i $SURI_INTERFACE
