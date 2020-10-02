@@ -65,6 +65,10 @@ sudo chown -R root:root /var/lib/box4s_openvas
 sudo docker volume rm varlib_openvas
 sudo rm -r /var/lib/openvas/
 
+# Remove suricata volume
+sudo docker volume rm varlib_suricata
+sudo rm -r /var/lib/suricata/
+
 ###################
 
 echo "### Detecting available memory and distribute it to the containers"
