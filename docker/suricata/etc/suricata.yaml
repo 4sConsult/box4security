@@ -1834,7 +1834,8 @@ mpipe:
 default-rule-path: /var/lib/suricata/rules
 rule-files:
         - suricata.rules
-        - social_media.rules
+        #- quickcheck.rules
+        #- social_media.rules
 ##
 ## Advanced rule file configuration.
 ##
