@@ -46,14 +46,15 @@ services:
     environment:
       - INT_IP=${INT_IP}
     ports:
-      - 9392:9392
+      - 127.0.0.1:9392:9392
+    expose:
+      - 9390
     volumes:
-      - varlib_openvas:/var/lib/openvas
+      - gvm-data:/data
       - varlib_logstash:/var/lib/logstash
     image: "registry.gitlab.com/4sconsult/box4s/openvas:dev"
     env_file:
       - ../config/secrets/openvas.conf
-    user: "0:44269"
   suricata:
     build: suricata/.
     container_name: suricata
@@ -230,6 +231,7 @@ services:
       - /usr/bin/docker:/usr/bin/docker
       - /data/suricata/eve.json:/core4s/workfolder/suricata/eve.json
       - /var/lib/box4s:/core4s/workfolder/var/lib/box4s
+      - varlib_logstash:/core4s/workfolder/var/lib/logstash
       - /home/amadmin/box4s/docker/web/source/wazuh:/core4s/workfolder/wazuh_files
       - /home/amadmin/box4s/config/secrets:/core4s/config/secrets:ro
     image: "registry.gitlab.com/4sconsult/box4s/core4s:dev"
@@ -252,6 +254,8 @@ networks:
 volumes:
   # to persist data beyond container's life
   spiderfoot_data:
+  gvm-data:
+    external: true
   static_volume:
   data:
     external: true
@@ -262,8 +266,6 @@ volumes:
   varlib_logstash:
     external: true
   varlib_suricata:
-    external: true
-  varlib_openvas:
     external: true
   varlib_docs:
     external: true
