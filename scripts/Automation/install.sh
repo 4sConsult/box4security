@@ -322,13 +322,12 @@ sudo chmod 760 -R /var/lib/logstash
 echo -n " varlib_logstash " 1>&3
 
 # Setup OpenVAS volume
-sudo mkdir -p /var/lib/openvas
-sudo chown root:root /var/lib/openvas
-sudo chmod -R 777 /var/lib/openvas
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
-sudo chown -R root:44269 /var/lib/openvas
-sudo chmod 760 -R /var/lib/openvas
-echo -n " varlib_openvas " 1>&3
+sudo mkdir -p /var/lib/box4s_openvas/
+sudo chown root:root /var/lib/box4s_openvas/
+sudo chmod -R 777 /var/lib/box4s_openvas/
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_openvas/ --opt o=bind gvm-data
+sudo chown -R root:root /var/lib/box4s_openvas
+echo -n " gvm-data " 1>&3
 
 # Setup Elasticsearch volume
 sudo mkdir /data/elasticsearch -p

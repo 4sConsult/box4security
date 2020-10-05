@@ -17,14 +17,15 @@ RUN apt-get update && apt-get install -y \
 # Install docker
 RUN curl -sSL https://get.docker.com/ | sh
 
-# Install Elastic curator and Flask
-RUN pip3 install elasticsearch-curator Flask
+# Install Pyip dependencies
+RUN pip3 install elasticsearch-curator Flask untangle python-gvm
 
 # Add files from git
 ADD scripts /core4s/scripts
 ADD curator /core4s/curator
 ADD core4s.crontab /core4s/core4s.crontab
 ADD healthcheck.py /healthcheck.py
+ADD exporter.py /core4s/openvas/exporter.py
 
 # Add Crontab
 RUN crontab /core4s/core4s.crontab
