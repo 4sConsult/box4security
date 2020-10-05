@@ -471,7 +471,10 @@ echo " [ OK ] " 1>&3
 
 echo -n "Enabling BOX4s internal DNS server.. " 1>&3
 # DNSMasq Setup
-echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
+sudo systemctl restart systemd-resolved
+echo -e "[Resolve]\nDNS=127.0.0.1" > /etc/systemd/resolved.conf
+ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling/Disabling Modules.. " 1>&3
@@ -543,11 +546,6 @@ echo -n "Making scripts executable.. " 1>&3
 chmod +x -R /home/amadmin/box4s/scripts
 echo " [ OK ] " 1>&3
 
-echo -n "Enabling BOX4security internal DNS.. " 1>&3
-sudo systemctl stop systemd-resolved
-sleep 5
-sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
-echo " [ OK ] " 1>&3
 ##################################################
 #                                                #
 # Box4s start                                    #
