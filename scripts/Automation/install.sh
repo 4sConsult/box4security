@@ -139,7 +139,7 @@ echo "[ OK ]" 1>&3
 # Lets install all dependencies
 waitForNet
 echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
-sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolveconf boxes lolcat
+sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
 
 sudo add-apt-repository -y ppa:oisf/suricata-stable
 sudo apt-get update
