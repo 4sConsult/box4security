@@ -18,7 +18,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Verbesserung der Kibana Ladezeit durch Upgrade auf aktuelle Version des Elastic Stacks.
 
 ### Fixed
-
+* Die Visualisierung der Schwachstellenscores zeigt nun den tatsächlich zuletzt berechneten Wert und nicht länger den Durchschnittswert.
+* Die Visualisierung zur grafischen Auswertung der Schwachstellenzahlen berücksichtigen jetzt nur noch einzigartige Schwachstellen.
 
 ### Deprecated
 
