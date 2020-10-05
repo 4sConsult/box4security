@@ -13,9 +13,9 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Optimized
 * Cookies der BOX4security nun gegen Diebstahl via XSS oder Sniffing unter HTTP geschützt.
-* Der Schwachstellenscanner OpenVAS wurde auf die aktuellste Version 11 aktualisiert.
-
 * Verbesserung der Kibana Ladezeit durch Upgrade auf aktuelle Version des Elastic Stacks.
+* Der Schwachstellenscanner OpenVAS wurde auf die aktuellste Version 11 aktualisiert.
+* Die Dashboards wurden wo erforderlich gekürzt, sodass keine vermeidbaren Scrollbalken mehr entstehen.
 
 ### Fixed
 * Die Visualisierung der Schwachstellenscores zeigt nun den tatsächlich zuletzt berechneten Wert und nicht länger den Durchschnittswert.
