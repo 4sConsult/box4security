@@ -24,6 +24,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 
 ### Removed
+* Zuvor als *deprecated* markierte Endpunkte der Update-API nun entfernt.
 
 ## [1.8.7](https://gitlab.com/4sconsult/box4s/-/tags/1.8.7) - 2020-09-11
 
