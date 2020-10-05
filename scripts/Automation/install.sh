@@ -139,7 +139,7 @@ echo "[ OK ]" 1>&3
 # Lets install all dependencies
 waitForNet
 echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
-sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
+sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client boxes lolcat
 
 sudo add-apt-repository -y ppa:oisf/suricata-stable
 sudo apt-get update
@@ -472,8 +472,6 @@ echo " [ OK ] " 1>&3
 
 echo -n "Enabling BOX4s internal DNS server.. " 1>&3
 # DNSMasq Setup
-sudo systemctl disable systemd-resolved
-sudo systemctl enable resolvconf
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 echo " [ OK ] " 1>&3
 
@@ -549,8 +547,6 @@ echo " [ OK ] " 1>&3
 echo -n "Enabling BOX4security internal DNS.. " 1>&3
 sudo systemctl stop systemd-resolved
 sleep 5
-sudo systemctl start resolvconf
-sudo resolvconf -u
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 echo " [ OK ] " 1>&3
 ##################################################
