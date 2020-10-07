@@ -1835,7 +1835,7 @@ default-rule-path: /var/lib/suricata/rules
 rule-files:
         - suricata.rules
         #- quickcheck.rules
-        #- social_media.rules
+        - social_media.rules
 ##
 ## Advanced rule file configuration.
 ##
