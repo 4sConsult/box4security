@@ -16,9 +16,6 @@ cp /var/lib/box4s/resolv.personal /etc/resolv.conf
 # Create an suricata index of the current month. score calculation will fail without an existing index.
 curl -sLkX PUT localhost:9200/suricata-$(date +%Y.%m) > /dev/null
 
-# Copy suricata rules to docker volume
-sudo cp -r /home/amadmin/box4s/docker/suricata/var_lib/. /var/lib/box4s_suricata_rules
-
 # Delete Findings of outdated, local openvas version
 curl -slKX POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -154,8 +151,8 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 # Installiere Scores Index Pattern
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/scores.ndjson
 
-# Insert Suricata Rules once after update - Remove with next template #ONLY FOR 1.8.8#
-sudo docker exec suricata /root/scripts/update.sh
+# Insert Suricata Rules after Update - this also updates the self inserted suricata rules
+sudo docker exec suricata /root/scripts/update.sh -z
 
 # Update Score Mapping
 curl -s -H "Content-type: application/json" -X PUT http://localhost:9200/scores/_mapping --data-binary @$DIR/res/index_mapping.json
