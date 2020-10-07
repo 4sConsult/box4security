@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Move Own rules to correct folder - Only do if folder not empty
+if find /root/var_lib -mindepth 1 | read; then
+   mv -f /root/var_lib/* /var/lib/suricata/rules
+fi
+
 suricata-update update-sources
 suricata-update enable-source et/open
 suricata-update enable-source oisf/trafficid

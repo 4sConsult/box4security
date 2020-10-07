@@ -20,7 +20,6 @@ RUN apt update && \
     mkdir -p /var/lib/box4s && \
     touch /var/lib/box4s/suricata_suppress.bpf && \
     mv /root/etc/* /etc/suricata/ && \
-    mv /root/var_lib/* /var/lib/suricata/rules/ && \
     chmod 777 /var/lib/suricata/rules/ -R && \
     chmod +x /root/scripts/update.sh && \
     chmod +x /root/scripts/ingest_testdata.sh
