@@ -13,5 +13,5 @@ suricata-update
 # And also insert the self-created rules from the copied git folder
 if [ -z "$1" ]; then
   suricatasc -c ruleset-reload-nonblocking;
-  sudo cp -rf /root/var_lib/. /var/lib/suricata/rules
+  cp -rf /root/var_lib/. /var/lib/suricata/rules
 fi
