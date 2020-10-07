@@ -10,8 +10,6 @@ suricata-update enable-source tgreen/hunting
 suricata-update
 
 # If this is not during install, reload the rules
-# And also insert the self-created rules from the copied git folder
 if [ -z "$1" ]; then
   suricatasc -c ruleset-reload-nonblocking;
-  cp -rf /root/var_lib/. /var/lib/suricata/rules
 fi

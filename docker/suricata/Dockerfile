@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ADD scripts/ /root/scripts/
 ADD etc/ /root/etc/
-ADD var_lib/ /root/var_lib/
+# ADD var_lib/ /root/var_lib/
 
 RUN apt update && \
     apt install -y apt-transport-https software-properties-common && \
@@ -25,5 +25,6 @@ RUN apt update && \
     chmod +x /root/scripts/update.sh && \
     chmod +x /root/scripts/ingest_testdata.sh
 
+COPY var_lib/ /var/lib/suricata/rules/
 USER root
 CMD /usr/bin/suricata -vvv -c /etc/suricata/suricata.yaml -F /var/lib/box4s/suricata_suppress.bpf -i $SURI_INTERFACE
