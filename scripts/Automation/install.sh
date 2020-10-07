@@ -627,11 +627,6 @@ echo -n "Downloading Wazuh clients.. " 1>&3
 sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clients.sh 3.12.1
 echo " [ OK ] " 1>&3
 
-# Insert Suricata Rules after Update - this also updates the self inserted suricata rules
-echo -n "Downloading Suricata Ruleset.. " 1>&3
-sudo docker exec suricata /root/scripts/update.sh
-echo " [ OK ] " 1>&3
-
 echo -n "Updating tools. This may take a very long time.. " 1>&3
 sudo docker container restart openvas
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh openvas
