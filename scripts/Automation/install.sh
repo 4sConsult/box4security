@@ -289,9 +289,10 @@ sudo chown -R root:44269 /var/lib/postgresql/data
 sudo chmod 760 -R /var/lib/postgresql/data
 echo -n " varlib_postgresql " 1>&3
 
-# Create new suricata volume and folders
+# Setup Suricata Rule volume
 sudo mkdir -p /var/lib/box4s_suricata_rules/
 sudo chown root:root /var/lib/box4s_suricata_rules/
+sudo chmod -R 777 /var/lib/box4s_suricata_rules/
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_suricata_rules/ --opt o=bind varlib_suricata
 echo -n " varlib_suricata " 1>&3
 
