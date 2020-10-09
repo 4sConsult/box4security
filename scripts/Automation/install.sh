@@ -140,11 +140,6 @@ echo "[ OK ]" 1>&3
 waitForNet
 echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
 sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
-
-sudo add-apt-repository -y ppa:oisf/suricata-stable
-sudo apt-get update
-sudo apt-fast install -y software-properties-common suricata # TODO: remove in #375
-sudo systemctl disable suricata || :
 echo "[ OK ]" 1>&3
 
 echo -n "Enabling git lfs.. " 1>&3
@@ -278,13 +273,6 @@ sudo chown -R root:44269 /data
 sudo chmod 760 -R /data
 echo -n "[ data " 1>&3
 
-# Setup Suricata volume
-sudo mkdir -p /var/lib/suricata
-sudo chown root:root /var/lib/suricata
-sudo chmod -R 777 /var/lib/suricata
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/suricata/ --opt o=bind varlib_suricata
-echo -n " varlib_suricata " 1>&3
-
 # Setup Box4s volume
 sudo mkdir -p /var/lib/box4s
 sudo chown root:root /var/lib/box4s
@@ -301,6 +289,12 @@ sudo chown -R root:44269 /var/lib/postgresql/data
 sudo chmod 760 -R /var/lib/postgresql/data
 echo -n " varlib_postgresql " 1>&3
 
+# Setup Suricata Rule volume
+sudo mkdir -p /var/lib/box4s_suricata_rules/
+sudo chown root:root /var/lib/box4s_suricata_rules/
+sudo chmod -R 777 /var/lib/box4s_suricata_rules/
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_suricata_rules/ --opt o=bind varlib_suricata
+echo -n " varlib_suricata " 1>&3
 
 # Setup Box4s Settings volume
 sudo mkdir -p /etc/box4s/logstash
@@ -402,10 +396,6 @@ cd /home/amadmin/box4s
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
-
-# TODO: remove in #375
-sudo mkdir -p /var/lib/suricata/rules
-sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/suricata/rules/quickcheck.rules
 
 # Create a folder for the alerting rules
 sudo mkdir -p /var/lib/elastalert/rules
@@ -524,6 +514,7 @@ sudo mv IP2LOCATION-LITE-DB5.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.BIN
 sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 echo " [ OK ] " 1>&3
+
 
 # Filter Functionality
 echo -n "Setting up BOX4security Filters.. " 1>&3

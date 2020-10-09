@@ -10,7 +10,7 @@ RUN apt update && \
     apt install -y apt-transport-https software-properties-common && \
     add-apt-repository ppa:oisf/suricata-stable && \
     apt update && \
-    apt install -y curl wget sudo suricata oinkmaster && \
+    apt install -y curl wget sudo suricata && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/suricata/scripts/ && \
     mkdir -p /var/lib/suricata/rules/ && \
@@ -20,7 +20,6 @@ RUN apt update && \
     mkdir -p /var/lib/box4s && \
     touch /var/lib/box4s/suricata_suppress.bpf && \
     mv /root/etc/* /etc/suricata/ && \
-    mv /root/var_lib/* /var/lib/suricata/ && \
     chmod 777 /var/lib/suricata/rules -R && \
     chmod +x /root/scripts/update.sh && \
     chmod +x /root/scripts/ingest_testdata.sh
