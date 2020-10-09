@@ -67,8 +67,8 @@ services:
       - NET_ADMIN
       - SYS_NICE
     volumes:
+      - varlib_suricata:/var/lib/suricata/rules
       - data:/data
-      - varlib_suricata:/var/lib/suricata/
       - varlib_box4s:/var/lib/box4s/
     user: "0:44269"
   metricbeat:
@@ -259,13 +259,13 @@ volumes:
   static_volume:
   data:
     external: true
+  varlib_suricata:
+    external: true
   varlib_postgresql:
     external: true
   varlib_box4s:
     external: true
   varlib_logstash:
-    external: true
-  varlib_suricata:
     external: true
   varlib_docs:
     external: true

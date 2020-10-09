@@ -52,18 +52,6 @@ api.add_resource(APIModules, '/api/modules')
 api.add_resource(APIWazuhAgentPass, '/api/config/wazuh')
 
 
-# Deprecated binds to keep update API working over releases. Will be removed in next release.
-@app.route('/update/log')
-def deprecated_update_log():
-    return redirect(url_for('api.update.log'), 301)
-
-
-# Deprecated binds to keep update API working over releases. Will be removed in next release.
-@app.route('/update/status')
-def deprecated_update_status():
-    return redirect(url_for('api.update.status'), 301)
-
-
 @app.before_request
 def check_if_user_active():
     """Check if authenticated user is active before every request.
@@ -248,8 +236,6 @@ def alarms():
     return render_template("alert.html")
 
 
-# Deprecated route without /api/ prefix, will be removed soon.
-@app.route('/update/log/download', methods=['GET'])
 @app.route('/api/update/log/download', methods=['GET'])
 @login_required
 @roles_required(['Super Admin', 'Updates'])

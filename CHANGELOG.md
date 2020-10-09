@@ -13,17 +13,20 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Optimized
 * Cookies der BOX4security nun gegen Diebstahl via XSS oder Sniffing unter HTTP geschützt.
-* Der Schwachstellenscanner OpenVAS wurde auf die aktuellste Version 11 aktualisiert.
-
 * Verbesserung der Kibana Ladezeit durch Upgrade auf aktuelle Version des Elastic Stacks.
+* Der Schwachstellenscanner OpenVAS wurde auf die aktuellste Version 11 aktualisiert.
+* Die Dashboards wurden wo erforderlich gekürzt, sodass keine vermeidbaren Scrollbalken mehr entstehen.
 
 ### Fixed
-
+* Die Visualisierung der Schwachstellenscores zeigt nun den tatsächlich zuletzt berechneten Wert und nicht länger den Durchschnittswert.
+* Die Visualisierung zur grafischen Auswertung der Schwachstellenzahlen berücksichtigen jetzt nur noch einzigartige Schwachstellen.
+* Redundante Reverse-DNS-Auflösung von IPs entfernt.
 
 ### Deprecated
 
 
 ### Removed
+* Zuvor als *deprecated* markierte Endpunkte der Update-API nun entfernt.
 
 ## [1.8.7](https://gitlab.com/4sconsult/box4s/-/tags/1.8.7) - 2020-09-11
 

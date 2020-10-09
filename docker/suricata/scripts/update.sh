@@ -1,8 +1,11 @@
 #!/bin/bash
-oinkmaster -C /etc/suricata/oinkmaster.conf -o /var/lib/suricata/rules
+
+# Move Own rules to correct folder - Only do if folder not empty
+if find /root/var_lib -mindepth 1 | read; then
+   mv -f /root/var_lib/* /var/lib/suricata/rules
+fi
 
 suricata-update update-sources
-suricata-update
 suricata-update enable-source et/open
 suricata-update enable-source oisf/trafficid
 suricata-update enable-source ptresearch/attackdetection
