@@ -20,6 +20,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Fixed
 * Die Visualisierung der Schwachstellenscores zeigt nun den tatsächlich zuletzt berechneten Wert und nicht länger den Durchschnittswert.
 * Die Visualisierung zur grafischen Auswertung der Schwachstellenzahlen berücksichtigen jetzt nur noch einzigartige Schwachstellen.
+* Redundante Reverse-DNS-Auflösung von IPs entfernt.
 
 ### Deprecated
 
