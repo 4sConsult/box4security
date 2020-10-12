@@ -459,17 +459,6 @@ IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed 
 echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 echo " [ OK ] " 1>&3
 
-echo -n "Enabling BOX4s internal DNS server.. " 1>&3
-# DNSMasq Setup
-sudo systemctl enable resolvconf.service
-echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
-sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
-sudo systemctl stop systemd-resolved
-sudo systemctl start resolvconf.service
-sudo resolvconf --enable-updates
-sudo resolvconf -u
-echo " [ OK ] " 1>&3
-
 echo -n "Enabling/Disabling Modules.. " 1>&3
 sudo mkdir -p /etc/box4s/
 sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
@@ -538,6 +527,17 @@ echo " [ OK ] " 1>&3
 
 echo -n "Making scripts executable.. " 1>&3
 chmod +x -R /home/amadmin/box4s/scripts
+echo " [ OK ] " 1>&3
+
+echo -n "Enabling BOX4s internal DNS server.. " 1>&3
+# DNSMasq Setup
+sudo systemctl enable resolvconf.service
+echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
+sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
+sudo systemctl stop systemd-resolved
+sudo systemctl start resolvconf.service
+sudo resolvconf --enable-updates
+sudo resolvconf -u
 echo " [ OK ] " 1>&3
 
 ##################################################
