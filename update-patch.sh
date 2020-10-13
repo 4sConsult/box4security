@@ -169,7 +169,7 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/scores.ndjson
 
 # Insert Suricata Rules after Update - this also updates the self inserted suricata rules
-sudo docker exec suricata /root/scripts/update.sh
+sudo docker exec suricata /root/scripts/update.sh || sleep 1
 
 # Update Score Mapping
 curl -s -H "Content-type: application/json" -X PUT http://localhost:9200/scores/_mapping --data-binary @$DIR/res/index_mapping.json
