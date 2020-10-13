@@ -130,7 +130,7 @@ services:
     image: "registry.gitlab.com/4sconsult/box4s/web:1.8.8-rc"
     build: web/.
     command: >
-     bash -c "python3 main.py db upgrade head &&
+     bash -c "python main.py db upgrade head &&
      gunicorn --bind 0.0.0.0:5000 main:app"
     volumes:
        - static_volume:/home/app/web/source/static
