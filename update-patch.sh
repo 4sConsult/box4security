@@ -5,6 +5,8 @@ TAG=""
 # Exit on every error
 set -e
 
+sudo chown root:44269 /var/log/box4s/update.log
+sudo chmod 740 /var/log/box4s/update.log
 # Making sure to be logged in with the correct account
 sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
 
