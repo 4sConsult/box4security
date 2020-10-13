@@ -38,6 +38,7 @@ curl -sLkX POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty
 ' > /dev/null
 
 echo "Erstelle Datenbank Backup"
+source /home/amadmin/box4s/config/secrets/db.conf
 sudo docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_dump -F tar box4S_db > /root/box4S_db.tar"
 sudo docker cp db:/root/box4S_db.tar /var/lib/box4s/backup/box4S_db_1.8.8.tar
 
