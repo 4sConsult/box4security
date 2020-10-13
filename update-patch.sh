@@ -102,7 +102,7 @@ sudo rm -r /var/lib/postgresql/data/*
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml up -d db
 sleep 10
 sudo docker cp /var/lib/box4s/backup/box4S_db_1.8.8.tar db:/root/box4S_db.tar
-sudo docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_restore -F t --clean -d box4S_db /root/box4S_db.tar"
+sudo docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_restore -F t --clean --create -d postgres /root/box4S_db.tar"
 sudo rm /var/lib/box4s/backup/box4S_db_1.8.8.tar
 
 # Changes for Wazuh module
