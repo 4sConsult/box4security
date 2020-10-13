@@ -5,6 +5,8 @@ TAG=""
 # Exit on every error
 set -e
 
+sudo chown root:44269 /var/log/box4s/update.log
+sudo chmod 740 /var/log/box4s/update.log
 # Making sure to be logged in with the correct account
 sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
 
@@ -37,6 +39,10 @@ curl -sLkX POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty
 }
 ' > /dev/null
 
+echo "Erstelle Datenbank Backup"
+source /home/amadmin/box4s/config/secrets/db.conf
+sudo docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_dump -F tar box4S_db > /root/box4S_db.tar"
+sudo docker cp db:/root/box4S_db.tar /var/lib/box4s/backup/box4S_db_1.8.8.tar
 
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
@@ -92,6 +98,15 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 
 ###################
+# PostgreSQL 12-to-13 migration
+source /home/amadmin/box4s/config/secrets/db.conf
+sudo rm -r /var/lib/postgresql/data/*
+sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml up -d db
+sleep 10
+sudo docker cp /var/lib/box4s/backup/box4S_db_1.8.8.tar db:/root/box4S_db.tar
+sudo docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_restore -F t --clean --create -d postgres /root/box4S_db.tar"
+sudo rm /var/lib/box4s/backup/box4S_db_1.8.8.tar
+
 # Changes for Wazuh module
 # Source modules configuration
 source /etc/box4s/modules.conf
@@ -154,7 +169,7 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/scores.ndjson
 
 # Insert Suricata Rules after Update - this also updates the self inserted suricata rules
-sudo docker exec suricata /root/scripts/update.sh
+sudo docker exec suricata /root/scripts/update.sh || sleep 1
 
 # Update Score Mapping
 curl -s -H "Content-type: application/json" -X PUT http://localhost:9200/scores/_mapping --data-binary @$DIR/res/index_mapping.json
