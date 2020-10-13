@@ -92,6 +92,21 @@ sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 
 ###################
+# PostgreSQL 12-to-13 migration
+# Setup PostgreSQL volume
+sudo mkdir -p /var/lib/postgresql13/data
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql13/data --opt o=bind varlib_postgresql13
+sudo chown -R root:44269 /var/lib/postgresql13/data
+sudo chmod 760 -R /var/lib/postgresql13/data
+sudo docker run --rm \
+	-v varlib_postgresql:/var/lib/postgresql/12/data \
+	-v varlib_postgresql13:/var/lib/postgresql/13/data \
+	tianon/postgres-upgrade:12-to-13
+
+# remove previous data and create a link
+sudo rm -r /var/lib/postgresql 
+sudo ln -s /var/lib/postgresql13 /var/lib/postgresql
+sudo docker volume rm varlib_postgresql13
 # Changes for Wazuh module
 # Source modules configuration
 source /etc/box4s/modules.conf
