@@ -97,7 +97,7 @@ sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 source /etc/box4s/modules.conf
 
 # Start Wazuh module and wait for it to become available
-sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart
+sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml up -d 
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh wazuh
 
 # Insert Wazuh template for Version 3.13.1 that allows kibana 7.9.0
