@@ -22,7 +22,7 @@
           },
           "aggs": {
             "cvssUniqueVul": {
-              "cardinality": {"field": "uniqueVul" }
+              "cardinality": {"field": "uniqueVul.keyword" }
             }
           }
       }

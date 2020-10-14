@@ -1,3 +1,3 @@
-FROM docker.elastic.co/beats/heartbeat:7.6.2
+FROM docker.elastic.co/beats/heartbeat:7.9.0
 
 COPY --chown=heartbeat:heartbeat etc/* /usr/share/heartbeat/config/

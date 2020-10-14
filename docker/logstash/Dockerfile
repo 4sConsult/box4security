@@ -1,4 +1,4 @@
-FROM docker.elastic.co/logstash/logstash:7.6.2
+FROM docker.elastic.co/logstash/logstash:7.9.0
 
 USER root
 COPY --chown=logstash:logstash etc/ /etc/logstash/
@@ -17,7 +17,6 @@ RUN	curl https://jdbc.postgresql.org/download/postgresql-42.2.8.jar --output /us
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/25-4s_Special.conf && \
 	ln -s /etc/logstash/conf.d/general/20-preBOX4s.conf /etc/logstash/conf.d/suricata/30-preBOX4s.conf && \
 	ln -s /etc/logstash/conf.d/general/BOX4s-special.conf /etc/logstash/conf.d/suricata/40-BOX4sspecial.conf && \
-	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/suricata/50-DNS_Resolv.conf && \
 	# Metricbeat
 	ln -s /etc/logstash/conf.d/general/dns_resolv.conf /etc/logstash/conf.d/metricbeat/15-dns_resolv.conf && \
 	ln -s /etc/logstash/conf.d/general/beat_add_clientIP.conf /etc/logstash/conf.d/metricbeat/20-BeatClientIP.conf && \

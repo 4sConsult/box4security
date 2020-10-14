@@ -217,6 +217,7 @@ path.logs: /var/log/logstash
 # X-Pack Monitoring
 # https://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html
 xpack.monitoring.enabled: true
+xpack.management.elasticsearch.hosts: "http://elasticsearch:9200/"
 #xpack.monitoring.elasticsearch.username: logstash_system
 #xpack.monitoring.elasticsearch.password: password
 #xpack.monitoring.elasticsearch.url: ["https://es1:9200", "https://es2:9200"]

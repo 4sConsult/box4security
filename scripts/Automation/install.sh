@@ -140,11 +140,6 @@ echo "[ OK ]" 1>&3
 waitForNet
 echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
 sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
-
-sudo add-apt-repository -y ppa:oisf/suricata-stable
-sudo apt-get update
-sudo apt-fast install -y software-properties-common suricata # TODO: remove in #375
-sudo systemctl disable suricata || :
 echo "[ OK ]" 1>&3
 
 echo -n "Enabling git lfs.. " 1>&3
@@ -278,13 +273,6 @@ sudo chown -R root:44269 /data
 sudo chmod 760 -R /data
 echo -n "[ data " 1>&3
 
-# Setup Suricata volume
-sudo mkdir -p /var/lib/suricata
-sudo chown root:root /var/lib/suricata
-sudo chmod -R 777 /var/lib/suricata
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/suricata/ --opt o=bind varlib_suricata
-echo -n " varlib_suricata " 1>&3
-
 # Setup Box4s volume
 sudo mkdir -p /var/lib/box4s
 sudo chown root:root /var/lib/box4s
@@ -301,6 +289,12 @@ sudo chown -R root:44269 /var/lib/postgresql/data
 sudo chmod 760 -R /var/lib/postgresql/data
 echo -n " varlib_postgresql " 1>&3
 
+# Setup Suricata Rule volume
+sudo mkdir -p /var/lib/box4s_suricata_rules/
+sudo chown root:root /var/lib/box4s_suricata_rules/
+sudo chmod -R 777 /var/lib/box4s_suricata_rules/
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_suricata_rules/ --opt o=bind varlib_suricata
+echo -n " varlib_suricata " 1>&3
 
 # Setup Box4s Settings volume
 sudo mkdir -p /etc/box4s/logstash
@@ -322,13 +316,12 @@ sudo chmod 760 -R /var/lib/logstash
 echo -n " varlib_logstash " 1>&3
 
 # Setup OpenVAS volume
-sudo mkdir -p /var/lib/openvas
-sudo chown root:root /var/lib/openvas
-sudo chmod -R 777 /var/lib/openvas
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/openvas/ --opt o=bind varlib_openvas
-sudo chown -R root:44269 /var/lib/openvas
-sudo chmod 760 -R /var/lib/openvas
-echo -n " varlib_openvas " 1>&3
+sudo mkdir -p /var/lib/box4s_openvas/
+sudo chown root:root /var/lib/box4s_openvas/
+sudo chmod -R 777 /var/lib/box4s_openvas/
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_openvas/ --opt o=bind gvm-data
+sudo chown -R root:root /var/lib/box4s_openvas
+echo -n " gvm-data " 1>&3
 
 # Setup Elasticsearch volume
 sudo mkdir /data/elasticsearch -p
@@ -404,10 +397,6 @@ sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
 
-# TODO: remove in #375
-sudo mkdir -p /var/lib/suricata/rules
-sudo cp /home/amadmin/box4s/docker/suricata/var_lib/quickcheck.rules /var/lib/suricata/rules/quickcheck.rules
-
 # Create a folder for the alerting rules
 sudo mkdir -p /var/lib/elastalert/rules
 
@@ -442,6 +431,10 @@ sudo mv /tmp/4s-ifaces /etc/network/interfaces
 ip link set $IF_MGMT down
 ip link set $IF_MGMT up
 
+#Disable TCP Timestamps
+echo 'net.ipv4.tcp_timestamps = 0' | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
 
 # Set other interfaces
 for iface in $(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | tail -n +2)
@@ -464,13 +457,6 @@ echo -n "Setting the portmirror interface.. " 1>&3
 touch /home/amadmin/box4s/docker/suricata/.env
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
 echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
-echo " [ OK ] " 1>&3
-
-echo -n "Enabling BOX4s internal DNS server.. " 1>&3
-# DNSMasq Setup
-sudo systemctl disable systemd-resolved
-sudo systemctl enable resolvconf
-echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling/Disabling Modules.. " 1>&3
@@ -519,6 +505,7 @@ sudo unzip -o IP2LOCATION-LITE-DB5.IPV6.BIN.zip
 sudo mv IP2LOCATION-LITE-DB5.IPV6.BIN /var/lib/box4s/IP2LOCATION-LITE-DB5.IPV6.BIN
 echo " [ OK ] " 1>&3
 
+
 # Filter Functionality
 echo -n "Setting up BOX4security Filters.. " 1>&3
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
@@ -542,13 +529,17 @@ echo -n "Making scripts executable.. " 1>&3
 chmod +x -R /home/amadmin/box4s/scripts
 echo " [ OK ] " 1>&3
 
-echo -n "Enabling BOX4security internal DNS.. " 1>&3
-sudo systemctl stop systemd-resolved
-sleep 5
-sudo systemctl start resolvconf
-sudo resolvconf -u
+echo -n "Enabling BOX4s internal DNS server.. " 1>&3
+# DNSMasq Setup
+sudo systemctl enable resolvconf.service
+echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
+sudo systemctl stop systemd-resolved
+sudo systemctl start resolvconf.service
+sudo resolvconf --enable-updates
+sudo resolvconf -u
 echo " [ OK ] " 1>&3
+
 ##################################################
 #                                                #
 # Box4s start                                    #

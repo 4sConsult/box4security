@@ -1,7 +1,7 @@
-FROM docker.elastic.co/kibana/kibana:7.6.2
+FROM docker.elastic.co/kibana/kibana:7.9.0
 
-ARG ELASTIC_VERSION=7.6.2
-ARG WAZUH_VERSION=3.12.1
+ARG ELASTIC_VERSION=7.9.0
+ARG WAZUH_VERSION=3.13.1
 ARG WAZUH_APP_VERSION="${WAZUH_VERSION}_${ELASTIC_VERSION}"
 
 COPY --chown=kibana:kibana etc/* /usr/share/kibana/config/
