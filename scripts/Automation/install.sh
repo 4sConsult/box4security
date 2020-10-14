@@ -22,9 +22,6 @@ echo "Usage:"
 echo "sudo $0"
 echo "Options:"
 echo "sudo $0 --manual - All available tags will be available for install - All of them."
-
-
-
 # Check for root
 
 if [ "$(whoami)" != "root" ];
@@ -64,8 +61,6 @@ export DEBIAN_FRONTEND=noninteractive
 # Forward stdout to $FULL_LOG
 # exec > >(tee "$FULL_LOG")
 exec 3>&1 1>>${FULL_LOG} 2>>$ERROR_LOG
-# HELP text
-
 ##################################################
 #                                                #
 # Functions                                      #
@@ -133,7 +128,7 @@ sudo touch /data/suricata/eve.json
 echo "[ OK ]" 1>&3
 
 # Create update log
-sudo touch $LOG_DIR/update.log
+sudo touch /var/log/box4s/update.log
 
 # Lets install apt-fast for quick package installation
 waitForNet
@@ -159,8 +154,6 @@ fi
 if service_exists systemd-resolved; then
     sudo service systemd-resolved disable
 fi
-
-
 echo "[ OK ]" 1>&3
 
 # Lets install all dependencies
