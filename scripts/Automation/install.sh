@@ -190,7 +190,7 @@ echo "[ OK ]" 1>&3
 
 # Change to path from snippet
 cd /tmp/box4s
-
+#######HEREEEEEEEE ABOVE WORKS; BELOW NOT SO MUCH
 # Import Secret Key and use the deploy token as password
 echo -n "Import BOX4security secret key and decrypting secrets.. " 1>&3
 echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
@@ -202,8 +202,6 @@ blackbox_decrypt_file config/secrets/db.conf
 # Source the secrets relatively
 source config/secrets/secrets.conf
 source config/secrets/db.conf
-# For security reasons, remove decrypted versions
-blackbox_shred_all_files
 echo "[ OK ]" 1>&3
 
 # Create the user $HOST_USER only if he does not exist
