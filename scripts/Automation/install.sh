@@ -10,8 +10,8 @@ if [[ ! -w $LOG_DIR ]]; then
   LOG_DIR="$HOME"
 fi
 
-sudo chown -R root:44269 /var/log/box4s
-sudo chmod 760 -R /var/log/box4s
+sudo chown -R root:44269 $LOG_DIR
+sudo chmod 760 -R $LOG_DIR
 
 FULL_LOG=$LOG_DIR/install.log
 ERROR_LOG=$LOG_DIR/install.err.log
@@ -132,7 +132,7 @@ sudo touch /data/suricata/eve.json
 echo "[ OK ]" 1>&3
 
 # Create update log
-sudo touch /var/log/box4s/update.log
+sudo touch $LOG_DIR/update.log
 
 # Lets install apt-fast for quick package installation
 waitForNet
@@ -140,7 +140,6 @@ echo -n "Installing apt-fast.. " 1>&3
 sudo /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
 echo "[ OK ]" 1>&3
 # Remove services, that might be present, but are not needed.
-# But don't fail if they arent.
 echo -n "Removing standard services.. " 1>&3
 
 # Disable and remove Apache2
