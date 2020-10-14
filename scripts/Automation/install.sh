@@ -75,6 +75,16 @@ function waitForNet() {
   done
 }
 
+# Helper to check if a service exists on the system
+service_exists() {
+    local n=$1
+    if [[ $(systemctl list-units --all -t service --full --no-legend "$n.service" | cut -f1 -d' ') == $n.service ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function printHelp() {
   toilet -f ivrit 'BOX4security' | boxes -d cat -a hc -p h8 1>&3
   echo "$HELP" 1>&3
@@ -132,8 +142,25 @@ echo "[ OK ]" 1>&3
 # Remove services, that might be present, but are not needed.
 # But don't fail if they arent.
 echo -n "Removing standard services.. " 1>&3
-sudo systemctl disable apache2 nginx systemd-resolved || :
-sudo apt-fast remove --purge -y apache2 nginx
+
+# Disable and remove Apache2
+if service_exists apache2; then
+    sudo service apache2 disable
+    sudo apt-fast remove --purge -y apache2
+fi
+
+# Disable and remove Nginx
+if service_exists nginx; then
+    sudo service nginx disable
+    sudo apt-fast remove --purge -y nginx
+fi
+
+# Disable systemd-resolved
+if service_exists systemd-resolved; then
+    sudo service systemd-resolved disable
+fi
+
+
 echo "[ OK ]" 1>&3
 
 # Lets install all dependencies
