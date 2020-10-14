@@ -1,5 +1,43 @@
 #!/bin/bash
 set -e
+
+# Initial information
+echo " ____   _____  ___  _                            _ _"
+echo "| __ ) / _ \ \/ / || |  ___  ___  ___ _   _ _ __(_) |_ _   _"
+echo "|  _ \| | | \  /| || |_/ __|/ _ \/ __| | | | '__| | __| | | |"
+echo "| |_) | |_| /  \|__   _\__ \  __/ (__| |_| | |  | | |_| |_| |"
+echo "|____/ \___/_/\_\  |_| |___/\___|\___|\__,_|_|  |_|\__|\__, |"
+echo "                                                       |___/"
+echo
+echo "Disclaimer:"
+echo "This script will install the BOX4security on this system."
+echo "By running the script you confirm to know what you are doing:"
+echo "1. New packages will be installed."
+echo "2. A new folder called '/data' will be created in your root directory."
+echo "3. A new sudo user called 'amadmin' will be created on this system."
+echo "4. The BOX4s service will be enabled."
+echo
+echo "#############################################"
+echo "Usage:"
+echo "sudo $0"
+echo "Options:"
+echo "sudo $0 --manual - All available tags will be available for install - All of them."
+
+
+
+# Check for root
+
+if [ "$(whoami)" != "root" ];
+  then
+    echo "#####################################################"
+    echo "### Installation Requires Root. Please use 'sudo' ###"
+    echo "#####################################################"
+    exit 1
+  else
+    echo "#####################################################"
+    echo "###    Starting BOX4security installation...      ###"
+    echo "#####################################################"
+fi
 # Log file to use
 # Create path if allowed or do NOP
 mkdir -p /var/log/box4s/ || :
@@ -27,26 +65,6 @@ export DEBIAN_FRONTEND=noninteractive
 # exec > >(tee "$FULL_LOG")
 exec 3>&1 1>>${FULL_LOG} 2>>$ERROR_LOG
 # HELP text
-HELP="\
-
-
-###########################################
-### BOX4s Installer                     ###
-###########################################
-
-Disclaimer:
-This script will install the BOX4security on this system.
-By running the script you confirm to know what you are doing:
-1. New packages will be installed.
-2. A new folder called '/data' will be created in your root directory.
-3. A new sudo user called 'amadmin' will be created on this system.
-4. The BOX4s service will be enabled.
-
-########################################
-Usage:
-        sudo $0
-Options:
-        sudo $0 --manual - All available tags will be available for install - All of them."
 
 ##################################################
 #                                                #
@@ -85,11 +103,6 @@ service_exists() {
     fi
 }
 
-function printHelp() {
-  toilet -f ivrit 'BOX4security' | boxes -d cat -a hc -p h8 1>&3
-  echo "$HELP" 1>&3
-}
-
 # Lets make sure some basic tools are available
 CURL=$(which curl) || echo ""
 WGET=$(which wget) || echo ""
@@ -109,18 +122,6 @@ fi
 #                                                #
 ##################################################
 banner "Dependencies ..."
-
-# Are we root?
-echo -n "Checking for root: " 1>&3
-if [ "$(whoami)" != "root" ];
-  then
-    echo "[ NOT OK ]" 1>&3
-    echo -e "Script must be run as root."
-    printHelp
-    exit 1
-  else
-    echo "[ OK ]" 1>&3
-fi
 
 echo -n "Creating the /data directory.. " 1>&3
 # Create the /data directory if it does not exist and make it readable
