@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.8.8-rc](https://gitlab.com/4sconsult/box4s/-/tags/1.8.8-rc) - 2020-10-14
+## [1.8.8](https://gitlab.com/4sconsult/box4s/-/tags/1.8.8) - 2020-10-14
 
 ### Added
 
