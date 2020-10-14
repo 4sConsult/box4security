@@ -39,10 +39,6 @@ curl -sLkX POST "localhost:9200/logstash-vulnwhisperer-*/_delete_by_query?pretty
 }
 ' > /dev/null
 
-echo "Erstelle Datenbank Backup"
-source /home/amadmin/box4s/config/secrets/db.conf
-sudo docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_dump -F tar box4S_db > /root/box4S_db.tar"
-sudo docker cp db:/root/box4S_db.tar /var/lib/box4s/backup/box4S_db_1.8.8.tar
 
 echo "Stopping BOX4s Service. Please wait."
 sudo systemctl stop box4security.service
@@ -53,35 +49,14 @@ sudo docker rm  $(docker ps -q -a) || :
 sudo docker rmi $(sudo docker images -a -q) || :
 
 ###################
-# Changes here for standard module
+# CHANGES FOR STANDARD
 
-#Disable TCP Timestamps
-echo 'net.ipv4.tcp_timestamps = 0' | sudo tee -a /etc/sysctl.conf
-sudo sysctl -p
-
-
-# Creating BOX4s openvas docker volume
-sudo mkdir -p /var/lib/box4s_openvas/
-sudo chown root:root /var/lib/box4s_openvas/
-sudo chmod -R 777 /var/lib/box4s_openvas/
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_openvas/ --opt o=bind gvm-data
-sudo chown -R root:root /var/lib/box4s_openvas
-
-# Remove previous openvas volume
-sudo docker volume rm varlib_openvas
-sudo rm -r /var/lib/openvas/
-
-# Remove suricata volume
-sudo docker volume rm varlib_suricata
-sudo rm -r /var/lib/suricata/
-
-# Create new suricata volume and folders
-sudo mkdir -p /var/lib/box4s_suricata_rules/
-sudo chown root:root /var/lib/box4s_suricata_rules/
-sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_suricata_rules/ --opt o=bind varlib_suricata
 
 ###################
+# CHANGES FOR MODULES
 
+
+###################
 echo "### Detecting available memory and distribute it to the containers"
 # Detect rounded memory
 MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
@@ -96,38 +71,6 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /
 # Get the current images
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
-
-###################
-# PostgreSQL 12-to-13 migration
-source /home/amadmin/box4s/config/secrets/db.conf
-sudo rm -r /var/lib/postgresql/data/*
-sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml up -d db
-sleep 10
-sudo docker cp /var/lib/box4s/backup/box4S_db_1.8.8.tar db:/root/box4S_db.tar
-sudo docker exec db /bin/bash -c "PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER pg_restore -F t --clean --create -d postgres /root/box4S_db.tar"
-sudo rm /var/lib/box4s/backup/box4S_db_1.8.8.tar
-
-# Changes for Wazuh module
-# Source modules configuration
-source /etc/box4s/modules.conf
-
-# Start Wazuh module and wait for it to become available
-sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml up -d
-sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml up -d 
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh wazuh
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
-
-# Insert Wazuh template for Version 3.13.1 that allows kibana 7.9.0
-curl https://raw.githubusercontent.com/wazuh/wazuh/v3.13.1/extensions/elasticsearch/7.x/wazuh-template.json | curl -X PUT "http://localhost:9200/_template/wazuh" -H 'Content-Type: application/json' -d @-
-
-#Shutdown wazuh container if module not enabled
-
-if [ "$BOX4s_WAZUH" == "false" ]; then
-  sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml stop
-fi
-
-###################
-
 
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
