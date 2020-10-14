@@ -51,7 +51,7 @@ gpg --encrypt \
     --recipient jan.guenther@4sconsult.de \
     4srepos-$DATE.tar.gz
 echo "[OK]"
-cp 4srepos-$DATE.tar.gz.gpg /tmp/4srepos-$DATE.tar.gz
+cp 4srepos-$DATE.tar.gz.gpg /tmp/4srepos-$DATE.tar.gz.gpg
 rm -rf /tmp/backup4srepos
 rm -rf /tmp/backup4sbundles
-echo "Success! Find your encrypted archive file at /tmp/4srepos-$DATE.tar.gz."
+echo "Success! Find your encrypted archive file at /tmp/4srepos-$DATE.tar.gz.gpg"
