@@ -175,6 +175,10 @@ pip3 install semver requests
 echo "[ OK ]" 1>&3
 
 echo -n "Installing Docker-Compose.. " 1>&3
+# Remove old docker-compose if found
+if [ -f "/usr/local/bin/docker-compose" ]; then
+  sudo rm /usr/local/bin/docker-compose
+fi
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 echo "[ OK ]" 1>&3
