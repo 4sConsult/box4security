@@ -16,6 +16,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 
 ### Deprecated
+* Einrichtung via ITS-Plattform und FetchQC deprecated. FetchQC wird in der kommenden Version entfernt.
 
 
 ### Removed
