@@ -181,6 +181,10 @@ echo "[ OK ]" 1>&3
 
 # Install BlackBox to decrypt stuff
 echo -n "Installing BlackBox for secret encryption/decryption.. " 1>&3
+# Remove if other blackblock installation is found
+if [ -d "/opt/blackbox" ]; then
+  sudo rm /opt/blackbox -r
+fi
 git clone https://github.com/StackExchange/blackbox.git /opt/blackbox
 cd /opt/blackbox
 sudo make symlinks-install
