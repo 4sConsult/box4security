@@ -79,7 +79,16 @@ function testNet() {
   ping -q -c 1 -W 1 $1 >/dev/null;
   return $?
 }
-
+function delete_If_Exists(){
+  if [ -d $1 ]; then
+    # Directory to remove
+    sudo rm $1 -r
+  fi
+  if [ -f $1 ]; then
+    # File to remove
+    sudo rm $1
+  fi
+}
 function waitForNet() {
   # use argument or default value of google.com
   HOST=${1:-"google.com"}
@@ -184,9 +193,7 @@ echo "[ OK ]" 1>&3
 
 echo -n "Installing Docker-Compose.. " 1>&3
 # Remove old docker-compose if found
-if [ -f "/usr/local/bin/docker-compose" ]; then
-  sudo rm /usr/local/bin/docker-compose
-fi
+delete_If_Exists /usr/local/bin/docker-compose
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 echo "[ OK ]" 1>&3
@@ -194,9 +201,7 @@ echo "[ OK ]" 1>&3
 # Install BlackBox to decrypt stuff
 echo -n "Installing BlackBox for secret encryption/decryption.. " 1>&3
 # Remove if other blackblock installation is found
-if [ -d "/opt/blackbox" ]; then
-  sudo rm /opt/blackbox -r
-fi
+delete_If_Exists /opt/blackbox
 git clone https://github.com/StackExchange/blackbox.git /opt/blackbox
 cd /opt/blackbox
 sudo make symlinks-install
@@ -266,6 +271,8 @@ banner "Repository ..."
 
 echo -n "Cloning the repository.. " 1>&3
 cd /home/amadmin
+# Delete already existing repository
+delete_If_Exists /home/amadmin/box4s
 git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s -b $TAG
 echo "[ OK ]" 1>&3
 
