@@ -79,7 +79,13 @@ function testNet() {
   ping -q -c 1 -W 1 $1 >/dev/null;
   return $?
 }
+function check_for_dockerVolume(){
+  # Helper to check if a docker volume is on the system
+  sudo docker volume ls | grep $1
+
+}
 function delete_If_Exists(){
+  # Helper to delete files and directories if they exist
   if [ -d $1 ]; then
     # Directory to remove
     sudo rm $1 -r
@@ -228,7 +234,7 @@ echo "[ OK ]" 1>&3
 echo -n "Creating BOX4security user on the host.. " 1>&3
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
 sudo usermod -aG sudo $HOST_USER
-echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+grep -qxF "$HOST_USER ALL=(ALL) NOPASSWD: ALL" /etc/sudoers || echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 cat /etc/group | grep boxforsecurity &>/dev/null || sudo addgroup --gid 44269 boxforsecurity # Create group if it does not exist
 id -G $HOST_USER | grep 44229 &>/dev/null || sudo usermod -a -G boxforsecurity $HOST_USER # Add HOST_USER to created group if not in it
 echo "[ OK ]" 1>&3
@@ -413,7 +419,7 @@ banner "BOX4security ..."
 
 echo -n "Setting hostname.. " 1>&3
 hostname box4security
-echo "127.0.0.1 box4security" >> /etc/hosts
+grep -qxF "127.0.0.1 box4security" /etc/hosts || echo "127.0.0.1 box4security" >> /etc/hosts
 echo " [ OK ]" 1>&3
 
 # No longer allow SSH with password login
