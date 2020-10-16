@@ -165,7 +165,7 @@ echo "[ OK ]" 1>&3
 
 echo -n "Enabling git lfs.. " 1>&3
 # Check if .git exists in /tmp/box4s - if it doesn't then not initial install and skip
-if [ -d "/tmp/box4s/.git"]; then
+if [ -d "/tmp/box4s/.git" ]; then
   git lfs install --skip-smudge
 fi
 echo "[ OK ]" 1>&3
