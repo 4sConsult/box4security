@@ -2,38 +2,39 @@
 set -e
 
 # Initial information
-echo " ____   _____  ___  _                            _ _"
-echo "| __ ) / _ \ \/ / || |  ___  ___  ___ _   _ _ __(_) |_ _   _"
-echo "|  _ \| | | \  /| || |_/ __|/ _ \/ __| | | | '__| | __| | | |"
-echo "| |_) | |_| /  \|__   _\__ \  __/ (__| |_| | |  | | |_| |_| |"
-echo "|____/ \___/_/\_\  |_| |___/\___|\___|\__,_|_|  |_|\__|\__, |"
-echo "                                                       |___/"
-echo
-echo "Disclaimer:"
-echo "This script will install the BOX4security on this system."
-echo "By running the script you confirm to know what you are doing:"
-echo "1. New packages will be installed."
-echo "2. A new folder called '/data' will be created in your root directory."
-echo "3. A new sudo user called 'amadmin' will be created on this system."
-echo "4. The BOX4s service will be enabled."
-echo
-echo "#############################################"
-echo "Usage:"
-echo "sudo $0"
-echo "Options:"
-echo "sudo $0 --manual - All available tags will be available for install - All of them."
+
+echo -e " ____   _____  ___  _                            _ _
+| __ ) / _ \ \/ / || |  ___  ___  ___ _   _ _ __(_) |_ _   _
+|  _ \| | | \  /| || |_/ __|/ _ \/ __| | | | '__| | __| | | |
+| |_) | |_| /  \|__   _\__ \  __/ (__| |_| | |  | | |_| |_| |
+|____/ \___/_/\_\  |_| |___/\___|\___|\__,_|_|  |_|\__|\__, |
+                                                       |___/
+
+Disclaimer:
+This script will install the BOX4security on this system.
+By running the script you confirm to know what you are doing:
+1. New packages will be installed.
+2. A new folder called '/data' will be created in your root directory.
+3. A new sudo user called 'amadmin' will be created on this system.
+4. The BOX4s service will be enabled.
+
+#############################################
+Usage:
+sudo $0
+Options:
+sudo $0 --manual - All available tags will be available for install - All of them.\n"
 # Check for root
 
 if [ "$(whoami)" != "root" ];
   then
-    echo "#####################################################"
-    echo "### Installation Requires Root. Please use 'sudo' ###"
-    echo "#####################################################"
+    echo "#####################################################
+### Installation Requires Root. Please use 'sudo' ###
+#####################################################"
     exit 1
   else
-    echo "#####################################################"
-    echo "###    Starting BOX4security installation...      ###"
-    echo "#####################################################"
+    echo "#####################################################
+###    Starting BOX4security installation...      ###
+#####################################################"
 fi
 # Log file to use
 # Create path if allowed or do NOP
@@ -163,7 +164,10 @@ sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip pyt
 echo "[ OK ]" 1>&3
 
 echo -n "Enabling git lfs.. " 1>&3
-git lfs install --skip-smudge
+# Check if .git exists in /tmp/box4s - if it doesn't then not initial install and skip
+if [ -d "/tmp/box4s/.git"]; then
+  git lfs install --skip-smudge
+fi
 echo "[ OK ]" 1>&3
 
 echo -n "Installing Python3 modules from PyPi.. " 1>&3
