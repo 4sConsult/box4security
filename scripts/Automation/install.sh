@@ -175,9 +175,7 @@ echo "[ OK ]" 1>&3
 
 echo -n "Enabling git lfs.. " 1>&3
 # Check if .git exists in /tmp/box4s - if it doesn't then not initial install and skip
-if [ -d "/tmp/box4s/.git" ]; then
-  git lfs install --skip-smudge
-fi
+git lfs install --skip-smudge
 echo "[ OK ]" 1>&3
 
 echo -n "Installing Python3 modules from PyPi.. " 1>&3
@@ -226,8 +224,8 @@ echo -n "Creating BOX4security user on the host.. " 1>&3
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
 sudo usermod -aG sudo $HOST_USER
 echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-sudo addgroup --gid 44269 boxforsecurity # Create group
-sudo usermod -a -G boxforsecurity $HOST_USER # Add HOST_USER to created group
+groups | grep boxforsecurity &>/dev/null || sudo addgroup --gid 44269 boxforsecurity # Create group if it does not exist
+id -G $HOST_USER | grep 4429 &>/dev/null || sudo usermod -a -G boxforsecurity $HOST_USER # Add HOST_USER to created group if not in it
 echo "[ OK ]" 1>&3
 
 ##################################################
