@@ -224,8 +224,8 @@ echo -n "Creating BOX4security user on the host.. " 1>&3
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
 sudo usermod -aG sudo $HOST_USER
 echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-groups | grep boxforsecurity &>/dev/null || sudo addgroup --gid 44269 boxforsecurity # Create group if it does not exist
-id -G $HOST_USER | grep 4429 &>/dev/null || sudo usermod -a -G boxforsecurity $HOST_USER # Add HOST_USER to created group if not in it
+cat /etc/group | grep boxforsecurity &>/dev/null || sudo addgroup --gid 44269 boxforsecurity # Create group if it does not exist
+id -G $HOST_USER | grep 44229 &>/dev/null || sudo usermod -a -G boxforsecurity $HOST_USER # Add HOST_USER to created group if not in it
 echo "[ OK ]" 1>&3
 
 ##################################################
