@@ -16,7 +16,7 @@ class WizardMiddleware():
         If it does not apply, do nothing and pass the request to next middleware.
         """
         reqPath = environ.get('PATH_INFO')
-        if self.isShowWizard() and not reqPath.startswith('/api/') and not reqPath == self.url:
+        if self.isShowWizard() and not reqPath.startswith('/api/') and not reqPath.startswith(self.url):
             # If true, redirect to the wizard base URL (self.url) with status code 307
             status = "307 Temporary Redirect"
             headers = [('Location', self.url), ('Content-Length', '0')]
