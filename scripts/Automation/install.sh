@@ -36,6 +36,7 @@ if [ "$(whoami)" != "root" ];
 ###    Starting BOX4security installation...      ###
 #####################################################"
 fi
+
 # Log file to use
 # Create path if allowed or do NOP
 mkdir -p /var/log/box4s/ || :
@@ -119,6 +120,15 @@ fi
 ##################################################
 banner "Dependencies ..."
 
+echo -n "Checking for git Repository.. " 1>&3
+if [ -d "/tmp/box4s/" ]; then
+  echo "[ OK ]" 1>&3
+else
+  echo "[ NOT OK ]" 1>&3
+  exit 1
+fi
+
+
 echo -n "Creating the /data directory.. " 1>&3
 # Create the /data directory if it does not exist and make it readable
 sudo mkdir -p /data
@@ -196,7 +206,7 @@ echo "[ OK ]" 1>&3
 
 # Change to path from snippet
 cd /tmp/box4s
-#######HEREEEEEEEE ABOVE WORKS; BELOW NOT SO MUCH
+
 # Import Secret Key and use the deploy token as password
 echo -n "Import BOX4security secret key and decrypting secrets.. " 1>&3
 echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
