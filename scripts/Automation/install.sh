@@ -411,7 +411,10 @@ sudo chown -R root:44269 /var/lib/box4s_docs/
 sudo chmod 760 -R /var/lib/box4s_docs/
 echo " [ DONE ] " 1>&1
 
-echo -n "Initializing important files and setting permissions.. ["
+#Done with volumes
+echo "[ OK ]" 1>&3
+
+echo -n "Initializing important files and setting permissions.. " 1>&3
 VIF=(/var/lib/box4s/elastalert_smtp.yaml /etc/box4s/smtp.conf /etc/ssl/certs/ca-certificates.crt /var/lib/box4s/elastalert_smtp.yaml /etc/box4s/modules.conf /etc/ssl/certs/BOX4s-SMTP.pem)
 for $f in "${VIF[@]}"
 do
