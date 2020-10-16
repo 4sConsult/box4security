@@ -1,5 +1,5 @@
 from flask.helpers import url_for
-from flask import redirect, Blueprint
+from flask import redirect, Blueprint, render_template
 
 
 class WizardMiddleware():
@@ -30,9 +30,34 @@ class WizardMiddleware():
         return True
 
 
-wizard = Blueprint('wizard', __name__, template_folder='templates')
+wizard = Blueprint('wizard', __name__, template_folder='templates/wizard')
 
 
 @wizard.route('/', methods=['GET', 'POST'])
 def index():
-    return """"I am a Wizard" -Harry"""
+    return render_template('index.html')
+
+
+@wizard.route('/networks', methods=['GET', 'POST'])
+def networks():
+    return render_template('networks.html')
+
+
+@wizard.route('/box4s', methods=['GET', 'POST'])
+def box4snetworking():
+    return render_template('box4s.html')
+
+
+@wizard.route('/systems', methods=['GET', 'POST'])
+def systems():
+    return render_template('systems.html')
+
+
+@wizard.route('/mail', methods=['GET', 'POST'])
+def smtp():
+    return render_template('mail.html')
+
+
+@wizard.route('/cert', methods=['GET', 'POST'])
+def cert():
+    return render_template('cert.html')
