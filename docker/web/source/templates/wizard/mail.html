@@ -2,3 +2,9 @@
 {% block content %}
     <pre>"I AM THE WIZARD" -Harry</pre>
 {% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$('.step.active').removeClass('active');
+$('#step-smtp').addClass('active');
+</script>
+{% endblock %}

@@ -2,63 +2,22 @@
 {% block content %}
 {% from "user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
     <div class="one column">
-    <h2 class="ui foursgrey image header">
-      <div class="content">
-        Willkommen zur BOX4security
-      </div>
-    </h2>
-    </div>
-    <div class="one column">
-    <div class="ui success message">
-      <div class="header">
-        Initiale Einrichtung der BOX4security
-      </div>
-      <p>Zur Benutzung der BOX4security ist eine initale Einrichtung erforderlich. Die Einrichtung erfolgt über eine Reihe von Formularen, die Sie nacheinander bearbeiten. Nach Bestätigung eines Schrittes werden die hinterlegten Daten gespeichert. Sie haben jederzeit die Möglichkeit innerhalb der Schritte zurückzuspringen, um eine Einstellung zu korrigieren.</p>
-    </div>
-    </div>
-    <div class="one column">
-        <div class="ui six top attached ordered steps">
-        <div class="active step">
-            <div class="content">
-            <div class="title">Start</div>
-            <div class="description">Starten Sie die Einrichtung</div>
-            </div>
-        </div>
-        <div class="step">
-            <div class="content">
-            <div class="title">Netzwerke</div>
-            <div class="description">Tragen Sie die Firmennetze ein</div>
-            </div>
-        </div>
-        <div class="step">
-            <div class="content">
-            <div class="title">BOX4security</div>
-            <div class="description">Konfiguration der BOX4s</div>
-            </div>
-        </div>
-        <div class="step">
-            <div class="content">
-            <div class="title">Systeme</div>
-            <div class="description">Wichtige Systeme der Netze</div>
-            </div>
-        </div>
-        <div class="step">
-            <div class="content">
-            <div class="title">SMTP & Zertifikate</div>
-            <div class="description">Mailing-Konfiguration und Zertifikate</div>
-            </div>
-        </div>
-        <div class="step">
-            <div class="content">
-            <div class="title">Verifikation & Abschluss</div>
-            <div class="description">Prüfung der Eingaben</div>
-        </div>
-    </div>
-    </div>
-    <div class="one column">
     <div class="ui segment">
+        <div class="ui success message">
+            <div class="header">
+            Initiale Einrichtung der BOX4security
+            </div>
+            <p>Zur Benutzung der BOX4security ist eine initale Einrichtung erforderlich. Die Einrichtung erfolgt über eine Reihe von Formularen, die Sie nacheinander bearbeiten. Nach Bestätigung eines Schrittes werden die hinterlegten Daten gespeichert. Sie haben jederzeit die Möglichkeit innerhalb der Schritte zurückzuspringen, um eine Einstellung zu korrigieren.</p>
+        </div>
+        <a class="ui large foursgrey-bg button">Einrichtung starten</a>
         <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
         </form>
     </div>
     </div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$('.step.active').removeClass('active');
+$('#step-index').addClass('active');
+</script>
 {% endblock %}

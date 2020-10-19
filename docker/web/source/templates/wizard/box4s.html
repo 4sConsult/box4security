@@ -1,4 +1,23 @@
 {% extends "wizard/base.html" %}
 {% block content %}
-    <pre>"I AM THE WIZARD" -Harry</pre>
+{% from "user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
+    <div class="one column">
+    <div class="ui segment">
+        <div class="ui success message">
+            <div class="header">
+            Konfiguration der BOX4security
+            </div>
+            <p>Nehmen Sie hier wichtige Einstellungen zur Konnektivität der BOX4security vor. Die Änderungen werden nach Abschluss der Einrichtung in Schritt 6 übernommen.</p>
+        </div>
+        <a class="ui large foursgrey-bg button">Eingaben speichern</a>
+        <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
+        </form>
+    </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$('.step.active').removeClass('active');
+$('#step-box4s').addClass('active');
+</script>
 {% endblock %}
