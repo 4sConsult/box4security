@@ -1,6 +1,23 @@
 {% extends "wizard/base.html" %}
 {% block content %}
-    <pre>"I AM THE WIZARD" -Harry</pre>
+    <div class="one column">
+        <div class="ui segment">
+            <div class="ui success message">
+                <div class="header">
+                Angabe und Klassifikation von Systemen
+                </div>
+                <p>
+                    Sie haben hier optional die Möglichkeit Systeme in Ihren angegeben Netzen zu hinterlegen. 
+                    Tragen Sie dazu bitte die IP-Adresse des Systems sowie eine Beschreibung ein. 
+                    Die Klassifikation hilft der bei der Darstellung von Alarmen sowie der Security-Analyse. 
+                    Ebenso können Sie hier Systeme gezielt von Schwachstellenscans oder der Traffic-Analyse ausnehmen.
+                </p>
+            </div>
+            <a class="ui large foursgrey-bg button">Eingaben speichern</a>
+            <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
+            </form>
+        </div>
+    </div>
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">

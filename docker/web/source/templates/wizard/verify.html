@@ -1,6 +1,28 @@
 {% extends "wizard/base.html" %}
 {% block content %}
-    <pre>"I AM THE WIZARD" -Harry</pre>
+<div class="one column">
+    <div class="ui segment">
+        <div class="ui success message">
+            <div class="header">
+            Einrichtung der Firmennetze
+            </div>
+            <p>
+                Geben Sie in diesem Schritt die Netze Ihrer Umgebung an. 
+                Tragen Sie dazu bitte die Netzwerke mittels CIDR-Notation oder per Netzadresse und Subnetzmaske ein. 
+                Sie können zudem optional eine Klassifikation des Netzwerkes angeben und Netze von Schwachstellenscans oder der Untersuchung auf alarmieren Traffic ausnehmen.
+            </p>
+        </div>
+        <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
+            <div class="ui field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="example">
+                    <label>Ich habe die gezeigten Informationen auf Korrektheit geprüft.</label>
+                </div>
+            </div>
+            <button type="submit" class="ui large foursgrey-bg button">Einrichtung abschließen</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">
