@@ -1,5 +1,6 @@
-from flask.helpers import url_for
 from flask import redirect, Blueprint, render_template
+from wtforms_alchemy import ModelForm
+from flask_wtf import FlaskForm
 
 
 class WizardMiddleware():
@@ -44,7 +45,7 @@ def networks():
 
 
 @wizard.route('/box4s', methods=['GET', 'POST'])
-def box4snetworking():
+def box4s():
     return render_template('box4s.html')
 
 
@@ -58,6 +59,10 @@ def smtp():
     return render_template('mail.html')
 
 
-@wizard.route('/cert', methods=['GET', 'POST'])
-def cert():
-    return render_template('cert.html')
+@wizard.route('/verify', methods=['GET', 'POST'])
+def verify():
+    return render_template('verify.html')
+
+
+class AddNetworkForm(ModelForm, FlaskForm):
+    pass
