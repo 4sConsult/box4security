@@ -4,12 +4,15 @@
     <div class="ui segment">
         <div class="ui success message">
             <div class="header">
-            Einrichtung der Firmennetze
+            Prüfung der Eingabe
             </div>
             <p>
-                Geben Sie in diesem Schritt die Netze Ihrer Umgebung an. 
-                Tragen Sie dazu bitte die Netzwerke mittels CIDR-Notation oder per Netzadresse und Subnetzmaske ein. 
-                Sie können zudem optional eine Klassifikation des Netzwerkes angeben und Netze von Schwachstellenscans oder der Untersuchung auf alarmieren Traffic ausnehmen.
+                Bitte prüfen Sie im letzten Schritt aufmerksam Ihre Eingaben. <br>
+                Sollten Sie eine Korrektur vornehmen wollen, so gehen Sie bitte über die obige Navigation zu dem betroffenen Schritt zurück.
+            </p>
+            <p>
+                Durch Absenden dieser Seite bestätigen Sie die Eingaben und nehmen die Änderungen wirksam vor. <br>
+                Bitte beachten Sie, dass die BOX4security danach neustartet und unter der von Ihnen angebenen IP-Adresse erreichbar sein wird.
             </p>
         </div>
         <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
