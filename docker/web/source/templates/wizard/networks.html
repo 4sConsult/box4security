@@ -2,21 +2,34 @@
 {% block content %}
 {% from "user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
     <div class="one column">
-    <div class="ui segment">
-        <div class="ui success message">
-            <div class="header">
-            Einrichtung der Firmennetze
+        <div class="ui segment">
+            <div class="ui one column grid">
+                <div class="ui one column">
+                    <div class="ui success message">
+                        <div class="header">
+                            Einrichtung der Firmennetze
+                        </div>
+                        <p>
+                            Geben Sie in diesem Schritt die Netze Ihrer Umgebung an. <br>
+                            Tragen Sie dazu bitte die Netzwerke mittels CIDR-Notation oder per Netzadresse und Subnetzmaske ein. <br>
+                            Tragen Sie bitte <b>nur</b> die Netzwerke ein, die von der BOX4security mit Schwachstellenscans und/oder Netzanalyse betrachtet werden sollen. <br>
+                            Sie können zudem optional eine Klassifikation des Netzwerkes angeben und Netze von Schwachstellenscans oder der Untersuchung auf alarmieren Traffic ausnehmen.
+                        </p>
+                    </div>
+                </div>
+                <div class="ui one column">
+                    <p>
+                        Die Schwachstellenscans <i>können</i> zu den Zeiten der eingetragenen Termine eine Auslastung des Netzwerkes verursachen. Die Scans sollten nach Möglichkeit also nicht zur gleichen Zeit durchgeführt werden, um erhöhter Netzwerk-Latenz entgegenzuwirken.
+                        Seien Sie sich darüber bewusst, dass automatisierte Scans zu einer temporären Beeinträchtigung oder Ausfall der Systeme führen können.
+                    </p>
+                </div>
+                <div class="ui one column">
+                    <form class="ui large form" action="{{ url_for('wizard.networks') }}" method="POST" role="form">
+                        <button type="submit" class="ui large foursgrey-bg button">Eingaben speichern</button>
+                    </form>
+                </div>
             </div>
-            <p>
-                Geben Sie in diesem Schritt die Netze Ihrer Umgebung an. <br>
-                Tragen Sie dazu bitte die Netzwerke mittels CIDR-Notation oder per Netzadresse und Subnetzmaske ein. <br>
-                Sie können zudem optional eine Klassifikation des Netzwerkes angeben und Netze von Schwachstellenscans oder der Untersuchung auf alarmieren Traffic ausnehmen.
-            </p>
         </div>
-        <a class="ui large foursgrey-bg button">Eingaben speichern</a>
-        <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
-        </form>
-    </div>
     </div>
 {% endblock %}
 {% block scripts %}
