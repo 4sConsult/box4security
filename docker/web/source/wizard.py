@@ -7,6 +7,9 @@ from source.extensions import db, ma
 
 class WizardMiddleware():
     """BOX4security Wizard Middleware."""
+    # Ordered list of steps
+    steps = ['wizard.index', 'wizard.networks', 'wizard.box4s', 'wizard.systems', 'wizard.smtp', 'wizard.verify']
+
     def __init__(self, app):
         self.app = app
         self.url = '/wizard/'
@@ -44,7 +47,21 @@ class WizardMiddleware():
         if False:
             return 'wizard.box4s'
         else:
-            return 'wizard.networks'
+            return 'wizard.verify'
+
+    @staticmethod
+    def compareSteps(ep1, ep2):
+        """Compare two step endpoints.
+        Return 0 if ep1 and ep2 are the same step.
+        Return -1 if ep1 is an earlier step than ep2.
+        Return 1 if ep2 is an earlier step than ep1.
+        """
+        if ep1 == ep2:
+            return 0
+        elif WizardMiddleware.steps.index(ep1) < WizardMiddleware.steps.index(ep2):
+            return -1
+        else:
+            return 1
 
 
 wizard = Blueprint('wizard', __name__, template_folder='templates/wizard')
@@ -104,11 +121,12 @@ def verify():
 #     """Network model class."""
 #     # id = db.Column(db.Integer(), primary_key=True)
 #     # name = db.Column(db.String(50), unique=True)
-#     pass
 
 
-# class System(db.Model):
-#     pass
+class System(db.Model):
+    """System model class."""
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=True)
 
 
 class AddNetworkForm(ModelForm, FlaskForm):
