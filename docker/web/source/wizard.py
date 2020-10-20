@@ -74,13 +74,16 @@ def index():
 
 @wizard.route('/networks', methods=['GET', 'POST'])
 def networks():
-    return render_template('networks.html')
+    if request.method == 'POST':
+        return redirect(url_for('wizard.box4s'))
+    else:
+        return render_template('networks.html')
 
 
 @wizard.route('/box4s', methods=['GET', 'POST'])
 def box4s():
     endpoint = WizardMiddleware.getMaxStep()
-    if endpoint == 'wizard.box4s':
+    if WizardMiddleware.compareSteps('wizard.box4s', endpoint) < 1:
         return render_template('box4s.html')
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
@@ -90,7 +93,7 @@ def box4s():
 @wizard.route('/systems', methods=['GET', 'POST'])
 def systems():
     endpoint = WizardMiddleware.getMaxStep()
-    if endpoint == 'wizard.systems':
+    if WizardMiddleware.compareSteps('wizard.systems', endpoint) < 1:
         return render_template('systems.html')
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
@@ -100,7 +103,7 @@ def systems():
 @wizard.route('/mail', methods=['GET', 'POST'])
 def smtp():
     endpoint = WizardMiddleware.getMaxStep()
-    if endpoint == 'wizard.smtp':
+    if WizardMiddleware.compareSteps('wizard.smtp', endpoint) < 1:
         return render_template('mail.html')
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
@@ -110,7 +113,7 @@ def smtp():
 @wizard.route('/verify', methods=['GET', 'POST'])
 def verify():
     endpoint = WizardMiddleware.getMaxStep()
-    if endpoint == 'wizard.verify':
+    if WizardMiddleware.compareSteps('wizard.verify', endpoint) < 1:
         return render_template('verify.html')
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
