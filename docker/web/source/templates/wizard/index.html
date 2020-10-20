@@ -15,9 +15,7 @@
                 Nachdem Sie in Schritt 6 die Daten abschließend geprüft haben, werden die Änderungen wirksam.
             </p>
         </div>
-        <a class="ui large foursgrey-bg button">Einrichtung starten</a>
-        <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
-        </form>
+        <a href="{{ url_for('wizard.networks') }}" class="ui large foursgrey-bg button">Einrichtung starten</a>
     </div>
     </div>
 {% endblock %}
