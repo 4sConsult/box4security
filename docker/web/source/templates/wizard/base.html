@@ -47,6 +47,17 @@
                     </a>
                 </div>
             </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="ui one column">
+                {% for category, message in messages %}
+                    <div class="ui {{ category }} message">
+                        <p>{{ message }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
             {% block content %}{% endblock %}
         </div>
         <script src="/static/external/jquery.min.js"></script>

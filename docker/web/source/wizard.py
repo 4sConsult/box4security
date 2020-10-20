@@ -1,4 +1,5 @@
 from flask import redirect, Blueprint, render_template, url_for
+from flask.helpers import flash
 from wtforms_alchemy import ModelForm
 from flask_wtf import FlaskForm
 from source.extensions import db, ma
@@ -34,7 +35,7 @@ class WizardMiddleware():
     @staticmethod
     def getMaxStep():
         """Return the maximum advanced step as endpoint string.
-        
+
         For example:
         Returns 'wizard.systems' if the user has recently completed the box4s step but not yet the systems step.
         """
@@ -65,6 +66,7 @@ def box4s():
     if endpoint == 'wizard.box4s':
         return render_template('box4s.html')
     else:
+        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
         return redirect(url_for(endpoint))
 
 
@@ -74,6 +76,7 @@ def systems():
     if endpoint == 'wizard.systems':
         return render_template('systems.html')
     else:
+        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
         return redirect(url_for(endpoint))
 
 
@@ -83,6 +86,7 @@ def smtp():
     if endpoint == 'wizard.smtp':
         return render_template('mail.html')
     else:
+        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
         return redirect(url_for(endpoint))
 
 
@@ -92,6 +96,7 @@ def verify():
     if endpoint == 'wizard.verify':
         return render_template('verify.html')
     else:
+        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
         return redirect(url_for(endpoint))
 
 
