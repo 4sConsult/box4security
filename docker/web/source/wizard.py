@@ -120,10 +120,27 @@ def verify():
         return redirect(url_for(endpoint))
 
 
-# class Network(db.Model):
-#     """Network model class."""
-#     # id = db.Column(db.Integer(), primary_key=True)
-#     # name = db.Column(db.String(50), unique=True)
+class Network(db.Model):
+    """Network model class.
+
+    Explanation of non-trivial fields:
+    scan_category: Scan Category as defined before:
+        1: No restrictions
+        2: Scans only at weekend or non-busy times
+        3: Scans only when admins and 4s are available
+    scan_weekday: lower cased weekday for scans
+    scan_time: start time for the scan on `scan_weekday`
+    """
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50))  # Network Name
+    ip_address = db.Column(db.String(24))  # Network Address
+    cidr = db.Column(db.Integer())  # CIDR-Number
+    vlan = db.Column(db.String(50))  # VLAN Tag
+    # type = db.Column(db.String(50))  # Network Type
+    location = db.Column(db.String(50))  # Network Location
+    scan_category = db.Column(db.Integer())  # Category for scans
+    scan_weekday = db.Column(db.String(24))  # lower case
+    scan_time = db.Column(db.Time())  # Start time for scan
 
 
 class System(db.Model):
@@ -132,5 +149,7 @@ class System(db.Model):
     name = db.Column(db.String(50), unique=True)
 
 
-class AddNetworkForm(ModelForm, FlaskForm):
-    pass
+class NetworkForm(ModelForm, FlaskForm):
+    """Form for Network model."""
+    class Meta:
+        model = Network
