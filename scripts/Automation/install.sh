@@ -535,12 +535,15 @@ echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling/Disabling Modules.. " 1>&3
+# Remove old folder to avoid conflicts
+delete_If_Exists /etc/box4s/
 sudo mkdir -p /etc/box4s/
 sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
 sudo chmod 444 /etc/box4s/modules.conf
 echo " [ OK ] " 1>&3
 
 echo -n "Generating Wazuh Agent-Password.. " 1>&3
+delete_If_Exists /var/lib/box4s/wazuh-authd.pass
 strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 14 | tr -d '\n' > /var/lib/box4s/wazuh-authd.pass
 sudo chmod 755 /var/lib/box4s/wazuh-authd.pass
 echo " [ OK ] " 1>&3
