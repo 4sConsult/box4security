@@ -645,7 +645,7 @@ su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 echo " [ OK ] " 1>&3
 
 source /etc/environment
-echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
+grep -qxF KUNDE="NEWSYSTEM" /etc/default/logstash || echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 sudo systemctl daemon-reload
 
 #Ignore own INT_IP
