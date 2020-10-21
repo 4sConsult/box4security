@@ -105,13 +105,18 @@ function waitForNet() {
 }
 
 # Helper to check if a service exists on the system
-service_exists() {
+function service_exists() {
     local n=$1
     if [[ $(systemctl list-units --all -t service --full --no-legend "$n.service" | cut -f1 -d' ') == $n.service ]]; then
         return 0
     else
         return 1
     fi
+}
+function create_and_changePermission() {
+  sudo touch $1
+  sudo chown -R root:44269 $1
+  sudo chmod 760 -R $1
 }
 
 # Lets make sure some basic tools are available
@@ -139,6 +144,7 @@ if [ -d "/tmp/box4s/" ]; then
   echo "[ OK ]" 1>&3
 else
   echo "[ NOT OK ]" 1>&3
+  echo "## Make sure the git Repository is installed at /tmp/box4s/ ##" 1>&3
   exit 1
 fi
 
@@ -376,6 +382,7 @@ echo " [ DONE ] " 1>&1
 # Setup OpenVAS volume
 echo -n "varlib_postgresql:" 1>&1
 sudo mkdir -p /var/lib/box4s_openvas/
+sudo mkdir -p /var/lib/logstash/openvas/
 sudo chown root:root /var/lib/box4s_openvas/
 sudo chmod -R 777 /var/lib/box4s_openvas/
 if DockerVolumeDoesNotExist gvm; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_openvas/ --opt o=bind gvm-data; fi
@@ -415,13 +422,12 @@ echo " [ DONE ] " 1>&1
 echo "[ OK ]" 1>&3
 
 echo -n "Initializing important files and setting permissions.. " 1>&3
-VIF=(/var/lib/box4s/elastalert_smtp.yaml /etc/box4s/smtp.conf /etc/ssl/certs/ca-certificates.crt /var/lib/box4s/elastalert_smtp.yaml /etc/box4s/modules.conf /etc/ssl/certs/BOX4s-SMTP.pem)
-for $f in "${VIF[@]}"
-do
-    sudo touch $f
-    sudo chown -R root:44269 $f
-    sudo chmod 760 -R $f
-done
+create_and_changePermission /var/lib/box4s/elastalert_smtp.yaml
+create_and_changePermission /etc/box4s/smtp.conf
+create_and_changePermission /etc/ssl/certs/ca-certificates.crt
+create_and_changePermission /var/lib/box4s/elastalert_smtp.yaml
+create_and_changePermission /etc/box4s/modules.conf
+create_and_changePermission /etc/ssl/certs/BOX4s-SMTP.pem
 
 echo "[ OK ]" 1>&3
 ##################################################
@@ -447,6 +453,9 @@ echo " [ OK ]" 1>&3
 
 # Initially clone the Wiki repo
 echo -n "Downloading documentation.. " 1>&3
+# Delete already existing repository
+delete_If_Exists /var/lib/box4s_docs
+mkdir -p /var/lib/box4s_docs
 cd /var/lib/box4s_docs
 sudo git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/docs.git .
 echo " [ OK ]" 1>&3
@@ -475,7 +484,8 @@ echo "### Setup system variables"
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
+grep -qxF  INT_IP="$INT_IP" /etc/environment || echo INT_IP="$INT_IP" >> /etc/environment
+grep -qxF  INT_IP="$INT_IP" /etc/default/logstash || echo INT_IP="$INT_IP" >> /etc/default/logstash
 source /etc/environment
 set -e
 echo " [ OK ] " 1>&3
@@ -497,7 +507,7 @@ ip link set $IF_MGMT down
 ip link set $IF_MGMT up
 
 #Disable TCP Timestamps
-echo 'net.ipv4.tcp_timestamps = 0' | sudo tee -a /etc/sysctl.conf
+grep -qxF "net.ipv4.tcp_timestamps = 0" /etc/sysctl.conf || echo "net.ipv4.tcp_timestamps = 0" >> /etc/sysctl.conf
 sudo sysctl -p
 
 
