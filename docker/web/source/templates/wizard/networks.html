@@ -160,9 +160,16 @@
                                     {% endif %}
                                     <div class="four wide field">
                                         <label>Schwachstellenscan an Wochentag</label>
-                                        <div class="ui input">
-                                        <input type="text" id="{{ formNetwork.scan_weekday.id }}" name="{{ formNetwork.scan_weekday.name }}" placeholder="montags">
-                                        </div>
+                                        <select id="{{ formNetwork.scan_weekday.id }}" name="{{formNetwork.scan_weekday.name}}" class="ui dropdown">
+                                            <option value="">Wochentag</option>
+                                            <option value="monday">montags</option>
+                                            <option value="tuesday">dienstags</option>
+                                            <option value="wednesday">mittwochs</option>
+                                            <option value="thursday">donnerstags</option>
+                                            <option value="friday">freitags</option>
+                                            <option value="saturday">samstags</option>
+                                            <option value="sunday">sonntags</option>
+                                        </select>
                                     </div>
                                     {% if formNetwork.scan_weekday.errors %}
                                         {% for e in formNetwork.scan_weekday.errors %}
