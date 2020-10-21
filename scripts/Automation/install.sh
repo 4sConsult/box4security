@@ -343,6 +343,7 @@ echo " [ DONE ] " 1>&1
 
 # Setup Box4s volume
 echo -n "varlib_box4s:" 1>&1
+delete_If_Exists /var/lib/box4s_openvas/
 sudo mkdir -p /var/lib/box4s
 sudo chown root:root /var/lib/box4s
 sudo chmod -R 777 /var/lib/box4s
@@ -353,6 +354,7 @@ echo " [ DONE ] " 1>&1
 
 # Setup PostgreSQL volume
 echo -n "varlib_postgresql:" 1>&1
+delete_If_Exists /var/lib/postgresql
 sudo mkdir -p /var/lib/postgresql/data
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
 sudo chown -R root:44269 /var/lib/postgresql/data
@@ -380,6 +382,7 @@ echo " [ DONE ] " 1>&1
 
 # Setup Logstash volume
 echo -n "varlib_logstash:" 1>&1
+delete_If_Exists /var/lib/logstash
 sudo mkdir -p /var/lib/logstash
 sudo mkdir -p /var/lib/logstash/openvas/
 sudo chown root:root /var/lib/logstash
