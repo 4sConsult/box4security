@@ -83,7 +83,9 @@ def networks():
     if request.method == 'POST':
         return redirect(url_for('wizard.box4s'))
     else:
-        return render_template('networks.html')
+        formNetwork = NetworkForm(request.form)
+        formNetwork.types.choices = [(t.id, t.name) for t in SystemType.query.order_by('id')]
+        return render_template('networks.html', formNetwork=formNetwork)
 
 
 @wizard.route('/box4s', methods=['GET', 'POST'])
