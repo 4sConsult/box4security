@@ -375,6 +375,7 @@ echo " [ DONE ] " 1>&1
 # Setup Logstash volume
 echo -n "varlib_logstash:" 1>&1
 sudo mkdir -p /var/lib/logstash
+sudo mkdir -p /var/lib/logstash/openvas/
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 if DockerVolumeDoesNotExist varlib_logstash; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash; fi
@@ -385,7 +386,6 @@ echo " [ DONE ] " 1>&1
 # Setup OpenVAS volume
 echo -n "varlib_postgresql:" 1>&1
 sudo mkdir -p /var/lib/box4s_openvas/
-sudo mkdir -p /var/lib/logstash/openvas/
 sudo chown root:root /var/lib/box4s_openvas/
 sudo chmod -R 777 /var/lib/box4s_openvas/
 if DockerVolumeDoesNotExist gvm; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_openvas/ --opt o=bind gvm-data; fi
