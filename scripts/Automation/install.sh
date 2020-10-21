@@ -79,10 +79,6 @@ function testNet() {
   ping -q -c 1 -W 1 $1 >/dev/null;
   return $?
 }
-function DockerVolumeDoesNotExist(){
-  # Helper to check if a docker volume is on the system
-  sudo docker volume ls | grep $1 &>/dev/null && return 1 || return 0
-}
 function delete_If_Exists(){
   # Helper to delete files and directories if they exist
   if [ -d $1 ]; then
