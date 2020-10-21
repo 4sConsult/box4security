@@ -188,6 +188,12 @@ if service_exists systemd-resolved; then
 fi
 echo "[ OK ]" 1>&3
 
+echo -n "Checking for old Version of BOX4security and removing.. " 1>&3
+# Remove old box4security service
+if service_exists box4security; then
+    sudo systemctl stop box4security.service
+fi
+echo "[ OK ]" 1>&3
 # Lets install all dependencies
 waitForNet
 echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
@@ -330,7 +336,7 @@ echo -n "Creating volumes and setting permissions.. " 1>&3
 echo -n "data:" 1>&1
 # Check if each volume exists before creating them; Skip if already created
 # Setup data volume
-if DockerVolumeDoesNotExist data; then sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data; fi
+sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
 sudo chown -R root:44269 /data
 sudo chmod 760 -R /data
 echo " [ DONE ] " 1>&1
@@ -340,7 +346,7 @@ echo -n "varlib_box4s:" 1>&1
 sudo mkdir -p /var/lib/box4s
 sudo chown root:root /var/lib/box4s
 sudo chmod -R 777 /var/lib/box4s
-if DockerVolumeDoesNotExist varlib_box4s; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s; fi
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
 sudo chown -R root:44269 /var/lib/box4s
 sudo chmod 760 -R /var/lib/box4s
 echo " [ DONE ] " 1>&1
@@ -348,7 +354,7 @@ echo " [ DONE ] " 1>&1
 # Setup PostgreSQL volume
 echo -n "varlib_postgresql:" 1>&1
 sudo mkdir -p /var/lib/postgresql/data
-if DockerVolumeDoesNotExist varlib_postgresql; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql; fi
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
 sudo chown -R root:44269 /var/lib/postgresql/data
 sudo chmod 760 -R /var/lib/postgresql/data
 echo " [ DONE ] " 1>&1
@@ -358,7 +364,7 @@ echo -n "varlib_suricata:" 1>&1
 sudo mkdir -p /var/lib/box4s_suricata_rules/
 sudo chown root:root /var/lib/box4s_suricata_rules/
 sudo chmod -R 777 /var/lib/box4s_suricata_rules/
-if DockerVolumeDoesNotExist data; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_suricata_rules/ --opt o=bind varlib_suricata; fi
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_suricata_rules/ --opt o=bind varlib_suricata
 echo " [ DONE ] " 1>&1
 
 # Setup Box4s Settings volume
@@ -367,7 +373,7 @@ sudo mkdir -p /etc/box4s/logstash
 sudo cp -R /home/amadmin/box4s/config/etc/logstash/* /etc/box4s/logstash/
 sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
-if DockerVolumeDoesNotExist etcbox4s_logstash; then sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash; fi
+sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
 sudo chown -R root:44269 /etc/box4s/logstash
 sudo chmod 760 -R /etc/box4s/logstash
 echo " [ DONE ] " 1>&1
@@ -378,7 +384,7 @@ sudo mkdir -p /var/lib/logstash
 sudo mkdir -p /var/lib/logstash/openvas/
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
-if DockerVolumeDoesNotExist varlib_logstash; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash; fi
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
 sudo chown -R root:44269 /var/lib/logstash
 sudo chmod 760 -R /var/lib/logstash
 echo " [ DONE ] " 1>&1
@@ -388,7 +394,7 @@ echo -n "varlib_postgresql:" 1>&1
 sudo mkdir -p /var/lib/box4s_openvas/
 sudo chown root:root /var/lib/box4s_openvas/
 sudo chmod -R 777 /var/lib/box4s_openvas/
-if DockerVolumeDoesNotExist gvm; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_openvas/ --opt o=bind gvm-data; fi
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_openvas/ --opt o=bind gvm-data
 sudo chown -R root:root /var/lib/box4s_openvas
 echo " [ DONE ] " 1>&1
 
@@ -406,7 +412,7 @@ echo -n "varlib_postgresql:" 1>&1
 sudo mkdir -p /var/lib/elastalert/rules
 sudo chown root:root /var/lib/elastalert/rules
 sudo chmod -R 777 /var/lib/elastalert/rules
-if DockerVolumeDoesNotExist varlib_elastalert_rules; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules; fi
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
 sudo chown -R root:44269 /var/lib/elastalert/rules
 sudo chmod 760 -R /var/lib/elastalert/rules
 echo " [ DONE ] " 1>&1
@@ -416,7 +422,7 @@ echo -n "varlib_docs:" 1>&1
 sudo mkdir -p /var/lib/box4s_docs
 sudo chown root:root /var/lib/box4s_docs
 sudo chmod -R 777 /var/lib/box4s_docs
-if DockerVolumeDoesNotExist varlib_docs; then sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_docs --opt o=bind varlib_docs; fi
+sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_docs --opt o=bind varlib_docs
 sudo chown -R root:44269 /var/lib/box4s_docs/
 sudo chmod 760 -R /var/lib/box4s_docs/
 echo " [ DONE ] " 1>&1
