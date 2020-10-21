@@ -42,12 +42,10 @@ class WizardMiddleware():
         For example:
         Returns 'wizard.systems' if the user has recently completed the box4s step but not yet the systems step.
         """
-        # WIP CODE:
-        # if System.query.count():
-        if False:
+        if Network.query.count():
             return 'wizard.box4s'
         else:
-            return 'wizard.verify'
+            return 'wizard.networks'
 
     @staticmethod
     def compareSteps(ep1, ep2):
@@ -131,22 +129,51 @@ class Network(db.Model):
     scan_weekday: lower cased weekday for scans
     scan_time: start time for the scan on `scan_weekday`
     """
+    __tablename__ = 'network'
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(50))  # Network Name
-    ip_address = db.Column(db.String(24))  # Network Address
-    cidr = db.Column(db.Integer())  # CIDR-Number
+    name = db.Column(db.String(100))  # Network Name
+    ip_address = db.Column(db.String(24), nullable=False)  # Network Address
+    cidr = db.Column(db.Integer(), nullable=False)  # CIDR-Number
     vlan = db.Column(db.String(50))  # VLAN Tag
-    # type = db.Column(db.String(50))  # Network Type
-    location = db.Column(db.String(50))  # Network Location
-    scan_category = db.Column(db.Integer())  # Category for scans
+    types = db.relationship('Network', secondary='network_networktype')
+    scancategory_id = db.Column(db.Integer, db.ForeignKey('scancategory.id'))
     scan_weekday = db.Column(db.String(24))  # lower case
     scan_time = db.Column(db.Time())  # Start time for scan
 
+    def __repr__(self):
+        """Print Network in human readable form."""
+        return '{} ({}): {}/{}'.format(self.name, self.id, self.ip_address, self.cidr)
 
-class System(db.Model):
-    """System model class."""
+
+class ScanCategory(db.Model):
+    """Model class for Vulnerability Scan Categories."""
+    __tablename__ = 'scancategory'
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(50), unique=True)
+    name = db.Column(db.String())
+    networks = db.relationship('Network', backref='scan_category')
+
+    def __repr__(self):
+        """Print ScanCategory in human readable form."""
+        return '{} ({})'.format(self.name, self.id)
+
+
+class NetworkType(db.Model):
+    """Model class for Network Types."""
+    __tablename__ = 'networktype'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(100))  # Network Type Name
+
+    def __repr__(self):
+        """Print NetworkType in human readable form."""
+        return '{} ({})'.format(self.name, self.id)
+
+
+class NetworkNetworkType(db.Model):
+    """Association table for Network Types and Networks."""
+    __tablename__ = 'network_networktype'
+    id = db.Column(db.Integer(), primary_key=True)
+    network_id = db.Column(db.Integer(), db.ForeignKey('network.id', ondelete='CASCADE'))
+    networktype_id = db.Column(db.Integer(), db.ForeignKey('networktype.id', ondelete='CASCADE'))
 
 
 class NetworkForm(ModelForm, FlaskForm):
