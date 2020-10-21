@@ -101,6 +101,7 @@ function waitForNet() {
     # while testNet returns non zero value
     echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s" 1>&2
     sleep 15s
+    echo /etc/resolv.conf | grep 'nameserver' || echo "nameserver 8.8.8.8" > /etc/resolv.conf && echo "Empty /etc/resolv.conf/ -> inserting 8.8.8.8" 1>&2
   done
 }
 
