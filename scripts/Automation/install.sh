@@ -310,6 +310,8 @@ echo "[ OK ]" 1>&3
 
 # Copy the smtp.conf to /etc/box4s
 echo -n "Enabling default SMTP config.. " 1>&3
+# First use of /etc/box4s -> remove to avoid conflicts with old installation
+delete_If_Exists /etc/box4s/
 sudo mkdir -p /etc/box4s/
 sudo cp /home/amadmin/box4s/config/secrets/smtp.conf /etc/box4s/smtp.conf
 echo "[ OK ]" 1>&3
@@ -536,8 +538,6 @@ echo " [ OK ] " 1>&3
 
 echo -n "Enabling/Disabling Modules.. " 1>&3
 # Remove old folder to avoid conflicts
-delete_If_Exists /etc/box4s/
-sudo mkdir -p /etc/box4s/
 sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
 sudo chmod 444 /etc/box4s/modules.conf
 echo " [ OK ] " 1>&3
