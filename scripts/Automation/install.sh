@@ -184,7 +184,7 @@ fi
 
 # Disable systemd-resolved
 if service_exists systemd-resolved; then
-    sudo service systemd-resolved disable
+    sudo service systemd-resolved disable || :
 fi
 echo "[ OK ]" 1>&3
 
