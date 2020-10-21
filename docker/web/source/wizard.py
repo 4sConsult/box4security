@@ -42,9 +42,17 @@ class WizardMiddleware():
         For example:
         Returns 'wizard.systems' if the user has recently completed the box4s step but not yet the systems step.
         """
-        if Network.query.count():
+        if System.query.filter(~System.types.any(name='BOX4security')).count():
+            # Systems apart from BOX4s exist, next step is smtp
+            return 'wizard.smtp'
+        elif System.query.filter(System.types.any(name='BOX4security')).count():
+            # BOX4security is defined, next step systems
+            return 'wizard.systems'
+        elif Network.query.count():
+            # Network is defined, next step BOX4s
             return 'wizard.box4s'
         else:
+            # Nothing yet defined, max step is networks
             return 'wizard.networks'
 
     @staticmethod
