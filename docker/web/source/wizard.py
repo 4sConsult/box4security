@@ -2,6 +2,7 @@ from flask import redirect, Blueprint, render_template, url_for, request
 from flask.helpers import flash
 from wtforms_alchemy import ModelForm
 from flask_wtf import FlaskForm
+from wtforms import SelectMultipleField
 from source.extensions import db, ma
 
 
