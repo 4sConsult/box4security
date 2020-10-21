@@ -225,3 +225,25 @@ class NetworkForm(ModelForm, FlaskForm):
     """Form for Network model."""
     class Meta:
         model = Network
+    types = SelectMultipleField(
+        'Netz-Typ',
+        coerce=int
+    )
+
+
+class NetworkTypeForm(ModelForm, FlaskForm):
+    """Form for NetworkType model."""
+    class Meta:
+        model = NetworkType
+
+
+class SystemForm(ModelForm, FlaskForm):
+    """Form for NetworkType model."""
+    class Meta:
+        model = System
+
+
+class SystemTypeForm(ModelForm, FlaskForm):
+    """Form for SystemType model."""
+    class Meta:
+        model = SystemType
