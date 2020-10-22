@@ -32,9 +32,20 @@
                                 <th rowspan="2">VLAN-Tag</th>
                                 <th rowspan="2">Typ</th>
                                 <th colspan="3">Schwachstellenscan</th>
+                                <th rowspan="2">Aktion</th>
                             </tr>
                             <tr>
-                                <th>Kategorie</th>
+                                <th>Kategorie <div class="ui circular foursgrey-bg label" data-html="
+                                    <div class='content'>
+                                        <div class='ui list'>
+                                            {% for c in scan_categories %}
+                                            <div class='item'>
+                                                <b>{{c.id}}</b> - {{c.name}}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>   
+                                    " data-position="bottom center"><i class="help icon"></i></div></th>
                                 <th>Wochentag</th>
                                 <th>Startzeit</th>
                             </tr>
@@ -66,9 +77,13 @@
                                     <div class="ui basic label">{{ n.types[0].name }}</div>
                                 {% endif %}
                                 </td>
-                                <td data-label="Scan-Kategorie">{{n.scan_category.id}}</td>
+                                <td data-label="Scan-Kategorie">Kat. {{n.scan_category.id}}</td>
                                 <td data-label="Scan-Wochentag">{{n.scan_weekday}}</td>
                                 <td data-label="Scan-Zeit">{{n.scan_time}}</td>
+                                <td class="collapsing" data-label="Aktion">
+                                    <a data-network-id="{{ n.id }}" data-tooltip="Netz bearbeiten" data-position="bottom center" data-action="edit" class="ui tiny icon button foursgrey-bg"><i class="edit icon"></i></a>
+                                    <a data-network-id="{{ n.id }}" data-tooltip="Netz löschen" data-position="bottom center" data-action="delete" class="ui icon tiny red button"><i class="trash alternate outline icon"></i></a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -188,7 +203,9 @@
                                         {% endfor %}
                                     {% endif %}
                                     <div class="two wide field">
-                                        <label>Scan-Kategorie</label>
+                                        <label>
+                                            Scan-Kategorie 
+                                        </label>
                                         <select name="{{formNetwork.scancategory_id.name}}" class="ui fluid dropdown">
                                         <option value=""></option>
                                         {% for value in formNetwork.scancategory_id.choices %}
@@ -196,6 +213,17 @@
                                         {% endfor %}
                                         </select>
                                     </div>
+                                    <div class="ui circular foursgrey-bg label" data-html="
+                                                <div class='content'>
+                                                    <div class='ui list'>
+                                                        {% for c in scan_categories %}
+                                                        <div class='item'>
+                                                            <b>{{c.id}}</b> - {{c.name}}
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>   
+                                                " data-position="bottom center"><i class="help icon"></i></div>
                                     {% if formNetwork.scancategory_id.errors %}
                                         {% for e in formNetwork.scancategory_id.errors %}
                                             <p class="ui orange message">{{ e }}</p>
@@ -219,6 +247,6 @@
 <script type="text/javascript">
 $('.step.active').removeClass('active');
 $('#step-networks').addClass('active');
-$('.ui.image.label.foursgrey-bg').popup();
+$('.ui.label.foursgrey-bg').popup();
 </script>
 {% endblock %}
