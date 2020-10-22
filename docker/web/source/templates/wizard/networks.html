@@ -103,7 +103,7 @@
                                         <p class="ui orange message">{{ e }}</p>
                                         {% endfor %}
                                     {% endif %}
-                                    <div class="six wide field">
+                                    <div class="five wide field">
                                         <label>Netz-Adresse</label>
                                         <input type="text" id="{{ formNetwork.ip_address.id }}" name="{{ formNetwork.ip_address.name }}" placeholder="Netz-Adresse (z.B. 192.168.1.0)">
                                     </div>
@@ -116,7 +116,7 @@
                                         <label></label>
                                         <h1>/</h1>
                                     </div>
-                                    <div class="three wide field">
+                                    <div class="two wide field">
                                         <label>CIDR</label>
                                         <input type="number" id="{{ formNetwork.cidr.id }}" min="0" max="32" name="{{ formNetwork.cidr.name }}" placeholder="24">
                                     </div>
@@ -124,6 +124,17 @@
                                         {% for e in formNetwork.cidr.errors %}
                                         <p class="ui orange message">{{ e }}</p>
                                     {% endfor %}
+                                    {% endif %}
+                                    <div class="two wide field">
+                                        <label>VLAN-Tag</label>
+                                        <div class="ui input">
+                                        <input type="text" id="{{ formNetwork.vlan.id }}" name="{{ formNetwork.vlan.name }}" placeholder="99">
+                                        </div>
+                                    </div>
+                                    {% if formNetwork.vlan.errors %}
+                                        {% for e in formNetwork.vlan.errors %}
+                                            <p class="ui orange message">{{ e }}</p>
+                                        {% endfor %}
                                     {% endif %}
                                 </div>
                                 <div class="fields">
@@ -147,17 +158,6 @@
                                             <i class="plus icon"></i>
                                         </a> 
                                     </div>
-                                    <div class="two wide field">
-                                        <label>VLAN-Tag</label>
-                                        <div class="ui input">
-                                        <input type="text" id="{{ formNetwork.vlan.id }}" name="{{ formNetwork.vlan.name }}" placeholder="99">
-                                        </div>
-                                    </div>
-                                    {% if formNetwork.vlan.errors %}
-                                        {% for e in formNetwork.vlan.errors %}
-                                            <p class="ui orange message">{{ e }}</p>
-                                        {% endfor %}
-                                    {% endif %}
                                     <div class="four wide field">
                                         <label>Schwachstellenscan an Wochentag</label>
                                         <select id="{{ formNetwork.scan_weekday.id }}" name="{{formNetwork.scan_weekday.name}}" class="ui dropdown">
@@ -184,6 +184,20 @@
                                     </div>
                                     {% if formNetwork.scan_time.errors %}
                                         {% for e in formNetwork.scan_time.errors %}
+                                            <p class="ui orange message">{{ e }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <div class="two wide field">
+                                        <label>Scan-Kategorie</label>
+                                        <select name="{{formNetwork.scancategory_id.name}}" class="ui fluid dropdown">
+                                        <option value=""></option>
+                                        {% for value in formNetwork.scancategory_id.choices %}
+                                            <option value="{{value[0]}}">{{value[0]}}</option>
+                                        {% endfor %}
+                                        </select>
+                                    </div>
+                                    {% if formNetwork.scancategory_id.errors %}
+                                        {% for e in formNetwork.scancategory_id.errors %}
                                             <p class="ui orange message">{{ e }}</p>
                                         {% endfor %}
                                     {% endif %}
