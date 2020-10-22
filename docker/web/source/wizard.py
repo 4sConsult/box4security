@@ -86,7 +86,7 @@ def networks():
     else:
         formNetwork = NetworkForm(request.form)
         networks = Network.query.all()
-        formNetwork.types.choices = [(t.id, t.name) for t in SystemType.query.order_by('id')]
+        formNetwork.types.choices = [(t.id, t.name) for t in NetworkType.query.order_by('id')]
         return render_template('networks.html', formNetwork=formNetwork, networks=networks)
 
 
