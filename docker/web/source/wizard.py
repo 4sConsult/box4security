@@ -94,7 +94,8 @@ def networks():
             db.session.commit()
             return redirect(url_for('wizard.networks'))
     networks = Network.query.order_by(Network.id.asc()).all()
-    return render_template('networks.html', formNetwork=formNetwork, networks=networks)
+    scan_categories = ScanCategory.query.order_by(ScanCategory.id.asc()).all()
+    return render_template('networks.html', formNetwork=formNetwork, networks=networks, scan_categories=scan_categories)
 
 
 @wizard.route('/box4s', methods=['GET', 'POST'])
@@ -159,6 +160,7 @@ class Network(db.Model):
     scancategory_id = db.Column(db.Integer, db.ForeignKey('scancategory.id'))
     scan_weekday = db.Column(db.String(24))  # lower case
     scan_time = db.Column(db.Time())  # Start time for scan
+    # systems = db.relationship('System', backref='network')
 
     def __repr__(self):
         """Print Network in human readable form."""
@@ -211,6 +213,7 @@ class System(db.Model):
     location = db.Column(db.String(255))  # System Location
     scan_enabled = db.Column(db.Boolean(), default=True)  # Scans active
     ids_enabled = db.Column(db.Boolean(), default=True)  # IDS enabled
+    # network_id = db.Column(db.Integer, db.ForeignKey('network.id'))
 
 
 class SystemType(db.Model):
@@ -230,6 +233,14 @@ class SystemSystemType(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     system_id = db.Column(db.Integer(), db.ForeignKey('system.id', ondelete='CASCADE'))
     systemtype_id = db.Column(db.Integer(), db.ForeignKey('systemtype.id', ondelete='CASCADE'))
+
+
+# class SystemNetwork(db.Model):
+#     """Association table for Systems and Networks."""
+#     __tablename__ = 'system_network'
+#     id = db.Column(db.Integer(), primary_key=True)
+#     system_id = db.Column(db.Integer(), db.ForeignKey('system.id', ondelete='CASCADE'))
+#     network_id = db.Column(db.Integer(), db.ForeignKey('network.id', ondelete='CASCADE'))
 
 
 class NetworkForm(ModelForm, FlaskForm):
@@ -262,3 +273,7 @@ class SystemTypeForm(ModelForm, FlaskForm):
     """Form for SystemType model."""
     class Meta:
         model = SystemType
+
+
+class BOX4securityForm(SystemForm):
+    """Form for the BOX4security."""
