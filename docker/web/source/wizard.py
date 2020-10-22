@@ -2,7 +2,7 @@ from flask import redirect, Blueprint, render_template, url_for, request
 from flask.helpers import flash
 from wtforms_alchemy import ModelForm
 from flask_wtf import FlaskForm
-from wtforms import SelectMultipleField
+from wtforms import SelectMultipleField, SelectField
 from source.extensions import db, ma
 
 
@@ -83,11 +83,13 @@ def index():
 def networks():
     formNetwork = NetworkForm(request.form)
     formNetwork.types.choices = [(t.id, t.name) for t in NetworkType.query.order_by('id')]
+    formNetwork.scancategory_id.choices = [(c.id, c.name) for c in ScanCategory.query.order_by('id')]
     if request.method == 'POST':
         if formNetwork.validate():
             newNetwork = Network()
             formNetwork.populate_obj(newNetwork)  # Copies matching attributes from form onto newNetwork
             newNetwork.types = [NetworkType.query.get(tid) for tid in newNetwork.types]  # Get actual type objects from their IDs
+            # newNetwork.scan_category = ScanCategory.query.get(newNetwork.scancategory_id)  # Get actual scan_category objects from their ID
             db.session.add(newNetwork)
             db.session.commit()
     networks = Network.query.all()
@@ -235,6 +237,10 @@ class NetworkForm(ModelForm, FlaskForm):
         model = Network
     types = SelectMultipleField(
         'Netz-Typ',
+        coerce=int
+    )
+    scancategory_id = SelectField(
+        'Scan-Kategorie',
         coerce=int
     )
 
