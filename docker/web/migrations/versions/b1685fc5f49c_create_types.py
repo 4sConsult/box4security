@@ -25,7 +25,7 @@ def upgrade():
         {'name': 'Firewall'},
         {'name': 'IoT'},
         {'name': 'Industrielle IT'},
-        ])
+    ])
     op.bulk_insert(NetworkType.__table__, [
         {'name': 'Client'},
         {'name': 'Server'},
