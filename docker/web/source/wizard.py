@@ -81,13 +81,17 @@ def index():
 
 @wizard.route('/networks', methods=['GET', 'POST'])
 def networks():
+    formNetwork = NetworkForm(request.form)
+    formNetwork.types.choices = [(t.id, t.name) for t in NetworkType.query.order_by('id')]
     if request.method == 'POST':
-        return redirect(url_for('wizard.box4s'))
-    else:
-        formNetwork = NetworkForm(request.form)
-        networks = Network.query.all()
-        formNetwork.types.choices = [(t.id, t.name) for t in NetworkType.query.order_by('id')]
-        return render_template('networks.html', formNetwork=formNetwork, networks=networks)
+        if formNetwork.validate():
+            newNetwork = Network()
+            formNetwork.populate_obj(newNetwork)  # Copies matching attributes from form onto newNetwork
+            newNetwork.types = [NetworkType.query.get(tid) for tid in newNetwork.types]  # Get actual type objects from their IDs
+            db.session.add(newNetwork)
+            db.session.commit()
+    networks = Network.query.all()
+    return render_template('networks.html', formNetwork=formNetwork, networks=networks)
 
 
 @wizard.route('/box4s', methods=['GET', 'POST'])
