@@ -92,7 +92,8 @@ def networks():
             # newNetwork.scan_category = ScanCategory.query.get(newNetwork.scancategory_id)  # Get actual scan_category objects from their ID
             db.session.add(newNetwork)
             db.session.commit()
-    networks = Network.query.all()
+            return redirect(url_for('wizard.networks'))
+    networks = Network.query.order_by(Network.id.asc()).all()
     return render_template('networks.html', formNetwork=formNetwork, networks=networks)
 
 
