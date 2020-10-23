@@ -110,10 +110,10 @@ def faq():
 @login_required
 @roles_required(['Super Admin'])
 def repair():
-    """Return the system overview page.
+    """Return the repair page.
 
     Required Role: Super Admin
-    Embeds Kibana Docker Metricbeat visuals to monitor the BOX4s.
+    Shows the 1st level repair scripts
     """
     return render_template('repair.html')
 

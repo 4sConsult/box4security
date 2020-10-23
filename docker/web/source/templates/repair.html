@@ -1,15 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
+  <div class="ui main text container">
+    {% block flash_messages %}
+      {%- with messages = get_flashed_messages(with_categories=true) -%}
+          {% if messages %}
+              {% for category, message in messages %}
+                  <div class="ui message {{category}}">{{ message|safe }}</div>
+              {% endfor %}
+          {% endif %}
+      {%- endwith %}
+    {% endblock %}
+    <h1 class="ui header">BOX4security - Reparieren</h1>
+    <div class="ui floating tiny message">
+      <p>
+        Sie haben hier die Möglichkeit Reperaturen vorzunehmen.
+      </p>
+    </div>
+    <button class="ui button">Dashboards</button>
+    <button class="ui button">Datenfestplatte formatieren</button>
+    <button class="ui button">Neustart der BOX4security</button>
+    <button class="ui button">Box reset - Daten behalten</button>
+    <button class="ui button">Box reset - Daten auch löschen</button>
+    <button class="ui button">Snapshot der Box mit Daten</button>
+    <button class="ui button">Snapshot der Box ohne Daten</button>
+    <button class="ui button">Wizard erneut durchführen</button>
+    <button class="ui button">Testedaten einfügen</button>
 
-<h1 class="ui header">BOX4Security - Reparieren</h1>
-<div class="ui inverted section divider"></div>
-<div class="content text-justify">
-  <span class="transition hidden">Auf dieser Website bietet die BOX4Security die Möglichkeit Reperaturen vorzunehmen. </span>
-</div>
-
-  {% block scripts %}
-    <script type="text/javascript">
+  <div class="ui vertical footer segment">
+    <div class="ui center aligned container">
+    <img src="/static/Box4S_Logo.png" class="ui centered small image">
+  </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
     $('div.item.active').removeClass('active');
-    $('#repair').addClass('active');
-    </script>
-  {% endblock %}
+    $(`#administration`).addClass('active');
+</script>
+{% endblock %}
