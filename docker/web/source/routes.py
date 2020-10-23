@@ -105,6 +105,18 @@ def faq():
     client = os.getenv('KUNDE')
     return render_template('faq.html', client=client)
 
+@app.route('/repair', methods=['GET'])
+@login_required
+@roles_required(['Super Admin'])
+def system():
+    """Return the system overview page.
+
+    Required Role: Super Admin
+    Embeds Kibana Docker Metricbeat visuals to monitor the BOX4s.
+    """
+    return render_template('repair.html')
+
+
 
 @app.route('/system', methods=['GET'])
 @login_required
