@@ -108,7 +108,7 @@ def faq():
 @app.route('/repair', methods=['GET'])
 @login_required
 @roles_required(['Super Admin'])
-def system():
+def repair():
     """Return the system overview page.
 
     Required Role: Super Admin
