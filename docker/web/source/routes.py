@@ -118,7 +118,6 @@ def repair():
     return render_template('repair.html')
 
 
-
 @app.route('/system', methods=['GET'])
 @login_required
 @roles_required(['Super Admin'])
