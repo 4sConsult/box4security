@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="ui header">BOX4Security - Reparieren</h1>
+<div class="ui inverted section divider"></div>
+<div class="content text-justify">
+  <span class="transition hidden">Auf dieser Website bietet die BOX4Security die Möglichkeit Reperaturen vorzunehmen. </span>
+</div>
+
+  {% block scripts %}
+    <script type="text/javascript">
+    $('div.item.active').removeClass('active');
+    $('#repair').addClass('active');
+    </script>
+  {% endblock %}

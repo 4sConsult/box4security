@@ -88,6 +88,9 @@
                  <a class="item" href="/update" id="upd">Updates  </a>
                  {% endif %}
                  {% if current_user.has_role('Super Admin') %}
+                 <a class="item" href="/repair">Reparieren</a>
+                 {% endif %}
+                 {% if current_user.has_role('Super Admin') %}
                  <a class="item" href="/system">System</a>
                  {% endif %}
                </div>
