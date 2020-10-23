@@ -105,6 +105,7 @@ def faq():
     client = os.getenv('KUNDE')
     return render_template('faq.html', client=client)
 
+
 @app.route('/repair', methods=['GET'])
 @login_required
 @roles_required(['Super Admin'])
