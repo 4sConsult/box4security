@@ -419,7 +419,7 @@ $(`#tbl-networks tbody tr td a` ).on('click', (e) => {
           $('#edit-{{ formNetwork.scan_time.id }}').val(n.scan_time);
           $('#edit-submit').data('network-id', n.id);
           $('#modal-edit').modal('show');
-          console.log(n)
+          $('.ui.label.circular.foursgrey-bg').popup();
         });
       break;
     }
