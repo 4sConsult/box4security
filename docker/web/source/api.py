@@ -3,7 +3,7 @@ from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
-from source.wizard import Network, NET, NETs
+from source.wizard import Network, NetworkType, NET, NETs
 import requests
 import os
 import subprocess
@@ -957,8 +957,37 @@ class NetworkAPI(Resource):
             abort(404, message="Network with ID {} not found.".format(network_id))
 
     def put(self, network_id):
-        """Update or create a network by id."""
-        pass
+        """Update a network by id."""
+        self.parser.add_argument('name', type=str)
+        self.parser.add_argument('ip_address', type=str)
+        self.parser.add_argument('cidr', type=str)
+        self.parser.add_argument('vlan', type=str)
+        self.parser.add_argument('types', type=int, action='append')
+        self.parser.add_argument('scancategory_id', type=int)
+        self.parser.add_argument('scan_weekday', type=str)
+        self.parser.add_argument('scan_time', type=str)
+
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+
+        network = Network.query.get(network_id)
+        if not network:
+            abort(404, message="Network with ID {} not found. Nothing changed.".format(network_id))
+        network.name = self.args['name']
+        network.ip_address = self.args['ip_address']
+        network.cidr = self.args['cidr']
+        network.vlan = self.args['vlan']
+        network.scancategory_id = self.args['scancategory_id']
+        network.scan_weekday = self.args['scan_weekday']
+        network.scan_time = self.args['scan_time']
+        network.types = [NetworkType.query.get(tid) for tid in self.args['types']]
+        try:
+            db.session.add(network)
+            db.session.commit()
+        except Exception:
+            abort(500, message="Error while saving user to database.")
 
     def delete(self, network_id):
         """Delete a network by id."""

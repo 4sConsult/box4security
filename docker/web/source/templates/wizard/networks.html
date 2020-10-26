@@ -423,7 +423,40 @@ $(`#tbl-networks tbody tr td a` ).on('click', (e) => {
         });
       break;
     }
-
 });
+$(`#edit-submit`).on('click', (e) => {
+      e.preventDefault()
+      var data = {
+        'name': $('#edit-{{ formNetwork.name.id }}').val(),
+        'ip_address': $('#edit-{{ formNetwork.ip_address.id }}').val(),
+        'cidr': $('#edit-{{ formNetwork.cidr.id }}').val(),
+        'vlan': $('#edit-{{ formNetwork.vlan.id }}').val(),
+        'types': $('#edit-{{ formNetwork.types.id }}').val(),
+        'scancategory_id': $('#edit-{{ formNetwork.types.id }}').val(),
+        'scan_time': $('#edit-{{ formNetwork.scan_time.id }}').val(),
+        'scan_weekday': $('#edit-{{ formNetwork.scan_weekday.id }}').val(),
+      }
+      fetch(`/api/networks/${$('#edit-submit').data('network-id')}`,
+        {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data),
+        })
+      .then((response) => {
+        if(!response.ok){
+          var errormsg="";
+          switch (response.status) {
+            case 403: errormsg = "Sie dürfen diese Aktion nicht ausführen."; break;
+            case 404: errormsg = "Das zu bearbeitende Netz wurde nicht gefunden. Keine Änderungen wurden gespeichert."; break;
+            case 400: errormsg = "Die gestellte Anfrage enthielt für die Verarbeitung unverständliche Parameter."; break;
+            case 500: errormsg = "Die Änderungen am Netz konnten nicht in der Datenbank gespeichert werden."; break;
+          };
+          row = `<div class="ui red message">${errormsg}</div>`;
+          $(`#edit-submit`).before(row);
+        } else {
+          window.location = window.location.href;
+        }
+      });
+    })
 </script>
 {% endblock %}
