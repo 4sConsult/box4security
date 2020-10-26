@@ -35,7 +35,7 @@
                                 <th rowspan="2">Aktion</th>
                             </tr>
                             <tr>
-                                <th>Kategorie <div class="ui circular foursgrey-bg label" data-html="
+                                <th>Kategorie <div class="ui icon label circular foursgrey-bg" data-html="
                                     <div class='content'>
                                         <div class='ui list'>
                                             {% for c in scan_categories %}
@@ -45,7 +45,7 @@
                                             {% endfor %}
                                         </div>
                                     </div>   
-                                    " data-position="bottom center"><i class="help icon"></i></div></th>
+                                    " data-position="bottom center"><i style="margin:0em;" class="help icon"></i></div></th>
                                 <th>Wochentag</th>
                                 <th>Startzeit</th>
                             </tr>
@@ -204,7 +204,17 @@
                                     {% endif %}
                                     <div class="two wide field">
                                         <label>
-                                            Scan-Kategorie 
+                                            Kategorie <div style="margin-left:1em;" class="ui icon label circular foursgrey-bg" data-html="
+                                            <div class='content'>
+                                                <div class='ui list'>
+                                                    {% for c in scan_categories %}
+                                                    <div class='item'>
+                                                        <b>{{c.id}}</b> - {{c.name}}
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>   
+                                            " data-position="bottom center"><i style="margin:0em;" class="help icon"></i></div>
                                         </label>
                                         <select name="{{formNetwork.scancategory_id.name}}" class="ui fluid dropdown">
                                         <option value=""></option>
@@ -213,17 +223,6 @@
                                         {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="ui circular foursgrey-bg label" data-html="
-                                                <div class='content'>
-                                                    <div class='ui list'>
-                                                        {% for c in scan_categories %}
-                                                        <div class='item'>
-                                                            <b>{{c.id}}</b> - {{c.name}}
-                                                        </div>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>   
-                                                " data-position="bottom center"><i class="help icon"></i></div>
                                     {% if formNetwork.scancategory_id.errors %}
                                         {% for e in formNetwork.scancategory_id.errors %}
                                             <p class="ui orange message">{{ e }}</p>
