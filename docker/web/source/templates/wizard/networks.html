@@ -242,6 +242,141 @@
         </div>
     </div>
 {% endblock %}
+{% block modal %}
+<div id="modal-edit" class="ui tiny modal">
+    <i class="close icon"></i>
+    <div class="header">Netz bearbeiten</div>
+    <div class="content">
+        <form class="ui form" action="{{ url_for('wizard.networks') }}" method="POST" role="form">
+            <div class="fields">
+                <div class="sixteen wide field">
+                    <label>Netz-Bezeichner</label>
+                    <div class="ui left icon input">
+                    <i class="map sig icon"></i>
+                    <input type="text" id="{{ formNetwork.name.id }}" required="" name="{{ formNetwork.name.name }}" placeholder="Netz-Bezeichner">
+                    </div>
+                </div>
+                {% if formNetwork.name.errors %}
+                    {% for e in formNetwork.name.errors %}
+                    <p class="ui orange message">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="fields">
+                    <div class="ten wide field">
+                        <label>Netz-Adresse</label>
+                        <input type="text" id="{{ formNetwork.ip_address.id }}" name="{{ formNetwork.ip_address.name }}" placeholder="Netz-Adresse (z.B. 192.168.1.0)">
+                    </div>
+                    {% if formNetwork.ip_address.errors %}
+                        {% for e in formNetwork.ip_address.errors %}
+                        <p class="ui orange message">{{ e }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="one wide field">
+                        <label></label>
+                        <h1>/</h1>
+                    </div>
+                    <div class="six wide field">
+                        <label>CIDR</label>
+                        <input type="number" id="{{ formNetwork.cidr.id }}" min="0" max="32" name="{{ formNetwork.cidr.name }}" placeholder="24">
+                    </div>
+                    {% if formNetwork.cidr.errors %}
+                        {% for e in formNetwork.cidr.errors %}
+                        <p class="ui orange message">{{ e }}</p>
+                    {% endfor %}
+                    {% endif %}
+            </div>
+            <div class="fields">
+                <div class="ten wide field">
+                    <label>Netz-Typ</label>
+                    <select name="{{formNetwork.types.name}}" multiple="" class="ui dropdown">
+                    <option value="">Netz-Typ</option>
+                    {% for value in formNetwork.types.choices %}
+                        <option value="{{value[0]}}">{{value[1]}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                {% if formNetwork.types.errors %}
+                    {% for e in formnetwork.types.errors %}
+                        <p class="ui orange message">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+                <div class="six wide field">
+                    <label>VLAN-Tag</label>
+                    <div class="ui input">
+                    <input type="text" id="{{ formNetwork.vlan.id }}" name="{{ formNetwork.vlan.name }}" placeholder="99">
+                    </div>
+                </div>
+                {% if formNetwork.vlan.errors %}
+                    {% for e in formNetwork.vlan.errors %}
+                        <p class="ui orange message">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <hr>
+            <h4>Schwachstellenscan</h4>
+            <div class="fields">
+                <div class="four field">
+                    <label>
+                        Kategorie <div style="margin-left:1em;" class="ui icon label circular foursgrey-bg" data-html="
+                        <div class='content'>
+                            <div class='ui list'>
+                                {% for c in scan_categories %}
+                                <div class='item'>
+                                    <b>{{c.id}}</b> - {{c.name}}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>   
+                        " data-position="bottom center"><i style="margin:0em;" class="help icon"></i></div>
+                    </label>
+                    <select name="{{formNetwork.scancategory_id.name}}" class="ui fluid dropdown">
+                    <option value=""></option>
+                    {% for value in formNetwork.scancategory_id.choices %}
+                        <option value="{{value[0]}}">{{value[0]}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                {% if formNetwork.scancategory_id.errors %}
+                    {% for e in formNetwork.scancategory_id.errors %}
+                        <p class="ui orange message">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+                <div class="six field">
+                    <label>Wochentag</label>
+                    <select id="{{ formNetwork.scan_weekday.id }}" name="{{formNetwork.scan_weekday.name}}" class="ui dropdown">
+                        <option value="">Wochentag</option>
+                        <option value="montags">montags</option>
+                        <option value="dienstags">dienstags</option>
+                        <option value="mittwochs">mittwochs</option>
+                        <option value="donnerstags">donnerstags</option>
+                        <option value="freitags">freitags</option>
+                        <option value="samstags">samstags</option>
+                        <option value="sonntags">sonntags</option>
+                    </select>
+                </div>
+                {% if formNetwork.scan_weekday.errors %}
+                    {% for e in formNetwork.scan_weekday.errors %}
+                        <p class="ui orange message">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+                <div class="six field">
+                    <label>Uhrzeit</label>
+                    <div class="ui input">
+                    <input type="time" id="{{ formNetwork.scan_time.id }}" name="{{ formNetwork.scan_time.name }}" value="09:00">
+                    </div>
+                </div>
+                {% if formNetwork.scan_time.errors %}
+                    {% for e in formNetwork.scan_time.errors %}
+                        <p class="ui orange message">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <button id="edit-submit" class="ui fluid large foursgrey-bg submit button" type="submit" name="button">Speichern</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
 {% block scripts %}
 <script type="text/javascript">
 $('.step.active').removeClass('active');

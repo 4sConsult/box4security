@@ -65,8 +65,10 @@
                 <img src="/static/Box4S_Logo.png" class="ui centered small image">
             </div>
         </div>
+        {% block modal %}{% endblock %}
         <script src="/static/external/jquery.min.js"></script>
         <script src="/static/external/semantic.min.js"></script>
+        <script src='/static/wizard.js'></script>
         <script>$('.ui.dropdown').dropdown();</script>
         {% block scripts %}{% endblock %}
     </body>
