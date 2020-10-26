@@ -2,7 +2,7 @@ from flask import redirect, Blueprint, render_template, url_for, request
 from flask.helpers import flash
 from wtforms_alchemy import ModelForm
 from flask_wtf import FlaskForm
-from wtforms import SelectMultipleField, SelectField
+from wtforms import SelectMultipleField, SelectField, TextField
 from source.extensions import db, ma
 from marshmallow import fields
 
@@ -103,7 +103,9 @@ def networks():
 def box4s():
     endpoint = WizardMiddleware.getMaxStep()
     if WizardMiddleware.compareSteps('wizard.box4s', endpoint) < 1:
-        return render_template('box4s.html')
+        formBOX4s = BOX4sForm(request.form)
+
+        return render_template('box4s.html', formBOX4s=formBOX4s)
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
         return redirect(url_for(endpoint))
@@ -309,6 +311,19 @@ class SystemForm(ModelForm, FlaskForm):
     """Form for NetworkType model."""
     class Meta:
         model = System
+
+
+class BOX4sForm(ModelForm, FlaskForm):
+    """Form for BOX4s."""
+    class Meta:
+        model = System
+    dns = TextField(
+        'DNS-Server'
+    )
+    types = SelectMultipleField(
+        'System-Typ',
+        coerce=int
+    )
 
 
 class SystemTypeForm(ModelForm, FlaskForm):
