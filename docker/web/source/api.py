@@ -3,6 +3,7 @@ from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
+from source.wizard import Network, NET, NETs
 import requests
 import os
 import subprocess
@@ -938,3 +939,52 @@ class Health(Resource):
     def get(self):
         """Return Healthy."""
         return {'status': 'pass'}, 200
+
+
+class NetworkAPI(Resource):
+    """API resource for representing a single network."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+
+    def get(self, network_id):
+        """Get a single network by id."""
+        network = Network.query.get(network_id)
+        if network:
+            return NET.dump(network)
+        else:
+            abort(404, message="Network with ID {} not found.".format(network_id))
+
+    def put(self, network_id):
+        """Update or create a network by id."""
+        pass
+
+    def delete(self, network_id):
+        """Delete a network by id."""
+        network = Network.query.get(network_id)
+        if network:
+            db.session.delete(network)
+            db.session.commit()
+            return '', 204
+        else:
+            abort(404, message="Network with ID {} not found. Nothing deleted.".format(network_id))
+
+
+class NetworksAPI(Resource):
+    """API resource for representing multiple networks."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+
+    def get(self):
+        networks = Network.query.all()
+        return NETs.dump(networks)
+
+    def post(self):
+        """Create a new network and return its id."""
+        pass
+
+    def put(self):
+        pass

@@ -24,7 +24,7 @@
                     </p>
                 </div>
                 <div class="ui one column">
-                    <table class="ui celled structured table">
+                    <table id="tbl-networks" class="ui celled structured table">
                         <thead>
                             <tr>
                                 <th rowspan="2">Bezeichner</th>
@@ -253,7 +253,7 @@
                     <label>Netz-Bezeichner</label>
                     <div class="ui left icon input">
                     <i class="map sig icon"></i>
-                    <input type="text" id="{{ formNetwork.name.id }}" required="" name="{{ formNetwork.name.name }}" placeholder="Netz-Bezeichner">
+                    <input type="text" id="edit-{{ formNetwork.name.id }}" required="" name="{{ formNetwork.name.name }}" placeholder="Netz-Bezeichner">
                     </div>
                 </div>
                 {% if formNetwork.name.errors %}
@@ -265,7 +265,7 @@
             <div class="fields">
                     <div class="ten wide field">
                         <label>Netz-Adresse</label>
-                        <input type="text" id="{{ formNetwork.ip_address.id }}" name="{{ formNetwork.ip_address.name }}" placeholder="Netz-Adresse (z.B. 192.168.1.0)">
+                        <input type="text" id="edit-{{ formNetwork.ip_address.id }}" name="{{ formNetwork.ip_address.name }}" placeholder="Netz-Adresse (z.B. 192.168.1.0)">
                     </div>
                     {% if formNetwork.ip_address.errors %}
                         {% for e in formNetwork.ip_address.errors %}
@@ -278,7 +278,7 @@
                     </div>
                     <div class="six wide field">
                         <label>CIDR</label>
-                        <input type="number" id="{{ formNetwork.cidr.id }}" min="0" max="32" name="{{ formNetwork.cidr.name }}" placeholder="24">
+                        <input type="number" id="edit-{{ formNetwork.cidr.id }}" min="0" max="32" name="{{ formNetwork.cidr.name }}" placeholder="24">
                     </div>
                     {% if formNetwork.cidr.errors %}
                         {% for e in formNetwork.cidr.errors %}
@@ -289,7 +289,7 @@
             <div class="fields">
                 <div class="ten wide field">
                     <label>Netz-Typ</label>
-                    <select name="{{formNetwork.types.name}}" multiple="" class="ui dropdown">
+                    <select id="edit-{{ formNetwork.types.id }}" name="{{formNetwork.types.name}}" multiple="" class="ui dropdown">
                     <option value="">Netz-Typ</option>
                     {% for value in formNetwork.types.choices %}
                         <option value="{{value[0]}}">{{value[1]}}</option>
@@ -304,7 +304,7 @@
                 <div class="six wide field">
                     <label>VLAN-Tag</label>
                     <div class="ui input">
-                    <input type="text" id="{{ formNetwork.vlan.id }}" name="{{ formNetwork.vlan.name }}" placeholder="99">
+                    <input type="text" id="edit-{{ formNetwork.vlan.id }}" name="{{ formNetwork.vlan.name }}" placeholder="99">
                     </div>
                 </div>
                 {% if formNetwork.vlan.errors %}
@@ -330,7 +330,7 @@
                         </div>   
                         " data-position="bottom center"><i style="margin:0em;" class="help icon"></i></div>
                     </label>
-                    <select name="{{formNetwork.scancategory_id.name}}" class="ui fluid dropdown">
+                    <select id="edit-{{ formNetwork.scancategory_id.id }}" name="{{formNetwork.scancategory_id.name}}" class="ui fluid dropdown">
                     <option value=""></option>
                     {% for value in formNetwork.scancategory_id.choices %}
                         <option value="{{value[0]}}">{{value[0]}}</option>
@@ -344,7 +344,7 @@
                 {% endif %}
                 <div class="six field">
                     <label>Wochentag</label>
-                    <select id="{{ formNetwork.scan_weekday.id }}" name="{{formNetwork.scan_weekday.name}}" class="ui dropdown">
+                    <select id="edit-{{ formNetwork.scan_weekday.id }}" name="{{formNetwork.scan_weekday.name}}" class="ui dropdown">
                         <option value="">Wochentag</option>
                         <option value="montags">montags</option>
                         <option value="dienstags">dienstags</option>
@@ -363,7 +363,7 @@
                 <div class="six field">
                     <label>Uhrzeit</label>
                     <div class="ui input">
-                    <input type="time" id="{{ formNetwork.scan_time.id }}" name="{{ formNetwork.scan_time.name }}" value="09:00">
+                    <input type="time" id="edit-{{ formNetwork.scan_time.id }}" name="{{ formNetwork.scan_time.name }}" value="09:00">
                     </div>
                 </div>
                 {% if formNetwork.scan_time.errors %}
@@ -382,5 +382,48 @@
 $('.step.active').removeClass('active');
 $('#step-networks').addClass('active');
 $('.ui.label.foursgrey-bg').popup();
+</script>
+<script type="text/javascript">
+$(`#tbl-networks tbody tr td a` ).on('click', (e) => {
+    switch ($(e.delegateTarget).data('action')) {
+      case 'delete':
+        if (confirm(`Soll dieses Netz wirklich unwiderruflich GELÖSCHT werden?`)) {
+          fetch(`/api/networks/${$(e.delegateTarget).data('network-id')}`, {method: 'DELETE'})
+          .then((response) => {
+            if(response.ok){
+              $(e.delegateTarget).closest('tr').remove();
+            }
+            else {
+              errormsg = "Sie dürfen diese Aktion nicht ausführen. Nur Super Admins können andere Super Admins löschen.";
+              row = `<div class="ui red message">${errormsg}</div>`;
+              $(`#errormsg`).before(row);
+            }
+          })
+        };
+        break;
+      case 'edit':
+        fetch(`/api/networks/${$(e.delegateTarget).data('network-id')}`, {method: 'GET'})
+        .then((response) => {
+          return response.json()
+        }).then((n) => {
+          $('#edit-{{ formNetwork.name.id }}').val(n.name);
+          $('#edit-{{ formNetwork.ip_address.id }}').val(n.ip_address);
+          $('#edit-{{ formNetwork.cidr.id }}').val(n.cidr);
+          $('#edit-{{ formNetwork.vlan.id }}').val(n.vlan);
+          $('#edit-{{ formNetwork.types.id }}').dropdown('clear');
+          n.types.forEach((type, i) => {
+            $(`#edit-{{ formNetwork.types.id }}`).dropdown('set selected', type.id);
+          });
+          $('#edit-{{ formNetwork.scancategory_id.id }}').dropdown('set selected', n.scancategory_id);
+          $('#edit-{{ formNetwork.scan_weekday.id }}').dropdown('set selected', n.scan_weekday);
+          $('#edit-{{ formNetwork.scan_time.id }}').val(n.scan_time);
+          $('#edit-submit').data('network-id', n.id);
+          $('#modal-edit').modal('show');
+          console.log(n)
+        });
+      break;
+    }
+
+});
 </script>
 {% endblock %}

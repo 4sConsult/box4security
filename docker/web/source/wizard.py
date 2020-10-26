@@ -4,6 +4,7 @@ from wtforms_alchemy import ModelForm
 from flask_wtf import FlaskForm
 from wtforms import SelectMultipleField, SelectField
 from source.extensions import db, ma
+from marshmallow import fields
 
 
 class WizardMiddleware():
@@ -165,6 +166,47 @@ class Network(db.Model):
     def __repr__(self):
         """Print Network in human readable form."""
         return '{} ({}): {}/{}'.format(self.name, self.id, self.ip_address, self.cidr)
+
+
+class NetworkTypeSchema(ma.Schema):
+    """Role Schema for API representation."""
+
+    class Meta:
+        """Define fields which will be available."""
+
+        fields = ('id', 'name')
+
+
+class ScanCategorySchema(ma.Schema):
+
+    class Meta:
+        fields = (
+            'id',
+            'name',
+        )
+
+
+class NetworkSchema(ma.Schema):
+
+    types = fields.Nested(NetworkTypeSchema, many=True)
+    scancategory = fields.Nested(ScanCategorySchema)
+
+    class Meta:
+        fields = (
+            'id',
+            'name',
+            'ip_address',
+            'cidr',
+            'vlan',
+            'types',
+            'scancategory_id',
+            'scan_weekday',
+            'scan_time',
+        )
+
+
+NET = NetworkSchema()
+NETs = NetworkSchema(many=True)
 
 
 class ScanCategory(db.Model):
