@@ -107,8 +107,8 @@ def box4s():
     if WizardMiddleware.compareSteps('wizard.box4s', endpoint) < 1:
         formBOX4s = BOX4sForm(request.form)
         formBOX4s.network_id.choices = [(t.id, f"{t.name} ({t.ip_address}/{t.cidr})") for t in Network.query.order_by('id')]
-        formBOX4s.dns_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id')]
-        formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id')]
+        formBOX4s.dns_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='DNS-Server'))]
+        formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='Gateway'))]
 
         return render_template('box4s.html', formBOX4s=formBOX4s)
     else:
