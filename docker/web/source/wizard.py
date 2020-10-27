@@ -10,7 +10,7 @@ from marshmallow import fields
 class WizardMiddleware():
     """BOX4security Wizard Middleware."""
     # Ordered list of steps
-    steps = ['wizard.index', 'wizard.networks', 'wizard.box4s', 'wizard.systems', 'wizard.smtp', 'wizard.verify']
+    steps = ['wizard.index', 'wizard.networks', 'wizard.systems', 'wizard.box4s', 'wizard.smtp', 'wizard.verify']
 
     def __init__(self, app):
         self.app = app
@@ -44,15 +44,15 @@ class WizardMiddleware():
         For example:
         Returns 'wizard.systems' if the user has recently completed the box4s step but not yet the systems step.
         """
-        if System.query.filter(~System.types.any(name='BOX4security')).count():
-            # Systems apart from BOX4s exist, next step is smtp
+        if BOX4security.query.count():
+            # BOX4security exists, next step is smtp
             return 'wizard.smtp'
-        elif System.query.filter(System.types.any(name='BOX4security')).count():
-            # BOX4security is defined, next step systems
-            return 'wizard.systems'
+        if System.query.filter(~System.types.any(name='BOX4security')).count():
+            # Systems apart from BOX4s exist, next step is box4s
+            return 'wizard.box4s'
         elif Network.query.count():
             # Network is defined, next step BOX4s
-            return 'wizard.box4s'
+            return 'wizard.systems'
         else:
             # Nothing yet defined, max step is networks
             return 'wizard.networks'
