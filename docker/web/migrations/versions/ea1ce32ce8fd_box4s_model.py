@@ -18,8 +18,8 @@ depends_on = None
 
 def upgrade():
     """Upgrade to migration."""
-    op.add_column('system', sa.Column('dns_id', sa.Integer(), nullable=False))
-    op.add_column('system', sa.Column('gateway_id', sa.Integer(), nullable=False))
+    op.add_column('system', sa.Column('dns_id', sa.Integer())
+    op.add_column('system', sa.Column('gateway_id', sa.Integer()))
     op.create_foreign_key(None, 'system', 'system', ['gateway_id'], ['id'])
     op.create_foreign_key(None, 'system', 'system', ['dns_id'], ['id'])
 
