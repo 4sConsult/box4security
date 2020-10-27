@@ -13,9 +13,153 @@
                     Ebenso können Sie hier Systeme gezielt von Schwachstellenscans oder der Traffic-Analyse ausnehmen.
                 </p>
             </div>
-            <a class="ui large foursgrey-bg button">Eingaben speichern</a>
-            <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
-            </form>
+        </div>
+    </div>
+    <div class="ui one column">
+        <p>
+            Die Schwachstellenscans <i>können</i> zu den Zeiten der eingetragenen Termine eine Auslastung des Netzwerkes verursachen. Die Scans sollten nach Möglichkeit also nicht zur gleichen Zeit durchgeführt werden, um erhöhter Netzwerk-Latenz entgegenzuwirken.
+            Seien Sie sich darüber bewusst, dass automatisierte Scans zu einer temporären Beeinträchtigung oder Ausfall der Systeme führen können.
+        </p>
+    </div>
+    <div class="ui one column">
+        <table id="tbl-networks" class="ui celled structured table">
+            <thead>
+                <tr>
+                    <th rowspan="2">Bezeichner</th>
+                    <th rowspan="2">Netz</th>
+                    <th rowspan="2">IP-Adresse</th>
+                    <th rowspan="2">Typ</th>
+                    <!-- <th rowspan="2">Ort</th> -->
+                    <th colspan="2">BOX4security-Option</th>
+                    <th rowspan="2">Aktion</th>
+                </tr>
+                <tr>
+                    <th>Schwachstellenscans</th>
+                    <th>Traffic-Analyse</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in systems %}
+                <tr>
+                    <td data-label="Bezeichner">{{s.name}}</td>
+                    <td data-label="Netz">{{s.network.name}}</td>
+                    <td data-label="IP-Adresse">{{s.ip_address}}/{{n.cidr}}</td>
+                    <td data-label="Typ">
+                        {% if s.types|length > 1 %}
+                            <div class="ui basic label">{{ s.types[0].name }}</div>
+                            <span class="ui foursgrey-bg image label" data-position="bottom center"
+                            data-html="
+                                <div class='content'>
+                                <div class='ui list'>
+                                    {% for t in s.types %}
+                                    <div class='item'>
+                                    <div class='header'>{{t.name}}</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                </div>
+                            ">
+                            + {{s.types|length-1}}
+                            </span>
+                    {% elif s.types|length == 1 %}
+                        <div class="ui basic label">{{ s.types[0].name }}</div>
+                    {% endif %}
+                    </td>
+                    <!-- <td data-label="Ort">{{s.location}}</td> -->
+                    <td data-label="Schwachstellenscans">{{s.scan_enabled}}</td>
+                    <td data-label="Traffic-Analyse">{{s.ids_enabled}}</td>
+                    <td class="collapsing" data-label="Aktion">
+                        <a data-network-id="{{ s.id }}" data-tooltip="System bearbeiten" data-position="bottom center" data-action="edit" class="ui tiny icon button foursgrey-bg"><i class="edit icon"></i></a>
+                        <a data-network-id="{{ s.id }}" data-tooltip="System löschen" data-position="bottom center" data-action="delete" class="ui icon tiny red button"><i class="trash alternate outline icon"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+          {% if not systems %}
+          <div class="ui placeholder segment">
+            <div class="ui icon header">
+                <i class="exclamation circle icon"></i>
+                Es wurden noch keine Systeme hinterlegt. 
+                Zum Fortfahren müssen Sie mindestens einen DNS-Server sowie Gateway anlegen.
+            </div>
+          </div>
+          {% endif %}
+    </div>
+    <div class="ui one column">
+        <div class="ui raised segment">
+            <h3 class="ui header">
+                Jetzt System hinzufügen!
+            </h3>
+            <div class="active content">
+                <form class="ui equal width large form" action="{{ url_for('wizard.networks') }}" method="POST" role="form">
+                    {{ formSystem.hidden_tag() }}
+                    <div class="fields">
+                        <div class="field">
+                            <label>System-Bezeichner</label>
+                            <div class="ui left icon input">
+                            <i class="map sign icon"></i>
+                            <input type="text" id="{{ formSystem.name.id }}" required="" name="{{ formSystem.name.name }}" placeholder="System-Bezeichner">
+                            </div>
+                        </div>
+                        {% if formSystem.name.errors %}
+                            {% for e in formSystem.name.errors %}
+                            <p class="ui orange message">{{ e }}</p>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="field">
+                            <label>Netzzugehörigkeit</label>
+                            <select name="{{formSystem.network_id.name}}" required="" class="ui dropdown">
+                            <option value="">Netz</option>
+                            {% for value in formSystem.network_id.choices %}
+                                <option value="{{value[0]}}">{{value[1]}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="fields">
+                        <div class="five wide field">
+                            <label>IP-Adresse</label>
+                            <input type="text" id="{{ formSystem.ip_address.id }}" name="{{ formSystem.ip_address.name }}" placeholder="IP-Adresse (z.B. 192.168.1.1)">
+                        </div>
+                        {% if formSystem.ip_address.errors %}
+                            {% for e in formSystem.ip_address.errors %}
+                            <p class="ui orange message">{{ e }}</p>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="five wide field">
+                            <label>System-Typ</label>
+                            <select name="{{formSystem.types.name}}" multiple="" class="ui dropdown">
+                            <option value="">System-Typ</option>
+                            {% for value in formSystem.types.choices %}
+                                <option value="{{value[0]}}">{{value[1]}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        {% if formSystem.types.errors %}
+                            {% for e in formSystem.types.errors %}
+                                <p class="ui orange message">{{ e }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <h4 class="ui dividing header">BOX4security-Optionen</h4>
+                    <div class="fields">
+                        <div class="inline field">
+                            <div class="ui checked checkbox">
+                              <input type="checkbox" checked="" class="hidden">
+                              <label>Schwachstellenscans für dieses System durchführen</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checked checkbox">
+                              <input type="checkbox" checked="" class="hidden">
+                              <label>Traffic-Analyse für dieses System durchführen</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="ui fluid large primary submit button" type="submit" name="button">Anlegen</button>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock %}

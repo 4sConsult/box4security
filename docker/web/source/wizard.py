@@ -121,7 +121,12 @@ def box4s():
 def systems():
     endpoint = WizardMiddleware.getMaxStep()
     if WizardMiddleware.compareSteps('wizard.systems', endpoint) < 1:
-        return render_template('systems.html')
+        formSystem = SystemForm(request.form)
+        formSystem.network_id.choices = [(t.id, f"{t.name} ({t.ip_address}/{t.cidr})") for t in Network.query.order_by('id')]
+        formSystem.types.choices = [(t.id, t.name) for t in SystemType.query.order_by('id')]
+        systems = System.query.order_by(System.id.asc()).all()
+
+        return render_template('systems.html', formSystem=formSystem, systems=systems)
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
         return redirect(url_for(endpoint))
@@ -325,6 +330,13 @@ class SystemForm(ModelForm, FlaskForm):
     """Form for NetworkType model."""
     class Meta:
         model = System
+    types = SelectMultipleField(
+        'System-Typ',
+        coerce=int
+    )
+    network_id = SelectField(
+        'Netz'
+    )
 
 
 class BOX4sForm(ModelForm, FlaskForm):

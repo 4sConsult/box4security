@@ -69,7 +69,10 @@
         <script src="/static/external/jquery.min.js"></script>
         <script src="/static/external/semantic.min.js"></script>
         <script src='/static/wizard.js'></script>
-        <script>$('.ui.dropdown').dropdown();</script>
+        <script>
+        $('.ui.dropdown').dropdown();
+        $('.ui.checkbox').checkbox();
+        </script>
         {% block scripts %}{% endblock %}
     </body>
 </html>
