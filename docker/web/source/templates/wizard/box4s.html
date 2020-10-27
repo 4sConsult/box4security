@@ -12,13 +12,27 @@
                 Die Änderungen werden nach Abschluss der Einrichtung in Schritt 6 übernommen.
             </p>
         </div>
-        <a class="ui large foursgrey-bg button">Eingaben speichern</a>
-        <form class="ui large form" action="" method="POST" role="form">
+        <form class="ui form" action="" method="POST" role="form">
             {{ formBOX4s.hidden_tag() }}
-            <div class="fields">
-                <div class="five wide field">
-                    <label>IP-Adresse</label>
-                    <input type="text" id="{{ formBOX4s.ip_address.id }}" name="{{ formBOX4s.ip_address.name }}" placeholder="Netz-Adresse (z.B. 192.168.1.0)">
+            <h4 class="ui dividing header">Netzkonfiguration BOX4security</h4>
+            <div class="two fields">
+                <div class="field">
+                    <label>Netzzugehörigkeit BOX4security</label>
+                    <select name="{{formBOX4s.network_id.name}}" required="" class="ui dropdown">
+                    <option value="">Netz</option>
+                    {% for value in formBOX4s.network_id.choices %}
+                        <option value="{{value[0]}}">{{value[1]}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                {% if formBOX4s.network_id.errors %}
+                    {% for e in formBOX4s.network_id.errors %}
+                    <p class="ui orange message">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+                <div class="field">
+                    <label>IP-Adresse BOX4security</label>
+                    <input type="text" id="{{ formBOX4s.ip_address.id }}" name="{{ formBOX4s.ip_address.name }}" placeholder="IP-Adresse (z.B. 192.168.1.0)">
                 </div>
                 {% if formBOX4s.ip_address.errors %}
                     {% for e in formBOX4s.ip_address.errors %}
@@ -26,85 +40,37 @@
                     {% endfor %}
                 {% endif %}
             </div>
-                <div class="fields">
-                    <div class="five wide field">
-                        <label>Netz-Typ</label>
-                        <select name="{{formBOX4s.types.name}}" multiple="" class="ui dropdown">
-                        <option value="">Netz-Typ</option>
-                        {% for value in formBOX4s.types.choices %}
-                            <option value="{{value[0]}}">{{value[1]}}</option>
-                        {% endfor %}
-                        </select>
-                    </div>
-                    {% if formBOX4s.types.errors %}
-                        {% for e in formBOX4s.types.errors %}
-                            <p class="ui orange message">{{ e }}</p>
-                        {% endfor %}
-                    {% endif %}
-                    <div class="one field">
-                        <label>&nbsp;</label>
-                        <a class="ui green icon large fluid button">
-                            <i class="plus icon"></i>
-                        </a> 
-                    </div>
-                    <div class="four wide field">
-                        <label>Schwachstellenscan an Wochentag</label>
-                        <select id="{{ formBOX4s.scan_weekday.id }}" name="{{formBOX4s.scan_weekday.name}}" class="ui dropdown">
-                            <option value="">Wochentag</option>
-                            <option value="montags">montags</option>
-                            <option value="dienstags">dienstags</option>
-                            <option value="mittwochs">mittwochs</option>
-                            <option value="donnerstags">donnerstags</option>
-                            <option value="freitags">freitags</option>
-                            <option value="samstags">samstags</option>
-                            <option value="sonntags">sonntags</option>
-                        </select>
-                    </div>
-                    {% if formBOX4s.scan_weekday.errors %}
-                        {% for e in formBOX4s.scan_weekday.errors %}
-                            <p class="ui orange message">{{ e }}</p>
-                        {% endfor %}
-                    {% endif %}
-                    <div class="four wide field">
-                        <label>Schwachstellenscan zu Uhrzeit</label>
-                        <div class="ui input">
-                        <input type="time" id="{{ formBOX4s.scan_time.id }}" name="{{ formBOX4s.scan_time.name }}" value="09:00">
-                        </div>
-                    </div>
-                    {% if formBOX4s.scan_time.errors %}
-                        {% for e in formBOX4s.scan_time.errors %}
-                            <p class="ui orange message">{{ e }}</p>
-                        {% endfor %}
-                    {% endif %}
-                    <div class="two wide field">
-                        <label>
-                            Kategorie <div style="margin-left:1em;" class="ui icon label circular foursgrey-bg" data-html="
-                            <div class='content'>
-                                <div class='ui list'>
-                                    {% for c in scan_categories %}
-                                    <div class='item'>
-                                        <b>{{c.id}}</b> - {{c.name}}
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>   
-                            " data-position="bottom center"><i style="margin:0em;" class="help icon"></i></div>
-                        </label>
-                        <select name="{{formBOX4s.scancategory_id.name}}" class="ui fluid dropdown">
-                        <option value=""></option>
-                        {% for value in formBOX4s.scancategory_id.choices %}
-                            <option value="{{value[0]}}">{{value[0]}}</option>
-                        {% endfor %}
-                        </select>
-                    </div>
-                    {% if formBOX4s.scancategory_id.errors %}
-                        {% for e in formBOX4s.scancategory_id.errors %}
-                            <p class="ui orange message">{{ e }}</p>
+            <div class="two fields">
+                <div class="field">
+                    <label>DNS-Server BOX4security</label>
+                    <select name="{{formBOX4s.dns_id.name}}" required="" class="ui dropdown">
+                    <option value="">DNS-Server</option>
+                    {% for value in formBOX4s.dns_id.choices %}
+                        <option value="{{value[0]}}">{{value[1]}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                {% if formBOX4s.dns_id.errors %}
+                    {% for e in formBOX4s.dns_id.errors %}
+                    <p class="ui orange message">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+                <div class="field">
+                    <label>Gateway BOX4security</label>
+                    <select name="{{formBOX4s.gateway_id.name}}" required="" class="ui dropdown">
+                    <option value="">Gateway</option>
+                    {% for value in formBOX4s.gateway_id.choices %}
+                        <option value="{{value[0]}}">{{value[1]}}</option>
+                    {% endfor %}
+                    </select>
+                    {% if formBOX4s.gateway_id.errors %}
+                        {% for e in formBOX4s.gateway_id.errors %}
+                        <p class="ui orange message">{{ e }}</p>
                         {% endfor %}
                     {% endif %}
                 </div>
-                <button class="ui fluid large primary submit button" type="submit" name="button">Anlegen</button>
-            </form>
+            </div>
+            <a class="ui large foursgrey-bg button">Eingaben speichern</a>
         </form>
     </div>
     </div>
