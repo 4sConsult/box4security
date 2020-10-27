@@ -44,6 +44,8 @@ class WizardMiddleware():
         For example:
         Returns 'wizard.systems' if the user has recently completed the box4s step but not yet the systems step.
         """
+        # DEBUG:
+        return 'wizard.verify'
         if BOX4security.query.count():
             # BOX4security exists, next step is smtp
             return 'wizard.smtp'
@@ -102,12 +104,16 @@ def networks():
 @wizard.route('/box4s', methods=['GET', 'POST'])
 def box4s():
     endpoint = WizardMiddleware.getMaxStep()
+
     if WizardMiddleware.compareSteps('wizard.box4s', endpoint) < 1:
         formBOX4s = BOX4sForm(request.form)
+        formBOX4s.network_id.choices = [(t.id, f"{t.name} ({t.ip_address}/{t.cidr})") for t in Network.query.order_by('id')]
+        formBOX4s.dns_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id')]
+        formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id')]
 
         return render_template('box4s.html', formBOX4s=formBOX4s)
     else:
-        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
+        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen. Bitte geben Sie auf der Seite der Systeme mindestens einen DNS-Server sowie einen Gateway an, der für die BOX4security genutzt werden kann.', 'error')
         return redirect(url_for(endpoint))
 
 
@@ -163,7 +169,7 @@ class Network(db.Model):
     scancategory_id = db.Column(db.Integer, db.ForeignKey('scancategory.id'))
     scan_weekday = db.Column(db.String(24))  # lower case
     scan_time = db.Column(db.Time())  # Start time for scan
-    # systems = db.relationship('System', backref='network')
+    systems = db.relationship('System', backref='network')
 
     def __repr__(self):
         """Print Network in human readable form."""
@@ -250,6 +256,7 @@ class System(db.Model):
     ids_enabled: True if IDS should be enabled for the system, else False
     types: List of associated SystemTypes
     """
+    __tablename__ = 'system'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(100), unique=True)
     ip_address = db.Column(db.String(24))  # System IP Address
@@ -257,7 +264,7 @@ class System(db.Model):
     location = db.Column(db.String(255))  # System Location
     scan_enabled = db.Column(db.Boolean(), default=True)  # Scans active
     ids_enabled = db.Column(db.Boolean(), default=True)  # IDS enabled
-    # network_id = db.Column(db.Integer, db.ForeignKey('network.id'))
+    network_id = db.Column(db.Integer, db.ForeignKey('network.id'))
 
 
 class SystemType(db.Model):
@@ -285,6 +292,13 @@ class SystemSystemType(db.Model):
 #     id = db.Column(db.Integer(), primary_key=True)
 #     system_id = db.Column(db.Integer(), db.ForeignKey('system.id', ondelete='CASCADE'))
 #     network_id = db.Column(db.Integer(), db.ForeignKey('network.id', ondelete='CASCADE'))
+
+class BOX4security(System):
+    """Extension of System model for BOX4security."""
+    dns_id = db.Column(db.Integer, db.ForeignKey('system.id'), nullable=False)
+    dns = db.relationship("System", foreign_keys=[dns_id])
+    gateway_id = db.Column(db.Integer, db.ForeignKey('system.id'), nullable=False)
+    gateway = db.relationship("System", foreign_keys=[gateway_id])
 
 
 class NetworkForm(ModelForm, FlaskForm):
@@ -316,13 +330,15 @@ class SystemForm(ModelForm, FlaskForm):
 class BOX4sForm(ModelForm, FlaskForm):
     """Form for BOX4s."""
     class Meta:
-        model = System
-    dns = TextField(
+        model = BOX4security
+    dns_id = SelectField(
         'DNS-Server'
     )
-    types = SelectMultipleField(
-        'System-Typ',
-        coerce=int
+    gateway_id = SelectField(
+        'Gateway'
+    )
+    network_id = SelectField(
+        'Netz'
     )
 
 
