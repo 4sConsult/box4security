@@ -23,6 +23,7 @@
                     </p>
                 </div>
                 <div class="ui one column">
+                    <div id="errormsg"></div>
                     <table id="tbl-networks" class="ui celled structured table">
                         <thead>
                             <tr>
@@ -431,7 +432,7 @@ $(`#edit-submit`).on('click', (e) => {
         'cidr': $('#edit-{{ formNetwork.cidr.id }}').val(),
         'vlan': $('#edit-{{ formNetwork.vlan.id }}').val(),
         'types': $('#edit-{{ formNetwork.types.id }}').val(),
-        'scancategory_id': $('#edit-{{ formNetwork.types.id }}').val(),
+        'scancategory_id': $('#edit-{{ formNetwork.scancategory_id.id }}').val(),
         'scan_time': $('#edit-{{ formNetwork.scan_time.id }}').val(),
         'scan_weekday': $('#edit-{{ formNetwork.scan_weekday.id }}').val(),
       }
