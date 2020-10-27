@@ -4,6 +4,7 @@ from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
 from source.wizard import Network, NetworkType, NET, NETs
+from source.wizard import System, SystemType, SYS, SYSs
 import requests
 import os
 import subprocess
@@ -987,7 +988,7 @@ class NetworkAPI(Resource):
             db.session.add(network)
             db.session.commit()
         except Exception:
-            abort(500, message="Error while saving user to database.")
+            abort(500, message="Error while saving network to database.")
 
     def delete(self, network_id):
         """Delete a network by id."""
@@ -1013,6 +1014,81 @@ class NetworksAPI(Resource):
 
     def post(self):
         """Create a new network and return its id."""
+        pass
+
+    def put(self):
+        pass
+
+
+class SystemAPI(Resource):
+    """API resource for representing a single system."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+
+    def get(self, system_id):
+        """Get a single system by id."""
+        system = System.query.get(system_id)
+        if system:
+            return SYS.dump(system)
+        else:
+            abort(404, message="System with ID {} not found.".format(system_id))
+
+    def put(self, system_id):
+        """Update a system by id."""
+        self.parser.add_argument('name', type=str)
+        self.parser.add_argument('ip_address', type=str)
+        self.parser.add_argument('location', type=str)
+        self.parser.add_argument('scan_enabled', type=bool)
+        self.parser.add_argument('ids_enabled', type=bool)
+        self.parser.add_argument('types', type=int, action='append')
+        self.parser.add_argument('network_id', type=int)
+
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+
+        system = System.query.get(system_id)
+        if not system:
+            abort(404, message="System with ID {} not found. Nothing changed.".format(system_id))
+        system.name = self.args['name']
+        system.ip_address = self.args['ip_address']
+        system.scan_enabled = self.args['scan_enabled']
+        system.ids_enabled = self.args['ids_enabled']
+        system.network_id = self.args['network_id']
+        system.types = [SystemType.query.get(tid) for tid in self.args['types']]
+        try:
+            db.session.add(system)
+            db.session.commit()
+        except Exception:
+            abort(500, message="Error while saving system to database.")
+
+    def delete(self, system_id):
+        """Delete a system by id."""
+        system = System.query.get(system_id)
+        if system:
+            db.session.delete(system)
+            db.session.commit()
+            return '', 204
+        else:
+            abort(404, message="System with ID {} not found. Nothing deleted.".format(system_id))
+
+
+class SystemsAPI(Resource):
+    """API resource for representing multiple systems."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+
+    def get(self):
+        _systems = System.query.all()
+        return SYSs.dump(_systems)
+
+    def post(self):
+        """Create a new system and return its id."""
         pass
 
     def put(self):
