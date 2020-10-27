@@ -122,10 +122,17 @@ def systems():
     endpoint = WizardMiddleware.getMaxStep()
     if WizardMiddleware.compareSteps('wizard.systems', endpoint) < 1:
         formSystem = SystemForm(request.form)
-        formSystem.network_id.choices = [(t.id, f"{t.name} ({t.ip_address}/{t.cidr})") for t in Network.query.order_by('id')]
+        formSystem.network_id.choices = [(n.id, f"{n.name} ({n.ip_address}/{n.cidr})") for n in Network.query.order_by('id')]
         formSystem.types.choices = [(t.id, t.name) for t in SystemType.query.order_by('id')]
+        if request.method == 'POST':
+            if formSystem.validate():
+                newSystem = System()
+                formSystem.populate_obj(newSystem)  # Copies matching attributes from form onto newSystem
+                newSystem.types = [SystemType.query.get(tid) for tid in newSystem.types]  # Get actual type objects from their IDs
+                db.session.add(newSystem)
+                db.session.commit()
+                return redirect(url_for('wizard.systems'))
         systems = System.query.order_by(System.id.asc()).all()
-
         return render_template('systems.html', formSystem=formSystem, systems=systems)
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
@@ -300,9 +307,9 @@ class SystemSystemType(db.Model):
 
 class BOX4security(System):
     """Extension of System model for BOX4security."""
-    dns_id = db.Column(db.Integer, db.ForeignKey('system.id'), nullable=False)
+    dns_id = db.Column(db.Integer, db.ForeignKey('system.id'))
     dns = db.relationship("System", foreign_keys=[dns_id])
-    gateway_id = db.Column(db.Integer, db.ForeignKey('system.id'), nullable=False)
+    gateway_id = db.Column(db.Integer, db.ForeignKey('system.id'))
     gateway = db.relationship("System", foreign_keys=[gateway_id])
 
 
@@ -335,7 +342,8 @@ class SystemForm(ModelForm, FlaskForm):
         coerce=int
     )
     network_id = SelectField(
-        'Netz'
+        'Netz',
+        coerce=int
     )
 
 
