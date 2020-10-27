@@ -1,18 +1,16 @@
 {% extends "wizard/base.html" %}
 {% block content %}
     <div class="one column">
-        <div class="ui segment">
-            <div class="ui success message">
-                <div class="header">
-                Angabe und Klassifikation von Systemen
-                </div>
-                <p>
-                    Sie haben hier optional die Möglichkeit Systeme in Ihren angegeben Netzen zu hinterlegen. 
-                    Tragen Sie dazu bitte die IP-Adresse des Systems sowie eine Beschreibung ein. 
-                    Die Klassifikation hilft der bei der Darstellung von Alarmen sowie der Security-Analyse. 
-                    Ebenso können Sie hier Systeme gezielt von Schwachstellenscans oder der Traffic-Analyse ausnehmen.
-                </p>
+        <div class="ui success message">
+            <div class="header">
+            Angabe und Klassifikation von Systemen
             </div>
+            <p>
+                Sie haben hier optional die Möglichkeit Systeme in Ihren angegeben Netzen zu hinterlegen. 
+                Tragen Sie dazu bitte die IP-Adresse des Systems sowie eine Beschreibung ein. 
+                Die Klassifikation hilft der bei der Darstellung von Alarmen sowie der Security-Analyse. 
+                Ebenso können Sie hier Systeme gezielt von Schwachstellenscans oder der Traffic-Analyse ausnehmen.
+            </p>
         </div>
     </div>
     <div class="ui one column">
@@ -43,8 +41,8 @@
                 <tr>
                     <td data-label="Bezeichner">{{s.name}}</td>
                     <td data-label="Netz">{{s.network.name}}</td>
-                    <td data-label="IP-Adresse">{{s.ip_address}}/{{n.cidr}}</td>
-                    <td data-label="Typ">
+                    <td data-label="IP-Adresse">{{s.ip_address}}</td>
+                    <td class="collapsing" data-label="Typ">
                         {% if s.types|length > 1 %}
                             <div class="ui basic label">{{ s.types[0].name }}</div>
                             <span class="ui foursgrey-bg image label" data-position="bottom center"
@@ -66,8 +64,8 @@
                     {% endif %}
                     </td>
                     <!-- <td data-label="Ort">{{s.location}}</td> -->
-                    <td data-label="Schwachstellenscans">{{s.scan_enabled}}</td>
-                    <td data-label="Traffic-Analyse">{{s.ids_enabled}}</td>
+                    <td data-label="Schwachstellenscans"><i class="ui icon {% if s.scan_enabled %}green check{% else %} red x {% endif %}"></i></td>
+                    <td data-label="Traffic-Analyse"><i class="ui icon {% if s.ids_enabled %}green check{% else %} red x {% endif %}"></i></td>
                     <td class="collapsing" data-label="Aktion">
                         <a data-network-id="{{ s.id }}" data-tooltip="System bearbeiten" data-position="bottom center" data-action="edit" class="ui tiny icon button foursgrey-bg"><i class="edit icon"></i></a>
                         <a data-network-id="{{ s.id }}" data-tooltip="System löschen" data-position="bottom center" data-action="delete" class="ui icon tiny red button"><i class="trash alternate outline icon"></i></a>
@@ -92,7 +90,7 @@
                 Jetzt System hinzufügen!
             </h3>
             <div class="active content">
-                <form class="ui equal width large form" action="{{ url_for('wizard.networks') }}" method="POST" role="form">
+                <form class="ui equal width large form" action="{{ url_for('wizard.systems') }}" method="POST" role="form">
                     {{ formSystem.hidden_tag() }}
                     <div class="fields">
                         <div class="field">
@@ -116,6 +114,11 @@
                             {% endfor %}
                             </select>
                         </div>
+                        {% if formSystem.network_id.errors %}
+                            {% for e in formSystem.network_id.errors %}
+                            <p class="ui orange message">{{ e }}</p>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="fields">
                         <div class="five wide field">
@@ -146,16 +149,26 @@
                     <div class="fields">
                         <div class="inline field">
                             <div class="ui checked checkbox">
-                              <input type="checkbox" checked="" class="hidden">
+                              <input id="{{ formSystem.scan_enabled.id }}" name="{{ formSystem.scan_enabled.name }}" type="checkbox" checked="" class="hidden">
                               <label>Schwachstellenscans für dieses System durchführen</label>
                             </div>
                         </div>
+                        {% if formSystem.scan_enabled.errors %}
+                            {% for e in formSystem.scan_enabled.errors %}
+                            <p class="ui orange message">{{ e }}</p>
+                            {% endfor %}
+                        {% endif %}
                         <div class="inline field">
                             <div class="ui checked checkbox">
-                              <input type="checkbox" checked="" class="hidden">
+                              <input id="{{ formSystem.ids_enabled.id }}" name="{{ formSystem.ids_enabled.name }}" type="checkbox" checked="" class="hidden">
                               <label>Traffic-Analyse für dieses System durchführen</label>
                             </div>
                         </div>
+                        {% if formSystem.ids_enabled.errors %}
+                            {% for e in formSystem.ids_enabled.errors %}
+                            <p class="ui orange message">{{ e }}</p>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <button class="ui fluid large primary submit button" type="submit" name="button">Anlegen</button>
                 </form>
@@ -167,5 +180,6 @@
 <script type="text/javascript">
 $('.step.active').removeClass('active');
 $('#step-systems').addClass('active');
+$('.ui.label.foursgrey-bg').popup();
 </script>
 {% endblock %}
