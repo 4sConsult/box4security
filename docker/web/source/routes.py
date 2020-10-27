@@ -2,7 +2,7 @@
 from source import app, mail, db, userman, helpers
 from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.api import APIWizardReset
-from source.api import NetworkAPI, NetworksAPI
+from source.api import NetworkAPI, NetworksAPI, SystemAPI, SystemsAPI
 from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
 from source.api import APIWazuhAgentPass
@@ -43,7 +43,8 @@ api.add_resource(AlertMailer, '/api/alerts/mailer/')
 api.add_resource(APIWizardReset, '/api/wizard/reset')
 api.add_resource(NetworkAPI, '/api/networks/<network_id>')
 api.add_resource(NetworksAPI, '/api/networks/')
-
+api.add_resource(SystemAPI, '/api/systems/<system_id>')
+api.add_resource(SystemsAPI, '/api/systems/')
 # SMTP
 api.add_resource(APISMTP, '/api/config/smtp')
 api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
