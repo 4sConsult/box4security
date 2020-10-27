@@ -92,7 +92,6 @@ def networks():
             newNetwork = Network()
             formNetwork.populate_obj(newNetwork)  # Copies matching attributes from form onto newNetwork
             newNetwork.types = [NetworkType.query.get(tid) for tid in newNetwork.types]  # Get actual type objects from their IDs
-            # newNetwork.scan_category = ScanCategory.query.get(newNetwork.scancategory_id)  # Get actual scan_category objects from their ID
             db.session.add(newNetwork)
             db.session.commit()
             return redirect(url_for('wizard.networks'))
@@ -297,13 +296,6 @@ class SystemSystemType(db.Model):
     system_id = db.Column(db.Integer(), db.ForeignKey('system.id', ondelete='CASCADE'))
     systemtype_id = db.Column(db.Integer(), db.ForeignKey('systemtype.id', ondelete='CASCADE'))
 
-
-# class SystemNetwork(db.Model):
-#     """Association table for Systems and Networks."""
-#     __tablename__ = 'system_network'
-#     id = db.Column(db.Integer(), primary_key=True)
-#     system_id = db.Column(db.Integer(), db.ForeignKey('system.id', ondelete='CASCADE'))
-#     network_id = db.Column(db.Integer(), db.ForeignKey('network.id', ondelete='CASCADE'))
 
 class BOX4security(System):
     """Extension of System model for BOX4security."""
