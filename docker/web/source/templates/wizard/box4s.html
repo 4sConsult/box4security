@@ -70,7 +70,7 @@
                     {% endif %}
                 </div>
             </div>
-            <a class="ui large foursgrey-bg button">Eingaben speichern</a>
+            <button type="submit" class="ui large foursgrey-bg button">Eingaben speichern</button>
         </form>
     </div>
     </div>
@@ -80,4 +80,12 @@
 $('.step.active').removeClass('active');
 $('#step-box4s').addClass('active');
 </script>
+{% if box4s %}
+<script type="text/javascript">
+$('#{{formBOX4s.network_id.id}}').parent('.ui.dropdown').dropdown("set selected", {{box4s.network.id}});
+$('#{{formBOX4s.ip_address.id}}').val("{{box4s.ip_address}}");
+$('#{{formBOX4s.dns_id.id}}').parent('.ui.dropdown').dropdown("set selected", {{box4s.dns_id}});
+$('#{{formBOX4s.gateway_id.id}}').parent('.ui.dropdown').dropdown("set selected", {{box4s.gateway_id}});
+</script>
+{% endif %}
 {% endblock %}
