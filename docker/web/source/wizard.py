@@ -289,6 +289,38 @@ class SystemType(db.Model):
         return '{} ({})'.format(self.name, self.id)
 
 
+class SystemTypeSchema(ma.Schema):
+    """Role Schema for API representation."""
+
+    class Meta:
+        """Define fields which will be available."""
+
+        fields = ('id', 'name')
+
+
+class SystemSchema(ma.Schema):
+
+    types = fields.Nested(SystemTypeSchema, many=True)
+    scancategory = fields.Nested(ScanCategorySchema)
+    network = fields.Nested(NetworkSchema)
+
+    class Meta:
+        fields = (
+            'id',
+            'name',
+            'types',
+            'network',
+            'ip_address',
+            'location',
+            'scan_enabled',
+            'ids_enabled',
+        )
+
+
+SYS = SystemSchema()
+SYSs = SystemSchema(many=True)
+
+
 class SystemSystemType(db.Model):
     """Association table for System Types and Systems."""
     __tablename__ = 'system_systemtype'
