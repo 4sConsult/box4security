@@ -109,22 +109,21 @@ def box4s():
         formBOX4s.network_id.choices = [(t.id, f"{t.name} ({t.ip_address}/{t.cidr})") for t in Network.query.order_by('id')]
         formBOX4s.dns_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='DNS-Server'))]
         formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='Gateway'))]
+        BOX4s = System.query.order_by(System.id.asc()).filter(System.types.any(name='BOX4security')).first()
         if request.method == 'POST':
             if formBOX4s.validate():
-                BOX4s = BOX4security()
+                if not BOX4s:
+                    # BOX4s does not exist => create anew.
+                    BOX4s = BOX4security()
                 formBOX4s.populate_obj(BOX4s)  # Copies matching attributes from form onto box4s
                 BOX4s.name = "BOX4security"
                 BOX4s.ids_enabled = False
                 BOX4s.scan_enabled = False
                 BOX4s.types = [SystemType.query.filter(SystemType.name == 'BOX4security').first()]
-                oldBOX4s = System.query.order_by(System.id.asc()).filter(System.types.any(name='BOX4security')).first() 
-                db.session.delete(oldBOX4s) # delete previous BOX info
                 db.session.add(BOX4s)
                 db.session.commit()
                 return redirect(url_for('wizard.box4s'))
-                
-        box4s = System.query.order_by(System.id.asc()).filter(System.types.any(name='BOX4security')).first()
-        return render_template('box4s.html', formBOX4s=formBOX4s, box4s=box4s)
+        return render_template('box4s.html', formBOX4s=formBOX4s, box4s=BOX4s)
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen. Bitte geben Sie auf der Seite der Systeme mindestens einen DNS-Server sowie einen Gateway an, der für die BOX4security genutzt werden kann.', 'error')
         return redirect(url_for(endpoint))
