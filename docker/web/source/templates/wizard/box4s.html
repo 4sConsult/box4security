@@ -18,7 +18,7 @@
             <div class="two fields">
                 <div class="field">
                     <label>Netzzugehörigkeit BOX4security</label>
-                    <select name="{{formBOX4s.network_id.name}}" required="" class="ui dropdown">
+                    <select id="{{formBOX4s.network_id.id}}" name="{{formBOX4s.network_id.name}}" required="" class="ui dropdown">
                     <option value="">Netz</option>
                     {% for value in formBOX4s.network_id.choices %}
                         <option value="{{value[0]}}">{{value[1]}}</option>
@@ -43,7 +43,7 @@
             <div class="two fields">
                 <div class="field">
                     <label>DNS-Server BOX4security</label>
-                    <select name="{{formBOX4s.dns_id.name}}" required="" class="ui dropdown">
+                    <select id="{{formBOX4s.dns_id.id}}" name="{{formBOX4s.dns_id.name}}" required="" class="ui dropdown">
                     <option value="">DNS-Server</option>
                     {% for value in formBOX4s.dns_id.choices %}
                         <option value="{{value[0]}}">{{value[1]}}</option>
@@ -57,7 +57,7 @@
                 {% endif %}
                 <div class="field">
                     <label>Gateway BOX4security</label>
-                    <select name="{{formBOX4s.gateway_id.name}}" required="" class="ui dropdown">
+                    <select id="{{formBOX4s.gateway_id.id}}" name="{{formBOX4s.gateway_id.name}}" required="" class="ui dropdown">
                     <option value="">Gateway</option>
                     {% for value in formBOX4s.gateway_id.choices %}
                         <option value="{{value[0]}}">{{value[1]}}</option>
@@ -74,6 +74,9 @@
         </form>
     </div>
     </div>
+    <div class="ui one column">
+        <a href="{{ url_for('wizard.smtp') }}" class="ui large foursgrey-bg button">Weiter</a>
+    </div>
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">
@@ -82,10 +85,10 @@ $('#step-box4s').addClass('active');
 </script>
 {% if box4s %}
 <script type="text/javascript">
-$('#{{formBOX4s.network_id.id}}').parent('.ui.dropdown').dropdown("set selected", {{box4s.network.id}});
+$('#{{formBOX4s.network_id.id}}').parent('.ui.dropdown').dropdown("set selected", "{{box4s.network.id}}");
 $('#{{formBOX4s.ip_address.id}}').val("{{box4s.ip_address}}");
-$('#{{formBOX4s.dns_id.id}}').parent('.ui.dropdown').dropdown("set selected", {{box4s.dns_id}});
-$('#{{formBOX4s.gateway_id.id}}').parent('.ui.dropdown').dropdown("set selected", {{box4s.gateway_id}});
+$('#{{formBOX4s.dns_id.id}}').parent('.ui.dropdown').dropdown("set selected", "{{box4s.dns_id}}");
+$('#{{formBOX4s.gateway_id.id}}').parent('.ui.dropdown').dropdown("set selected", "{{box4s.gateway_id}}");
 </script>
 {% endif %}
 {% endblock %}
