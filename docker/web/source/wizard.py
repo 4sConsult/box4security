@@ -350,6 +350,8 @@ class SystemSystemType(db.Model):
 
 class BOX4security(System):
     """Extension of System model for BOX4security."""
+    def __init__(self):
+        self.types = [SystemType.query.filter(SystemType.name == 'BOX4security')]
     dns_id = db.Column(db.Integer, db.ForeignKey('system.id'))
     dns = db.relationship("System", foreign_keys=[dns_id])
     gateway_id = db.Column(db.Integer, db.ForeignKey('system.id'))
