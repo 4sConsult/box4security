@@ -150,7 +150,7 @@ def systems():
                 db.session.add(newSystem)
                 db.session.commit()
                 return redirect(url_for('wizard.systems'))
-        systems = System.query.order_by(System.id.asc()).all()
+        systems = System.query.order_by(System.id.asc()).filter(~System.types.any(name='BOX4security')).all()
         return render_template('systems.html', formSystem=formSystem, systems=systems)
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
