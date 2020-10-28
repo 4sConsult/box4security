@@ -47,7 +47,7 @@ class WizardMiddleware():
         """
         # DEBUG:
         return 'wizard.verify'
-        if BOX4security.query.count():
+        if BOX4security.query.order_by(BOX4security.id.asc()).filter(BOX4security.types.any(name='BOX4security')).count():
             # BOX4security exists, next step is smtp
             return 'wizard.smtp'
         if System.query.filter(~System.types.any(name='BOX4security')).count():
@@ -110,7 +110,7 @@ def box4s():
         formBOX4s.network_id.choices = [(t.id, f"{t.name} ({t.ip_address}/{t.cidr})") for t in Network.query.order_by('id')]
         formBOX4s.dns_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='DNS-Server'))]
         formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='Gateway'))]
-        BOX4s = System.query.order_by(System.id.asc()).filter(System.types.any(name='BOX4security')).first()
+        BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).filter(BOX4security.types.any(name='BOX4security')).first()
         if request.method == 'POST':
             if formBOX4s.validate():
                 if not BOX4s:
