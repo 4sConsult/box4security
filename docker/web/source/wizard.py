@@ -141,7 +141,7 @@ def systems():
     if WizardMiddleware.compareSteps('wizard.systems', endpoint) < 1:
         formSystem = SystemForm(request.form)
         formSystem.network_id.choices = [(n.id, f"{n.name} ({n.ip_address}/{n.cidr})") for n in Network.query.order_by('id')]
-        formSystem.types.choices = [(t.id, t.name) for t in SystemType.query.order_by('id')]
+        formSystem.types.choices = [(t.id, t.name) for t in SystemType.query.order_by('id').filter(SystemType.name != 'BOX4security')]
         if request.method == 'POST':
             if formSystem.validate():
                 newSystem = System()
