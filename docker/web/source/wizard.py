@@ -1,6 +1,7 @@
 from flask import redirect, Blueprint, render_template, url_for, request
 from flask.helpers import flash
 from wtforms_alchemy import ModelForm
+from sqlalchemy.exc import SQLAlchemyError
 from flask_wtf import FlaskForm
 from wtforms import SelectMultipleField, SelectField, TextField
 from source.extensions import db, ma
@@ -120,8 +121,13 @@ def box4s():
                 BOX4s.ids_enabled = False
                 BOX4s.scan_enabled = False
                 BOX4s.types = [SystemType.query.filter(SystemType.name == 'BOX4security').first()]
-                db.session.add(BOX4s)
-                db.session.commit()
+                try:
+                    db.session.add(BOX4s)
+                    db.session.commit()
+                except SQLAlchemyError:
+                    flash('Die Konfiguration konnte nicht gespeichert werden.', category="error")
+                else:
+                    flash('Die Konfiguration wurde entgegengenommen.', category="success")
                 return redirect(url_for('wizard.box4s'))
         return render_template('box4s.html', formBOX4s=formBOX4s, box4s=BOX4s)
     else:
