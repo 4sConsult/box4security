@@ -51,6 +51,7 @@ sudo docker rmi $(sudo docker images -a -q) || :
 ###################
 # CHANGES FOR STANDARD
 
+sudo apt-get install secure-delete
 
 ###################
 # CHANGES FOR MODULES
