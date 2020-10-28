@@ -171,7 +171,11 @@ def smtp():
 def verify():
     endpoint = WizardMiddleware.getMaxStep()
     if WizardMiddleware.compareSteps('wizard.verify', endpoint) < 1:
-        return render_template('verify.html')
+        networks = Network.query.order_by(Network.id.asc()).all()
+        systems = System.query.order_by(System.id.asc()).filter(~System.types.any(name='BOX4security')).all()
+        BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).filter(BOX4security.types.any(name='BOX4security')).first()
+        scan_categories = ScanCategory.query.order_by(ScanCategory.id.asc()).all()
+        return render_template('verify.html', networks=networks, systems=systems, box4s=BOX4s, scan_categories=scan_categories)
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
         return redirect(url_for(endpoint))
@@ -350,12 +354,39 @@ class SystemSystemType(db.Model):
 
 class BOX4security(System):
     """Extension of System model for BOX4security."""
-    def __init__(self):
-        self.types = [SystemType.query.filter(SystemType.name == 'BOX4security')]
     dns_id = db.Column(db.Integer, db.ForeignKey('system.id'))
-    dns = db.relationship("System", foreign_keys=[dns_id])
     gateway_id = db.Column(db.Integer, db.ForeignKey('system.id'))
-    gateway = db.relationship("System", foreign_keys=[gateway_id])
+    dns = db.relationship('System', foreign_keys=[dns_id])
+    gateway = db.relationship('System', foreign_keys=[gateway_id])
+
+    def __repr__(self):
+        return f"BOX4s () DNS:{self.dns.ip_address} Gateway:{self.gateway.ip_address}"
+
+
+class BOX4securitySchema(ma.Schema):
+
+    types = fields.Nested(SystemTypeSchema, many=True)
+    scancategory = fields.Nested(ScanCategorySchema)
+    network = fields.Nested(NetworkSchema)
+    dns = fields.Nested(SystemSchema)
+    gateway = fields.Nested(SystemSchema)
+
+    class Meta:
+        fields = (
+            'id',
+            'name',
+            'types',
+            'network',
+            'ip_address',
+            'location',
+            'scan_enabled',
+            'ids_enabled',
+            'dns',
+            'gateway',
+        )
+
+
+BOX4sSchema = BOX4securitySchema()
 
 
 class NetworkForm(ModelForm, FlaskForm):
