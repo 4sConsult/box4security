@@ -2,8 +2,8 @@
     cidr {
             address => [ "%{[source][ip]}" ]
             network => [ "{{n.ip_address}}/{{n.cidr}}" ]
-            add_field => {"[source][network][name]" => "{{n.name}}"
-            add_field => {"[source][network][vlan]" => "{{n.vlan}}"
+            add_field => {"[source][network][name]" => "{{n.name}}"}
+            add_field => {"[source][network][vlan]" => "{{n.vlan}}"}
             {% for t in n.types %}
             add_field => {"[source][network][types]" => "{{t.name}}" }
             {% endfor %}
@@ -11,8 +11,8 @@
     cidr {
             address => [ "%{[destination][ip]}" ]
             network => [ "{{n.ip_address}}/{{n.cidr}}" ]
-            add_field => {"[destination][network][name]" => "{{n.name}}"
-            add_field => {"[destination][network][vlan]" => "{{n.vlan}}"
+            add_field => {"[destination][network][name]" => "{{n.name}}"}
+            add_field => {"[destination][network][vlan]" => "{{n.vlan}}"}
             {% for t in n.types %}
             add_field => {"[destination][network][types]" => "{{t.name}}" }
             {% endfor %}
