@@ -6,6 +6,11 @@ from flask_wtf import FlaskForm
 from wtforms import SelectMultipleField, SelectField, TextField
 from source.extensions import db, ma
 from marshmallow import fields
+import os
+import shutil
+import stat
+import tempfile
+import re
 
 
 class WizardMiddleware():
@@ -173,6 +178,8 @@ def smtp():
 def verify():
     endpoint = WizardMiddleware.getMaxStep()
     if WizardMiddleware.compareSteps('wizard.verify', endpoint) < 1:
+        if request.method == 'POST':
+            return render_template('verify_progress.html')
         networks = Network.query.order_by(Network.id.asc()).all()
         systems = System.query.order_by(System.id.asc()).all()
         BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
@@ -181,6 +188,66 @@ def verify():
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
         return redirect(url_for(endpoint))
+
+
+def apply():
+    """Apply the configuration."""
+    # Step 0: Query Information.
+    networks = Network.query.order_by(Network.id.asc()).all()
+    systems = System.query.order_by(System.id.asc()).all()
+    BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
+
+    # Step 1: Set DNS in resolv.personal
+    with open('/var/lib/box4s/resolv.personal', 'w') as fd_resolv:
+        fd_resolv.write(f'nameserver {BOX4s.dns.ip_address}')
+    fd_resolv.close()
+
+    # Step 2: Set INT_IP in /etc/environment
+    tmp, tmp_path = tempfile.mkstemp(text=True)
+    statEnv = os.stat('/etc/environment')
+    with open('/etc/environment', 'r') as fd_env:
+        with open(tmp, 'w') as fd_tmp:
+            for line in fd_env:
+                if "KUNDE=" in line:
+                    line = "KUNDE={kunde}\n".format(kunde='NEWKUNDE')
+                elif "INT_IP=" in line:
+                    line = f"INT_IP={BOX4s.ip_address}\n"
+                fd_tmp.write(line)
+            fd_tmp.seek(0)
+        shutil.copy(tmp_path, '/etc/environment')
+    os.remove(tmp_path)
+    fd_env.close()
+    os.chown('/etc/environment', statEnv[stat.ST_UID], statEnv[stat.ST_GID])
+
+    # Step 3:
+
+    # Step 4: Apply networks to logstash configuration.
+
+    # Prepare list for IPs to drop and not track (ids_enabled = False)
+    drop_systems_iplist = ["f{ip_address}" for ip_address, in db.session.query(System.ip_address).filter(System.ids_enabled is False).all()]
+    drop_systems_iplist += ['localhost', '127.0.0.1', '127.0.0.53']
+    drop_systems_iplist += [f"{BOX4s.ip_address}"]
+
+    # Render the templates and fill with data
+    templateDrop = render_template('logstash/drop.jinja2', iplist=drop_systems_iplist)
+    templateNetworks = render_template('logstash/network.jinja2', networks=networks)
+    templateSystems = render_template('logstash/system.jinja2', systems=systems)
+
+    # Render the final template from smaller templates.
+    templateBOX4sSpecial = render_template('logstash/BOX4s-special.conf.jinja2', templateDrop=templateDrop, templateNetworks=templateNetworks, templateSystems=templateSystems)
+
+    # Write the replaced text to the original file, replacing it.
+    with open('/etc/box4s/logstash/BOX4s-special.conf', 'w', encoding='utf-8') as fd_4sspecial:
+        fd_4sspecial.write(templateBOX4sSpecial)
+
+    # Step 5: Apply INT_IP to Logstash Default.
+    with open('/etc/default/logstash', 'r', encoding='utf-8') as fd_deflogstash:
+        content = fd_deflogstash.read()
+        content = re.sub(r'(INT_IP=")([0-9\.]+)(")', r'\g<1>{}\g<3>'.format(BOX4s.ip_address), content)
+    with open('/etc/default/logstash', 'r', encoding='utf-8') as fd_deflogstash:
+        fd_deflogstash.write(content)
+
+    # Step 4: Set network configuration for BOX4security.
 
 
 class Network(db.Model):
