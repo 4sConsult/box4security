@@ -1,0 +1,20 @@
+{% for s in systems %}
+    if [source][ip] == "{{s.ip_address}}"
+    {
+        mutate {
+            add_field => {"[soure][host][name]" => "{{s.name}}" }
+            {% for t in s.types %}
+            add_field => {"[soure][host][type]" => "{{t.name}}" }
+            {% endfor %}
+        }
+    }
+    if [destination][ip] == "{{s.ip_address}}"
+    {
+       mutate {
+            add_field => {"[destination][host][name]" => "{{s.name}}" }
+            {% for t in s.types %}
+            add_field => {"[destination][host][type]" => "{{t.name}}" }
+            {% endfor %}
+        }
+    }
+{% endfor %}
