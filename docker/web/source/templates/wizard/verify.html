@@ -1,4 +1,12 @@
 {% extends "wizard/base.html" %}
+{% block head %}
+    <link rel="stylesheet" href="/static/external/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/box4s.css">
+    <title>BOX4Security</title>
+    <style type="text/css" media="print">
+        @page { size: landscape; }
+    </style>
+{% endblock %}
 {% block content %}
 <div class="one column">
         <div class="ui success message">
@@ -16,6 +24,7 @@
         </div>
     </div>
 <div class="one column">
+    <h3 class="ui dividing header">Netze</h3>
     <table id="tbl-networks" class="ui celled structured table">
         <thead>
             <tr>
@@ -77,6 +86,7 @@
       </table>
 </div>
 <div class="one column">
+    <h3 class="ui dividing header">Systeme</h3>
     <table id="tbl-systems" class="ui celled structured table">
         <thead>
             <tr>
@@ -128,25 +138,37 @@
     </table>
 </div>
 <div class="one column">
-    <div class="ui centered card">
-        <div class="content">
-            <a class="header">BOX4security</a>
-            <div class="description">
-              
-                IP-Adresse: {{box4s.ip_address}}<br>
-                Netzzugehörigkeit: {{box4s.network.name}} ({{box4s.network.ip_address}}/{{box4s.network.cidr}}) <br>
-                {{box4s.dns.name}}
-                DNS-Server: {{box4s.dns.name}} ({{box4s.dns.ip_address}}) <br>
-                Gateway: {{box4s.gateway.name}} ({{box4s.gateway.ip_address}}) <br>
-            </div>
-        </div>
-    </div>
+    <h3 class="ui dividing header">BOX4security</h3>
+    <table id="tbl-box4s" class="ui celled table">
+        <thead>
+            <tr>
+                <th rowspan="2">Bezeichner</th>
+                <th rowspan="2">Netz</th>
+                <th rowspan="2">IP-Adresse</th>
+                <!-- <th rowspan="2">Ort</th> -->
+                <th rowspan="2">DNS-Server</th>
+                <th rowspan="2">Gateway</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td data-label="Bezeichner">{{box4s.name}}</td>
+                <td data-label="Netz">{{box4s.network.name}}</td>
+                <td data-label="IP-Adresse">{{box4s.ip_address}}</td>
+                <td data-label="DNS-Server">{{box4s.dns.name}} ({{box4s.dns.ip_address}})</td>
+                <td data-label="Gateway">{{box4s.gateway.name}} ({{box4s.gateway.ip_address}})</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="one right aligned column">
+    <button onclick="window.print()" class="ui basic small button"><i class="ui icon print"></i>Seite drucken</button>
 </div>
 <div class="one column">
         <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
             <div class="ui field">
                 <div class="ui checkbox">
-                    <input type="checkbox" name="example">
+                    <input type="checkbox" name="confirm">
                     <label>Ich habe die gezeigten Informationen auf Korrektheit geprüft.</label>
                 </div>
             </div>
