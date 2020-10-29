@@ -165,14 +165,14 @@
     <button onclick="window.print()" class="ui basic small button"><i class="ui icon print"></i>Seite drucken</button>
 </div>
 <div class="one column">
-        <form class="ui large form" action="{{ url_for('user.login') }}" method="POST" role="form">
+        <form class="ui large form" action="{{ url_for('wizard.verify') }}" method="POST" role="form">
             <div class="ui field">
                 <div class="ui checkbox">
-                    <input type="checkbox" name="confirm">
+                    <input id="confirm" type="checkbox" name="confirm">
                     <label>Ich habe die gezeigten Informationen auf Korrektheit geprüft.</label>
                 </div>
             </div>
-            <button type="submit" class="ui large foursgrey-bg button">Einrichtung abschließen</button>
+            <button id="btn-confirm" type="submit" class="ui large foursgrey-bg button">Einrichtung abschließen</button>
         </form>
 </div>
 {% endblock %}
@@ -181,5 +181,16 @@
 $('.step.active').removeClass('active');
 $('#step-verify').addClass('active');
 $('.ui.label.foursgrey-bg').popup();
+</script>
+<script type="text/javascript">
+    $('#btn-confirm').on('click', (e) => {
+        e.preventDefault();
+        if($('#confirm').parent().checkbox('is checked'))
+        {
+            $('.ui.form').submit();
+        } else {
+            alert("Bitte prüfen Sie die gezeigten Informationen und bestätigen Sie dies durch Setzen des erforderlichen Hakens.");
+        }
+    });
 </script>
 {% endblock %}
