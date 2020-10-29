@@ -179,6 +179,7 @@ def verify():
     endpoint = WizardMiddleware.getMaxStep()
     if WizardMiddleware.compareSteps('wizard.verify', endpoint) < 1:
         if request.method == 'POST':
+            apply()
             return render_template('verify_progress.html')
         networks = Network.query.order_by(Network.id.asc()).all()
         systems = System.query.order_by(System.id.asc()).all()
@@ -199,12 +200,11 @@ def apply():
 
     # Step 1: Set DNS in resolv.personal
     with open('/var/lib/box4s/resolv.personal', 'w') as fd_resolv:
-        fd_resolv.write(f'nameserver {BOX4s.dns.ip_address}')
+        fd_resolv.write(f'nameserver {BOX4s.dns.ip_address}\n')
     fd_resolv.close()
 
     # Step 2: Set INT_IP in /etc/environment
     tmp, tmp_path = tempfile.mkstemp(text=True)
-    statEnv = os.stat('/etc/environment')
     with open('/etc/environment', 'r') as fd_env:
         with open(tmp, 'w') as fd_tmp:
             for line in fd_env:
@@ -214,11 +214,9 @@ def apply():
                     line = f"INT_IP={BOX4s.ip_address}\n"
                 fd_tmp.write(line)
             fd_tmp.seek(0)
-        shutil.copy(tmp_path, '/etc/environment')
+        shutil.copyfile(tmp_path, '/etc/environment')
     os.remove(tmp_path)
     fd_env.close()
-    os.chown('/etc/environment', statEnv[stat.ST_UID], statEnv[stat.ST_GID])
-
     # Step 3:
 
     # Step 4: Apply networks to logstash configuration.
@@ -243,14 +241,15 @@ def apply():
     # Step 5: Apply INT_IP to Logstash Default.
     with open('/etc/default/logstash', 'r', encoding='utf-8') as fd_deflogstash:
         content = fd_deflogstash.read()
-        content = re.sub(r'(INT_IP=")([0-9\.]+)(")', r'\g<1>{}\g<3>'.format(BOX4s.ip_address), content)
-    with open('/etc/default/logstash', 'r', encoding='utf-8') as fd_deflogstash:
+        content = re.sub(r'(INT_IP=)([0-9\.]+)()', r'\g<1>{}'.format(BOX4s.ip_address), content)
+        content = re.sub(r'(KUNDE=)(\w+)()', r'\g<1>{}'.format("NEWKUNDE"), content)
+    with open('/etc/default/logstash', 'w', encoding='utf-8') as fd_deflogstash:
         fd_deflogstash.write(content)
 
     # Step 6: Set network configuration for BOX4security.
     templateNetplan = render_template('logstash/netplan.yaml.jinja2', BOX4s=BOX4s)
-    with open('/etc/netplan/10-BOX4security.yaml', 'w', encoding='utf-8') as fd_netplan:
-        fd_netplan.wite(templateNetplan)
+    with open('/etc/_netplan/10-BOX4security.yaml', 'w', encoding='utf-8') as fd_netplan:
+        fd_netplan.write(templateNetplan)
 
 
 class Network(db.Model):
