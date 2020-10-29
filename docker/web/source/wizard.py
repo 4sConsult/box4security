@@ -47,10 +47,10 @@ class WizardMiddleware():
         """
         # DEBUG:
         return 'wizard.verify'
-        if BOX4security.query.order_by(BOX4security.id.asc()).filter(BOX4security.types.any(name='BOX4security')).count():
+        if BOX4security.query.order_by(BOX4security.id.asc()).count():
             # BOX4security exists, next step is smtp
             return 'wizard.smtp'
-        if System.query.filter(~System.types.any(name='BOX4security')).count():
+        if System.query.count():
             # Systems apart from BOX4s exist, next step is box4s
             return 'wizard.box4s'
         elif Network.query.count():
@@ -110,7 +110,7 @@ def box4s():
         formBOX4s.network_id.choices = [(t.id, f"{t.name} ({t.ip_address}/{t.cidr})") for t in Network.query.order_by('id')]
         formBOX4s.dns_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='DNS-Server'))]
         formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='Gateway'))]
-        BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).filter(BOX4security.types.any(name='BOX4security')).first()
+        BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
         if request.method == 'POST':
             if formBOX4s.validate():
                 if not BOX4s:
@@ -121,6 +121,8 @@ def box4s():
                 BOX4s.ids_enabled = False
                 BOX4s.scan_enabled = False
                 BOX4s.types = [SystemType.query.filter(SystemType.name == 'BOX4security').first()]
+                BOX4s.dns = System.query.get(BOX4s.dns_id)
+                BOX4s.gateway = System.query.get(BOX4s.gateway_id)
                 try:
                     db.session.add(BOX4s)
                     db.session.commit()
@@ -150,7 +152,7 @@ def systems():
                 db.session.add(newSystem)
                 db.session.commit()
                 return redirect(url_for('wizard.systems'))
-        systems = System.query.order_by(System.id.asc()).filter(~System.types.any(name='BOX4security')).all()
+        systems = System.query.order_by(System.id.asc()).all()
         return render_template('systems.html', formSystem=formSystem, systems=systems)
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
@@ -172,8 +174,8 @@ def verify():
     endpoint = WizardMiddleware.getMaxStep()
     if WizardMiddleware.compareSteps('wizard.verify', endpoint) < 1:
         networks = Network.query.order_by(Network.id.asc()).all()
-        systems = System.query.order_by(System.id.asc()).filter(~System.types.any(name='BOX4security')).all()
-        BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).filter(BOX4security.types.any(name='BOX4security')).first()
+        systems = System.query.order_by(System.id.asc()).all()
+        BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
         scan_categories = ScanCategory.query.order_by(ScanCategory.id.asc()).all()
         return render_template('verify.html', networks=networks, systems=systems, box4s=BOX4s, scan_categories=scan_categories)
     else:
@@ -204,6 +206,7 @@ class Network(db.Model):
     scan_weekday = db.Column(db.String(24))  # lower case
     scan_time = db.Column(db.Time())  # Start time for scan
     systems = db.relationship('System', backref='network')
+    boxes4security = db.relationship('BOX4security', backref='network')
 
     def __repr__(self):
         """Print Network in human readable form."""
@@ -352,15 +355,32 @@ class SystemSystemType(db.Model):
     systemtype_id = db.Column(db.Integer(), db.ForeignKey('systemtype.id', ondelete='CASCADE'))
 
 
-class BOX4security(System):
-    """Extension of System model for BOX4security."""
+class BOX4securitySystemType(db.Model):
+    """Association table for System Types and BOX4security."""
+    __tablename__ = 'box4security_systemtype'
+    id = db.Column(db.Integer(), primary_key=True)
+    box4security = db.Column(db.Integer(), db.ForeignKey('box4security.id', ondelete='CASCADE'))
+    systemtype_id = db.Column(db.Integer(), db.ForeignKey('systemtype.id', ondelete='CASCADE'))
+
+
+class BOX4security(db.Model):
+    """Extension of BOX4security model."""
+    __tablename__ = 'box4security'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(100), unique=True)
+    ip_address = db.Column(db.String(24))  # BOX4security IP Address
+    types = db.relationship('SystemType', secondary='box4security_systemtype')
+    location = db.Column(db.String(255))  # BOX4security Location
+    scan_enabled = db.Column(db.Boolean(), default=False)  # Scans active
+    ids_enabled = db.Column(db.Boolean(), default=False)  # IDS enabled
+    network_id = db.Column(db.Integer, db.ForeignKey('network.id'))
     dns_id = db.Column(db.Integer, db.ForeignKey('system.id'))
     gateway_id = db.Column(db.Integer, db.ForeignKey('system.id'))
-    dns = db.relationship('System', foreign_keys=[dns_id])
-    gateway = db.relationship('System', foreign_keys=[gateway_id])
+    dns = db.relationship('System', foreign_keys=[dns_id], uselist=False)
+    gateway = db.relationship('System', foreign_keys=[gateway_id], uselist=False)
 
     def __repr__(self):
-        return f"BOX4s () DNS:{self.dns.ip_address} Gateway:{self.gateway.ip_address}"
+        return f"BOX4s ({self.ip_address}) DNS:{self.dns.ip_address} Gateway:{self.gateway.ip_address}"
 
 
 class BOX4securitySchema(ma.Schema):
