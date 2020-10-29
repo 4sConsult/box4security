@@ -247,7 +247,10 @@ def apply():
     with open('/etc/default/logstash', 'r', encoding='utf-8') as fd_deflogstash:
         fd_deflogstash.write(content)
 
-    # Step 4: Set network configuration for BOX4security.
+    # Step 6: Set network configuration for BOX4security.
+    templateNetplan = render_template('logstash/netplan.yaml.jinja2', BOX4s=BOX4s)
+    with open('/etc/netplan/10-BOX4security.yaml', 'w', encoding='utf-8') as fd_netplan:
+        fd_netplan.wite(templateNetplan)
 
 
 class Network(db.Model):
