@@ -11,7 +11,7 @@ if [[ ! -w $LOG_DIR ]]; then
 fi
 
 sudo chown -R root:44269 /var/log/box4s
-sudo chmod 760 -R /var/log/box4s
+sudo chmod 770 -R /var/log/box4s
 
 FULL_LOG=$LOG_DIR/install.log
 ERROR_LOG=$LOG_DIR/install.err.log
@@ -279,7 +279,7 @@ sudo chown root:root /var/lib/box4s
 sudo chmod -R 777 /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
 sudo chown -R root:44269 /var/lib/box4s
-sudo chmod 760 -R /var/lib/box4s
+sudo chmod 770 -R /var/lib/box4s
 echo -n " varlib_box4s " 1>&3
 
 # Setup PostgreSQL volume
@@ -303,7 +303,7 @@ sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
 sudo chown -R root:44269 /etc/box4s/logstash
-sudo chmod 760 -R /etc/box4s/logstash
+sudo chmod 770 -R /etc/box4s/logstash
 echo -n " etcbox4s_logstash " 1>&3
 
 # Setup Logstash volume
@@ -366,6 +366,15 @@ done
 ##################################################
 banner "BOX4security ..."
 
+echo -n "Setting environmental permissions.. " 1>&3
+sudo chown -R root:44269 /etc/environment
+sudo chmod 770 -R /etc/environment
+sudo chown -R root:44269 /etc/default/logstash
+sudo chmod 770 -R /etc/default/logstash
+sudo chown -R root:44269 /etc/netplan
+sudo chmod 770 -R /etc/netplan
+echo " [ OK ]" 1>&3
+
 echo -n "Setting hostname.. " 1>&3
 hostname box4security
 echo "127.0.0.1 box4security" >> /etc/hosts
@@ -406,7 +415,6 @@ echo " [ OK ]" 1>&3
 
 echo -n "Setting system environment variables.. " 1>&3
 set +e
-echo "### Setup system variables"
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
@@ -489,7 +497,7 @@ banner "Docker ..."
 
 echo -n "Downloading BOX4security software images. This may take a long time.. " 1>&3
 # Login to docker registry
-sudo docker login registry.gitlab.com -u deploy -p mPwNxthpxvmQSaZnv3xZ
+sudo docker login registry.gitlab.com -u deploy -p $token
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 echo " [ OK ] " 1>&3
