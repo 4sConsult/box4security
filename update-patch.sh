@@ -30,6 +30,18 @@ sudo docker rmi $(sudo docker images -a -q) || :
 ###################
 # CHANGES FOR STANDARD
 
+echo -n "Setting environmental permissions.. " 1>&3
+sudo chown -R root:44269 /etc/environment
+sudo chmod 770 -R /etc/environment
+sudo chown -R root:44269 /var/lib/box4s/
+sudo chmod 770 -R /var/lib/box4s/
+sudo chown -R root:44269 /etc/box4s/logstash
+sudo chmod 770 -R /etc/box4s/logstash
+sudo chown -R root:44269 /etc/default/logstash
+sudo chmod 770 -R /etc/default/logstash
+sudo chown -R root:44269 /etc/netplan
+sudo chmod 770 -R /etc/netplan
+echo " [ OK ]" 1>&3
 
 ###################
 # CHANGES FOR MODULES
