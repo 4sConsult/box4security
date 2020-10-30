@@ -447,6 +447,7 @@ class BOX4security(db.Model):
     gateway_id = db.Column(db.Integer, db.ForeignKey('system.id'))
     dns = db.relationship('System', foreign_keys=[dns_id], uselist=False)
     gateway = db.relationship('System', foreign_keys=[gateway_id], uselist=False)
+    dhcp_enabled = db.Column(db.Boolean(), default=False)  # dhcp enabled
 
     def __repr__(self):
         return f"BOX4s ({self.ip_address}) DNS:{self.dns.ip_address} Gateway:{self.gateway.ip_address}"
@@ -470,6 +471,7 @@ class BOX4securitySchema(ma.Schema):
             'location',
             'scan_enabled',
             'ids_enabled',
+            'dhcp enabled',
             'dns',
             'gateway',
         )
