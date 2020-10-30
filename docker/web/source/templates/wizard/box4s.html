@@ -14,7 +14,19 @@
         </div>
         <form class="ui form" action="" method="POST" role="form">
             {{ formBOX4s.hidden_tag() }}
-            <h4 class="ui dividing header">Netzkonfiguration BOX4security</h4>
+            <h3 class="ui dividing header">Netzkonfiguration BOX4security</h3>
+            <div class="centered inline field">
+                <div class="ui toggle checkbox">
+                    <input id="{{ formBOX4s.dhcp_enabled.id }}" name="{{ formBOX4s.dhcp_enabled.name }}" type="checkbox" class="hidden">
+                    <label>DHCP verwenden</label>
+                </div>
+            </div>
+            {% if formBOX4s.dhcp_enabled.errors %}
+                {% for e in formBOX4s.dhcp_enabled.errors %}
+                <p class="ui orange message">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+            <h5 class="ui dividing header"> - oder -</h5>
             <div class="two fields">
                 <div class="field">
                     <label>Netzzugehörigkeit BOX4security</label>
@@ -85,10 +97,32 @@ $('#step-box4s').addClass('active');
 </script>
 {% if box4s %}
 <script type="text/javascript">
+$('#{{formBOX4s.dhcp_enabled.id}}').parent('.ui.checkbox').checkbox('setting', 'onChange', function () {
+    if($('#{{formBOX4s.dhcp_enabled.id}}').parent('.ui.checkbox').checkbox('is checked')) {
+        $('#{{formBOX4s.network_id.id}}').parent('.ui.dropdown').addClass("disabled");
+        $('#{{formBOX4s.ip_address.id}}').prop('disabled', true);
+        $('#{{formBOX4s.dns_id.id}}').parent('.ui.dropdown').addClass("disabled");
+        $('#{{formBOX4s.gateway_id.id}}').parent('.ui.dropdown').addClass("set disabled");
+    } else {
+        $('#{{formBOX4s.network_id.id}}').parent('.ui.dropdown').removeClass("disabled");
+        $('#{{formBOX4s.ip_address.id}}').prop('disabled', false);
+        $('#{{formBOX4s.dns_id.id}}').parent('.ui.dropdown').removeClass("disabled");
+        $('#{{formBOX4s.gateway_id.id}}').parent('.ui.dropdown').removeClass("disabled");
+    }
+});
+
 $('#{{formBOX4s.network_id.id}}').parent('.ui.dropdown').dropdown("set selected", "{{box4s.network.id}}");
 $('#{{formBOX4s.ip_address.id}}').val("{{box4s.ip_address}}");
 $('#{{formBOX4s.dns_id.id}}').parent('.ui.dropdown').dropdown("set selected", "{{box4s.dns_id}}");
 $('#{{formBOX4s.gateway_id.id}}').parent('.ui.dropdown').dropdown("set selected", "{{box4s.gateway_id}}");
+
+{% if box4s.dhcp_enabled %}
+$('#{{formBOX4s.network_id.id}}').parent('.ui.dropdown').addClass("disabled");
+$('#{{formBOX4s.ip_address.id}}').prop('disabled', true);
+$('#{{formBOX4s.dns_id.id}}').parent('.ui.dropdown').addClass("disabled");
+$('#{{formBOX4s.gateway_id.id}}').parent('.ui.dropdown').addClass("disabled");
+$('#{{formBOX4s.dhcp_enabled.id}}').parent('.ui.checkbox').checkbox("set checked");
+{% endif %}
 </script>
 {% endif %}
 {% endblock %}
