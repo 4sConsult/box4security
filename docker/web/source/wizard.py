@@ -471,7 +471,7 @@ class BOX4securitySchema(ma.Schema):
             'location',
             'scan_enabled',
             'ids_enabled',
-            'dhcp enabled',
+            'dhcp_enabled',
             'dns',
             'gateway',
         )
