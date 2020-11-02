@@ -139,6 +139,7 @@
 </div>
 <div class="one column">
     <h3 class="ui dividing header">BOX4security</h3>
+    
     <table id="tbl-box4s" class="ui celled table">
         <thead>
             <tr>
@@ -154,12 +155,18 @@
             <tr>
                 <td data-label="Bezeichner">{{box4s.name}}</td>
                 <td data-label="Netz">{{box4s.network.name}}</td>
+                {% if box4s.dhcp_enabled %}
+                <td colspan="2" data-label="DHCP">DHCP aktiviert <i class="icon green check"></i></td>
+                {% else %}
                 <td data-label="IP-Adresse">{{box4s.ip_address}}</td>
                 <td data-label="DNS-Server">{{box4s.dns.name}} ({{box4s.dns.ip_address}})</td>
                 <td data-label="Gateway">{{box4s.gateway.name}} ({{box4s.gateway.ip_address}})</td>
+                {% endif %}
             </tr>
         </tbody>
     </table>
+    
+    
 </div>
 <div class="one right aligned column">
     <button onclick="window.print()" class="ui basic small button"><i class="ui icon print"></i>Seite drucken</button>
