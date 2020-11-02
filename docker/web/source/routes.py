@@ -15,6 +15,7 @@ from flask import render_template, send_from_directory, request, abort, send_fil
 from flask_user import login_required, current_user, roles_required, EmailError
 from flask_mail import Message
 from source.forms import AddUserForm
+from source.wizard import WizardMiddleware
 import os
 import re
 
@@ -53,6 +54,13 @@ api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
 api.add_resource(APIModules, '/api/modules')
 
 api.add_resource(APIWazuhAgentPass, '/api/config/wazuh')
+
+
+@app.before_request
+def check_if_wizard():
+    """Before every request check if the wizard shall be shown and redirect to it if needed."""
+    if WizardMiddleware.isShowWizard():
+        return redirect(url_for("wizard.index"))
 
 
 @app.before_request
