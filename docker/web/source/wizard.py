@@ -5,6 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_wtf import FlaskForm
 from wtforms import SelectMultipleField, SelectField, TextField
 from source.extensions import db, ma
+from source.models import User
 from marshmallow import fields
 import os
 import shutil
@@ -39,9 +40,12 @@ class WizardMiddleware():
         # if the Wizard shall not be shown, cleanly exit the middleware without doing anything and continue the application flow.
         return self.app(environ, start_response)
 
-    def isShowWizard(self):
-        """Evaluate whether the Wizard shall be displayed."""
-        return True
+    @staticmethod
+    def isShowWizard():
+        """Evaluate whether the Wizard shall be displayed.
+
+        Currently, the wizard is shown, if no user exists and not BOX4s info was entered."""
+        return not User.query.count() and not BOX4security.query.count()
 
     @staticmethod
     def getMaxStep():
@@ -50,11 +54,9 @@ class WizardMiddleware():
         For example:
         Returns 'wizard.systems' if the user has recently completed the box4s step but not yet the systems step.
         """
-        # DEBUG:
-        return 'wizard.verify'
         if BOX4security.query.order_by(BOX4security.id.asc()).count():
-            # BOX4security exists, next step is smtp
-            return 'wizard.smtp'
+            # BOX4security exists, next step is smtp or verify
+            return 'wizard.verify'
         if System.query.count():
             # Systems apart from BOX4s exist, next step is box4s
             return 'wizard.box4s'
