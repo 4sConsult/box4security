@@ -4,7 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [X.X.X](https://gitlab.com/4sconsult/box4s/-/tags/X.X.X) - 2020-11-11
 
 ### Added
-* Neue Oberfläche Discover im Bereich SIEM eingefügt. Hier können die Daten, welche die BOX4security aufzeichnet detailliert durchsucht werden.
+* Neue Oberfläche Discover im Bereich SIEM eingefügt. Hier können die Daten, welche die BOX4security aufzeichnet, detailliert durchsucht werden. Um diesen Bereich als nicht Super Admin zu erreichen ist die Rolle *Einsicht und Bearbeiten der BOX4s-Konfiguration* notwendig.
 
 ### Changed
 
