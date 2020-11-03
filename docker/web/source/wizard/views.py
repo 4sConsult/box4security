@@ -46,7 +46,9 @@ def box4s():
         formBOX4s = BOX4sForm(request.form)
         formBOX4s.network_id.choices = [(n.id, f"{n.name} ({n.ip_address}/{n.cidr})") for n in Network.query.order_by('id')]
         formBOX4s.dns_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='DNS-Server'))]
+        formBOX4s.dns_id.choices += [(-1, "Andere..")]
         formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='Gateway'))]
+        formBOX4s.gateway_id.choices += [(-1, "Andere..")]
         BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
         if request.method == 'POST':
             if formBOX4s.validate():
