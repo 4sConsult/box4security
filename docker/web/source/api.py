@@ -983,7 +983,10 @@ class NetworkAPI(Resource):
         network.scancategory_id = self.args['scancategory_id']
         network.scan_weekday = self.args['scan_weekday']
         network.scan_time = self.args['scan_time']
-        network.types = [NetworkType.query.get(tid) for tid in self.args['types']]
+        if self.args['types']:
+            network.types = [NetworkType.query.get(tid) for tid in self.args['types']]
+        else:
+            network.types = []
         try:
             db.session.add(network)
             db.session.commit()
@@ -1058,7 +1061,10 @@ class SystemAPI(Resource):
         system.scan_enabled = self.args['scan_enabled']
         system.ids_enabled = self.args['ids_enabled']
         system.network_id = self.args['network_id']
-        system.types = [SystemType.query.get(tid) for tid in self.args['types']]
+        if self.args['args']:
+            system.types = [SystemType.query.get(tid) for tid in self.args['types']]
+        else:
+            system.types = []
         try:
             db.session.add(system)
             db.session.commit()

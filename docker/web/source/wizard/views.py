@@ -28,7 +28,8 @@ def networks():
         if formNetwork.validate():
             newNetwork = Network()
             formNetwork.populate_obj(newNetwork)  # Copies matching attributes from form onto newNetwork
-            newNetwork.types = [NetworkType.query.get(tid) for tid in newNetwork.types]  # Get actual type objects from their IDs
+            if newNetwork.types:
+                newNetwork.types = [NetworkType.query.get(tid) for tid in newNetwork.types]  # Get actual type objects from their IDs
             db.session.add(newNetwork)
             db.session.commit()
             return redirect(url_for('wizard.networks'))
@@ -84,7 +85,8 @@ def systems():
             if formSystem.validate():
                 newSystem = System()
                 formSystem.populate_obj(newSystem)  # Copies matching attributes from form onto newSystem
-                newSystem.types = [SystemType.query.get(tid) for tid in newSystem.types]  # Get actual type objects from their IDs
+                if newSystem.types:
+                    newSystem.types = [SystemType.query.get(tid) for tid in newSystem.types]  # Get actual type objects from their IDs
                 db.session.add(newSystem)
                 db.session.commit()
                 return redirect(url_for('wizard.systems'))
