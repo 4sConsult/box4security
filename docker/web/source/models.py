@@ -33,7 +33,7 @@ class User(db.Model, UserMixin):
         # But if the user is a super admin, always return true, as they are allowed to to everything
         # Make exception for expertmode since it is not actually a role
         for r in self.roles:
-            if r.name == role or (r.name == "Super Admin" and r.name != "Expertrmode"):
+            if r.name == role or r.name == "Super Admin":
                 return True
         return False
 
