@@ -1061,7 +1061,7 @@ class SystemAPI(Resource):
         system.scan_enabled = self.args['scan_enabled']
         system.ids_enabled = self.args['ids_enabled']
         system.network_id = self.args['network_id']
-        if self.args['args']:
+        if self.args['types']:
             system.types = [SystemType.query.get(tid) for tid in self.args['types']]
         else:
             system.types = []
