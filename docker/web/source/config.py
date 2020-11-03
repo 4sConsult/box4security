@@ -109,4 +109,5 @@ RoleURLs = [
     {'name': 'Wiki', 'url': '/docs'},
     {'name': 'Alerts', 'url': '/alerts'},
     {'name': 'Config', 'url': '/config'},
+    {'name': 'Expertmode', 'url': '/siem-discover'},
 ]

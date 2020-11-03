@@ -18,6 +18,9 @@
             <a data-tab="mail" class="item active">
               Mail
             </a>
+            <a data-tab="usermode" class="item">
+              Benutzeroberfläche
+            </a>
             {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}
             <a data-tab="wazuh" class="item">
               Wazuh
@@ -75,7 +78,7 @@
                         <br>
                         <small class="helper">Sollte der Mail-Server ein selbstsigniertes Zertifikat verwenden, laden Sie es hier hoch.</small>
                       </div>
-                    </div>         
+                    </div>
                   </div>
                 </div>
                 <div class="field">
@@ -94,6 +97,14 @@
                 <button class="ui green button" type="submit">Änderungen anwenden</button>
                 <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
               </form>
+          </div>
+          <div data-tab="usermode" class="ui bottom attached tab segment">
+            Durch die Aktivierung des Expertenmodus werden zusätzliche Features der BOX4Security aktiviert. Die Benutzung dieser Features erfordert zusätzliches Wissen.
+            <br><br>
+            <div class="ui toggle checkbox">
+              <input type="checkbox" id="mode-change">
+              <label>Expertenmodus</label>
+            </div>
           </div>
           {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}
           <div id='wazuh-segment' data-tab="wazuh" class="ui bottom attached tab segment">
@@ -154,7 +165,22 @@
       document.getElementById('senderMail').value = jso.SMTP_SENDER_MAIL;
       document.getElementById('smtpUsername').value = jso.SMTP_USERNAME;
     });
-  }  
+  }
+  </script>
+  <script type="text/javascript">
+    var ExpertcheckBox = document.getElementById("mode-change");
+    ExpertcheckBox.addEventListener( 'change', function() {
+    if(this.checked) {
+      console.log("Checked")
+      //give user role expert
+      //checked
+    } else {
+      console.log("Unchecked")
+      //remove user role  expert
+      console.log(1);
+      //not checked
+    }
+});
   </script>
   <script type="text/javascript">
     const waitForWeb = async () =>  {
@@ -198,7 +224,7 @@
         msg.classList.add("success");
         msg.innerHTML = '<div class="header">SMTP-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen.</p>'
         $('#formSMTP').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
-    } else { 
+    } else {
         msg.classList.add("error");
         msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.';
     }
@@ -210,7 +236,7 @@
         window.location = window.location.pathname;
       }, 15000);
     }
-    
+
     });
   </script>
 {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}
