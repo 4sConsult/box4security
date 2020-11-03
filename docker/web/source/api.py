@@ -3,8 +3,8 @@ from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
-from source.wizard import Network, NetworkType, NET, NETs
-from source.wizard import System, SystemType, SYS, SYSs
+from source.wizard.models import Network, NetworkType, System, SystemType
+from source.wizard.schemas import SYS, SYSs, NET, NETs
 import requests
 import os
 import subprocess

@@ -1,0 +1,27 @@
+{% extends "wizard/base.html" %}
+{% block content %}
+{% from "user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
+    <div class="one column">
+        <div class="ui segment">
+            <div class="ui success message">
+                <div class="header">
+                Initiale Einrichtung der BOX4security
+                </div>
+                <p>
+                    Zur Benutzung der BOX4security ist eine initale Einrichtung erforderlich. <br>
+                    Die Einrichtung erfolgt über eine Reihe von Formularen, die Sie nacheinander bearbeiten. <br>
+                    Nach Bestätigung jedes Schrittes werden die hinterlegten Daten gespeichert. <br>
+                    Sie haben jederzeit die Möglichkeit innerhalb der Schritte zurückzuspringen, um eine Einstellung zu korrigieren. <br>
+                    Nachdem Sie in Schritt 6 die Daten abschließend geprüft haben, werden die Änderungen wirksam.
+                </p>
+            </div>
+            <a href="{{ url_for('wizard.networks') }}" class="ui large foursgrey-bg button">Einrichtung starten</a>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$('.step.active').removeClass('active');
+$('#step-index').addClass('active');
+</script>
+{% endblock %}

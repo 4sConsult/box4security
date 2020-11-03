@@ -15,10 +15,9 @@ from flask import render_template, send_from_directory, request, abort, send_fil
 from flask_user import login_required, current_user, roles_required, EmailError
 from flask_mail import Message
 from source.forms import AddUserForm
-from source.wizard import WizardMiddleware
+from source.wizard.middleware import WizardMiddleware
 import os
 import re
-
 
 api = Api(app)
 

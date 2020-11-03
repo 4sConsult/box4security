@@ -8,7 +8,7 @@ Create Date: 2020-10-21 10:01:06.180863
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
-from source.wizard import SystemType, NetworkType, ScanCategory
+from source.wizard.models import SystemType, NetworkType, ScanCategory
 # revision identifiers, used by Alembic.
 revision = 'b1685fc5f49c'
 down_revision = '9a02836f6117'
