@@ -18,9 +18,6 @@
             <a data-tab="mail" class="item active">
               Mail
             </a>
-            <a data-tab="usermode" class="item">
-              Benutzeroberfläche
-            </a>
             {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}
             <a data-tab="wazuh" class="item">
               Wazuh
@@ -98,14 +95,6 @@
                 <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
               </form>
           </div>
-          <div data-tab="usermode" class="ui bottom attached tab segment">
-            Durch die Aktivierung des Expertenmodus werden zusätzliche Features der BOX4Security aktiviert. Die Benutzung dieser Features erfordert zusätzliches Wissen.
-            <br><br>
-            <div class="ui toggle checkbox">
-              <input type="checkbox" id="mode-change">
-              <label>Expertenmodus</label>
-            </div>
-          </div>
           {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}
           <div id='wazuh-segment' data-tab="wazuh" class="ui bottom attached tab segment">
             <!-- Wazuh-->
@@ -166,22 +155,6 @@
       document.getElementById('smtpUsername').value = jso.SMTP_USERNAME;
     });
   }
-  </script>
-  <script type="text/javascript">
-    var ExpertcheckBox = document.getElementById("mode-change");
-    ExpertcheckBox.addEventListener( 'change', function() {
-    if(this.checked) {
-      console.log("Checked")
-      //give user role expert
-      //checked
-    } else {
-      console.log("Unchecked")
-      //remove user role  expert
-      console.log(1);
-      //not checked
-    }
-});
-  </script>
   <script type="text/javascript">
     const waitForWeb = async () =>  {
       var done = false;
