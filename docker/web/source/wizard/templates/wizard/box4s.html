@@ -95,6 +95,30 @@
 $('.step.active').removeClass('active');
 $('#step-box4s').addClass('active');
 </script>
+<script>
+    $('#{{formBOX4s.dns_id.id}}').parent('.ui.dropdown')
+    .dropdown({
+        action: 'hide',
+        onChange: function(value, text, $selectedItem) {
+            if(value == -1)
+            {
+                // "Others" selected, display menu
+                console.log("others selected");
+            }
+        }
+    });
+    $('#{{formBOX4s.gateway_id.id}}').parent('.ui.dropdown')
+    .dropdown({
+        action: 'hide',
+        onChange: function(value, text, $selectedItem) {
+            if(value == -1)
+            {
+                // "Others" selected, display menu
+                console.log("others selected");
+            }
+        }
+    });
+</script>
 {% if box4s %}
 <script type="text/javascript">
 $('#{{formBOX4s.dhcp_enabled.id}}').parent('.ui.checkbox').checkbox('setting', 'onChange', function () {
