@@ -1095,7 +1095,34 @@ class SystemsAPI(Resource):
 
     def post(self):
         """Create a new system and return its id."""
-        pass
+        self.parser.add_argument('name', type=str)
+        self.parser.add_argument('ip_address', type=str)
+        self.parser.add_argument('location', type=str)
+        self.parser.add_argument('scan_enabled', type=bool)
+        self.parser.add_argument('ids_enabled', type=bool)
+        self.parser.add_argument('types', type=int, action='append')
+        self.parser.add_argument('network_id', type=int)
+
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+
+        newSystem = System()
+        newSystem.name = self.args['name']
+        newSystem.ip_address = self.args['ip_address']
+        newSystem.scan_enabled = self.args['scan_enabled']
+        newSystem.ids_enabled = self.args['ids_enabled']
+        newSystem.network_id = self.args['network_id']
+        if self.args['types']:
+            newSystem.types = [SystemType.query.get(tid) for tid in self.args['types']]
+        else:
+            newSystem.types = []
+        try:
+            db.session.add(newSystem)
+            db.session.commit()
+        except Exception:
+            abort(500, message="Error while saving system to database.")
 
     def put(self):
         pass
