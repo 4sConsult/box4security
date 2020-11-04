@@ -14,6 +14,12 @@ import re
 bpWizard = Blueprint('wizard', __name__, template_folder='templates')
 
 
+@bpWizard.before_request
+def check_if_wizard():
+    if not WizardMiddleware.isShowWizard():
+        return redirect(url_for('index'))
+
+
 @bpWizard.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('wizard/index.html')
