@@ -1,5 +1,6 @@
 from source.models import User
-from .models import BOX4security, System, Network
+from .models import BOX4security, System, Network, WizardState
+from source.extensions import db
 
 
 class WizardMiddleware():
@@ -7,33 +8,37 @@ class WizardMiddleware():
     # Ordered list of steps
     steps = ['wizard.index', 'wizard.networks', 'wizard.systems', 'wizard.box4s', 'wizard.smtp', 'wizard.verify']
 
-    def __init__(self, app):
-        self.app = app
-        self.url = '/wizard/'
-
-    def __call__(self, environ, start_response):
-        """Function is the main function called at each request to the middleware.
-        The wizard middleware only applies if isShowWizard() returns true and
-        the requested path is not an /api/ path or the wizard path itself.
-        If it applies: redirect to self.url ('/wizard').
-        If it does not apply, do nothing and pass the request to next middleware.
-        """
-        reqPath = environ.get('PATH_INFO')
-        if self.isShowWizard() and not reqPath.startswith('/api/') and not reqPath.startswith(self.url):
-            # If true, redirect to the wizard base URL (self.url) with status code 307
-            status = "307 Temporary Redirect"
-            headers = [('Location', self.url), ('Content-Length', '0')]
-            start_response(status, headers)
-            return [b'']
-        # if the Wizard shall not be shown, cleanly exit the middleware without doing anything and continue the application flow.
-        return self.app(environ, start_response)
-
     @staticmethod
     def isShowWizard():
         """Evaluate whether the Wizard shall be displayed.
 
-        Currently, the wizard is shown, if no user exists and not BOX4s info was entered."""
-        return not User.query.count() and not BOX4security.query.count()
+        See wizard/models.py
+        See also docker/web/migrations/versions/031dd699edaa_add_wizard_state.py
+        """
+        return WizardState.query.first().state.id == 2
+
+    @staticmethod
+    def forceDisableWizard():
+        """Forcefully disable the Wizard.
+
+        See wizard/models.py
+        See also docker/web/migrations/versions/031dd699edaa_add_wizard_state.py
+        """
+        state = WizardState.query.first()
+        state.state_id = 1
+        db.session.add(state)
+        db.session.commit()
+
+    @staticmethod
+    def setCompleted():
+        """Set the wizard to be completed.
+
+        See wizard/models.py
+        See also docker/web/migrations/versions/031dd699edaa_add_wizard_state.py"""
+        state = WizardState.query.first()
+        state.state_id = 3
+        db.session.add(state)
+        db.session.commit()
 
     @staticmethod
     def getMaxStep():
