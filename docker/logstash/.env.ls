@@ -1,0 +1,1 @@
+ES_JAVA_OPTS=-Xmsg -Xmxg

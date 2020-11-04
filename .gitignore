@@ -15,5 +15,3 @@
 /docker/web/source/wazuh/*.pkg
 /docker/web/source/wazuh/*.rpm
 /docker/web/source/wazuh/*.msi
-/docker/elasticsearch/.env.es
-/docker/logstash/.env.ls
