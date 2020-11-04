@@ -191,3 +191,6 @@ def apply():
     templateNetplan = render_template('logstash/netplan.yaml.jinja2', BOX4s=BOX4s)
     with open('/etc/_netplan/10-BOX4security.yaml', 'w', encoding='utf-8') as fd_netplan:
         fd_netplan.write(templateNetplan)
+
+    # Step 7: Set the completed state.
+    WizardMiddleware.setCompleted()
