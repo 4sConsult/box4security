@@ -124,6 +124,30 @@ def writeSMTPConfig(config):
             abort(502, message="Alert API Failure")
 
 
+class Repair(Resource):
+    """API Resource for starting a Repair Script."""
+
+    @roles_required(['Super Admin'])
+    def put(self, repair_type):
+        """Forward Repair."""
+        return self.get()
+
+    @roles_required(['Super Admin'])
+    def get(self):
+        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/test.sh')
+        return {"message": "accepted"}, 200
+
+    @roles_required(['Super Admin', 'Filter'])
+    def post(self):
+        """Forward Repair."""
+        return self.get()
+
+    @roles_required(['Super Admin'])
+    def delete(self):
+        """Deny deleting Reapir Script."""
+        abort(405, message="Cannot delete Repair Script.")
+
+
 class BPF(Resource):
     """API Resource for a single BPF Rule."""
 

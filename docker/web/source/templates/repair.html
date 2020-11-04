@@ -16,7 +16,7 @@
         Sie haben hier die Möglichkeit Reperaturen vorzunehmen.
       </p>
     </div>
-    <button class="ui button">Dashboards</button>
+    <button class="ui button" id="dashboard-button">Dashboards</button>
     <button class="ui button">Datenfestplatte formatieren</button>
     <button class="ui button">Neustart der BOX4security</button>
     <button class="ui button">Box reset - Daten behalten</button>
@@ -36,5 +36,21 @@
 <script type="text/javascript">
     $('div.item.active').removeClass('active');
     $(`#administration`).addClass('active');
+
+    $("button").click((e) => {
+        fetch(`//{{ request.host }}/api/repair/`,
+          {
+            method: "GET",
+          })
+        .then((response) => {
+          if(response.ok)
+           {
+            console.log("Success");
+           }
+        })
+        .catch((err) => {
+          console.log('Error : -S' err);
+          })
+    })
 </script>
 {% endblock %}
