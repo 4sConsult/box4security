@@ -128,19 +128,20 @@ class Repair(Resource):
     """API Resource for starting a Repair Script."""
 
     @roles_required(['Super Admin'])
-    def put(self, repair_type):
-        """Forward Repair."""
-        return self.get()
+    def put(self):
+        value = request.json['key']
+        os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_{ value }.sh")
+        return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
     def get(self):
-        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/test.sh')
-        return {"message": "accepted"}, 200
+        """Deny deleting Reapir Script."""
+        abort(405, message="Cannot GET Repair Script.")
 
     @roles_required(['Super Admin', 'Filter'])
     def post(self):
         """Forward Repair."""
-        return self.get()
+        return self.put()
 
     @roles_required(['Super Admin'])
     def delete(self):
