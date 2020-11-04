@@ -127,3 +127,21 @@ class BOX4security(db.Model):
 
     def __repr__(self):
         return f"BOX4s ({self.ip_address}) DNS:{self.dns.ip_address} Gateway:{self.gateway.ip_address}"
+
+
+class WizardState(db.Model):
+    """Model to represent the current state the wizard is in."""
+    __tablename__ = 'wizardstate'
+    id = db.Column(db.Integer(), primary_key=True)
+    state_id = db.Column(db.ForeignKey('wizardstatenames.id'), nullable=False)
+
+    def __repr__(self) -> str:
+        return f"Wizard State: {self.state.name}"
+
+
+class WizardStateNames(db.Model):
+    """Model to assign changeable names to state ids."""
+    __tablename__ = 'wizardstatenames'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String())
+    stateObj = db.relationship('WizardState', backref="state", uselist=False)
