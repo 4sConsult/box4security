@@ -16,15 +16,11 @@
         Sie haben hier die Möglichkeit Reperaturen vorzunehmen.
       </p>
     </div>
-    <button class="ui button" id="dashboard-button" value="test">Dashboards</button>
-    <button class="ui button" value="test2">Datenfestplatte formatieren</button>
-    <button class="ui button">Neustart der BOX4security</button>
-    <button class="ui button">Box reset - Daten behalten</button>
-    <button class="ui button">Box reset - Daten auch löschen</button>
-    <button class="ui button">Snapshot der Box mit Daten</button>
-    <button class="ui button">Snapshot der Box ohne Daten</button>
-    <button class="ui button">Wizard erneut durchführen</button>
-    <button class="ui button">Testedaten einfügen</button>
+    <button class="ui button" value="dashboard">Dashboards</button>
+    <button class="ui button" value="format">Datenfestplatte formatieren</button>
+    <button class="ui button" value="restart">Neustart der BOX4security</button>
+    <button class="ui button" value="reset">Reset der BOX4security</button>
+
 
   <div class="ui vertical footer segment">
     <div class="ui center aligned container">
@@ -38,8 +34,7 @@
     $(`#administration`).addClass('active');
 
 
-    $("button").click((e) => {
-        var val = $(this).val();
+    $(".ui.button").click((e) => {
         fetch(`//{{ request.host }}/api/repair/`,
           {
             method: "POST",
@@ -47,7 +42,7 @@
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({'key': 'test'})
+            body: JSON.stringify({'key': e.target.value})
           })
         .then((response) => {
           if(response.ok)
