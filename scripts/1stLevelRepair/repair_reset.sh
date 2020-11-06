@@ -77,9 +77,6 @@ delete_If_Exists /tmp/box4s
 waitForNet
 echo "[ DONE ]" 1>&2
 
-if [[ "$*" != *no-recreate* ]]
-then
-  echo -n "Installing new BOX4security.. " 1>&2
-  curl -sL https://gitlab.com/snippets/1982942/raw | sudo bash
-  echo "[ DONE ]" 1>&2
-fi
+echo -n "Installing new BOX4security.. " 1>&2
+curl -sL https://gitlab.com/snippets/1982942/raw | sudo bash
+echo "[ DONE ]" 1>&2
