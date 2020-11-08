@@ -55,6 +55,7 @@ def box4s():
         formBOX4s.dns_id.choices += [(-1, "Andere..")]
         formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='Gateway'))]
         formBOX4s.gateway_id.choices += [(-1, "Andere..")]
+        systemTypes = SystemType.query.filter(SystemType.name != 'BOX4security').order_by(SystemType.id.asc()).all()
         BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
         if request.method == 'POST':
             if formBOX4s.validate():
@@ -76,7 +77,7 @@ def box4s():
                 else:
                     flash('Die Konfiguration wurde entgegengenommen.', category="success")
                 return redirect(url_for('wizard.box4s'))
-        return render_template('wizard/box4s.html', formBOX4s=formBOX4s, box4s=BOX4s)
+        return render_template('wizard/box4s.html', formBOX4s=formBOX4s, box4s=BOX4s, systemTypes=systemTypes)
     else:
         flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen. Bitte geben Sie auf der Seite der Systeme mindestens einen DNS-Server sowie einen Gateway an, der für die BOX4security genutzt werden kann.', 'error')
         return redirect(url_for(endpoint))
