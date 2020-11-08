@@ -15,7 +15,12 @@ class WizardMiddleware():
         See wizard/models.py
         See also docker/web/migrations/versions/031dd699edaa_add_wizard_state.py
         """
-        return WizardState.query.first().state.id == 2
+        state = WizardState.query.first()
+        if state:
+            return state.state.id == 2
+        else:
+            # No saved state: Likely new installation. Display Wizard.
+            return True
 
     @staticmethod
     def forceDisableWizard():
