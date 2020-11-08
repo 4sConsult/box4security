@@ -67,6 +67,11 @@ sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl restart box4security.service
 
+# Waiting for healthy db container before force disabling the wizard.
+source /home/amadmin/box4s/config/secrets/db.conf
+/home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh web
+echo "DELETE FROM wizardstate WHERE 1=1; INSERT INTO wizardstate(state_id) VALUES(1)" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
+
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh logstash || sleep 30
