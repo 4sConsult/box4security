@@ -1,5 +1,42 @@
 #!/bin/bash
 set -e
+
+# Initial information
+
+echo -e " ____   _____  ___  _                            _ _
+| __ ) / _ \ \/ / || |  ___  ___  ___ _   _ _ __(_) |_ _   _
+|  _ \| | | \  /| || |_/ __|/ _ \/ __| | | | '__| | __| | | |
+| |_) | |_| /  \|__   _\__ \  __/ (__| |_| | |  | | |_| |_| |
+|____/ \___/_/\_\  |_| |___/\___|\___|\__,_|_|  |_|\__|\__, |
+                                                       |___/
+
+Disclaimer:
+This script will install the BOX4security on this system.
+By running the script you confirm to know what you are doing:
+1. New packages will be installed.
+2. A new folder called '/data' will be created in your root directory.
+3. A new sudo user called 'amadmin' will be created on this system.
+4. The BOX4s service will be enabled.
+
+#############################################
+Usage:
+sudo $0
+Options:
+sudo $0 --manual - All available tags will be available for install - All of them.\n"
+# Check for root
+
+if [ "$(whoami)" != "root" ];
+  then
+    echo "#####################################################
+### Installation Requires Root. Please use 'sudo' ###
+#####################################################"
+    exit 1
+  else
+    echo "#####################################################
+###    Starting BOX4security installation...      ###
+#####################################################"
+fi
+
 # Log file to use
 # Create path if allowed or do NOP
 mkdir -p /var/log/box4s/ || :
@@ -10,8 +47,8 @@ if [[ ! -w $LOG_DIR ]]; then
   LOG_DIR="$HOME"
 fi
 
-sudo chown -R root:44269 /var/log/box4s
-sudo chmod 770 -R /var/log/box4s
+sudo chown -R root:44269 $LOG_DIR
+sudo chmod 760 -R $LOG_DIR
 
 FULL_LOG=$LOG_DIR/install.log
 ERROR_LOG=$LOG_DIR/install.err.log
@@ -26,28 +63,6 @@ export DEBIAN_FRONTEND=noninteractive
 # Forward stdout to $FULL_LOG
 # exec > >(tee "$FULL_LOG")
 exec 3>&1 1>>${FULL_LOG} 2>>$ERROR_LOG
-# HELP text
-HELP="\
-
-
-###########################################
-### BOX4s Installer                     ###
-###########################################
-
-Disclaimer:
-This script will install the BOX4security on this system.
-By running the script you confirm to know what you are doing:
-1. New packages will be installed.
-2. A new folder called '/data' will be created in your root directory.
-3. A new sudo user called 'amadmin' will be created on this system.
-4. The BOX4s service will be enabled.
-
-########################################
-Usage:
-        sudo $0
-Options:
-        sudo $0 --manual - All available tags will be available for install - All of them."
-
 ##################################################
 #                                                #
 # Functions                                      #
@@ -64,7 +79,17 @@ function testNet() {
   ping -q -c 1 -W 1 $1 >/dev/null;
   return $?
 }
-
+function delete_If_Exists(){
+  # Helper to delete files and directories if they exist
+  if [ -d $1 ]; then
+    # Directory to remove
+    sudo rm $1 -r
+  fi
+  if [ -f $1 ]; then
+    # File to remove
+    sudo rm $1
+  fi
+}
 function waitForNet() {
   # use argument or default value of google.com
   HOST=${1:-"google.com"}
@@ -72,12 +97,23 @@ function waitForNet() {
     # while testNet returns non zero value
     echo "No internet connectivity or dns resolution of $HOST, sleeping for 15s" 1>&2
     sleep 15s
+    echo /etc/resolv.conf | grep 'nameserver' || echo "nameserver 8.8.8.8" > /etc/resolv.conf && echo "Empty /etc/resolv.conf/ -> inserting 8.8.8.8" 1>&2
   done
 }
 
-function printHelp() {
-  toilet -f ivrit 'BOX4security' | boxes -d cat -a hc -p h8 1>&3
-  echo "$HELP" 1>&3
+# Helper to check if a service exists on the system
+function service_exists() {
+    local n=$1
+    if [[ $(systemctl list-units --all -t service --full --no-legend "$n.service" | cut -f1 -d' ') == $n.service ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+function create_and_changePermission() {
+  sudo touch $1
+  sudo chown -R root:44269 $1
+  sudo chmod 760 -R $1
 }
 
 # Lets make sure some basic tools are available
@@ -100,17 +136,15 @@ fi
 ##################################################
 banner "Dependencies ..."
 
-# Are we root?
-echo -n "Checking for root: " 1>&3
-if [ "$(whoami)" != "root" ];
-  then
-    echo "[ NOT OK ]" 1>&3
-    echo -e "Script must be run as root."
-    printHelp
-    exit 1
-  else
-    echo "[ OK ]" 1>&3
+echo -n "Checking for git Repository.. " 1>&3
+if [ -d "/tmp/box4s/" ]; then
+  echo "[ OK ]" 1>&3
+else
+  echo "[ NOT OK ]" 1>&3
+  echo "## Make sure the git Repository is installed at /tmp/box4s/ ##" 1>&3
+  exit 1
 fi
+
 
 echo -n "Creating the /data directory.. " 1>&3
 # Create the /data directory if it does not exist and make it readable
@@ -130,12 +164,32 @@ echo -n "Installing apt-fast.. " 1>&3
 sudo /bin/bash -c "$(curl -sL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
 echo "[ OK ]" 1>&3
 # Remove services, that might be present, but are not needed.
-# But don't fail if they arent.
 echo -n "Removing standard services.. " 1>&3
-sudo systemctl disable apache2 nginx systemd-resolved || :
-sudo apt-fast remove --purge -y apache2 nginx
+
+# Disable and remove Apache2
+if service_exists apache2; then
+    sudo service apache2 disable
+    sudo apt-fast remove --purge -y apache2
+fi
+
+# Disable and remove Nginx
+if service_exists nginx; then
+    sudo service nginx disable
+    sudo apt-fast remove --purge -y nginx
+fi
+
+# Disable systemd-resolved
+if service_exists systemd-resolved; then
+    sudo service systemd-resolved disable || :
+fi
 echo "[ OK ]" 1>&3
 
+echo -n "Checking for old Version of BOX4security and removing.. " 1>&3
+# Remove old box4security service
+if service_exists box4security; then
+    sudo systemctl stop box4security.service
+fi
+echo "[ OK ]" 1>&3
 # Lets install all dependencies
 waitForNet
 echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
@@ -143,6 +197,7 @@ sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip pyt
 echo "[ OK ]" 1>&3
 
 echo -n "Enabling git lfs.. " 1>&3
+# Check if .git exists in /tmp/box4s - if it doesn't then not initial install and skip
 git lfs install --skip-smudge
 echo "[ OK ]" 1>&3
 
@@ -151,12 +206,16 @@ pip3 install semver requests
 echo "[ OK ]" 1>&3
 
 echo -n "Installing Docker-Compose.. " 1>&3
+# Remove old docker-compose if found
+delete_If_Exists /usr/local/bin/docker-compose
 curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 echo "[ OK ]" 1>&3
 
 # Install BlackBox to decrypt stuff
 echo -n "Installing BlackBox for secret encryption/decryption.. " 1>&3
+# Remove if other blackblock installation is found
+delete_If_Exists /opt/blackbox
 git clone https://github.com/StackExchange/blackbox.git /opt/blackbox
 cd /opt/blackbox
 sudo make symlinks-install
@@ -176,8 +235,6 @@ blackbox_decrypt_file config/secrets/db.conf
 # Source the secrets relatively
 source config/secrets/secrets.conf
 source config/secrets/db.conf
-# For security reasons, remove decrypted versions
-blackbox_shred_all_files
 echo "[ OK ]" 1>&3
 
 # Create the user $HOST_USER only if he does not exist
@@ -185,9 +242,9 @@ echo "[ OK ]" 1>&3
 echo -n "Creating BOX4security user on the host.. " 1>&3
 id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
 sudo usermod -aG sudo $HOST_USER
-echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-sudo addgroup --gid 44269 boxforsecurity # Create group
-sudo usermod -a -G boxforsecurity $HOST_USER # Add HOST_USER to created group
+grep -qxF "$HOST_USER ALL=(ALL) NOPASSWD: ALL" /etc/sudoers || echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+cat /etc/group | grep boxforsecurity &>/dev/null || sudo addgroup --gid 44269 boxforsecurity # Create group if it does not exist
+id -G $HOST_USER | grep 44229 &>/dev/null || sudo usermod -a -G boxforsecurity $HOST_USER # Add HOST_USER to created group if not in it
 echo "[ OK ]" 1>&3
 
 ##################################################
@@ -228,6 +285,8 @@ banner "Repository ..."
 
 echo -n "Cloning the repository.. " 1>&3
 cd /home/amadmin
+# Delete already existing repository
+delete_If_Exists /home/amadmin/box4s
 git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s -b $TAG
 echo "[ OK ]" 1>&3
 
@@ -254,6 +313,8 @@ echo "[ OK ]" 1>&3
 
 # Copy the smtp.conf to /etc/box4s
 echo -n "Enabling default SMTP config.. " 1>&3
+# First use of /etc/box4s -> remove to avoid conflicts with old installation
+delete_If_Exists /etc/box4s/
 sudo mkdir -p /etc/box4s/
 sudo cp /home/amadmin/box4s/config/secrets/smtp.conf /etc/box4s/smtp.conf
 echo "[ OK ]" 1>&3
@@ -267,61 +328,74 @@ sudo systemctl start docker
 banner "Volumes ..."
 
 echo -n "Creating volumes and setting permissions.. " 1>&3
+
+echo -n "data:" 1>&1
+# Check if each volume exists before creating them; Skip if already created
 # Setup data volume
 sudo docker volume create --driver local --opt type=none --opt device=/data --opt o=bind data
 sudo chown -R root:44269 /data
 sudo chmod 760 -R /data
-echo -n "[ data " 1>&3
+echo " [ DONE ] " 1>&1
 
 # Setup Box4s volume
+echo -n "varlib_box4s:" 1>&1
+delete_If_Exists /var/lib/box4s_openvas/
 sudo mkdir -p /var/lib/box4s
 sudo chown root:root /var/lib/box4s
 sudo chmod -R 777 /var/lib/box4s
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s/ --opt o=bind varlib_box4s
 sudo chown -R root:44269 /var/lib/box4s
-sudo chmod 770 -R /var/lib/box4s
-echo -n " varlib_box4s " 1>&3
+sudo chmod 760 -R /var/lib/box4s
+echo " [ DONE ] " 1>&1
 
 # Setup PostgreSQL volume
+echo -n "varlib_postgresql:" 1>&1
+delete_If_Exists /var/lib/postgresql
 sudo mkdir -p /var/lib/postgresql/data
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/postgresql/data --opt o=bind varlib_postgresql
 sudo chown -R root:44269 /var/lib/postgresql/data
 sudo chmod 760 -R /var/lib/postgresql/data
-echo -n " varlib_postgresql " 1>&3
+echo " [ DONE ] " 1>&1
 
 # Setup Suricata Rule volume
+echo -n "varlib_suricata:" 1>&1
 sudo mkdir -p /var/lib/box4s_suricata_rules/
 sudo chown root:root /var/lib/box4s_suricata_rules/
 sudo chmod -R 777 /var/lib/box4s_suricata_rules/
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_suricata_rules/ --opt o=bind varlib_suricata
-echo -n " varlib_suricata " 1>&3
+echo " [ DONE ] " 1>&1
 
 # Setup Box4s Settings volume
+echo -n "etcbox4s_logstash:" 1>&1
 sudo mkdir -p /etc/box4s/logstash
 sudo cp -R /home/amadmin/box4s/config/etc/logstash/* /etc/box4s/logstash/
 sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
 sudo chown -R root:44269 /etc/box4s/logstash
-sudo chmod 770 -R /etc/box4s/logstash
-echo -n " etcbox4s_logstash " 1>&3
+sudo chmod 760 -R /etc/box4s/logstash
+echo " [ DONE ] " 1>&1
 
 # Setup Logstash volume
+echo -n "varlib_logstash:" 1>&1
+delete_If_Exists /var/lib/logstash
 sudo mkdir -p /var/lib/logstash
+sudo mkdir -p /var/lib/logstash/openvas/
 sudo chown root:root /var/lib/logstash
 sudo chmod -R 777 /var/lib/logstash
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/logstash/ --opt o=bind varlib_logstash
 sudo chown -R root:44269 /var/lib/logstash
 sudo chmod 760 -R /var/lib/logstash
-echo -n " varlib_logstash " 1>&3
+echo " [ DONE ] " 1>&1
 
 # Setup OpenVAS volume
+echo -n "varlib_postgresql:" 1>&1
 sudo mkdir -p /var/lib/box4s_openvas/
 sudo chown root:root /var/lib/box4s_openvas/
 sudo chmod -R 777 /var/lib/box4s_openvas/
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_openvas/ --opt o=bind gvm-data
 sudo chown -R root:root /var/lib/box4s_openvas
-echo -n " gvm-data " 1>&3
+echo " [ DONE ] " 1>&1
 
 # Setup Elasticsearch volume
 sudo mkdir /data/elasticsearch -p
@@ -333,32 +407,37 @@ sudo chmod 760 -R /data/elasticsearch
 sudo chmod 760 -R /data/elasticsearch_backup
 
 # Setup ElastAlert volume
+echo -n "varlib_postgresql:" 1>&1
 sudo mkdir -p /var/lib/elastalert/rules
 sudo chown root:root /var/lib/elastalert/rules
 sudo chmod -R 777 /var/lib/elastalert/rules
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/elastalert/rules --opt o=bind varlib_elastalert_rules
 sudo chown -R root:44269 /var/lib/elastalert/rules
 sudo chmod 760 -R /var/lib/elastalert/rules
-echo -n " varlib_elastalert_rules " 1>&3
+echo " [ DONE ] " 1>&1
 
 # Setup Wiki volume
+echo -n "varlib_docs:" 1>&1
 sudo mkdir -p /var/lib/box4s_docs
 sudo chown root:root /var/lib/box4s_docs
 sudo chmod -R 777 /var/lib/box4s_docs
 sudo docker volume create --driver local --opt type=none --opt device=/var/lib/box4s_docs --opt o=bind varlib_docs
 sudo chown -R root:44269 /var/lib/box4s_docs/
 sudo chmod 760 -R /var/lib/box4s_docs/
-echo " varlib_docs ]" 1>&3
+echo " [ DONE ] " 1>&1
 
-echo -n "Initializing important files and setting permissions.. ["
-VIF=(/var/lib/box4s/elastalert_smtp.yaml /etc/box4s/smtp.conf /etc/ssl/certs/ca-certificates.crt /var/lib/box4s/elastalert_smtp.yaml /etc/box4s/modules.conf /etc/ssl/certs/BOX4s-SMTP.pem)
-for $f in "${VIF[@]}"
-do
-    sudo touch $f
-    sudo chown -R root:44269 $f
-    sudo chmod 760 -R $f
-done
+#Done with volumes
+echo "[ OK ]" 1>&3
 
+echo -n "Initializing important files and setting permissions.. " 1>&3
+create_and_changePermission /var/lib/box4s/elastalert_smtp.yaml
+create_and_changePermission /etc/box4s/smtp.conf
+create_and_changePermission /etc/ssl/certs/ca-certificates.crt
+create_and_changePermission /var/lib/box4s/elastalert_smtp.yaml
+create_and_changePermission /etc/box4s/modules.conf
+create_and_changePermission /etc/ssl/certs/BOX4s-SMTP.pem
+
+echo "[ OK ]" 1>&3
 ##################################################
 #                                                #
 # Installing Box                                 #
@@ -377,7 +456,7 @@ echo " [ OK ]" 1>&3
 
 echo -n "Setting hostname.. " 1>&3
 hostname box4security
-echo "127.0.0.1 box4security" >> /etc/hosts
+grep -qxF "127.0.0.1 box4security" /etc/hosts || echo "127.0.0.1 box4security" >> /etc/hosts
 echo " [ OK ]" 1>&3
 
 # No longer allow SSH with password login
@@ -391,6 +470,9 @@ echo " [ OK ]" 1>&3
 
 # Initially clone the Wiki repo
 echo -n "Downloading documentation.. " 1>&3
+# Delete already existing repository
+delete_If_Exists /var/lib/box4s_docs
+mkdir -p /var/lib/box4s_docs
 cd /var/lib/box4s_docs
 sudo git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/docs.git .
 echo " [ OK ]" 1>&3
@@ -418,7 +500,8 @@ set +e
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-echo INT_IP="$INT_IP" | sudo tee -a /etc/default/logstash /etc/environment
+grep -qxF  INT_IP="$INT_IP" /etc/environment || echo INT_IP="$INT_IP" >> /etc/environment
+grep -qxF  INT_IP="$INT_IP" /etc/default/logstash || echo INT_IP="$INT_IP" >> /etc/default/logstash
 source /etc/environment
 set -e
 echo " [ OK ] " 1>&3
@@ -440,7 +523,7 @@ ip link set $IF_MGMT down
 ip link set $IF_MGMT up
 
 #Disable TCP Timestamps
-echo 'net.ipv4.tcp_timestamps = 0' | sudo tee -a /etc/sysctl.conf
+grep -qxF "net.ipv4.tcp_timestamps = 0" /etc/sysctl.conf || echo "net.ipv4.tcp_timestamps = 0" >> /etc/sysctl.conf
 sudo sysctl -p
 
 
@@ -468,12 +551,13 @@ echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling/Disabling Modules.. " 1>&3
-sudo mkdir -p /etc/box4s/
+# Remove old folder to avoid conflicts
 sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
 sudo chmod 444 /etc/box4s/modules.conf
 echo " [ OK ] " 1>&3
 
 echo -n "Generating Wazuh Agent-Password.. " 1>&3
+delete_If_Exists /var/lib/box4s/wazuh-authd.pass
 strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 14 | tr -d '\n' > /var/lib/box4s/wazuh-authd.pass
 sudo chmod 755 /var/lib/box4s/wazuh-authd.pass
 echo " [ OK ] " 1>&3
@@ -574,7 +658,7 @@ su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 echo " [ OK ] " 1>&3
 
 source /etc/environment
-echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
+grep -qxF KUNDE="NEWSYSTEM" /etc/default/logstash || echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 sudo systemctl daemon-reload
 
 #Ignore own INT_IP
