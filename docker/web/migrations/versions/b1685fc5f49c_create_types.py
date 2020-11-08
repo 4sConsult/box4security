@@ -19,9 +19,9 @@ depends_on = None
 def upgrade():
     """Upgrade to migration."""
     op.bulk_insert(SystemType.__table__, [
-        {'name': 'BOX4security'},
-        {'name': 'DNS-Server'},
-        {'name': 'Gateway'},
+        {'id': 1, 'name': 'BOX4security'},
+        {'id': 2, 'name': 'DNS-Server'},
+        {'id': 3, 'name': 'Gateway'},
         {'name': 'Firewall'},
         {'name': 'IoT'},
         {'name': 'Industrielle IT'},
