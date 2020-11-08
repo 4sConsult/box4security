@@ -292,7 +292,7 @@ $('.ui.label.foursgrey-bg').popup();
                   $(e.delegateTarget).closest('tr').remove();
                 }
                 else {
-                  errormsg = "Sie dürfen diese Aktion nicht ausführen. Nur Super Admins können andere Super Admins löschen.";
+                  errormsg = "Sie dürfen diese Aktion nicht ausführen.";
                   row = `<div class="ui red message">${errormsg}</div>`;
                   $(`#errormsg`).before(row);
                 }
