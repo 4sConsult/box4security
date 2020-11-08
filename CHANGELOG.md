@@ -4,7 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [X.X.X](https://gitlab.com/4sconsult/box4s/-/tags/X.X.X) - 2020-11-11
 
 ### Added
-
+* Die BOX4security lässt sich nun nach Installtion über einen Einrichtungswizard konfigurieren. Dabei werden Netze, Systeme, Analysescopes für IDS- & Schwachstellenscans sowie Systemparameter für die BOX4security.festgelegt .
 
 ### Changed
 
