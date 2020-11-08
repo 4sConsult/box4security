@@ -1103,7 +1103,7 @@ class SystemsAPI(Resource):
         return SYSs.dump(_systems)
 
     def post(self):
-        """Create a new system and return its id."""
+        """Create a new system and return it."""
         self.parser.add_argument('name', type=str)
         self.parser.add_argument('ip_address', type=str)
         self.parser.add_argument('location', type=str)
@@ -1130,6 +1130,7 @@ class SystemsAPI(Resource):
         try:
             db.session.add(newSystem)
             db.session.commit()
+            return SYS.dump(newSystem)
         except Exception:
             abort(500, message="Error while saving system to database.")
 
