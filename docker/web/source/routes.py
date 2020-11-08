@@ -58,7 +58,7 @@ api.add_resource(APIWazuhAgentPass, '/api/config/wazuh')
 @app.before_request
 def check_if_wizard():
     """Before every request check if the wizard shall be shown and redirect to it if needed."""
-    if WizardMiddleware.isShowWizard() and not re.match('/wizard.*', request.path):
+    if WizardMiddleware.isShowWizard() and not re.match('/(api|wizard).*', request.path):
         return redirect(url_for(WizardMiddleware.getMaxStep()))
 
 
