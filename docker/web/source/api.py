@@ -5,6 +5,7 @@ from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
 from source.wizard.models import Network, NetworkType, System, SystemType
 from source.wizard.schemas import SYS, SYSs, NET, NETs
+from source.wizard.middleware import WizardMiddleware
 import requests
 import os
 import subprocess
@@ -948,6 +949,8 @@ class NetworkAPI(Resource):
     def __init__(self):
         """Register Parser and argument for endpoint."""
         self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            abort(503, message="The wizard and its API is not available.")
 
     def get(self, network_id):
         """Get a single network by id."""
@@ -1010,6 +1013,8 @@ class NetworksAPI(Resource):
     def __init__(self):
         """Register Parser and argument for endpoint."""
         self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            abort(503, message="The wizard and its API is not available.")
 
     def get(self):
         networks = Network.query.all()
@@ -1029,6 +1034,8 @@ class SystemAPI(Resource):
     def __init__(self):
         """Register Parser and argument for endpoint."""
         self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            abort(503, message="The wizard and its API is not available.")
 
     def get(self, system_id):
         """Get a single system by id."""
@@ -1088,6 +1095,8 @@ class SystemsAPI(Resource):
     def __init__(self):
         """Register Parser and argument for endpoint."""
         self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            abort(503, message="The wizard and its API is not available.")
 
     def get(self):
         _systems = System.query.all()
