@@ -98,25 +98,95 @@ $('#step-box4s').addClass('active');
 <script>
     $('#{{formBOX4s.dns_id.id}}').parent('.ui.dropdown')
     .dropdown({
-        action: 'hide',
         onChange: function(value, text, $selectedItem) {
             if(value == -1)
             {
                 // "Others" selected, display menu
-                console.log("others selected");
+                $('#modal-add-other').modal('show');
+                $('#add-other-submit').data('systemtype', 'DNS-Server');
             }
         }
     });
     $('#{{formBOX4s.gateway_id.id}}').parent('.ui.dropdown')
     .dropdown({
-        action: 'hide',
         onChange: function(value, text, $selectedItem) {
             if(value == -1)
             {
                 // "Others" selected, display menu
-                console.log("others selected");
+                $('#modal-add-other').modal('show');
+                $('#add-other-submit').data('systemtype', 'Gateway');
+                
             }
         }
+    });
+    // TODO: Handle Constants from API
+    const typeIDDns = 2;
+    const typeIDGateway = 3;
+    $('#add-other-submit').on('click', (e) => {
+        const modalSystemType = $(e.currentTarget).data('systemtype');
+        e.preventDefault();
+        var data = {
+            'name': $('#add-other-name').val(),
+            'ip_address': $('#add-other-ip_address').val(),
+            'ids_enabled': $('#add-other-ids_enabled').prop("checked"),
+            'scan_enabled': $('#add-other-scan_enabled').prop("checked"),
+            'types': $('#add-other-types').val(),
+            'network_id': $('#add-others-network_id').val(),
+        };
+        
+        if(data.types.indexOf(typeIDDns) == -1 && modalSystemType == 'DNS-Server')
+        {
+            data.types.push(typeIDDns);
+        }
+        else if(data.types.indexOf(typeIDGateway) == -1 && modalSystemType == 'Gateway')
+        {
+            data.types.push(typeIDGateway);
+        }
+        fetch(`/api/systems/`,
+            {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify(data),
+            })
+        .then(response => {
+            if(!response.ok) {
+                var errormsg = "";
+                switch(response.status) {
+                    case 400: errormsg = "Die gestellte Anfrage enthielt für die Verarbeitung unverständliche Parameter."; break;
+                    case 500: errormsg = "Das System konnte nicht in der Datenbank gespeichert werden."; break;
+                    case 503: errormsg = "Der Einrichtungswizard steht nicht länger zur Verfügung."; break;
+                };
+                row = `<div class="ui red message">${errormsg}</div>`;
+                $(`#edit-submit`).before(row);
+            } else {
+                response.json().then( d => {
+
+                    // Submission successful => use system in dialog.
+                    var option = document.createElement("option");
+                    if (modalSystemType == "DNS-Server") {
+                        var s = $('#{{formBOX4s.dns_id.id}}');
+                    } else if(modalSystemType == "Gateway") {
+                        var s = $('#{{formBOX4s.gateway_id.id}}');
+                    }
+                    if(d.name) {
+                        option.text = `${d.name} (${d.ip_address})`;
+                    } else {
+                        option.text = `${d.ip_address}`;
+                    }
+                    option.value = d.id;
+                    s.append(option);
+                    setTimeout(
+                        // oddly append needs some time to append, and we can not call .dropdown before
+                        () => {
+                            s.parent('.ui.dropdown').dropdown("set selected", d.id);
+                            $('#modal-add-other').modal('hide');
+                            $('#modal-add-other > > form')[0].reset();
+                        }, 350
+                    );
+                });
+            }            
+        })
+
     });
 </script>
 {% if box4s %}
@@ -149,4 +219,72 @@ $('#{{formBOX4s.dhcp_enabled.id}}').parent('.ui.checkbox').checkbox("set checked
 {% endif %}
 </script>
 {% endif %}
+<script type="text/javascript">
+    
+</script>
+{% endblock %}
+{% block modal %}
+<div id="modal-add-other" class="ui tiny modal">
+    <i class="close icon"></i>
+    <div class="header">Andere..</div>
+    <div class="content">
+        <form class="ui equal width small form" action="" method="POST" role="form">
+            <div class="fields">
+                <div class="sixteen wide field">
+                    <label>System-Bezeichner</label>
+                    <div class="ui left icon input">
+                    <i class="map sig icon"></i>
+                    <input type="text" id="add-other-name" required="" name="add-other-name" placeholder="System-Bezeichner">
+                    </div>
+                </div>
+            </div>
+            <div class="fields">
+                <div class="field">
+                    <label>Netzzugehörigkeit (optional)</label>
+                    <select id="add-other-network_id" name="add-other-network_id" class="ui dropdown">
+                    <option value="">Netz</option>
+                    {% for value in formBOX4s.network_id.choices %}
+                        <option value="{{value[0]}}">{{value[1]}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="fields">
+                <div class="field">
+                    <label>IP-Adresse</label>
+                    <input type="text" id="add-other-ip_address" name="add-other-ip_address" placeholder="IP-Adresse (z.B. 192.168.1.1)">
+                </div>
+            </div>
+            <div class="fields">
+                <div class="ten wide field">
+                    <label>System-Typ</label>
+                    <select id="add-other-types" name="add-other-types" multiple="" class="ui dropdown">
+                    <option value="">System-Typ</option>
+                    {% for t in systemTypes %}
+                        <option value="{{t.id}}">{{t.name}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <h4 class="ui dividing header">BOX4security-Optionen</h4>
+            <div class="fields">
+                <div class="fields">
+                    <div class="inline field">
+                        <div class="ui checkbox">
+                          <input id="add-other-scan_enabled" name="add-other-scan_enabled" type="checkbox" class="hidden">
+                          <label>Schwachstellenscans für dieses System durchführen</label>
+                        </div>
+                    </div>
+                    <div class="inline field">
+                        <div class="ui checked checkbox">
+                          <input id="add-other-ids_enabled" name="add-other-ids_enabled" checked="" type="checkbox" class="hidden">
+                          <label>Traffic-Analyse für dieses System durchführen (empfohlen)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="add-other-submit" class="ui fluid large foursgrey-bg submit button" type="submit" name="button">Hinzufügen</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
