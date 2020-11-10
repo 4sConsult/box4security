@@ -720,7 +720,6 @@ echo " [ OK ] " 1>&3
 echo -n "Updating tools. This may take a very long time.. " 1>&3
 sudo docker container restart openvas
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh openvas
-sudo docker exec openvas /root/update.sh
 echo -n " [ openvas " 1>&3
 sudo docker container restart suricata
 sleep 30
