@@ -55,11 +55,11 @@
 
 
     <div class="fourteen wide column">
-      <h5 class="ui header">Snapshot erstellen<div class="sub header">Durch diese Funktion kann der momentane Stand der BOX4security festgehalten werden. Dadurch ist es möglich genau zu diesem zurückzukehren. Daten werden nicht gespeichert.</div>
+      <h5 class="ui header">Snapshot<div class="sub header">Durch diese Funktion kann der momentane Stand der BOX4security festgehalten und wiederhergestellt werden. Dadurch ist es möglich genau zu gespeicherten Zeitpunkten zurückzukehren. Daten werden nicht gespeichert.</div>
       </h5>
     </div>
     <div class="two wide center aligned column">
-      <div class="ui fitted toggle checkbox"><button class="ui button" value="snapshot">Backup Menü</button></div>
+      <div class="ui fitted toggle checkbox"><button class="ui button" value="snapshot">Snapshot Menü</button></div>
     </div>
 
   </div>
@@ -76,7 +76,7 @@
     </div>
     <div class="actions">
       <div class="ui cancel button">Abbrechen</div>
-      <div class="ui approve button">Reset</div>
+      <div class="ui approve button">Formatieren</div>
     </div>
   </div>
 
@@ -93,6 +93,23 @@
     <div class="actions">
       <div class="ui cancel button">Abbrechen</div>
       <div class="ui approve button">Reset</div>
+    </div>
+  </div>
+
+
+  <div class="ui modal" id="snapshot">
+    <i class="close icon"></i>
+    <div class="header">
+      Snapshot Menü
+    </div>
+    <div class="image content">
+      <div class="description">
+        Die BOX4security speichert selbst Snapshots. Diese können aus einer Datei oder direkt von der BOX4security wiederhergestellt werden.
+      </div>
+    </div>
+    <div class="actions">
+      <div class="ui cancel button">Snapshot Erstellen</div>
+      <div class="ui approve button">Snapshot Hochladen und Wiederherstellen</div>
     </div>
   </div>
 
@@ -165,6 +182,22 @@
           .modal('show');
         console.log("reset engaged ")
       }
+
+      if (key == "snapshot") {
+        $('.ui.modal#snapshot')
+          .modal({
+            closable: true,
+            blurring: true,
+            onApprove: function(){
+              alert("Upload file and restore")
+            },
+            onDeny: function() {
+              alert("Creating snapshot")
+            }
+          })
+          .modal('show');
+      }
+
 
       if ((key == "dashboard") || (key == "restart")) {
 
