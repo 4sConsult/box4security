@@ -226,9 +226,9 @@ cd /tmp/box4s
 
 # Import Secret Key and use the deploy token as password
 echo -n "Import BOX4security secret key and decrypting secrets.. " 1>&3
-echo $token | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
+echo $GIT_DEPLOY_TOKEN | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
 # Remove passphrase from secret key to allow decryptions without a passphrase.
-printf "passwd\n$token\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
+printf "passwd\n$GIT_DEPLOY_TOKEN\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
 # Decrypt secrets
 blackbox_decrypt_file config/secrets/secrets.conf
 blackbox_decrypt_file config/secrets/db.conf
@@ -581,7 +581,7 @@ banner "Docker ..."
 
 echo -n "Downloading BOX4security software images. This may take a long time.. " 1>&3
 # Login to docker registry
-sudo docker login registry.gitlab.com -u deploy -p $token
+sudo docker login registry.gitlab.com -u deploy -p $GIT_DEPLOY_TOKEN
 sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
 sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 echo " [ OK ] " 1>&3
