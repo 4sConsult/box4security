@@ -1,0 +1,203 @@
+{% extends "wizard/base.html" %}
+{% block head %}
+    <link rel="stylesheet" href="/static/external/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/box4s.css">
+    <title>BOX4Security</title>
+    <style type="text/css" media="print">
+        @page { size: landscape; }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="one column">
+    <div class="ui success message">
+        <div class="header">
+        Prüfung der Eingabe
+        </div>
+        <p>
+            Bitte prüfen Sie im letzten Schritt aufmerksam Ihre Eingaben. <br>
+            Sollten Sie eine Korrektur vornehmen wollen, so gehen Sie bitte über die obige Navigation zu dem betroffenen Schritt zurück.
+        </p>
+        <p>
+            Durch Absenden dieser Seite bestätigen Sie die Eingaben und nehmen die Änderungen wirksam vor. <br>
+            Bitte beachten Sie, dass die BOX4security danach neustartet und unter der von Ihnen angebenen IP-Adresse erreichbar sein wird.
+        </p>
+    </div>
+</div>
+<div class="one column">
+    <h3 class="ui dividing header">Netze</h3>
+    <table id="tbl-networks" class="ui celled structured table">
+        <thead>
+            <tr>
+                <th rowspan="2">Bezeichner</th>
+                <th rowspan="2">Netzadresse-Adresse in CIDR</th>
+                <th rowspan="2">VLAN-Tag</th>
+                <th rowspan="2">Typ</th>
+                <th colspan="3">Schwachstellenscan</th>
+            </tr>
+            <tr>
+                <th>Kategorie <div class="ui icon label circular foursgrey-bg" data-html="
+                    <div class='content'>
+                        <div class='ui list'>
+                            {% for c in scan_categories %}
+                            <div class='item'>
+                                <b>{{c.id}}</b> - {{c.name}}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>   
+                    " data-position="bottom center"><i style="margin:0em;" class="help icon"></i></div></th>
+                <th>Wochentag</th>
+                <th>Startzeit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for n in networks %}
+            <tr>
+                <td data-label="Bezeichner">{{n.name}}</td>
+                <td data-label="IP-Adresse/CIDR">{{n.ip_address}}/{{n.cidr}}</td>
+                <td data-label="VLAN-Tag">{{n.vlan}}</td>
+                <td class="collapsing" data-label="Typ">
+                    {% if n.types|length > 1 %}
+                        <div class="ui basic label">{{ n.types[0].name }}</div>
+                        <span class="ui foursgrey-bg image label" data-position="bottom center"
+                        data-html="
+                            <div class='content'>
+                            <div class='ui list'>
+                                {% for t in n.types %}
+                                <div class='item'>
+                                <div class='header'>{{t.name}}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            </div>
+                        ">
+                        + {{n.types|length-1}}
+                        </span>
+                {% elif n.types|length == 1 %}
+                    <div class="ui basic label">{{ n.types[0].name }}</div>
+                {% endif %}
+                </td>
+                <td data-label="Scan-Kategorie">Kat. {{n.scan_category.id}}</td>
+                <td data-label="Scan-Wochentag">{{n.scan_weekday}}</td>
+                <td data-label="Scan-Zeit">{{n.scan_time}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+</div>
+<div class="one column">
+    <h3 class="ui dividing header">Systeme</h3>
+    <table id="tbl-systems" class="ui celled structured table">
+        <thead>
+            <tr>
+                <th rowspan="2">Bezeichner</th>
+                <th rowspan="2">Netz</th>
+                <th rowspan="2">IP-Adresse</th>
+                <th rowspan="2">Typ</th>
+                <!-- <th rowspan="2">Ort</th> -->
+                <th colspan="2">BOX4security-Option</th>
+            </tr>
+            <tr>
+                <th>Schwachstellenscans</th>
+                <th>Traffic-Analyse</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in systems %}
+            <tr>
+                <td data-label="Bezeichner">{{s.name}}</td>
+                <td data-label="Netz">{{s.network.name}}</td>
+                <td data-label="IP-Adresse">{{s.ip_address}}</td>
+                <td class="collapsing" data-label="Typ">
+                    {% if s.types|length > 1 %}
+                        <div class="ui basic label">{{ s.types[0].name }}</div>
+                        <span class="ui foursgrey-bg image label" data-position="bottom center"
+                        data-html="
+                            <div class='content'>
+                            <div class='ui list'>
+                                {% for t in s.types %}
+                                <div class='item'>
+                                <div class='header'>{{t.name}}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            </div>
+                        ">
+                        + {{s.types|length-1}}
+                        </span>
+                {% elif s.types|length == 1 %}
+                    <div class="ui basic label">{{ s.types[0].name }}</div>
+                {% endif %}
+                </td>
+                <!-- <td data-label="Ort">{{s.location}}</td> -->
+                <td data-label="Schwachstellenscans"><i class="ui icon {% if s.scan_enabled %}green check{% else %} red x {% endif %}"></i></td>
+                <td data-label="Traffic-Analyse"><i class="ui icon {% if s.ids_enabled %}green check{% else %} red x {% endif %}"></i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="one column">
+    <h3 class="ui dividing header">BOX4security</h3>
+    
+    <table id="tbl-box4s" class="ui celled table">
+        <thead>
+            <tr>
+                <th rowspan="2">Bezeichner</th>
+                <th rowspan="2">Netz</th>
+                <th rowspan="2">IP-Adresse</th>
+                <!-- <th rowspan="2">Ort</th> -->
+                <th rowspan="2">DNS-Server</th>
+                <th rowspan="2">Gateway</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td data-label="Bezeichner">{{box4s.name}}</td>
+                <td data-label="Netz">{{box4s.network.name}}</td>
+                {% if box4s.dhcp_enabled %}
+                <td colspan="2" data-label="DHCP">DHCP aktiviert <i class="icon green check"></i></td>
+                {% else %}
+                <td data-label="IP-Adresse">{{box4s.ip_address}}</td>
+                <td data-label="DNS-Server">{{box4s.dns.name}} ({{box4s.dns.ip_address}})</td>
+                <td data-label="Gateway">{{box4s.gateway.name}} ({{box4s.gateway.ip_address}})</td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+    
+    
+</div>
+<div class="one right aligned column">
+    <button onclick="window.print()" class="ui basic small button"><i class="ui icon print"></i>Seite drucken</button>
+</div>
+<div class="one column">
+        <form class="ui large form" action="{{ url_for('wizard.verify') }}" method="POST" role="form">
+            <div class="ui field">
+                <div class="ui checkbox">
+                    <input id="confirm" type="checkbox" name="confirm">
+                    <label>Ich habe die gezeigten Informationen auf Korrektheit geprüft.</label>
+                </div>
+            </div>
+            <button id="btn-confirm" type="submit" class="ui large foursgrey-bg button">Einrichtung abschließen</button>
+        </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$('.step.active').removeClass('active');
+$('#step-verify').addClass('active');
+$('.ui.label.foursgrey-bg').popup();
+</script>
+<script type="text/javascript">
+    $('#btn-confirm').on('click', (e) => {
+        e.preventDefault();
+        if($('#confirm').parent().checkbox('is checked'))
+        {
+            $('.ui.form').submit();
+        } else {
+            alert("Bitte prüfen Sie die gezeigten Informationen und bestätigen Sie dies durch Setzen des erforderlichen Hakens.");
+        }
+    });
+</script>
+{% endblock %}
