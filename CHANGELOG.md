@@ -4,7 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [X.X.X](https://gitlab.com/4sconsult/box4s/-/tags/X.X.X) - 2020-11-11
 
 ### Added
-
+* Die BOX4security lässt sich nun nach Installation über einen Einrichtungswizard konfigurieren. Dabei werden Netze, Systeme, Analysescopes für IDS- & Schwachstellenscans sowie Systemparameter für die BOX4security festgelegt.
 
 ### Changed
 
@@ -16,6 +16,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 
 ### Deprecated
+* Einrichtung via ITS-Plattform und FetchQC deprecated. FetchQC wird in der kommenden Version entfernt.
 
 
 ### Removed

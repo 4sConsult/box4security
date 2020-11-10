@@ -23,3 +23,7 @@ small.helper {
 .ui.action.input.cert input[type="file"] {
   display: none;
 }
+
+.foursfooter {
+    border-bottom: 0 !important;
+}
