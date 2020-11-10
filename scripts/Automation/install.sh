@@ -446,6 +446,9 @@ echo "[ OK ]" 1>&3
 banner "BOX4security ..."
 
 echo -n "Setting environmental permissions.. " 1>&3
+sudo mkdir -p /etc/netplan || :
+sudo touch /etc/default/logstash || :
+sudo touch /etc/environment || :
 sudo chown -R root:44269 /etc/environment
 sudo chmod 770 -R /etc/environment
 sudo chown -R root:44269 /etc/default/logstash
