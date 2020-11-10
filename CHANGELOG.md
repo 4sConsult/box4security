@@ -5,6 +5,8 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 * Die BOX4security lässt sich nun nach Installation über einen Einrichtungswizard konfigurieren. Dabei werden Netze, Systeme, Analysescopes für IDS- & Schwachstellenscans sowie Systemparameter für die BOX4security festgelegt.
+* Neue Oberfläche Discover im Bereich SIEM eingefügt. Hier können die Daten, welche die BOX4security aufzeichnet, detailliert durchsucht werden. Um diesen Bereich als nicht Super Admin zu erreichen ist die Rolle *Einsicht und Bearbeiten der BOX4s-Konfiguration* notwendig.
+
 
 ### Changed
 
