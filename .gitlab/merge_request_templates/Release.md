@@ -22,3 +22,4 @@
 - [ ] Dockerimage Tag zuletzt wieder auf `dev` setzen
 - [ ] Changelog für die neue Version anlegen
 - [ ] Demo System aktualisieren
+- [ ] Repo Backup durchführen
