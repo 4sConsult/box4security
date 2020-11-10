@@ -22,9 +22,9 @@ def upgrade():
         {'id': 1, 'name': 'BOX4security'},
         {'id': 2, 'name': 'DNS-Server'},
         {'id': 3, 'name': 'Gateway'},
-        {'name': 'Firewall'},
-        {'name': 'IoT'},
-        {'name': 'Industrielle IT'},
+        {'id': 4, 'name': 'Firewall'},
+        {'id': 5, 'name': 'IoT'},
+        {'id': 6, 'name': 'Industrielle IT'},
     ])
     op.bulk_insert(NetworkType.__table__, [
         {'name': 'Client'},
