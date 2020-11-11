@@ -1,8 +1,0 @@
-if [source][ip] in $iplist
-    {
-        drop { }
-    }
-if [destination][ip] in $iplist
-    {
-        drop { }
-    }
