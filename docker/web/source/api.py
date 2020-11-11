@@ -3,6 +3,9 @@ from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
 from flask import request, render_template
+from source.wizard.models import Network, NetworkType, System, SystemType
+from source.wizard.schemas import SYS, SYSs, NET, NETs
+from source.wizard.middleware import WizardMiddleware
 import requests
 import os
 import subprocess
@@ -905,7 +908,6 @@ class APIWazuhAgentPass(Resource):
         try:
             with open('/var/lib/box4s/wazuh-authd.pass', 'w') as f:
                 f.write(password)
-                return {'password': password}
         except Exception:
             abort(500, message="Failed to write the Wazuh password file.")
 
@@ -913,6 +915,7 @@ class APIWazuhAgentPass(Resource):
             os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart wazuh')
         except Exception:
             abort(500, message="Failed to restart the Wazuh service.")
+        return {'password': password}
 
     @roles_required(['Super Admin', 'Config'])
     def put(self):
@@ -938,3 +941,198 @@ class Health(Resource):
     def get(self):
         """Return Healthy."""
         return {'status': 'pass'}, 200
+
+
+class NetworkAPI(Resource):
+    """API resource for representing a single network."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            abort(503, message="The wizard and its API is not available.")
+
+    def get(self, network_id):
+        """Get a single network by id."""
+        network = Network.query.get(network_id)
+        if network:
+            return NET.dump(network)
+        else:
+            abort(404, message="Network with ID {} not found.".format(network_id))
+
+    def put(self, network_id):
+        """Update a network by id."""
+        self.parser.add_argument('name', type=str)
+        self.parser.add_argument('ip_address', type=str)
+        self.parser.add_argument('cidr', type=str)
+        self.parser.add_argument('vlan', type=str)
+        self.parser.add_argument('types', type=int, action='append')
+        self.parser.add_argument('scancategory_id', type=int)
+        self.parser.add_argument('scan_weekday', type=str)
+        self.parser.add_argument('scan_time', type=str)
+
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+
+        network = Network.query.get(network_id)
+        if not network:
+            abort(404, message="Network with ID {} not found. Nothing changed.".format(network_id))
+        network.name = self.args['name']
+        network.ip_address = self.args['ip_address']
+        network.cidr = self.args['cidr']
+        network.vlan = self.args['vlan']
+        network.scancategory_id = self.args['scancategory_id']
+        network.scan_weekday = self.args['scan_weekday']
+        network.scan_time = self.args['scan_time']
+        if self.args['types']:
+            network.types = [NetworkType.query.get(tid) for tid in self.args['types']]
+        else:
+            network.types = []
+        try:
+            db.session.add(network)
+            db.session.commit()
+        except Exception:
+            abort(500, message="Error while saving network to database.")
+
+    def delete(self, network_id):
+        """Delete a network by id."""
+        network = Network.query.get(network_id)
+        if network:
+            db.session.delete(network)
+            db.session.commit()
+            return '', 204
+        else:
+            abort(404, message="Network with ID {} not found. Nothing deleted.".format(network_id))
+
+
+class NetworksAPI(Resource):
+    """API resource for representing multiple networks."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            abort(503, message="The wizard and its API is not available.")
+
+    def get(self):
+        networks = Network.query.all()
+        return NETs.dump(networks)
+
+    def post(self):
+        """Create a new network and return its id."""
+        pass
+
+    def put(self):
+        pass
+
+
+class SystemAPI(Resource):
+    """API resource for representing a single system."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            abort(503, message="The wizard and its API is not available.")
+
+    def get(self, system_id):
+        """Get a single system by id."""
+        system = System.query.get(system_id)
+        if system:
+            return SYS.dump(system)
+        else:
+            abort(404, message="System with ID {} not found.".format(system_id))
+
+    def put(self, system_id):
+        """Update a system by id."""
+        self.parser.add_argument('name', type=str)
+        self.parser.add_argument('ip_address', type=str)
+        self.parser.add_argument('location', type=str)
+        self.parser.add_argument('scan_enabled', type=bool)
+        self.parser.add_argument('ids_enabled', type=bool)
+        self.parser.add_argument('types', type=int, action='append')
+        self.parser.add_argument('network_id', type=int)
+
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+
+        system = System.query.get(system_id)
+        if not system:
+            abort(404, message="System with ID {} not found. Nothing changed.".format(system_id))
+        system.name = self.args['name']
+        system.ip_address = self.args['ip_address']
+        system.scan_enabled = self.args['scan_enabled']
+        system.ids_enabled = self.args['ids_enabled']
+        system.network_id = self.args['network_id']
+        if self.args['types']:
+            system.types = [SystemType.query.get(tid) for tid in self.args['types']]
+        else:
+            system.types = []
+        try:
+            db.session.add(system)
+            db.session.commit()
+        except Exception:
+            abort(500, message="Error while saving system to database.")
+
+    def delete(self, system_id):
+        """Delete a system by id."""
+        system = System.query.get(system_id)
+        if system:
+            db.session.delete(system)
+            db.session.commit()
+            return '', 204
+        else:
+            abort(404, message="System with ID {} not found. Nothing deleted.".format(system_id))
+
+
+class SystemsAPI(Resource):
+    """API resource for representing multiple systems."""
+
+    def __init__(self):
+        """Register Parser and argument for endpoint."""
+        self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            abort(503, message="The wizard and its API is not available.")
+
+    def get(self):
+        _systems = System.query.all()
+        return SYSs.dump(_systems)
+
+    def post(self):
+        """Create a new system and return it."""
+        self.parser.add_argument('name', type=str)
+        self.parser.add_argument('ip_address', type=str)
+        self.parser.add_argument('location', type=str)
+        self.parser.add_argument('scan_enabled', type=bool)
+        self.parser.add_argument('ids_enabled', type=bool)
+        self.parser.add_argument('types', type=int, action='append')
+        self.parser.add_argument('network_id', type=int)
+
+        try:
+            self.args = self.parser.parse_args()
+        except Exception:
+            abort(400, message="Bad Request. Failed parsing arguments.")
+
+        newSystem = System()
+        newSystem.name = self.args['name']
+        newSystem.ip_address = self.args['ip_address']
+        newSystem.scan_enabled = self.args['scan_enabled']
+        newSystem.ids_enabled = self.args['ids_enabled']
+        newSystem.network_id = self.args['network_id']
+        if self.args['types']:
+            newSystem.types = [SystemType.query.get(tid) for tid in self.args['types']]
+        else:
+            newSystem.types = []
+        try:
+            db.session.add(newSystem)
+            db.session.commit()
+            return SYS.dump(newSystem)
+        except Exception:
+            abort(500, message="Error while saving system to database.")
+
+    def put(self):
+        pass

@@ -11,3 +11,7 @@
 /config/secrets/openvas.conf
 /config/secrets/wazuh.conf
 /docker/elastalert/etc/elastalert/smtp_auth_file.yaml
+/docker/web/source/wazuh/*.deb
+/docker/web/source/wazuh/*.pkg
+/docker/web/source/wazuh/*.rpm
+/docker/web/source/wazuh/*.msi

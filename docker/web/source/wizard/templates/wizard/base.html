@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        {% block head %}
+        <link rel="stylesheet" href="/static/external/semantic.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/box4s.css">
+        <title>BOX4Security</title>
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container ui middle aligned center aligned one column grid">
+            <div class="one column">
+                <img src="/static/Box4S_Logo.png" class="ui centered large image" />
+            </div>
+            <div class="one column">
+                <div class="ui six top attached ordered steps">
+                    <a id='step-index' class="active step" href="{{ url_for('wizard.index') }}">
+                        <div class="content">
+                            <div class="title">Start</div>
+                        </div>
+                    </a>
+                    <a id='step-networks' href="{{ url_for('wizard.networks') }}" class="step">
+                        <div class="content">
+                            <div class="title">Netzwerke</div>
+                        </div>
+                    </a>
+                    <a id='step-systems' href="{{ url_for('wizard.systems') }}" class="step">
+                        <div class="content">
+                            <div class="title">Systeme</div>
+                        </div>
+                    </a>
+                    <a id='step-box4s' href="{{ url_for('wizard.box4s') }}" class="step">
+                        <div class="content">
+                            <div class="title">BOX4security</div>
+                        </div>
+                    </a>
+                    <a id='step-smtp' href="{{ url_for('wizard.smtp') }}" class="step">
+                        <div class="content">
+                            <div class="title">SMTP & Zertifikate</div>
+                        </div>
+                    </a>
+                    <a id='step-verify' href="{{ url_for('wizard.verify') }}" class="step">
+                        <div class="content">
+                            <div class="title">Verifikation & Abschluss</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="ui one column">
+                {% for category, message in messages %}
+                    <div class="ui {{ category }} message">
+                        <p>{{ message }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+        <div class="ui vertical foursfooter footer segment">
+            <div class="ui center aligned container">
+                <img src="/static/Box4S_Logo.png" class="ui centered small image">
+            </div>
+        </div>
+        {% block modal %}{% endblock %}
+        <script src="/static/external/jquery.min.js"></script>
+        <script src="/static/external/semantic.min.js"></script>
+        <script src='/static/wizard.js'></script>
+        <script>
+        $('.ui.dropdown').dropdown();
+        $('.ui.checkbox').checkbox();
+        </script>
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

@@ -2,6 +2,7 @@
 from source import app, mail, db, userman, helpers
 from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.api import APIWizardReset
+from source.api import NetworkAPI, NetworksAPI, SystemAPI, SystemsAPI
 from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
 from source.api import APIWazuhAgentPass
@@ -14,9 +15,9 @@ from flask import render_template, send_from_directory, request, abort, send_fil
 from flask_user import login_required, current_user, roles_required, EmailError
 from flask_mail import Message
 from source.forms import AddUserForm
+from source.wizard.middleware import WizardMiddleware
 import os
 import re
-
 
 api = Api(app)
 
@@ -33,7 +34,6 @@ api.add_resource(Health, '/api/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 
-
 api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
 api.add_resource(Alert, '/api/rules/alerts/<alert_id>')
 api.add_resource(Alerts, '/api/rules/alerts/')
@@ -41,7 +41,10 @@ api.add_resource(AlertMailer, '/api/alerts/mailer/')
 
 # Wizard
 api.add_resource(APIWizardReset, '/api/wizard/reset')
-
+api.add_resource(NetworkAPI, '/api/networks/<network_id>')
+api.add_resource(NetworksAPI, '/api/networks/')
+api.add_resource(SystemAPI, '/api/systems/<system_id>')
+api.add_resource(SystemsAPI, '/api/systems/')
 # SMTP
 api.add_resource(APISMTP, '/api/config/smtp')
 api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
@@ -50,6 +53,13 @@ api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
 api.add_resource(APIModules, '/api/modules')
 
 api.add_resource(APIWazuhAgentPass, '/api/config/wazuh')
+
+
+@app.before_request
+def check_if_wizard():
+    """Before every request check if the wizard shall be shown and redirect to it if needed."""
+    if WizardMiddleware.isShowWizard() and not re.match('/(api|wizard).*', request.path):
+        return redirect(url_for(WizardMiddleware.getMaxStep()))
 
 
 @app.before_request

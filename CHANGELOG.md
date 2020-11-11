@@ -1,6 +1,29 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
+## [1.8.9](https://gitlab.com/4sconsult/box4s/-/tags/1.8.9) - 2020-11-11
+
+### Added
+* Die BOX4security lässt sich nun nach Installation über einen Einrichtungswizard konfigurieren. Dabei werden Netze, Systeme, Analysescopes für IDS- & Schwachstellenscans sowie Systemparameter für die BOX4security festgelegt.
+* Neue Oberfläche Discover im Bereich SIEM eingefügt. Hier können die Daten, welche die BOX4security aufzeichnet, detailliert durchsucht werden. Um diesen Bereich als nicht Super Admin zu erreichen ist die Rolle *Einsicht und Bearbeiten der BOX4s-Konfiguration* notwendig.
+
+
+### Changed
+
+
+### Optimized
+
+
+### Fixed
+
+
+### Deprecated
+* Einrichtung via ITS-Plattform und FetchQC deprecated. FetchQC wird in der kommenden Version entfernt.
+
+
+### Removed
+
+
 ## [1.8.8](https://gitlab.com/4sconsult/box4s/-/tags/1.8.8) - 2020-10-14
 
 ### Added
