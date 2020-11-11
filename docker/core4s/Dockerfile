@@ -18,7 +18,10 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sSL https://get.docker.com/ | sh
 
 # Install Pyip dependencies
-RUN pip3 install elasticsearch-curator Flask untangle python-gvm
+RUN pip3 install Flask untangle python-gvm
+# TODO: REMOVE TEMPORARY FIX: https://github.com/pypa/pip/issues/9108#issuecomment-723198497
+RUN pip3 install boto3==1.16.12 urllib3==1.24.3 botocore==1.19.12
+RUN pip3 install elasticsearch-curator==5.8.1 
 
 # Add files from git
 ADD scripts /core4s/scripts

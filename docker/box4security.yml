@@ -142,6 +142,10 @@ services:
        - /etc/msmtprc:/etc/box4s/msmtprc
        - /etc/ssl/certs/BOX4s-SMTP.pem:/etc/ssl/certs/BOX4s-SMTP.pem
        - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
+       - /etc/environment:/etc/environment
+       - /etc/box4s/logstash/BOX4s-special.conf:/etc/box4s/logstash/BOX4s-special.conf
+       - /etc/default/logstash:/etc/default/logstash
+       - /etc/netplan:/etc/_netplan/
     expose:
       - 5000
     healthcheck:

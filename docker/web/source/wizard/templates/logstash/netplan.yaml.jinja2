@@ -1,0 +1,11 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens160:
+      addresses:
+        - {{BOX4s.ip_address}}/{{BOX4s.network.cidr}}
+      dhcp4: {% if BOX4s.dhcp_enabled %}yes{% else %}no{% endif %}
+      gateway4: {{BOX4s.gateway.ip_address}}
+      nameservers:
+          addresses: [{{BOX4s.dns.ip_address}}]

@@ -75,7 +75,7 @@
                         <br>
                         <small class="helper">Sollte der Mail-Server ein selbstsigniertes Zertifikat verwenden, laden Sie es hier hoch.</small>
                       </div>
-                    </div>         
+                    </div>
                   </div>
                 </div>
                 <div class="field">
@@ -154,8 +154,7 @@
       document.getElementById('senderMail').value = jso.SMTP_SENDER_MAIL;
       document.getElementById('smtpUsername').value = jso.SMTP_USERNAME;
     });
-  }  
-  </script>
+  }
   <script type="text/javascript">
     const waitForWeb = async () =>  {
       var done = false;
@@ -198,7 +197,7 @@
         msg.classList.add("success");
         msg.innerHTML = '<div class="header">SMTP-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen.</p>'
         $('#formSMTP').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
-    } else { 
+    } else {
         msg.classList.add("error");
         msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.';
     }
@@ -210,7 +209,7 @@
         window.location = window.location.pathname;
       }, 15000);
     }
-    
+
     });
   </script>
 {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}

@@ -34,6 +34,7 @@
                  <a class="item" href="/siem-social-media">Social Media</a>
                  {% if ('false' | custom_getenv('BOX4s_WAZUH')) == 'true' %}<a class="item" href="/wazuh">Endgeräte</a>{% endif %}
                  <a class="item" href="/intelligence">Intelligence</a>
+                 {% if current_user.has_role('Config') %}<a class="item" href="/siem-discover">Discover</a>{% endif %}
                </div>
              </div>
            </div>
