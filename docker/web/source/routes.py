@@ -1,6 +1,6 @@
 """Module to handle all webapp routes."""
 from source import app, mail, db, userman, helpers
-from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock, Repair
+from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock, Repair, Snapshot
 from source.api import APIWizardReset
 from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
@@ -33,6 +33,7 @@ api.add_resource(Health, '/api/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 api.add_resource(Repair, '/api/repair/')
+api.add_resource(Repair, '/api/snapshot/')
 
 api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
 api.add_resource(Alert, '/api/rules/alerts/<alert_id>')

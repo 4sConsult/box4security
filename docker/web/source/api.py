@@ -149,6 +149,28 @@ class Repair(Resource):
         abort(405, message="Cannot delete Repair Script.")
 
 
+class Snapshot(Resource):
+    """API for Resource for starting a Repair Script."""
+    @roles_required(['Super Admin'])
+    def get(self):
+        """Download selected Snapshot"""
+        value = request.json['key']
+        return {"message": "accepted"}, 200
+
+    @roles_required(['Super Admin'])
+    def put(self):
+        """Upload Snapshot from User"""
+
+    @roles_required(['Super Admin'])
+    def post(self):
+        """Restore selected Snapshot"""
+
+    @roles_required(['Super Admin'])
+    def delete(self):
+        """Delete selected Snapshot"""
+
+
+
 class BPF(Resource):
     """API Resource for a single BPF Rule."""
 
