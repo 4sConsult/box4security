@@ -19,6 +19,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 
 ### Removed
+* Die Berechnung und Darstellung *IT-Security-Scores* wurden entfernt. Per Designentscheidung reicht die Einsicht in Schwachstellen- und IDS-Scores aus, um eine schnelle Bewertung der IT-Security zu treffen.
 
 
 ## [1.8.9](https://gitlab.com/4sconsult/box4s/-/tags/1.8.9) - 2020-11-11
