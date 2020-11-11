@@ -8,8 +8,6 @@ set -e
 # Making sure to be logged in with the correct account
 sudo docker login registry.gitlab.com -u deployment -p B-H-Sg97y3otYdRAjFkQ
 
-sudo apt install -y unattended-upgrades
-
 # Set the nameserver temporarily
 cp /var/lib/box4s/resolv.personal /etc/resolv.conf
 
@@ -29,19 +27,6 @@ sudo docker rmi $(sudo docker images -a -q) || :
 
 ###################
 # CHANGES FOR STANDARD
-
-echo -n "Setting environmental permissions.. "
-sudo chown -R root:44269 /etc/environment
-sudo chmod 770 -R /etc/environment
-sudo chown -R root:44269 /var/lib/box4s/
-sudo chmod 770 -R /var/lib/box4s/
-sudo chown -R root:44269 /etc/box4s/logstash
-sudo chmod 770 -R /etc/box4s/logstash
-sudo chown -R root:44269 /etc/default/logstash
-sudo chmod 770 -R /etc/default/logstash
-sudo chown -R root:44269 /etc/netplan
-sudo chmod 770 -R /etc/netplan
-echo " [ OK ]"
 
 ###################
 # CHANGES FOR MODULES
@@ -66,11 +51,6 @@ sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
 # Start des Services
 echo "Starting BOX4s Service. Please wait."
 sudo systemctl restart box4security.service
-
-# Waiting for healthy db container before force disabling the wizard.
-source /home/amadmin/box4s/config/secrets/db.conf
-/home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh web
-echo "DELETE FROM wizardstate WHERE 1=1; INSERT INTO wizardstate(state_id) VALUES(1)" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
 
 # Waiting for healthy containers before continuation
 sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
