@@ -503,8 +503,8 @@ set +e
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-grep -qxF  INT_IP="$INT_IP" /etc/environment || echo INT_IP="$INT_IP" >> /etc/environment
-grep -qxF  INT_IP="$INT_IP" /etc/default/logstash || echo INT_IP="$INT_IP" >> /etc/default/logstash
+grep -qxF  INT_IP=$INT_IP /etc/environment || echo INT_IP=$INT_IP >> /etc/environment
+grep -qxF  INT_IP=$INT_IP /etc/default/logstash || echo INT_IP=$INT_IP >> /etc/default/logstash
 source /etc/environment
 set -e
 echo " [ OK ] " 1>&3
