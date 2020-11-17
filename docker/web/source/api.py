@@ -2,7 +2,7 @@
 from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
-from flask import request, render_template, jsonify
+from flask import request, render_template, jsonify, send_file
 from source.wizard.models import Network, NetworkType, System, SystemType
 from source.wizard.schemas import SYS, SYSs, NET, NETs
 from source.wizard.middleware import WizardMiddleware
@@ -200,7 +200,7 @@ class Snapshot(Resource):
         name = request.json['key']
         path = os.path.join(snap_folder, name)
         if os.path.isfile(path):
-            os.remove(f"/var/lib/box4s/snapshots{ name }.zip)
+            #os.remove(f"/var/lib/box4s/snapshots{ name }.zip)
             return {"message": "accepted"}, 200
         else:
             abort(404, message="Cannot delete Snapshot that does not exist.")
