@@ -23,6 +23,9 @@
               Wazuh
             </a>
             {% endif %}
+            <a data-tab="https" class="item">
+                HTTPS
+            </a>
           </div>
           <div data-tab="mail" class="ui bottom attached active tab segment">
             <!-- Mail -->
@@ -118,6 +121,30 @@
             </div>
           </div>
           {% endif %}
+          <div data-tab="https" class="ui bottom attached tab segment">
+            <form id="formHTTPS" method="POST" class="ui form" enctype="multipart/form-data">
+                <h4 class="ui dividing header">HTTPS-Konfiguration</h4>
+                <div class="fields">
+                  <div class="ui middle aligned grid field">
+                    <div class="row">
+                      <div class="sixteen wide column">
+                        <div class="ui action input cert">
+                          <input id="https-text" type="text" placeholder="HTTPS-Zertifikat.pem" readonly>
+                          <input type="file" name="files[]" multiple="true" autocomplete="off" required>
+                          <div class="ui icon button">
+                            <i class="attach icon"></i>
+                          </div>
+                        </div>
+                        <br>
+                        <small class="helper">Sollte der Mail-Server ein selbstsigniertes Zertifikat verwenden, laden Sie es hier hoch.</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button class="ui green button" type="submit">Änderungen anwenden</button>
+                <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
+              </form>
+          </div>
     </div>
   <div class="ui vertical footer segment">
     <div class="ui center aligned container">
@@ -155,6 +182,7 @@
       document.getElementById('smtpUsername').value = jso.SMTP_USERNAME;
     });
   }
+  </script>
   <script type="text/javascript">
     const waitForWeb = async () =>  {
       var done = false;
