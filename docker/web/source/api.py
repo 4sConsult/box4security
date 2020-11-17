@@ -127,7 +127,7 @@ def writeSMTPConfig(config):
             abort(502, message="Alert API Failure")
 
 
-class FirstLevelRepair(Resource):
+class Repair(Resource):
     """API Resource for starting a Repair Script."""
 
     @roles_required(['Super Admin'])
