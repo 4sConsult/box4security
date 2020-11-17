@@ -305,10 +305,10 @@ echo "[ OK ]" 1>&3
 # Copy certificates over
 echo -n "Copying SSL certificates.. " 1>&3
 sudo mkdir -p /etc/nginx/certs
-sudo chown -R root:44269 /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
-sudo chmod 760 -R /etc/nginx/certs
+sudo chown -R root:44269 /etc/nginx/certs
+sudo chmod 770 -R /etc/nginx/certs
 echo "[ OK ]" 1>&3
 
 # Copy the smtp.conf to /etc/box4s
