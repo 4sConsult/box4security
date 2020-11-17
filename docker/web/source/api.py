@@ -2,7 +2,7 @@
 from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
-from flask import request, render_template
+from flask import request, render_template, jsonify
 from source.wizard.models import Network, NetworkType, System, SystemType
 from source.wizard.schemas import SYS, SYSs, NET, NETs
 from source.wizard.middleware import WizardMiddleware
@@ -156,22 +156,42 @@ class Snapshot(Resource):
     """API for Resource for starting a Repair Script."""
     @roles_required(['Super Admin'])
     def get(self):
-        """Download selected Snapshot"""
-        value = request.json['key']
+        """Download selected Snapshot or gather filenames for all or List all files in Snapshot folder"""
+        filename = request.json['key']
+        type = request.json['type']
+        snap_folder = '/var/lib/box4s/snapshots'
+        if not os.path.exists(snap_folder):
+            os.makedirs(snap_folder)
+        if type == "info":
+            files = []
+            for filename in os.listdir(snap_folder):
+                path = os.path.join(snap_folder, filename)
+                if os.path.isfile(path):
+                    files.append(filename)
+            return jsonify(files)
+
+
+        if type == "gather":
+            return send_file(f"/var/lib/box4s/snapshots{ filename }.zip, as_attachment=True, attachment_filename='snapshot.zip', mimetype='application/gzip")
         return {"message": "accepted"}, 200
+
 
     @roles_required(['Super Admin'])
     def put(self):
         """Upload Snapshot from User"""
+        snap_folder = '/var/lib/box4s/snapshots'
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(snap_folder, filename))
 
     @roles_required(['Super Admin'])
     def post(self):
         """Restore selected Snapshot"""
 
+
     @roles_required(['Super Admin'])
     def delete(self):
         """Delete selected Snapshot"""
-
 
 
 class BPF(Resource):

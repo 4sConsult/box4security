@@ -109,7 +109,7 @@
     </div>
     <div class="actions">
       <div class="ui cancel button">Snapshot Erstellen</div>
-      <div class="ui approve button">Snapshot Hochladen und Wiederherstellen</div>
+      <div class="ui approve button"><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="embedpollfileinput" /> </div>
     </div>
   </div>
 
@@ -190,6 +190,7 @@
             blurring: true,
             onApprove: function(){
               alert("Upload file and restore")
+
             },
             onDeny: function() {
               alert("Creating snapshot")
