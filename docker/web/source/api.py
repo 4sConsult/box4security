@@ -198,7 +198,7 @@ class Snapshot(Resource):
         """Delete selected Snapshot"""
         snap_folder = '/var/lib/box4s/snapshots'
         name = request.json['key']
-        path = os.path.join(snap_folder, name)
+        path = os.path.join(snap_folder, name, '.zip')
         if os.path.isfile(path):
             # os.remove(f"/var/lib/box4s/snapshots{ name }.zip)
             return {"message": "accepted"}, 200
