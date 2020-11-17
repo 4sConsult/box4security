@@ -27,7 +27,10 @@ sudo docker rmi $(sudo docker images -a -q) || :
 
 ###################
 # CHANGES FOR STANDARD
-
+# Fix miss setting of $INT_IP in logstash with quotes
+source /etc/environment
+sed -i "s/INT_IP=\"$INT_IP\"/INT_IP=$INT_IP/g" /etc/environment
+sed -i "s/INT_IP=\"$INT_IP\"/INT_IP=$INT_IP/g" /etc/default/logstash
 ###################
 # CHANGES FOR MODULES
 
