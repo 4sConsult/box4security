@@ -175,8 +175,8 @@ class Snapshot(Resource):
     @roles_required(['Super Admin'])
     def put(self):
         """Upload Snapshot from User"""
-        snap_folder = '/var/lib/box4s/snapshots'
-        file = request.files['file']
+        # snap_folder = '/var/lib/box4s/snapshots'
+        # file = request.files['file']
         # name = secure_filename(file.filename)
         # file.save(os.path.join(snap_folder, name))
         return {"message": "accepted"}, 200
