@@ -157,7 +157,7 @@ class Snapshot(Resource):
     @roles_required(['Super Admin'])
     def get(self):
         """Download selected Snapshot or gather filenames for all or List all files in Snapshot folder"""
-        filename = request.json['key']
+        name = request.json['key']
         type = request.json['type']
         snap_folder = '/var/lib/box4s/snapshots'
         if not os.path.exists(snap_folder):
@@ -169,29 +169,41 @@ class Snapshot(Resource):
                 if os.path.isfile(path):
                     files.append(filename)
             return jsonify(files)
-
-
         if type == "gather":
-            return send_file(f"/var/lib/box4s/snapshots{ filename }.zip, as_attachment=True, attachment_filename='snapshot.zip', mimetype='application/gzip")
-        return {"message": "accepted"}, 200
-
+            return send_file(f"/var/lib/box4s/snapshots{ name }.zip, as_attachment=True, attachment_filename='snapshot.zip', mimetype='application/gzip")
 
     @roles_required(['Super Admin'])
     def put(self):
         """Upload Snapshot from User"""
         snap_folder = '/var/lib/box4s/snapshots'
         file = request.files['file']
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(snap_folder, filename))
+        name = secure_filename(file.filename)
+        file.save(os.path.join(snap_folder, name))
+        return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
     def post(self):
         """Restore selected Snapshot"""
-
+        snap_folder = '/var/lib/box4s/snapshots'
+        name = request.json['key']
+        path = os.path.join(snap_folder, name)
+        if os.path.isfile(path):
+            os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { path }")
+            return {"message": "accepted"}, 200
+        else:
+            abort(404, message="Cannot restore Snapshot that does not exist.")
 
     @roles_required(['Super Admin'])
     def delete(self):
         """Delete selected Snapshot"""
+        snap_folder = '/var/lib/box4s/snapshots'
+        name = request.json['key']
+        path = os.path.join(snap_folder, name)
+        if os.path.isfile(path):
+            os.remove(f"/var/lib/box4s/snapshots{ name }.zip)
+            return {"message": "accepted"}, 200
+        else:
+            abort(404, message="Cannot delete Snapshot that does not exist.")
 
 
 class BPF(Resource):
