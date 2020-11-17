@@ -1210,4 +1210,4 @@ class CertificateResource(Resource):
         Delete the currently installed HTTPS certificate and its private key.
         Generate a new random private key and a self-signed certificate.
         """
-        pass
+        abort(405, message="Automatic (re)-creation not implemented yet.")
