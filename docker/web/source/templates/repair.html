@@ -106,10 +106,12 @@
       <div class="description">
         Die BOX4security speichert selbst Snapshots. Diese können aus einer Datei oder direkt von der BOX4security wiederhergestellt werden.
       </div>
+      <i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="embedpollfileinput" />
+      <table id="snapshots"></table>
     </div>
     <div class="actions">
       <div class="ui cancel button">Snapshot Erstellen</div>
-      <div class="ui approve button"><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="embedpollfileinput" /> </div>
+      <div class="ui approve button">Snapshot Wiederherstellen </div>
     </div>
   </div>
 
@@ -203,18 +205,32 @@
                 })
             },
             onDeny: function() {
-              fetch(`//{{ request.host }}/api/snapshot/`, {
-                  method: "GET",
-                })
-                .then((response) => {
-                  return response.json()
-                }).then((parsed_resp) => {
-                  console.log(parsed_resp);
-                })
+
             }
           })
           .modal('show');
       }
+
+      $(document).ready(function () {
+$.getJSON(url,
+function (json) {
+
+  fetch(`//{{ request.host }}/api/snapshot/`, {
+      method: "GET",
+    })
+    .then((response) => {
+      return response.json()
+    }).then((parsed_resp) => {
+      var tr = $("<tr></tr>")
+      for (var i = 0; i < parsed_resp.results.length; i++) {
+
+      var td = "<td>" + parsed_resp"</td>"
+      $(tr).append(td);
+      }
+      $('table').append($(tr));
+      console.log(parsed_resp);
+    })
+
 
 
 
