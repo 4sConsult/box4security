@@ -189,18 +189,24 @@
             closable: true,
             blurring: true,
             onApprove: function(){
-              alert("Upload file and restore")
-
+              fetch(`//{{ request.host }}/api/snapshot/`, {
+                  method: "DELETE",
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    'key': 'test1'
+                  })
+                })
+                .then((response) => {
+                  console.log(response)
+                })
             },
             onDeny: function() {
               fetch(`//{{ request.host }}/api/snapshot/`, {
                   method: "GET",
                 })
                 .then((response) => {
-                  if (response.ok) {
-                    console.log(response);
-                    console.log("Success");
-                  }
                   return response.json()
                 }).then((parsed_resp) => {
                   console.log(parsed_resp);
