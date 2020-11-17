@@ -13,7 +13,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 
 ### Fixed
-
+* Bug behoben, bei dem die SMTP-Konfigurationsseite nicht mit der aktuellen Einstellung befüllt wurde.
 
 ### Deprecated
 
