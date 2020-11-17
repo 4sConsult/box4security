@@ -197,6 +197,7 @@ class Snapshot(Resource):
     def delete(self):
         """Delete selected Snapshot"""
         snap_folder = '/var/lib/box4s/snapshots'
+        # Key must contain the full filename and ending, e.g: snapshot1.zip
         name = request.json['key']
         path = os.path.join(snap_folder, name)
         if os.path.isfile(path):
