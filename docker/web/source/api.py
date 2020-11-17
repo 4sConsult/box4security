@@ -6,6 +6,7 @@ from flask import request, render_template, send_file
 from source.wizard.models import Network, NetworkType, System, SystemType
 from source.wizard.schemas import SYS, SYSs, NET, NETs
 from source.wizard.middleware import WizardMiddleware
+import tempfile
 import requests
 import os
 import subprocess
@@ -1142,7 +1143,7 @@ class CertificateResource(Resource):
     """API resource for representing multiple systems."""
 
     def __init__(self):
-        pass
+        self.parse = reqparse.RequestParser()
 
     def get(self):
         """
@@ -1156,9 +1157,47 @@ class CertificateResource(Resource):
 
     def post(self):
         """
-        Install a new HTTPS certificate and its corresponding private key.
+        Install a new HTTPS certificate (RSA) and its corresponding private key (RSA).
         """
-        pass
+        try:
+            files = request.files.getlist("files[]")
+        except Exception:
+            abort(400, message="Request does not contain files.")
+        if not len(files) == 2:
+            abort(400, message="Request does not contain two files.")
+        validFiles = {'cert': None, 'key': None}
+        for file in files:
+            tempFile, tempFileName = tempfile.mkstemp(prefix='box4s_')
+            os.close(tempFile)
+            file.save(tempFileName)
+            try:
+                procOpensslCert = subprocess.Popen(['openssl', 'x509', '-inform', 'PEM', '-in', tempFileName, '-text', '-noout'], stdout=subprocess.PIPE, encoding="utf8")
+                if procOpensslCert.wait() == 0:
+                    # check returncode
+                    # valid pem certificate!
+                    validFiles['cert'] = file
+                else:
+                    # Not a valid certificate, try reading as key:
+                    procOpensslKey = subprocess.Popen(['openssl', 'rsa', '-inform', 'PEM', '-in', tempFileName, '-noout'], stdout=subprocess.PIPE, encoding="utf8")
+                    if procOpensslKey.wait() == 0:
+                        # check return code
+                        # valid key
+                        validFiles['key'] = file
+                    else:
+                        os.remove(tempFileName)
+                        abort(400, message="Supplied file is neither PEM RSA Private Key nor PEM x509 certificate.")
+            except subprocess.SubprocessError:
+                os.remove(tempFileName)
+                abort(500, message="Failed parsing a file.")
+            os.remove(tempFileName)
+        if validFiles['cert'] and validFiles['key']:
+            for f in validFiles.values():
+                f.seek(0)
+            validFiles['cert'].save('/etc/nginx/certs/box4security.cert.pem')
+            validFiles['key'].save('/etc/nginx/certs/box4security.key.pem')
+            return {'message': 'Successfully updated key and certificate.'}, 200
+        else:
+            abort(400, message="Both files must be valid. Required: PEM RSA Private Key and PEM x509 certificate.")
 
     def put(self):
         """
