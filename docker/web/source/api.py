@@ -157,20 +157,20 @@ class Snapshot(Resource):
     @roles_required(['Super Admin'])
     def get(self):
         """Download selected Snapshot or gather filenames for all or List all files in Snapshot folder"""
-        name = request.json['key']
-        type = request.json['type']
+        # name = request.json['key']
+        # type = request.json['type']
         snap_folder = '/var/lib/box4s/snapshots'
         if not os.path.exists(snap_folder):
             os.makedirs(snap_folder)
-        if type == "info":
-            files = []
-            for filename in os.listdir(snap_folder):
-                path = os.path.join(snap_folder, filename)
-                if os.path.isfile(path):
-                    files.append(filename)
-            return jsonify(files)
-        if type == "gather":
-            return send_file(f"/var/lib/box4s/snapshots{ name }.zip, as_attachment=True, attachment_filename='snapshot.zip', mimetype='application/gzip")
+        # if type == "info":
+        files = []
+        for filename in os.listdir(snap_folder):
+            path = os.path.join(snap_folder, filename)
+            if os.path.isfile(path):
+                files.append(filename)
+        return jsonify(files)
+        # if type == "gather":
+        #    return send_file(f"/var/lib/box4s/snapshots{ name }.zip, as_attachment=True, attachment_filename='snapshot.zip', mimetype='application/gzip")
 
     @roles_required(['Super Admin'])
     def put(self):

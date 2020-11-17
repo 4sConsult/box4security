@@ -193,7 +193,22 @@
 
             },
             onDeny: function() {
+              fetch(`//{{ request.host }}/api/snapshot/`, {
+                  method: "GET",
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  key: "test",
+                  type: "info"
+                })
+                .then((response) => {
+                  if (response.ok) {
+                    console.log(response);
+                    console.log("Success");
+                  }
+                })
               alert("Creating snapshot")
+
             }
           })
           .modal('show');
