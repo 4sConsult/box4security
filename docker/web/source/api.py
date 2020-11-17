@@ -186,7 +186,7 @@ class Snapshot(Resource):
         """Restore selected Snapshot"""
         snap_folder = '/var/lib/box4s/snapshots'
         name = request.json['key']
-        path = os.path.join(snap_folder, name)
+        path = os.path.join(snap_folder, name, '.zip')
         if os.path.isfile(path):
             os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { path }")
             return {"message": "accepted"}, 200
