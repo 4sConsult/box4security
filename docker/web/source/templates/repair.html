@@ -212,8 +212,6 @@
       }
 
       $(document).ready(function () {
-function () {
-
   fetch(`//{{ request.host }}/api/snapshot/`, {
       method: "GET",
     })
@@ -229,7 +227,7 @@ function () {
       $('table').append($(tr));
       console.log(parsed_resp);
     })
-}})
+})
 
 
 
