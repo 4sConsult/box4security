@@ -102,13 +102,19 @@
     <div class="header">
       Snapshot Menü
     </div>
-    <div class="image content">
       <div class="description">
         Die BOX4security speichert selbst Snapshots. Diese können aus einer Datei oder direkt von der BOX4security wiederhergestellt werden.
+      <br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="embedpollfileinput" />
+      <table class="ui celled table">
+  <thead>
+    <tr><th>Name</th>
+    <th>Age</th>
+    <th>Job</th>
+  </tr></thead>
+  <tbody>
+  </tbody>
+</table>
       </div>
-      <i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="embedpollfileinput" />
-      <table id="snapshots"></table>
-    </div>
     <div class="actions">
       <div class="ui cancel button">Snapshot Erstellen</div>
       <div class="ui approve button">Snapshot Wiederherstellen </div>
@@ -190,6 +196,27 @@
           .modal({
             closable: true,
             blurring: true,
+            onShow: function(){
+              fetch(`//{{ request.host }}/api/snapshot/`, {
+                  method: "GET",
+                })
+                .then((response) => {
+                  return response.json()
+                }).then((parsed_resp) => {
+                  for (var i = 0; i < parsed_resp.length; i++) {
+                    var tr = $("<tr></tr>")
+                    var td = '<td>' + parsed_resp[i] + '</td>' +
+                              '<td>'+ "Date created: 123" '</td>'+
+                              '<td> <button class="ui button" value="'+ parsed_resp[i] +'">Snapshot Wiederherstellen </button> </td>'
+                    $(tr).append(td);
+                    $('tbody').append($(tr));
+                  }
+                  console.log(parsed_resp);
+                })
+            },
+            onHide: function(){
+              $('tbody').empty();
+            },
             onApprove: function(){
               fetch(`//{{ request.host }}/api/snapshot/`, {
                   method: "DELETE",
@@ -211,23 +238,6 @@
           .modal('show');
       }
 
-      $(document).ready(function () {
-  fetch(`//{{ request.host }}/api/snapshot/`, {
-      method: "GET",
-    })
-    .then((response) => {
-      return response.json()
-    }).then((parsed_resp) => {
-      var tr = $("<tr></tr>")
-      for (var i = 0; i < parsed_resp.results.length; i++) {
-
-      var td = "<td>" + parsed_resp +"</td>"
-      $(tr).append(td);
-      }
-      $('table').append($(tr));
-      console.log(parsed_resp);
-    })
-})
 
 
 
