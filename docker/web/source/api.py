@@ -200,7 +200,7 @@ class Snapshot(Resource):
         name = request.json['key']
         path = os.path.join(snap_folder, name)
         if os.path.isfile(path):
-            # os.remove(f"/var/lib/box4s/snapshots{ name }.zip)
+            os.remove(f"/var/lib/box4s/snapshots{ name })
             return {"message": "accepted"}, 200
         else:
             abort(404, message="Cannot delete Snapshot that does not exist.")
