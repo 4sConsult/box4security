@@ -177,8 +177,8 @@ class Snapshot(Resource):
         """Upload Snapshot from User"""
         snap_folder = '/var/lib/box4s/snapshots'
         file = request.files['file']
-        name = secure_filename(file.filename)
-        file.save(os.path.join(snap_folder, name))
+        # name = secure_filename(file.filename)
+        # file.save(os.path.join(snap_folder, name))
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
@@ -200,7 +200,7 @@ class Snapshot(Resource):
         name = request.json['key']
         path = os.path.join(snap_folder, name)
         if os.path.isfile(path):
-            #os.remove(f"/var/lib/box4s/snapshots{ name }.zip)
+            # os.remove(f"/var/lib/box4s/snapshots{ name }.zip)
             return {"message": "accepted"}, 200
         else:
             abort(404, message="Cannot delete Snapshot that does not exist.")
