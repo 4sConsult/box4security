@@ -212,7 +212,6 @@
       }
 
       $(document).ready(function () {
-$.getJSON(url,
 function (json) {
 
   fetch(`//{{ request.host }}/api/snapshot/`, {
@@ -230,7 +229,7 @@ function (json) {
       $('table').append($(tr));
       console.log(parsed_resp);
     })
-
+}})
 
 
 
