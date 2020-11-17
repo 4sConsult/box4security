@@ -2,7 +2,7 @@
 from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
-from flask import request, render_template
+from flask import request, render_template, send_file
 from source.wizard.models import Network, NetworkType, System, SystemType
 from source.wizard.schemas import SYS, SYSs, NET, NETs
 from source.wizard.middleware import WizardMiddleware
@@ -1135,4 +1135,40 @@ class SystemsAPI(Resource):
             abort(500, message="Error while saving system to database.")
 
     def put(self):
+        pass
+
+
+class CertificateResource(Resource):
+    """API resource for representing multiple systems."""
+
+    def __init__(self):
+        pass
+
+    def get(self):
+        """
+        Return the currently installed HTTPS certificate.
+        Private Key is NOT sent!
+        """
+        try:
+            return send_file('/etc/nginx/certs/box4security.cert.pem', as_attachment=True)
+        except Exception:
+            abort(500, message="Failed sending the certificate.")
+
+    def post(self):
+        """
+        Install a new HTTPS certificate and its corresponding private key.
+        """
+        pass
+
+    def put(self):
+        """
+        Replace the HTTPS certificate and its corresponding private key (same as POST).
+        """
+        return self.post()
+
+    def delete(self):
+        """
+        Delete the currently installed HTTPS certificate and its private key.
+        Generate a new random private key and a self-signed certificate.
+        """
         pass

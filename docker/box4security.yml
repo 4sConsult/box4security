@@ -146,6 +146,7 @@ services:
        - /etc/box4s/logstash/BOX4s-special.conf:/etc/box4s/logstash/BOX4s-special.conf
        - /etc/default/logstash:/etc/default/logstash
        - /etc/netplan:/etc/_netplan/
+       - /etc/nginx/certs/:/etc/nginx/certs/
     expose:
       - 5000
     healthcheck:
