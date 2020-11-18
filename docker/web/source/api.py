@@ -1196,6 +1196,8 @@ class CertificateResource(Resource):
                 f.seek(0)
             validFiles['cert'].save('/etc/nginx/certs/box4security.cert.pem')
             validFiles['key'].save('/etc/nginx/certs/box4security.key.pem')
+            # Restart BOX4s to apply changes.
+            restartBOX4s(sleep=10)
             return {'message': 'Successfully updated key and certificate.'}, 200
         else:
             abort(400, message="Both files must be valid. Required: PEM RSA Private Key and PEM x509 certificate.")
