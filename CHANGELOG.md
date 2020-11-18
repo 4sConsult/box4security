@@ -4,7 +4,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [x.x.x](https://gitlab.com/4sconsult/box4s/-/tags/x.x.x) - x-x-x
 
 ### Added
-* Schnittstelle zur Abfrage und Hinterlegen von HTTPS-Zertifikat und Hinterlgen von privatem Schlüssel hinzugefügt.
+* Konfiguration von HTTPS-Zertifikat und privatem Schlüssel sowie zugehöriger Schnittstelle implementiert.
 
 ### Changed
 
