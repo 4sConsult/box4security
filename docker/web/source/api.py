@@ -83,8 +83,9 @@ def enableQuickAlert(key, email, smtp={}):
 
 def restartBOX4s(sleep=10):
     """Restart the BOX4s after sleeping for `sleep` seconds (default=10)."""
-    seconds_safe = quote(str(sleep))
-    subprocess.Popen(f'sleep {seconds_safe}; ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo systemctl restart box4security', shell=True)
+    strSeconds = str(sleep)
+    subprocess.Popen(['sleep', strSeconds])
+    subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo systemctl restart box4security', shell=True)
 
 
 def writeSMTPConfig(config):
