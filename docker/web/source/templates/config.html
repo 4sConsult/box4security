@@ -194,6 +194,10 @@
                 await waitForWeb();
                 // Reload without parameters
                 window.location = window.location.pathname;
+                var msg =  document.createElement('div');
+                msg.innerHTML = '<div class="header">Neustart abgeschlossen.</div>';
+                msg.classList = "ui visible message success";
+                form.appendChild(msg);
             }, 15000);
         } else {
             msg.classList.add("error");

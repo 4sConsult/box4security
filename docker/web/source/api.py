@@ -1145,6 +1145,13 @@ class CertificateResource(Resource):
 
     def __init__(self):
         self.parse = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            # If Wizard disabled, must have Super Admin or Config role and be authenticated
+            if current_user.is_authenticated and current_user.has_role('Config'):
+                # User is allowed to access, continue with resource.
+                pass
+            else:
+                abort(403, message="Not allowed to access the certificate endpoint.")
 
     def get(self):
         """
