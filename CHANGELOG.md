@@ -10,6 +10,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 
 ### Optimized
+* Security bei API-Endpunkten die einen Neustart der BOX4security erfordern erhöht.
 
 
 ### Fixed
