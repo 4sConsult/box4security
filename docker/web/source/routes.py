@@ -34,7 +34,8 @@ api.add_resource(Health, '/api/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 api.add_resource(Repair, '/api/repair/')
-api.add_resource(Snapshot, '/api/snapshot/')
+api.add_resource(Snapshot, '/api/snapshot/info')
+
 
 api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
 api.add_resource(Alert, '/api/rules/alerts/<alert_id>')
@@ -93,6 +94,14 @@ def index():
 def staticfiles(filename):
     """Return a static file."""
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
+
+
+@app.route("/snapshot/download/<path:filename>", methods=['GET'])
+@login_required
+@roles_required(['Super Admin'])
+def sendSnapshot(filename):
+    """Return a Snapshot"""
+    return send_from_directory(app.config["SNAPSHOT_FOLDER"], filename)
 
 
 @app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])

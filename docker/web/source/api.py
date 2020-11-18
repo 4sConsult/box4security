@@ -8,6 +8,7 @@ from source.wizard.schemas import SYS, SYSs, NET, NETs
 from source.wizard.middleware import WizardMiddleware
 import requests
 import os
+import time
 import subprocess
 import json
 from shlex import quote
@@ -63,6 +64,13 @@ def writeAlertFile(alert):
     with open(f'/var/lib/elastalert/rules/{ alert["safe_name"] }.yaml', 'w') as f_alert:
         filled = render_template(f'application/{ alert["type"] }.yaml.j2', alert=alert)
         f_alert.write(filled)
+
+
+def allowed_file(filename):
+    """Helper for Snapshots - only allows .zip to be uploaded"""
+    ALLOWED_EXTENSIONS = {'zip'}
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def enableQuickAlert(key, email, smtp={}):
@@ -153,58 +161,21 @@ class Repair(Resource):
 
 
 class Snapshot(Resource):
-    """API for Resource for starting a Repair Script."""
+    """API for gathering info about snapshots or restoring a snapshot"""
     @roles_required(['Super Admin'])
     def get(self):
-        """Download selected Snapshot or gather filenames for all or List all files in Snapshot folder"""
-        # name = request.json['key']
-        # type = request.json['type']
+        """Gather info for all Snapshots"""
         snap_folder = '/var/lib/box4s/snapshots'
         if not os.path.exists(snap_folder):
             os.makedirs(snap_folder)
-        # if type == "info":
-        files = []
+        files = {}
+        files['snapshots'] = []
         for filename in os.listdir(snap_folder):
             path = os.path.join(snap_folder, filename)
-            if os.path.isfile(path):
-                files.append(filename)
+            if os.path.isfile(path) and allowed_file(filename):
+                time_snap = datetime.fromtimestamp(os.path.getctime(path))
+                files['snapshots'].append({'name': filename, 'date': time_snap})
         return jsonify(files)
-        # if type == "gather":
-        #    return send_file(f"/var/lib/box4s/snapshots{ name }.zip, as_attachment=True, attachment_filename='snapshot.zip', mimetype='application/gzip")
-
-    @roles_required(['Super Admin'])
-    def put(self):
-        """Upload Snapshot from User"""
-        # snap_folder = '/var/lib/box4s/snapshots'
-        # file = request.files['file']
-        # name = secure_filename(file.filename)
-        # file.save(os.path.join(snap_folder, name))
-        return {"message": "accepted"}, 200
-
-    @roles_required(['Super Admin'])
-    def post(self):
-        """Restore selected Snapshot"""
-        snap_folder = '/var/lib/box4s/snapshots'
-        name = request.json['key']
-        path = os.path.join(snap_folder, name)
-        if os.path.isfile(path):
-            os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { path }")
-            return {"message": "accepted"}, 200
-        else:
-            abort(404, message="Cannot restore Snapshot that does not exist.")
-
-    @roles_required(['Super Admin'])
-    def delete(self):
-        """Delete selected Snapshot"""
-        snap_folder = '/var/lib/box4s/snapshots'
-        # Key must contain the full filename and ending, e.g: snapshot1.zip
-        name = request.json['key']
-        path = os.path.join(snap_folder, name)
-        if os.path.isfile(path):
-            os.remove(path)
-            return {"message": "accepted"}, 200
-        else:
-            abort(404, message="Cannot delete Snapshot that does not exist.")
 
 
 class BPF(Resource):

@@ -103,17 +103,19 @@
       Snapshot Menü
     </div>
       <div class="description">
+        <br>
         Die BOX4security speichert selbst Snapshots. Diese können aus einer Datei oder direkt von der BOX4security wiederhergestellt werden.
-      <br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="embedpollfileinput" />
+      <br>
       <table class="ui celled table">
   <thead>
     <tr><th>Name</th>
-    <th>Age</th>
+    <th>Erstellungsdatum</th>
     <th>Job</th>
   </tr></thead>
   <tbody>
   </tbody>
 </table>
+<br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="embedpollfileinput" />
       </div>
     <div class="actions">
       <div class="ui cancel button">Snapshot Erstellen</div>
@@ -128,6 +130,10 @@
   </div>
   {% endblock %}
   {% block scripts %}
+  <script type="text/javascript">
+    $('div.item.active').removeClass('active');
+    $(`#administration`).addClass('active');
+      </script>
   <script type="text/javascript">
     $('div.item.active').removeClass('active');
     $(`#administration`).addClass('active');
@@ -197,17 +203,19 @@
             closable: true,
             blurring: true,
             onShow: function(){
-              fetch(`//{{ request.host }}/api/snapshot/`, {
+              fetch(`//{{ request.host }}/api/snapshot/info`, {
                   method: "GET",
                 })
                 .then((response) => {
                   return response.json()
                 }).then((parsed_resp) => {
-                  for (var i = 0; i < parsed_resp.length; i++) {
+                  for (var i = 0; i < parsed_resp.snapshots.length; i++) {
                     var tr = $("<tr></tr>")
-                    var td = '<td>' + parsed_resp[i] + '</td>' +
-                              '<td>'+ "Date created: 123"+ '</td>'+
-                              '<td> <button class="ui button" value="'+ parsed_resp[i] +'">Snapshot Wiederherstellen </button> </td>'
+                    var td = '<td>' + parsed_resp.snapshots[i].name + '</td>' +
+                              '<td>'+ parsed_resp.snapshots[i].date + '</td>'+
+                              '<td> <button class="ui button" value="Restore_'+ parsed_resp.snapshots[i].name +'">Wiederherstellen </button>' +
+                              '<button class="ui button" value="Delete_'+ parsed_resp.snapshots[i].name +'">Löschen </button>' +
+                              '<button class="ui button" value="Download_'+ parsed_resp.snapshots[i].name +'">Herunterladen </button>  </td>'
                     $(tr).append(td);
                     $('tbody').append($(tr));
                   }

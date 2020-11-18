@@ -10,6 +10,7 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     STATIC_FOLDER = "{}/project/static".format(os.getenv('APP_FOLDER'))
     WAZUH_FOLDER = "{}/source/wazuh".format(os.getenv('APP_FOLDER'))
+    SNAPSHOT_FOLDER = "{}/var/lib/box4s/snapshots".format(os.getenv('APP_FOLDER'))
 
     SECRET_KEY = os.getenv("SECRET_KEY")
     SESSION_COOKIE_SECURE = True
