@@ -190,6 +190,11 @@
             msg.classList.add("success");
             msg.innerHTML = '<div class="header">HTTPS-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen. Bei selbstsignierten Zertifikaten ist unter Umständen ein manuelles Neuladen des Tabs erforderlich. </p>'
             $('#formHTTPS').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
+            setTimeout(async () => {
+                await waitForWeb();
+                // Reload without parameters
+                window.location = window.location.pathname;
+            }, 15000);
         } else {
             msg.classList.add("error");
             msg.innerHTML = 'HTTPS-Konfiguration konnte nicht gespeichert werden.';
