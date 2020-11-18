@@ -31,6 +31,8 @@ sudo docker rmi $(sudo docker images -a -q) || :
 source /etc/environment
 sed -i "s/INT_IP=\"$INT_IP\"/INT_IP=$INT_IP/g" /etc/environment
 sed -i "s/INT_IP=\"$INT_IP\"/INT_IP=$INT_IP/g" /etc/default/logstash
+sudo chmod 770 -R /etc/nginx/certs
+sudo chown root:44269 -R /etc/nginx/certs
 ###################
 # CHANGES FOR MODULES
 

@@ -4,16 +4,17 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [x.x.x](https://gitlab.com/4sconsult/box4s/-/tags/x.x.x) - x-x-x
 
 ### Added
-
+* Konfiguration von HTTPS-Zertifikat und privatem Schlüssel sowie zugehöriger Schnittstelle implementiert.
 
 ### Changed
 
 
 ### Optimized
+* Security bei API-Endpunkten die einen Neustart der BOX4security erfordern erhöht.
 
 
 ### Fixed
-
+* Bug behoben, bei dem die SMTP-Konfigurationsseite nicht mit der aktuellen Einstellung befüllt wurde.
 
 ### Deprecated
 

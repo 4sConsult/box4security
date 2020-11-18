@@ -2,10 +2,11 @@
 from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
-from flask import request, render_template
+from flask import request, render_template, send_file
 from source.wizard.models import Network, NetworkType, System, SystemType
 from source.wizard.schemas import SYS, SYSs, NET, NETs
 from source.wizard.middleware import WizardMiddleware
+import tempfile
 import requests
 import os
 import subprocess
@@ -82,8 +83,9 @@ def enableQuickAlert(key, email, smtp={}):
 
 def restartBOX4s(sleep=10):
     """Restart the BOX4s after sleeping for `sleep` seconds (default=10)."""
-    seconds_safe = quote(str(sleep))
-    subprocess.Popen(f'sleep {seconds_safe}; ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo systemctl restart box4security', shell=True)
+    strSeconds = str(sleep)
+    subprocess.Popen(['sleep', strSeconds])
+    subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo systemctl restart box4security', shell=True)
 
 
 def writeSMTPConfig(config):
@@ -1136,3 +1138,79 @@ class SystemsAPI(Resource):
 
     def put(self):
         pass
+
+
+class CertificateResource(Resource):
+    """API resource for representing multiple systems."""
+
+    def __init__(self):
+        self.parse = reqparse.RequestParser()
+
+    def get(self):
+        """
+        Return the currently installed HTTPS certificate.
+        Private Key is NOT sent!
+        """
+        try:
+            return send_file('/etc/nginx/certs/box4security.cert.pem', as_attachment=True)
+        except Exception:
+            abort(500, message="Failed sending the certificate.")
+
+    def post(self):
+        """
+        Install a new HTTPS certificate (RSA) and its corresponding private key (RSA).
+        """
+        try:
+            files = request.files.getlist("files[]")
+        except Exception:
+            abort(400, message="Request does not contain files.")
+        if not len(files) == 2:
+            abort(400, message="Request does not contain two files.")
+        validFiles = {'cert': None, 'key': None}
+        for file in files:
+            tempFile, tempFileName = tempfile.mkstemp(prefix='box4s_')
+            os.close(tempFile)
+            file.save(tempFileName)
+            try:
+                procOpensslCert = subprocess.Popen(['openssl', 'x509', '-inform', 'PEM', '-in', tempFileName, '-text', '-noout'], stdout=subprocess.PIPE, encoding="utf8")
+                if procOpensslCert.wait() == 0:
+                    # check returncode
+                    # valid pem certificate!
+                    validFiles['cert'] = file
+                else:
+                    # Not a valid certificate, try reading as key:
+                    procOpensslKey = subprocess.Popen(['openssl', 'rsa', '-inform', 'PEM', '-in', tempFileName, '-noout'], stdout=subprocess.PIPE, encoding="utf8")
+                    if procOpensslKey.wait() == 0:
+                        # check return code
+                        # valid key
+                        validFiles['key'] = file
+                    else:
+                        os.remove(tempFileName)
+                        abort(400, message="Supplied file is neither PEM RSA Private Key nor PEM x509 certificate.")
+            except subprocess.SubprocessError:
+                os.remove(tempFileName)
+                abort(500, message="Failed parsing a file.")
+            os.remove(tempFileName)
+        if validFiles['cert'] and validFiles['key']:
+            for f in validFiles.values():
+                f.seek(0)
+            validFiles['cert'].save('/etc/nginx/certs/box4security.cert.pem')
+            validFiles['key'].save('/etc/nginx/certs/box4security.key.pem')
+            # Restart BOX4s to apply changes.
+            restartBOX4s(sleep=10)
+            return {'message': 'Successfully updated key and certificate.'}, 200
+        else:
+            abort(400, message="Both files must be valid. Required: PEM RSA Private Key and PEM x509 certificate.")
+
+    def put(self):
+        """
+        Replace the HTTPS certificate and its corresponding private key (same as POST).
+        """
+        return self.post()
+
+    def delete(self):
+        """
+        Delete the currently installed HTTPS certificate and its private key.
+        Generate a new random private key and a self-signed certificate.
+        """
+        abort(405, message="Automatic (re)-creation not implemented yet.")

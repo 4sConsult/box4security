@@ -7,6 +7,7 @@ from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
 from source.api import APIWazuhAgentPass
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
+from source.api import CertificateResource
 from source.models import User, Role
 from source.config import Dashboards, RoleURLs
 import source.error
@@ -48,6 +49,8 @@ api.add_resource(SystemsAPI, '/api/systems/')
 # SMTP
 api.add_resource(APISMTP, '/api/config/smtp')
 api.add_resource(APISMTPCertificate, '/api/config/smtp/cert')
+
+api.add_resource(CertificateResource, '/api/config/cert')
 
 # Modules
 api.add_resource(APIModules, '/api/modules')
