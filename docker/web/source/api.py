@@ -162,6 +162,7 @@ class Repair(Resource):
 
 class Snapshot(Resource):
     """API for gathering info about snapshots or restoring a snapshot"""
+
     @roles_required(['Super Admin'])
     def get(self):
         """Gather info for all Snapshots"""
@@ -177,6 +178,19 @@ class Snapshot(Resource):
                 files['snapshots'].append({'name': filename, 'date': time_snap})
         return jsonify(files)
 
+    """API for gathering info about snapshots or restoring a snapshot"""
+    @roles_required(['Super Admin', 'Filter'])
+    def post(self):
+        """Restore selected Snapshot"""
+        snap_folder = '/var/lib/box4s/snapshots'
+        name = request.json['key']
+        path = os.path.join(snap_folder, name)
+        if os.path.isfile(path):
+            os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { path }")
+            return {"message": "accepted"}, 200
+        else:
+            abort(404, message="Cannot restore Snapshot that does not exist.")
+            
 
 class BPF(Resource):
     """API Resource for a single BPF Rule."""

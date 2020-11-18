@@ -96,12 +96,17 @@ def staticfiles(filename):
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
 
 
-@app.route("/snapshot/download/<path:filename>", methods=['GET'])
+@app.route("/snapshot/files/<path:filename>", methods=['GET', 'POST', 'DELETE'])
 @login_required
 @roles_required(['Super Admin'])
 def sendSnapshot(filename):
-    """Return a Snapshot"""
-    return send_from_directory(app.config["SNAPSHOT_FOLDER"], filename)
+    """Add, delete or download a Snapshot"""
+    if request.method == 'GET':
+        return send_from_directory(app.config["SNAPSHOT_FOLDER"], filename)
+    if request.method == 'POST':
+        #TODO
+    if request.method == 'DELETE':
+        #TODO
 
 
 @app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
