@@ -2,7 +2,7 @@
 from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
-from flask import request, render_template, jsonify, send_file
+from flask import request, render_template, jsonify, send_file, send_from_directory
 from source.wizard.models import Network, NetworkType, System, SystemType
 from source.wizard.schemas import SYS, SYSs, NET, NETs
 from source.wizard.middleware import WizardMiddleware
@@ -173,7 +173,7 @@ class Snapshot(Resource):
         files['snapshots'] = []
         for filename in os.listdir(snap_folder):
             path = os.path.join(snap_folder, filename)
-            if os.path.isfile(path) and allowed_file(filename):
+            if os.path.isfile(path) and allowed_file_snaphsot(filename, 'zip'):
                 time_snap = datetime.fromtimestamp(os.path.getctime(path))
                 files['snapshots'].append({'name': filename, 'date': time_snap})
         return jsonify(files)
@@ -208,7 +208,7 @@ class SnapshotFileHandler(Resource):
     @roles_required(['Super Admin'])
     def post(self):
         """Upload a Snapshot from the host"""
-        files = request.files['file']
+        file = request.files['file']
         snap_folder = "/var/lib/box4s/snapshots"
         if file.filename == '':
             abort(403)
