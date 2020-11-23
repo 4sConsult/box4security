@@ -14,6 +14,7 @@ import json
 from shlex import quote
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
+from werkzeug.utils import secure_filename
 
 
 def tail(f, window=1):
@@ -165,7 +166,7 @@ class Snapshot(Resource):
     @roles_required(['Super Admin'])
     def get(self):
         """Gather info for all Snapshots"""
-        snap_folder = app.config['SNAPSHOT_FOLDER']
+        snap_folder = "/var/lib/box4s/snapshots"
         if not os.path.exists(snap_folder):
             os.makedirs(snap_folder)
         files = {}
@@ -181,7 +182,7 @@ class Snapshot(Resource):
     @roles_required(['Super Admin'])
     def post(self):
         """Restore selected Snapshot"""
-        snap_folder = app.config['SNAPSHOT_FOLDER']
+        snap_folder = "/var/lib/box4s/snapshots"
         name = request.json['key']
         path = os.path.join(snap_folder, name)
         if os.path.isfile(path):
@@ -198,8 +199,9 @@ class SnapshotFileHandler(Resource):
     def get(self):
         """Download a Snapshot"""
         file = request.data['key']
+        snap_folder = "/var/lib/box4s/snapshots"
         if file and allowed_file_snaphsot(file, 'zip'):
-            return send_from_directory(app.config['SNAPSHOT_FOLDER'], file)
+            return send_from_directory(snap_folder, file)
         else:
             abort(404, message="Cannot download this file.")
 
@@ -207,20 +209,22 @@ class SnapshotFileHandler(Resource):
     def post(self):
         """Upload a Snapshot from the host"""
         files = request.files['file']
+        snap_folder = "/var/lib/box4s/snapshots"
         if file.filename == '':
             abort(403)
         if file and allowed_file_snaphsot(file.filename, 'zip'):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(snap_folder, filename))
             return {"message": "accepted"}, 200
-        return '''
+        return ''
 
     @roles_required(['Super Admin'])
     def delete(self):
         """Delete Snapshot"""
         snapshot = request.json['key']
+        snap_folder = "/var/lib/box4s/snapshots"
         if allowed_file_snaphsot(snapshot, 'zip'):
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], snapshot))
+            os.remove(os.path.join(snap_folder, snapshot))
             return {"message": "accepted"}, 200
         else:
             abort(404, message="Cannot delete this file.")
