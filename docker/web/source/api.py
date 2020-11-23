@@ -206,8 +206,6 @@ class SnapshotFileHandler(Resource):
     @roles_required(['Super Admin'])
     def post(self):
         """Upload a Snapshot from the host"""
-        if 'file' not found in request.files:
-            abort(403)
         files = request.files['file']
         if file.filename == '':
             abort(403)
