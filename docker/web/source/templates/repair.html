@@ -115,7 +115,7 @@
   <tbody>
   </tbody>
 </table>
-<br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="embedpollfileinput" />
+<br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="fileUplaod" />
       </div>
     <div class="actions">
       <div class="ui cancel button">Snapshot Erstellen</div>
@@ -211,7 +211,7 @@
                 }).then((parsed_resp) => {
                   for (var i = 0; i < parsed_resp.snapshots.length; i++) {
                     var tr = $("<tr></tr>")
-                    var td = '<td>' + parsed_resp.snapshots[i].name + '</td>' +
+                    var td = '<td>' + (parsed_resp.snapshots[i].name).replace(/\.[^/.]+$/, "") + '</td>' +
                               '<td>'+ parsed_resp.snapshots[i].date + '</td>'+
                               '<td> <button class="ui button" value="Restore_'+ parsed_resp.snapshots[i].name +'">Wiederherstellen </button>' +
                               '<button class="ui button" value="Delete_'+ parsed_resp.snapshots[i].name +'">Löschen </button>' +
@@ -268,5 +268,32 @@
           })
       }
     })
+
+
+    $(function(){
+      $('#fileUplaod').change(function(){
+        var url = $(this).val();
+        var extension = ($(this).val()).substring(url.lastIndexOf('.') + 1).toLowerCase();
+        if (input.files && input.files[0] && extension == "zip"){
+          alert("Correct file")
+          fetch(`//{{ request.host }}/api/snapshot/upload`, {
+              method: "POST",
+              headers: {
+                'Content-Type': 'application/zip'
+              },
+              body: this
+            })
+            .then((response) => {
+              console.log(response)
+            })
+        }
+        else {
+          alert("Bitte Laden Sie eine Datei im zip Format hoch.")
+        }
+      })
+
+    })
+
+
   </script>
   {% endblock %}

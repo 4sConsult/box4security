@@ -1,12 +1,13 @@
 """Module to handle all webapp routes."""
 from source import app, mail, db, userman, helpers
-from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock, Repair, Snapshot
+from source.api import BPF, BPFs, LSR, LSRs, Version, AvailableReleases, LaunchUpdate, UpdateLog, UpdateStatus, Health, APIUser, APIUserLock
 from source.api import APIWizardReset
 from source.api import NetworkAPI, NetworksAPI, SystemAPI, SystemsAPI
 from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
 from source.api import APIWazuhAgentPass
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
+from source.api import Repair, Snapshot, SnapshotFileHandler
 from source.models import User, Role
 from source.config import Dashboards, RoleURLs
 import source.error
@@ -35,6 +36,7 @@ api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 api.add_resource(Repair, '/api/repair/')
 api.add_resource(Snapshot, '/api/snapshot/info')
+api.add_resource(SnapshotFileHandler, '/api/snapshot/files')
 
 
 api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
@@ -94,19 +96,6 @@ def index():
 def staticfiles(filename):
     """Return a static file."""
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
-
-
-@app.route("/snapshot/files/<path:filename>", methods=['GET', 'POST', 'DELETE'])
-@login_required
-@roles_required(['Super Admin'])
-def sendSnapshot(filename):
-    """Add, delete or download a Snapshot"""
-    if request.method == 'GET':
-        return send_from_directory(app.config["SNAPSHOT_FOLDER"], filename)
-    if request.method == 'POST':
-        #TODO
-    if request.method == 'DELETE':
-        #TODO
 
 
 @app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])

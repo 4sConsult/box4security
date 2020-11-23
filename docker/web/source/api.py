@@ -66,11 +66,10 @@ def writeAlertFile(alert):
         f_alert.write(filled)
 
 
-def allowed_file(filename):
-    """Helper for Snapshots - only allows .zip to be uploaded"""
-    ALLOWED_EXTENSIONS = {'zip'}
+def allowed_file_snaphsot(filename, extension):
+    """Helper for Snapshots - only allows files with specified extension to be uploaded"""
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in extension
 
 
 def enableQuickAlert(key, email, smtp={}):
@@ -166,7 +165,7 @@ class Snapshot(Resource):
     @roles_required(['Super Admin'])
     def get(self):
         """Gather info for all Snapshots"""
-        snap_folder = '/var/lib/box4s/snapshots'
+        snap_folder = app.config['SNAPSHOT_FOLDER']
         if not os.path.exists(snap_folder):
             os.makedirs(snap_folder)
         files = {}
@@ -179,10 +178,10 @@ class Snapshot(Resource):
         return jsonify(files)
 
     """API for gathering info about snapshots or restoring a snapshot"""
-    @roles_required(['Super Admin', 'Filter'])
+    @roles_required(['Super Admin'])
     def post(self):
         """Restore selected Snapshot"""
-        snap_folder = '/var/lib/box4s/snapshots'
+        snap_folder = app.config['SNAPSHOT_FOLDER']
         name = request.json['key']
         path = os.path.join(snap_folder, name)
         if os.path.isfile(path):
@@ -190,7 +189,44 @@ class Snapshot(Resource):
             return {"message": "accepted"}, 200
         else:
             abort(404, message="Cannot restore Snapshot that does not exist.")
-            
+
+
+class SnapshotFileHandler(Resource):
+    """API for interacting with Snapshot File Requests"""
+
+    @roles_required(['Super Admin'])
+    def get(self):
+        """Download a Snapshot"""
+        file = request.data['key']
+        if file and allowed_file_snaphsot(file, 'zip'):
+            return send_from_directory(app.config['SNAPSHOT_FOLDER'], file)
+        else:
+            abort(404, message="Cannot download this file.")
+
+    @roles_required(['Super Admin'])
+    def post(self):
+        """Upload a Snapshot from the host"""
+        if 'file' not found in request.files:
+            abort(403)
+        files = request.files['file']
+        if file.filename == '':
+            abort(403)
+        if file and allowed_file_snaphsot(file.filename, 'zip'):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return {"message": "accepted"}, 200
+        return '''
+
+    @roles_required(['Super Admin'])
+    def delete(self):
+        """Delete Snapshot"""
+        snapshot = request.json['key']
+        if allowed_file_snaphsot(snapshot, 'zip'):
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], snapshot))
+            return {"message": "accepted"}, 200
+        else:
+            abort(404, message="Cannot delete this file.")
+
 
 class BPF(Resource):
     """API Resource for a single BPF Rule."""
