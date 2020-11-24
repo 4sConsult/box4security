@@ -198,8 +198,9 @@ class SnapshotFileHandler(Resource):
     @roles_required(['Super Admin'])
     def get(self, filename):
         """Upload a Snapshot from the host"""
+        snap_folder = "/var/lib/box4s/snapshots"
         if filename and allowed_file_snaphsot(filename, 'zip'):
-            return send_from_directory("/var/lib/box4s/snapshots", filename, as_attachment=True)
+            return send_from_directory(snap_folder, filename, as_attachment=True)
         else:
             abort(404, message="Cannot download this file.")
 
