@@ -140,6 +140,7 @@ class Repair(Resource):
 
     @roles_required(['Super Admin'])
     def put(self):
+        """Execute Repair Script"""
         value = request.json['key']
         os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_{ value }.sh")
         return {"message": "accepted"}, 200
@@ -190,7 +191,7 @@ class SnapshotFileHandler(Resource):
 
     @roles_required(['Super Admin'])
     def get(self, filename):
-        """Upload a Snapshot from the host"""
+        """Download a Snapshot"""
         snap_folder = "/var/lib/box4s/snapshots"
         if filename and allowed_file_snaphsot(filename, 'zip'):
             return send_from_directory(snap_folder, filename, as_attachment=True)
@@ -215,7 +216,7 @@ class SnapshotFileHandler(Resource):
 
     @roles_required(['Super Admin'])
     def put(self):
-        """Upload a Snapshot from the host"""
+        """Upload a Snapshot"""
         file = request.files['file']
         snap_folder = "/var/lib/box4s/snapshots"
         if file.filename == '':
