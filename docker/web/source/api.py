@@ -196,16 +196,6 @@ class SnapshotFileHandler(Resource):
     """API for interacting with Snapshot File Requests"""
 
     @roles_required(['Super Admin'])
-    def get(self):
-        """Download a Snapshot"""
-        file = request.data['key']
-        snap_folder = "/var/lib/box4s/snapshots"
-        if file and allowed_file_snaphsot(file, 'zip'):
-            return send_from_directory(snap_folder, file)
-        else:
-            abort(404, message="Cannot download this file.")
-
-    @roles_required(['Super Admin'])
     def post(self):
         """Upload a Snapshot from the host"""
         file = request.files['file']
@@ -221,6 +211,17 @@ class SnapshotFileHandler(Resource):
     @roles_required(['Super Admin'])
     def delete(self):
         """Delete Snapshot"""
+        snapshot = request.json['key']
+        snap_folder = "/var/lib/box4s/snapshots"
+        if allowed_file_snaphsot(snapshot, 'zip'):
+            os.remove(os.path.join(snap_folder, snapshot))
+            return {"message": "accepted"}, 200
+        else:
+            abort(404, message="Cannot delete this file.")
+
+    @roles_required(['Super Admin'])
+    def put(self):
+        """Create New Snapshot"""
         snapshot = request.json['key']
         snap_folder = "/var/lib/box4s/snapshots"
         if allowed_file_snaphsot(snapshot, 'zip'):

@@ -118,8 +118,8 @@
 <br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" class="inputfile" id="fileUplaod" />
       </div>
     <div class="actions">
-      <div class="ui cancel button">Snapshot Erstellen</div>
-      <div class="ui approve button">Snapshot Wiederherstellen </div>
+      <div class="ui approve button">Snapshot Erstellen</div>
+      <div class="ui cancel button">Test button</div>
     </div>
   </div>
 
@@ -141,6 +141,10 @@
 
     $(".ui.button").click((e) => {
       var key = e.target.value
+
+      if (key.substring(0,8) == "Restore_"){
+        alert("Restore Button")
+      }
 
       if (key == "format") {
 
@@ -211,7 +215,7 @@
                 }).then((parsed_resp) => {
                   for (var i = 0; i < parsed_resp.snapshots.length; i++) {
                     var tr = $("<tr></tr>")
-                    var td = '<td>' + (parsed_resp.snapshots[i].name).replace(/\.[^/.]+$/, "") + '</td>' +
+                    var td = '<td> <a href="/snapshot/download/'+ parsed_resp.snapshots[i].name + '">' + (parsed_resp.snapshots[i].name).replace(/\.[^/.]+$/, "") + '</a></td>' +
                               '<td>'+ parsed_resp.snapshots[i].date + '</td>'+
                               '<td> <button class="ui button" value="Restore_'+ parsed_resp.snapshots[i].name +'">Wiederherstellen </button>' +
                               '<button class="ui button" value="Delete_'+ parsed_resp.snapshots[i].name +'">Löschen </button>' +
@@ -226,20 +230,26 @@
               $('tbody').empty();
             },
             onApprove: function(){
-              fetch(`//{{ request.host }}/api/snapshot/`, {
-                  method: "DELETE",
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    'key': 'test1.zip'
-                  })
+              fetch(`//{{ request.host }}/api/snapshot/files`, {
+                  method: "PUT"
                 })
                 .then((response) => {
                   console.log(response)
                 })
             },
             onDeny: function() {
+              fetch(`//{{ request.host }}/api/snapshot/download/important_data.zip`, {
+                  method: "GET",
+                })
+                .then((response) => {
+                  return response.blob()
+                }).then((blob) => {
+                  var file = window.URL.createObjectURL(blob)
+                  window.location.assign(file)
+                }).catch((err) => {
+                  console.log('Download Error', err)
+                })
+              //Test function here, remove onDeny later
 
             }
           })

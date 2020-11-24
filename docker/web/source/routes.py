@@ -98,6 +98,13 @@ def staticfiles(filename):
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
 
 
+@app.route("/snapshot/download/<path:filename>")
+@login_required
+def snapDownload(filename):
+    """return snap file"""
+    return send_from_directory("/var/lib/box4s/snapshots", filename, as_attachment=True)
+
+
 @app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])
 def send_wazuh_files(filename):
     if os.getenv('BOX4s_WAZUH', 'false') == 'true':
