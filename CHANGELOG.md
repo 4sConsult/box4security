@@ -18,6 +18,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Fixed
 * Bug behoben, bei dem die SMTP-Konfigurationsseite nicht mit der aktuellen Einstellung befüllt wurde.
 * Bug behoben, bei dem geänderte SMTP-Einstellungen aufgrund eines Berechtigungsfehlers möglicherweise nicht geschrieben wurde.
+* Der Wizard ermittelt nicht länger den maximal zu bearbeitenden Schritt. Stattdessen leitet ein Klick auf *Weiter* nun stets linear durch den Wizard.
 ### Deprecated
 
 
