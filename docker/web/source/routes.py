@@ -7,7 +7,7 @@ from source.api import APIModules
 from source.api import APISMTP, APISMTPCertificate
 from source.api import APIWazuhAgentPass
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
-from source.api import Repair, Snapshot, SnapshotFileHandler
+from source.api import Repair, SnapshotInfo, SnapshotFileHandler
 from source.models import User, Role
 from source.config import Dashboards, RoleURLs
 import source.error
@@ -35,7 +35,7 @@ api.add_resource(Health, '/api/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 api.add_resource(Repair, '/api/repair/')
-api.add_resource(Snapshot, '/api/snapshot/info')
+api.add_resource(SnapshotInfo, '/api/snapshot/info')
 api.add_resource(SnapshotFileHandler, '/api/snapshot/files/<path:filename>')
 
 

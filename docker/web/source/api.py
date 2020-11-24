@@ -160,8 +160,8 @@ class Repair(Resource):
         abort(405, message="Cannot delete Repair Script.")
 
 
-class Snapshot(Resource):
-    """API for gathering info about snapshots or restoring a snapshot"""
+class SnapshotInfo(Resource):
+    """API for gathering info about snapshots or creating a new snapshot"""
 
     @roles_required(['Super Admin'])
     def get(self):
@@ -180,15 +180,9 @@ class Snapshot(Resource):
 
     @roles_required(['Super Admin'])
     def post(self):
-        """Restore selected Snapshot"""
-        snap_folder = "/var/lib/box4s/snapshots"
-        name = request.json['key']
-        path = os.path.join(snap_folder, name)
-        if os.path.isfile(path):
-            os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { path }")
-            return {"message": "accepted"}, 200
-        else:
-            abort(404, message="Cannot restore Snapshot that does not exist.")
+        """Create a snapshot"""
+        os.system("ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_createSnapshot.sh")
+        return {"message": "accepted"}, 200
 
 
 class SnapshotFileHandler(Resource):
@@ -204,17 +198,10 @@ class SnapshotFileHandler(Resource):
             abort(404, message="Cannot download this file.")
 
     @roles_required(['Super Admin'])
-    def post(self):
-        """Upload a Snapshot from the host"""
-        file = request.files['file']
-        snap_folder = "/var/lib/box4s/snapshots"
-        if file.filename == '':
-            abort(403)
-        if file and allowed_file_snaphsot(file.filename, 'zip'):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(snap_folder, filename))
-            return {"message": "accepted"}, 200
-        return ''
+    def post(self, filename):
+        """Restore a Snapshot"""
+        os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { filename }")
+        return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
     def delete(self, filename):
@@ -228,14 +215,16 @@ class SnapshotFileHandler(Resource):
 
     @roles_required(['Super Admin'])
     def put(self):
-        """Create New Snapshot"""
-        snapshot = request.json['key']
+        """Upload a Snapshot from the host"""
+        file = request.files['file']
         snap_folder = "/var/lib/box4s/snapshots"
-        if allowed_file_snaphsot(snapshot, 'zip'):
-            os.remove(os.path.join(snap_folder, snapshot))
+        if file.filename == '':
+            abort(403)
+        if file and allowed_file_snaphsot(file.filename, 'zip'):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(snap_folder, filename))
             return {"message": "accepted"}, 200
-        else:
-            abort(404, message="Cannot delete this file.")
+        return ''
 
 
 class BPF(Resource):
