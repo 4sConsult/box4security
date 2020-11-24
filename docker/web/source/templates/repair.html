@@ -218,8 +218,7 @@
                     var td = '<td> <a href="/snapshot/download/'+ parsed_resp.snapshots[i].name + '">' + (parsed_resp.snapshots[i].name).replace(/\.[^/.]+$/, "") + '</a></td>' +
                               '<td>'+ parsed_resp.snapshots[i].date + '</td>'+
                               '<td> <button class="ui button" value="Restore_'+ parsed_resp.snapshots[i].name +'">Wiederherstellen </button>' +
-                              '<button class="ui button" value="Delete_'+ parsed_resp.snapshots[i].name +'">Löschen </button>' +
-                              '<button class="ui button" value="Download_'+ parsed_resp.snapshots[i].name +'">Herunterladen </button>  </td>'
+                              '<button class="ui button" value="Delete_'+ parsed_resp.snapshots[i].name +'">Löschen </button>'
                     $(tr).append(td);
                     $('tbody').append($(tr));
                   }
