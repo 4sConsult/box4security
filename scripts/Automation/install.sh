@@ -631,6 +631,9 @@ echo -n "Enabling BOX4s internal DNS server.. " 1>&3
 sudo systemctl enable resolvconf.service
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
+# Fix DNS resolv permission
+sudo chown root:44269 /var/lib/box4s/resolv.personal
+sudo chmod 770 /var/lib/box4s/resolv.personal
 sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf.service
 sudo resolvconf --enable-updates
