@@ -170,6 +170,7 @@
             msg.classList.add("success");
             msg.innerHTML = '<div class="header">HTTPS-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen. Bei selbstsignierten Zertifikaten ist unter Umständen ein manuelles Neuladen des Tabs erforderlich. </p>'
             $('#formHTTPS').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
+            $('button').prop('disabled', true);
             setTimeout(async () => {
                 await waitForWeb();
                 // Reload without parameters
@@ -240,6 +241,7 @@
             msg.classList.add("success");
             msg.innerHTML = '<div class="header">SMTP-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen.</p>'
             $('#formSMTP').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
+            $('button').prop('disabled', true);
         } else {
             msg.classList.add("error");
             msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.';
