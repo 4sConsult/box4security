@@ -38,6 +38,10 @@ sudo chown root:44269 -R /etc/nginx/certs
 sudo chown root:44269 /etc/msmtprc
 sudo chmod 770 /etc/msmtprc
 
+# Fix DNS resolv permission
+sudo chown root:44269 /var/lib/box4s/resolv.personal
+sudo chmod 770 /var/lib/box4s/resolv.personal
+
 ###################
 # CHANGES FOR MODULES
 
@@ -97,6 +101,9 @@ curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true"
 curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/scores.ndjson
 # Update Score Mapping
 curl -s -H "Content-type: application/json" -X PUT http://localhost:9200/scores/_mapping --data-binary @$DIR/res/index_mapping.json
+
+# Set the BOX4security nameserver
+echo "nameserver 127.0.0.1" > /etc/resolv.conf
 
 # Insert Suricata Rules after Update - this also updates the self inserted suricata rules
 sudo docker exec suricata /root/scripts/update.sh || sleep 1
