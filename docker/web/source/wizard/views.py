@@ -46,91 +46,70 @@ def networks():
 
 @bpWizard.route('/box4s', methods=['GET', 'POST'])
 def box4s():
-    endpoint = WizardMiddleware.getMaxStep()
-
-    if WizardMiddleware.compareSteps('wizard.box4s', endpoint) < 1:
-        formBOX4s = BOX4sForm(request.form)
-        formBOX4s.network_id.choices = [(n.id, f"{n.name} ({n.ip_address}/{n.cidr})") for n in Network.query.order_by('id')]
-        formBOX4s.dns_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='DNS-Server'))]
-        formBOX4s.dns_id.choices += [(-1, "Andere..")]
-        formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='Gateway'))]
-        formBOX4s.gateway_id.choices += [(-1, "Andere..")]
-        systemTypes = SystemType.query.filter(SystemType.name != 'BOX4security').order_by(SystemType.id.asc()).all()
-        BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
-        if request.method == 'POST':
-            if formBOX4s.validate():
-                if not BOX4s:
-                    # BOX4s does not exist => create anew.
-                    BOX4s = BOX4security()
-                formBOX4s.populate_obj(BOX4s)  # Copies matching attributes from form onto box4s
-                BOX4s.name = "BOX4security"
-                BOX4s.ids_enabled = False
-                BOX4s.scan_enabled = False
-                BOX4s.types = [SystemType.query.filter(SystemType.name == 'BOX4security').first()]
-                BOX4s.dns = System.query.get(BOX4s.dns_id)
-                BOX4s.gateway = System.query.get(BOX4s.gateway_id)
-                try:
-                    db.session.add(BOX4s)
-                    db.session.commit()
-                except SQLAlchemyError:
-                    flash('Die Konfiguration konnte nicht gespeichert werden.', category="error")
-                else:
-                    flash('Die Konfiguration wurde entgegengenommen.', category="success")
-                return redirect(url_for('wizard.box4s'))
-        return render_template('wizard/box4s.html', formBOX4s=formBOX4s, box4s=BOX4s, systemTypes=systemTypes)
-    else:
-        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen. Bitte geben Sie auf der Seite der Systeme mindestens einen DNS-Server sowie einen Gateway an, der für die BOX4security genutzt werden kann.', 'error')
-        return redirect(url_for(endpoint))
+    formBOX4s = BOX4sForm(request.form)
+    formBOX4s.network_id.choices = [(n.id, f"{n.name} ({n.ip_address}/{n.cidr})") for n in Network.query.order_by('id')]
+    formBOX4s.dns_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='DNS-Server'))]
+    formBOX4s.dns_id.choices += [(-1, "Andere..")]
+    formBOX4s.gateway_id.choices = [(s.id, f"{s.name} ({s.ip_address})") for s in System.query.order_by('id').filter(System.types.any(name='Gateway'))]
+    formBOX4s.gateway_id.choices += [(-1, "Andere..")]
+    systemTypes = SystemType.query.filter(SystemType.name != 'BOX4security').order_by(SystemType.id.asc()).all()
+    BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
+    if request.method == 'POST':
+        if formBOX4s.validate():
+            if not BOX4s:
+                # BOX4s does not exist => create anew.
+                BOX4s = BOX4security()
+            formBOX4s.populate_obj(BOX4s)  # Copies matching attributes from form onto box4s
+            BOX4s.name = "BOX4security"
+            BOX4s.ids_enabled = False
+            BOX4s.scan_enabled = False
+            BOX4s.types = [SystemType.query.filter(SystemType.name == 'BOX4security').first()]
+            BOX4s.dns = System.query.get(BOX4s.dns_id)
+            BOX4s.gateway = System.query.get(BOX4s.gateway_id)
+            try:
+                db.session.add(BOX4s)
+                db.session.commit()
+            except SQLAlchemyError:
+                flash('Die Konfiguration konnte nicht gespeichert werden.', category="error")
+            else:
+                flash('Die Konfiguration wurde entgegengenommen.', category="success")
+            return redirect(url_for('wizard.box4s'))
+    return render_template('wizard/box4s.html', formBOX4s=formBOX4s, box4s=BOX4s, systemTypes=systemTypes)
 
 
 @bpWizard.route('/systems', methods=['GET', 'POST'])
 def systems():
-    endpoint = WizardMiddleware.getMaxStep()
-    if WizardMiddleware.compareSteps('wizard.systems', endpoint) < 1:
-        formSystem = SystemForm(request.form)
-        formSystem.network_id.choices = [(n.id, f"{n.name} ({n.ip_address}/{n.cidr})") for n in Network.query.order_by('id')]
-        formSystem.types.choices = [(t.id, t.name) for t in SystemType.query.order_by('id').filter(SystemType.name != 'BOX4security')]
-        if request.method == 'POST':
-            if formSystem.validate():
-                newSystem = System()
-                formSystem.populate_obj(newSystem)  # Copies matching attributes from form onto newSystem
-                if newSystem.types:
-                    newSystem.types = [SystemType.query.get(tid) for tid in newSystem.types]  # Get actual type objects from their IDs
-                db.session.add(newSystem)
-                db.session.commit()
-                return redirect(url_for('wizard.systems'))
-        systems = System.query.order_by(System.id.asc()).all()
-        return render_template('wizard/systems.html', formSystem=formSystem, systems=systems)
-    else:
-        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
-        return redirect(url_for(endpoint))
+    formSystem = SystemForm(request.form)
+    formSystem.network_id.choices = [(n.id, f"{n.name} ({n.ip_address}/{n.cidr})") for n in Network.query.order_by('id')]
+    formSystem.types.choices = [(t.id, t.name) for t in SystemType.query.order_by('id').filter(SystemType.name != 'BOX4security')]
+    if request.method == 'POST':
+        if formSystem.validate():
+            newSystem = System()
+            formSystem.populate_obj(newSystem)  # Copies matching attributes from form onto newSystem
+            if newSystem.types:
+                newSystem.types = [SystemType.query.get(tid) for tid in newSystem.types]  # Get actual type objects from their IDs
+            db.session.add(newSystem)
+            db.session.commit()
+            return redirect(url_for('wizard.systems'))
+    systems = System.query.order_by(System.id.asc()).all()
+    return render_template('wizard/systems.html', formSystem=formSystem, systems=systems)
 
 
 @bpWizard.route('/mail', methods=['GET', 'POST'])
 def smtp():
-    endpoint = WizardMiddleware.getMaxStep()
-    if WizardMiddleware.compareSteps('wizard.smtp', endpoint) < 1:
-        return render_template('wizard/mail.html')
-    else:
-        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
-        return redirect(url_for(endpoint))
+    return render_template('wizard/mail.html')
 
 
 @bpWizard.route('/verify', methods=['GET', 'POST'])
 def verify():
-    endpoint = WizardMiddleware.getMaxStep()
-    if WizardMiddleware.compareSteps('wizard.verify', endpoint) < 1:
-        if request.method == 'POST':
-            apply()
-            return render_template('wizard/verify_progress.html')
-        networks = Network.query.order_by(Network.id.asc()).all()
-        systems = System.query.order_by(System.id.asc()).all()
-        BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
-        scan_categories = ScanCategory.query.order_by(ScanCategory.id.asc()).all()
-        return render_template('wizard/verify.html', networks=networks, systems=systems, box4s=BOX4s, scan_categories=scan_categories)
-    else:
-        flash('Bevor Sie fortfahren können, müssen Sie zunächst die vorherigen Schritte abschließen.', 'error')
-        return redirect(url_for(endpoint))
+    if request.method == 'POST':
+        apply()
+        return render_template('wizard/verify_progress.html')
+    networks = Network.query.order_by(Network.id.asc()).all()
+    systems = System.query.order_by(System.id.asc()).all()
+    BOX4s = BOX4security.query.order_by(BOX4security.id.asc()).first()
+    scan_categories = ScanCategory.query.order_by(ScanCategory.id.asc()).all()
+    return render_template('wizard/verify.html', networks=networks, systems=systems, box4s=BOX4s, scan_categories=scan_categories)
 
 
 def apply():
