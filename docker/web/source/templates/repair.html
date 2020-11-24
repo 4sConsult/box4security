@@ -119,7 +119,6 @@
       </div>
     <div class="actions">
       <div class="ui approve button">Snapshot Erstellen</div>
-      <div class="ui cancel button">Test button</div>
     </div>
   </div>
 
@@ -224,25 +223,12 @@
               $('tbody').empty();
             },
             onApprove: function(){
-              fetch(`//{{ request.host }}/api/snapshot/files`, {
-                  method: "PUT"
+              fetch(`//{{ request.host }}/api/snapshot/info`, {
+                  method: "POST"
                 })
                 .then((response) => {
                   console.log(response)
                 })
-            },
-            onDeny: function() {
-              //Test function here, remove onDeny later
-              fetch(`//{{ request.host }}/api/snapshot/files/important_data.zip`, {
-                  method: "DELETE",
-                })
-                .then((response) => {
-                  console.log(response)
-                }).catch((err) => {
-                  console.log('Delete Error', err)
-                })
-              //Test function here, remove onDeny later
-
             }
           })
           .modal('show');
@@ -297,7 +283,6 @@
     })
 
     function restore_snap(data){
-      alert(data.value)
       fetch(`//{{ request.host }}/api/snapshot/files/${data.value}`, {
           method: "POST",
         })
