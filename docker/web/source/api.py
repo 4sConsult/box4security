@@ -196,6 +196,14 @@ class SnapshotFileHandler(Resource):
     """API for interacting with Snapshot File Requests"""
 
     @roles_required(['Super Admin'])
+    def get(self, filename):
+        """Upload a Snapshot from the host"""
+        if filename and allowed_file_snaphsot(filename, 'zip'):
+            return send_from_directory("/var/lib/box4s/snapshots", filename, as_attachment=True)
+        else:
+            abort(404, message="Cannot download this file.")
+
+    @roles_required(['Super Admin'])
     def post(self):
         """Upload a Snapshot from the host"""
         file = request.files['file']

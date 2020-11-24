@@ -36,7 +36,7 @@ api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
 api.add_resource(Repair, '/api/repair/')
 api.add_resource(Snapshot, '/api/snapshot/info')
-api.add_resource(SnapshotFileHandler, '/api/snapshot/files')
+api.add_resource(SnapshotFileHandler, '/api/snapshot/files/<path:filename>')
 
 
 api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
@@ -96,13 +96,6 @@ def index():
 def staticfiles(filename):
     """Return a static file."""
     return send_from_directory(app.config["STATIC_FOLDER"], filename)
-
-
-@app.route("/snapshot/download/<path:filename>")
-@login_required
-def snapDownload(filename):
-    """return snap file"""
-    return send_from_directory("/var/lib/box4s/snapshots", filename, as_attachment=True)
 
 
 @app.route('/wazuh/<path:filename>', methods=['GET', 'POST'])

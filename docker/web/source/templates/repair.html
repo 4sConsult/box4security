@@ -215,7 +215,7 @@
                 }).then((parsed_resp) => {
                   for (var i = 0; i < parsed_resp.snapshots.length; i++) {
                     var tr = $("<tr></tr>")
-                    var td = '<td> <a href="/snapshot/download/'+ parsed_resp.snapshots[i].name + '">' + (parsed_resp.snapshots[i].name).replace(/\.[^/.]+$/, "") + '</a></td>' +
+                    var td = '<td> <a href="/api/snapshot/files/'+ parsed_resp.snapshots[i].name + '">' + (parsed_resp.snapshots[i].name).replace(/\.[^/.]+$/, "") + '</a></td>' +
                               '<td>'+ parsed_resp.snapshots[i].date + '</td>'+
                               '<td> <button class="ui button" value="Restore_'+ parsed_resp.snapshots[i].name +'">Wiederherstellen </button>' +
                               '<button class="ui button" value="Delete_'+ parsed_resp.snapshots[i].name +'">Löschen </button>'
