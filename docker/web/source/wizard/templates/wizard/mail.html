@@ -1,45 +1,124 @@
 {% extends "wizard/base.html" %}
 {% block content %}
     <div class="one column">
-        <div class="ui segment">
-            <div class="ui success message">
-                <div class="header">
-                Einrichtung der SMTP-Konfiguration und Hinterlegen eines Zertifikats
+        <div class="ui one column grid segments">
+            <div class="ui segment row">
+                <div class="column">
+                    <div class="ui success message">
+                        <div class="header">
+                            Einrichtung der SMTP-Konfiguration und Hinterlegen eines Zertifikats
+                        </div>
+                        <p>
+                            Standardmäßig verwendet die BOX4security den Microsoft Office 365 SMTP-Server via verschlüsselter SMTPS-Kommunikation. <br>
+                            Sollten Sie dem einen anderen, so wie internen, SMTP-Server vorziehen, so richten Sie hier den Zugang ein.
+                        </p>
+                        <p>
+                            Ebenfalls haben Sie hier optional die Möglichkeit ein Zertifikat Ihrer internen CA zu hinterlegen. <br>
+                            Andernfalls wird ein von der BOX4security selbstsigniertes Zertifikat für die HTTPS-Komunikation verwendet.
+                        </p>
+                    </div>
                 </div>
-                <p>
-                    Standardmäßig verwendet die BOX4security den Microsoft Office 365 SMTP-Server via verschlüsselter SMTPS-Kommunikation. <br>
-                    Sollten Sie dem einen anderen, so wie internen, SMTP-Server vorziehen, so richten Sie hier den Zugang ein.
-                </p>
-                <p>
-                    Ebenfalls haben Sie hier optional die Möglichkeit ein Zertifikat Ihrer internen CA zu hinterlegen. <br>
-                    Andernfalls wird ein von der BOX4security selbstsigniertes Zertifikat für die HTTPS-Komunikation verwendet.
-                </p>
             </div>
-            <form id="formHTTPS" method="POST" class="ui form" enctype="multipart/form-data">
-                <h4 class="ui dividing header">HTTPS-Konfiguration</h4>
-                <div class="field">
-                    <div class="ui action input cert">
-                        <input id="https-cert-text" type="text" placeholder="HTTPS-Zertifikat.pem" readonly>
-                        <input id="https-cert-file" type="file" name="files[]" accept=".pem" autocomplete="off" required>
-                        <div class="ui icon button">
-                            <i class="attach icon"></i>
+            <div class="ui segment row">
+                <div class="column">
+                    <form id="formSMTP" method="get" class="ui form" enctype="multipart/form-data">
+                        <h3 class="ui header">SMTP-Konfiguration</h3>
+                        <h5 class="ui header">Absender</h5>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <input required type="email" id="senderMail" name="senderMail" placeholder="E-Mail-Adresse des Absenders">
+                                <i class="at icon"></i>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="ui action input cert">
-                        <input id="https-key-text" type="text" placeholder="PrivaterRSA-Key.pem" readonly>
-                        <input id="https-key-file" type="file" accept=".pem" name="files[]" autocomplete="off" required>
-                        <div class="ui icon button">
-                            <i class="attach icon"></i>
+                        <h5 class="ui header">Verbindung</h5>
+                        <div class="fields">
+                            <div class="eight wide field">
+                                <div class="ui left icon input">
+                                    <input required type="text" id="smtpHost" name="host" placeholder="SMTP-Host">
+                                    <i class="server icon"></i>
+                                </div>
+                            </div>
+                            <div class="three wide field">
+                                <div class="ui left icon input">
+                                    <input required type="number" id="smtpPort" name="port" placeholder="SMTP-Port">
+                                    <i class="plug icon"></i>
+                                </div>
+                                <small class="helper">Meist 465, 587 oder 25.</small>
+                            </div>
+                            <div class="five wide field">
+                                <div class="ui toggle checkbox">
+                                    <input type="checkbox" id="smtpTLS" name="tls">
+                                    <label>Secure (TLS)</label>
+                                </div>
+                                <br><br>
+                                <small class="helper">Sollte bei Port 465 aktiviert, sonst aus sein (587, 25).</small>
+                            </div>
                         </div>
-                    </div>
+                        <h5 class="ui header">TLS-Zertifikat (optional)</h5>
+                        <div class="fields">
+                            <div class="sixteen wide field">
+                                <div class="ui action input cert">
+                                    <input id="smtp-cert-text" type="text" placeholder="TLS-Zertifikat.crt" readonly>
+                                    <input id="smtp-cert-file" accept=".crt,.pem,.cer" type="file" name="cert">
+                                    <div class="ui icon button">
+                                        <i class="attach icon"></i>
+                                    </div>
+                                </div>
+                                <br>
+                                <small class="helper">Sollte der Mail-Server ein selbstsigniertes Zertifikat verwenden, laden Sie es hier hoch.</small>
+                            </div>
+                        </div>
+                        <h5 class="ui header">Authentifikation</h5>
+                        <div class="fields">
+                            <div class="eight wide field">
+                                <div class="ui left icon input">
+                                    <input required type="text" id="smtpUsername" name="username" placeholder="SMTP-Username">
+                                    <i class="user icon"></i>
+                                </div>
+                            </div>
+                            <div class="eight wide field">
+                                <div class="ui left icon input">
+                                    <input required type="password" id="smtpPassword" name="password" placeholder="SMTP-Passwort">
+                                    <i class="key icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="ui green button" type="submit">SMTP-Konfiguration anwenden</button> <br />
+                        <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
+                    </form>
                 </div>
-                <button class="ui green button" type="submit">Änderungen anwenden</button><br/>
-                <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
-            </form>
+            </div>
+            <div class="ui segment row">
+                <div class="column">
+                    <form id="formHTTPS" method="POST" class="ui form" enctype="multipart/form-data">
+                        <h3 class="ui header">HTTPS-Konfiguration</h3>
+                        <div class="field">
+                            <div class="ui action input cert">
+                                <input id="https-cert-text" type="text" placeholder="HTTPS-Zertifikat.pem" readonly>
+                                <input id="https-cert-file" type="file" name="files[]" accept=".pem" autocomplete="off" required>
+                                <div class="ui icon button">
+                                    <i class="attach icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui action input cert">
+                                <input id="https-key-text" type="text" placeholder="PrivaterRSA-Key.pem" readonly>
+                                <input id="https-key-file" type="file" accept=".pem" name="files[]" autocomplete="off" required>
+                                <div class="ui icon button">
+                                    <i class="attach icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="ui green button" type="submit">HTTPS-Konfiguration anwenden</button><br/>
+                        <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
+                    </form>
+                </div>
+            </div>
+            <div class="ui segment centered row">
+                <a href="{{ url_for('wizard.verify') }}" class="ui large foursgrey-bg button">Weiter</a>
+            </div>
         </div>
-        <a class="ui large foursgrey-bg button">Weiter</a>
     </div>
 {% endblock %}
 {% block scripts %}
@@ -91,6 +170,7 @@
             msg.classList.add("success");
             msg.innerHTML = '<div class="header">HTTPS-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen. Bei selbstsignierten Zertifikaten ist unter Umständen ein manuelles Neuladen des Tabs erforderlich. </p>'
             $('#formHTTPS').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
+            $('button').prop('disabled', true);
             setTimeout(async () => {
                 await waitForWeb();
                 // Reload without parameters
@@ -108,6 +188,73 @@
         form.insertBefore(msg, form.lastElementChild);
     });
   </script>
+<script type="text/javascript">
+    $("#smtp-cert-text, .ui.action.input.cert>.button").click(function() {
+        $(this).parent().find("#smtp-cert-file").click();
+    });
+    $('#smtp-cert-file', '.ui.action.input.cert')
+    .on('change', function(e) {
+        var name = e.target.files[0].name;
+        $('#smtp-cert-text', $(e.target).parent()).val(name);
+    });
+    window.onload = function(){
+        fetch('//{{ request.host }}/api/config/smtp')
+        .then((resp) => resp.json())
+        .then((jso) => {
+            document.getElementById('smtpHost').value = jso.SMTP_HOST;
+            document.getElementById('smtpPort').value = jso.SMTP_PORT;
+            var checkTLS = $('#smtpTLS').parents()[0];
+            jso.SMTP_USE_TLS ? $(checkTLS).checkbox('check') : $(checkTLS).checkbox('uncheck');
+            document.getElementById('senderMail').value = jso.SMTP_SENDER_MAIL;
+            document.getElementById('smtpUsername').value = jso.SMTP_USERNAME;
+        });
+    };
+
+    $('#formSMTP').on('submit', async (e) => {
+        e.preventDefault();
+        var form = document.getElementById('formSMTP');
+        var formData = new FormData(form);
+        formData.delete('cert');
+        var certData = new FormData()
+        if($('#smtp-cert-file')[0].files[0]) {
+            certData.append('cert', $('#smtp-cert-file')[0].files[0])
+                    var responseCert = await fetch('//{{ request.host }}/api/config/smtp/cert', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                        },
+                            body: certData
+                    });
+        }
+        var jsonForm = JSON.stringify(Object.fromEntries(formData));
+        let response = await fetch('//{{ request.host }}/api/config/smtp', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: jsonForm
+        });
+        var msg =  document.createElement('div');
+        msg.classList = "ui visible message"
+        if(response.ok){
+            msg.classList.add("success");
+            msg.innerHTML = '<div class="header">SMTP-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen.</p>'
+            $('#formSMTP').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
+            $('button').prop('disabled', true);
+        } else {
+            msg.classList.add("error");
+            msg.innerHTML = 'SMTP-Konfiguration konnte nicht gespeichert werden.';
+        }
+        form.insertBefore(msg, form.lastElementChild);
+        if(response.ok){
+            setTimeout(async () => {
+            await waitForWeb();
+            // Reload without parameters
+            window.location = window.location.pathname;
+        }, 15000)};
+    });
+</script>
 <script type="text/javascript">
 $('.step.active').removeClass('active');
 $('#step-smtp').addClass('active');

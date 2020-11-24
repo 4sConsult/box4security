@@ -762,8 +762,14 @@ class APISMTP(Resource):
     def __init__(self):
         """Register Parser."""
         self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            # If Wizard disabled, must have Super Admin or Config role and be authenticated
+            if current_user.is_authenticated and current_user.has_role('Config'):
+                # User is allowed to access, continue with resource.
+                pass
+            else:
+                abort(403, message="Not allowed to access the SMTP endpoint.")
 
-    @roles_required(['Super Admin', 'Config'])
     def get(self):
         """Return the current SMTP configuration."""
         # Read current SMTP configuration from environment variables.
@@ -777,7 +783,6 @@ class APISMTP(Resource):
         # marshal = apply described format
         return marshal(config, self.SMTP_MARSHAL), 200
 
-    @roles_required(['Super Admin', 'Config'])
     def post(self):
         """Set (replace) the SMTP configuration.
 
@@ -808,12 +813,19 @@ class APISMTPCertificate(Resource):
 
     POST accepts non-json form-data.
     """
-    @roles_required(['Super Admin', 'Config'])
+    def __init__(self):
+        if not WizardMiddleware.isShowWizard():
+            # If Wizard disabled, must have Super Admin or Config role and be authenticated
+            if current_user.is_authenticated and current_user.has_role('Config'):
+                # User is allowed to access, continue with resource.
+                pass
+            else:
+                abort(403, message="Not allowed to access the SMTP certificate endpoint.")
+
     def get(self):
         """Return not implemented."""
-        abort(501, message="Certificate retrieval not implemented.")
+        abort(405, message="Certificate retrieval not implemented.")
 
-    @roles_required(['Super Admin', 'Config'])
     def post(self):
         """Replace the current SMTP certificate."""
         print(request.files)
