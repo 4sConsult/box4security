@@ -33,6 +33,11 @@ sed -i "s/INT_IP=\"$INT_IP\"/INT_IP=$INT_IP/g" /etc/environment
 sed -i "s/INT_IP=\"$INT_IP\"/INT_IP=$INT_IP/g" /etc/default/logstash
 sudo chmod 770 -R /etc/nginx/certs
 sudo chown root:44269 -R /etc/nginx/certs
+
+# Fix SMTP permission
+sudo chown root:44269 /etc/msmtprc
+sudo chmod 770 /etc/msmtprc
+
 ###################
 # CHANGES FOR MODULES
 
