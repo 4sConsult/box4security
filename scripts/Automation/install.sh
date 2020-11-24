@@ -489,6 +489,8 @@ cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 cd /home/amadmin/box4s
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
+sudo chown root:44269 /etc/msmtprc
+sudo chmod 770 /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
 
 # Create a folder for the alerting rules
