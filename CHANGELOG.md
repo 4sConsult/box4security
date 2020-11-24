@@ -6,6 +6,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 * Konfiguration von HTTPS-Zertifikat und privatem Schlüssel sowie zugehöriger Schnittstelle implementiert.
 * Auch der Einrichtungswizard erlaubt nun die Konfiguration von HTTPS-Zertifikat und privatem Schlüssel.
+* Einrichtungswizard erlaubt nun die Konfiguration der SMTP-Verbindung.
 
 ### Changed
 
