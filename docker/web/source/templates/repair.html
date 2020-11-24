@@ -285,12 +285,8 @@
         var extension = ($(this).val()).substring(url.lastIndexOf('.') + 1).toLowerCase();
         if (this.files && this.files[0] && extension == "zip"){
           alert("Correct file")
-          fetch(`//{{ request.host }}/api/snapshot/files`, {
-              method: "POST",
-              headers: {
-                'Content-Type': 'application/zip'
-              },
-              body: this
+          fetch(`//{{ request.host }}/api/snapshot/files/mx_neon.zip`, {
+              method: "DELETE"
             })
             .then((response) => {
               console.log(response)

@@ -178,7 +178,6 @@ class Snapshot(Resource):
                 files['snapshots'].append({'name': filename, 'date': time_snap})
         return jsonify(files)
 
-    """API for gathering info about snapshots or restoring a snapshot"""
     @roles_required(['Super Admin'])
     def post(self):
         """Restore selected Snapshot"""
@@ -218,12 +217,11 @@ class SnapshotFileHandler(Resource):
         return ''
 
     @roles_required(['Super Admin'])
-    def delete(self):
+    def delete(self, filename):
         """Delete Snapshot"""
-        snapshot = request.json['key']
         snap_folder = "/var/lib/box4s/snapshots"
-        if allowed_file_snaphsot(snapshot, 'zip'):
-            os.remove(os.path.join(snap_folder, snapshot))
+        if allowed_file_snaphsot(filename, 'zip'):
+            os.remove(os.path.join(snap_folder, filename))
             return {"message": "accepted"}, 200
         else:
             abort(404, message="Cannot delete this file.")
