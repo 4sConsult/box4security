@@ -274,7 +274,7 @@
       $('#fileUplaod').change(function(){
         var url = $(this).val();
         var extension = ($(this).val()).substring(url.lastIndexOf('.') + 1).toLowerCase();
-        if (input.files && input.files[0] && extension == "zip"){
+        if (this.files && this.files[0] && extension == "zip"){
           alert("Correct file")
           fetch(`//{{ request.host }}/api/snapshot/upload`, {
               method: "POST",
