@@ -162,7 +162,7 @@ class Repair(Resource):
 
 
 class SnapshotInfo(Resource):
-    """API for gathering info about snapshots or creating a new snapshot"""
+    """API for gathering info about snapshots or creating a new snapshot and Uploading a snapshot"""
 
     @roles_required(['Super Admin'])
     def get(self):
@@ -184,6 +184,19 @@ class SnapshotInfo(Resource):
         """Create a snapshot"""
         os.system("ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_createSnapshot.sh")
         return {"message": "accepted"}, 200
+
+    @roles_required(['Super Admin'])
+    def put(self):
+        """Upload a Snapshot"""
+        file = request.files['file'].read()
+        snap_folder = "/var/lib/box4s/snapshots"
+        if file.filename == '':
+            abort(403)
+        if file and allowed_file_snaphsot(file.filename, 'zip'):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(snap_folder,filename))
+            return {"message": "accepted"}, 200
+        return ''
 
 
 class SnapshotFileHandler(Resource):
@@ -213,19 +226,6 @@ class SnapshotFileHandler(Resource):
             return {"message": "accepted"}, 200
         else:
             abort(404, message="Cannot delete this file.")
-
-    @roles_required(['Super Admin'])
-    def put(self):
-        """Upload a Snapshot"""
-        file = request.files['file']
-        snap_folder = "/var/lib/box4s/snapshots"
-        if file.filename == '':
-            abort(403)
-        if file and allowed_file_snaphsot(file.filename, 'zip'):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(snap_folder, filename))
-            return {"message": "accepted"}, 200
-        return ''
 
 
 class BPF(Resource):

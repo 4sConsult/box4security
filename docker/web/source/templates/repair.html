@@ -115,7 +115,11 @@
   <tbody>
   </tbody>
 </table>
-<br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen <input type="file" name="file" class="inputfile" id="fileUplaod" />
+<br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen
+<form class="ui form" method="POST" action="/api/snapshot/info" enctype = "multipart/form-data" >
+  <input type="file" name="file" class="inputfile" id="fileUplaod" />
+  <input type="submit" value="Submit">
+  </form>
       </div>
     <div class="actions">
       <div class="ui approve button">Snapshot Erstellen</div>
@@ -259,19 +263,24 @@
 
 
     $(function(){
-      $('#fileUplaod').change(function(){
+      $('#fileUplaod').change(function(event){
+        console.log(event.target.files[0].name)
         var url = $(this).val();
         var extension = ($(this).val()).substring(url.lastIndexOf('.') + 1).toLowerCase();
         if (this.files && this.files[0] && extension == "zip"){
           alert("Correct file")
-          fetch(`//{{ request.host }}/api/snapshot/files/mx_neon.zip`, {
+          var input = document.querySelector('input[type="file"]')
+          var data = new FormData()
+          data.append('file', input.files[0])
+          fetch(`//{{ request.host }}/api/snapshot/info`, {
               method: "POST",
               headers: {
                 'Content-Type': 'application/zip'
               },
-              body: this
+              body: data
             })
             .then((response) => {
+              console.log(data)
               console.log(response)
             })
         }
