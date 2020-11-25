@@ -319,17 +319,17 @@ class AvailableReleases(Resource):
             abort(403, message="Forbidden.")
 
         try:
-            git = requests.get('https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags',
-                               headers={'PRIVATE-TOKEN': os.getenv('GIT_TOKEN')}).json()
+            git = requests.get('https://api.github.com/repos/4sConsult/box4security/releases',
+                               headers={'Accept': 'application/vnd.github.v3+json'}).json()
         except Timeout:
-            abort(504, message="GitLab API Timeout")
+            abort(504, message="GitHub API Timeout")
         except ConnectionError:
-            abort(503, message="GitLab API unreachable")
+            abort(503, message="GitHub API unreachable")
         except Exception:
-            abort(502, message="GitLab API Failure")
+            abort(502, message="GitHub API Failure")
         else:
             # take only relevant info
-            res = [{'version': tag['name'], 'message': tag['message'], 'date': tag['commit']['created_at'], 'changelog': tag['release']['description'] if tag['release'] else ''} for tag in git]
+            res = [{'version': tag['tag_name'], 'message': tag['name'], 'date': tag['published_at'], 'changelog': tag['body'] if tag['body'] else ''} for tag in git]
             return res
 
 
