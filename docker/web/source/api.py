@@ -195,7 +195,7 @@ class SnapshotInfo(Resource):
         if file and allowed_file_snaphsot(file.filename, 'zip'):
             filename = secure_filename(file.filename)
             file.save(os.path.join(snap_folder, filename))
-            return {"message": "accepted"}, 200
+            return {"message": "uploaded"}, 200
         return ''
 
 
