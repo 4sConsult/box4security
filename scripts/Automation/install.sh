@@ -184,7 +184,7 @@ if service_exists systemd-resolved; then
 fi
 echo "[ OK ]" 1>&3
 
-echo -n "Checking for old Version of BOX4security and removing.. " 1>&3
+echo -n "Checking for an old version of BOX4security and stopping.. " 1>&3
 # Remove old box4security service
 if service_exists box4security; then
     sudo systemctl stop box4security.service
@@ -273,7 +273,7 @@ git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s 
 echo "[ OK ]" 1>&3
 
 # Set SSH allowed keys
-echo -n "Enabling allowed SSH keys.. " 1>&3
+echo -n "Enabling allowed SSH key (web app).. " 1>&3
 sudo mkdir -p /home/amadmin/.ssh
 sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
 echo "[ OK ]" 1>&3
