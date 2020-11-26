@@ -445,15 +445,6 @@ hostname box4security
 grep -qxF "127.0.0.1 box4security" /etc/hosts || echo "127.0.0.1 box4security" >> /etc/hosts
 echo " [ OK ]" 1>&3
 
-# No longer allow SSH with password login
-echo -n "Configuring SSH server.. " 1>&3
-sudo sed -i 's/#\?PasswordAuthentication .*$/PasswordAuthentication no/g' /etc/ssh/sshd_config
-sudo sed -i 's/#\?ChallengeResponseAuthentication .*$/ChallengeResponseAuthentication no/g' /etc/ssh/sshd_config
-sudo sed -i 's/#\?UsePAM .*$/UsePAM no/g' /etc/ssh/sshd_config
-sudo sed -i 's/#\?PermitRootLogin .*$/PermitRootLogin no/g' /etc/ssh/sshd_config
-sudo systemctl restart sshd
-echo " [ OK ]" 1>&3
-
 # Initially clone the Wiki repo
 echo -n "Downloading documentation.. " 1>&3
 # Delete already existing repository
