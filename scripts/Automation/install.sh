@@ -279,10 +279,12 @@ sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
 echo "[ OK ]" 1>&3
 
 # Copy certificates over
-echo -n "Copying SSL certificates.. " 1>&3
+echo -n "Creating selfsigned SSL certificate.. " 1>&3
 sudo mkdir -p /etc/nginx/certs
-sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
-sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
+sudo openssl req -new -x509 -config /home/amadmin/box4s/config/ssl/box4security-ssl.conf \
+    -subj "/C=DE/ST=NRW/L=Dortmund/O=4sConsult GmbH/OU=IT Security/CN=BOX4security/emailAddress=box@4sconsult.de" \
+    -newkey rsa:4096 -days 365 -nodes \
+    -keyout /etc/nginx/certs/box4security.key.pem  -out /etc/nginx/certs/box4security.cert.pem
 sudo chown -R root:44269 /etc/nginx/certs
 sudo chmod 770 -R /etc/nginx/certs
 echo "[ OK ]" 1>&3
