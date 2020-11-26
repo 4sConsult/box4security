@@ -1,6 +1,6 @@
 ![](docs/box4security.png)
 
-Open-source powered SIEM + Vulnerability Scanning and Host- & Network-IDS. All wrapped in a modern Python web app and shipped in Docker containers.   
+Open-source powered SIEM, Vulnerability Scanning, Host- & Network-IDS. All wrapped in a modern Python web app and shipped in Docker containers.   
 The BOX4security builds upon solid blocks like Elastic Stack, OpenVAS, and Suricata to deliver security insights. Additionally, it features one-click updating, automatized installation, easy configuration through an initial wizard, and a role-based permission model for web and API access. 
 
 We welcome you to try it out and take hold of your network's security.
@@ -20,11 +20,17 @@ Before you start the installation, be sure that at the current state, the instal
 * A new sudo user called `amadmin` will be created on the system.
 * The BOX4security service will be enabled.
 * The systems' nameserver will be set to the proxying DNS server included in the BOX4security. It can be configrred using the initial wizard.
+* The BOX4security will be installed to `/home/amadmin/box4s/`.
+
+After cloning you should edit and replace the default credentials in:
+* `config/secrets/*.conf`
+* `docker/elastalert/etc/elastalert/smtp_auth_file.yaml`
 
 Once you are ready, the installation is as simple as: 
 ```
 git clone https://github.com/4sConsult/box4security.git
-sudo ./scripts/Automation/install.sh
+# Edit configuration files before running install.sh!
+sudo ./box4security/scripts/Automation/install.sh
 ```
 
 The script may ask you some questions and will notify you about the progress.
