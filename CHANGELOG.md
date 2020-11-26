@@ -6,6 +6,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Added
 * Konfiguration von HTTPS-Zertifikat und privatem Schlüssel sowie zugehöriger Schnittstelle implementiert.
 * Auch der Einrichtungswizard erlaubt nun die Konfiguration von HTTPS-Zertifikat und privatem Schlüssel.
+* Einrichtungswizard erlaubt nun die Konfiguration der SMTP-Verbindung.
 
 ### Changed
 
@@ -16,6 +17,10 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Fixed
 * Bug behoben, bei dem die SMTP-Konfigurationsseite nicht mit der aktuellen Einstellung befüllt wurde.
+* Bug behoben, durch den die Schwachstellendashboards nicht angezeigt werden konnten.
+* Bug behoben, durch den die Schwachstellenverläufe stets nicht differenziert den Gesamtverlauf gezeigt haben.
+* Bug behoben, bei dem geänderte SMTP-Einstellungen aufgrund eines Berechtigungsfehlers möglicherweise nicht geschrieben wurde.
+* Der Wizard ermittelt nicht länger den maximal zu bearbeitenden Schritt. Stattdessen leitet ein Klick auf *Weiter* nun stets linear durch den Wizard.
 
 ### Deprecated
 
