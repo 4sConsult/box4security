@@ -243,6 +243,10 @@ mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s
 if [[ "$*" == *manual* ]]
 then
   # --manual supplied => ask user which to install
+  # Fetch all TAGS as names
+  mapfile -t TAGS < <(curl -s -H "Accept: application/vnd.github.v3+json" \
+  https://api.github.com/repos/4sConsult/box4security/releases | jq -r .[].tag_name)
+
   echo "Available tags:" 1>&3
   printf '%s\n' "${TAGS[@]}" 1>&3
   echo "Type tag to install:" 1>&3
@@ -254,7 +258,8 @@ then
   echo "$TAG will be installed.. [ OK ]" 1>&3
 else
   # not manual, install most recent and valid tag
-  TAG=$(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: $GIT_API_TOKEN" | jq -r '[.[] | select(.name | contains("-") | not)][0] | .name')
+  TAG=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+  https://api.github.com/repos/4sConsult/box4security/releases/latest | jq -r '[.[] | select(.tag_name | contains("-") | not)][0] | .tag_name')
   echo "Installing the most recent tag $TAG.. [ OK ]" 1>&3
 fi
 echo "Installing $TAG."
@@ -269,7 +274,7 @@ echo -n "Cloning the repository.. " 1>&3
 cd /home/amadmin
 # Delete already existing repository
 delete_If_Exists /home/amadmin/box4s
-git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s -b $TAG
+git clone https://github.com/4sConsult/box4security.git box4s -b $TAG
 echo "[ OK ]" 1>&3
 
 # Set SSH allowed keys
