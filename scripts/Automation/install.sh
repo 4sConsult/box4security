@@ -212,27 +212,9 @@ curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-comp
 sudo chmod +x /usr/local/bin/docker-compose
 echo "[ OK ]" 1>&3
 
-# Install BlackBox to decrypt stuff
-echo -n "Installing BlackBox for secret encryption/decryption.. " 1>&3
-# Remove if other blackblock installation is found
-delete_If_Exists /opt/blackbox
-git clone https://github.com/StackExchange/blackbox.git /opt/blackbox
-cd /opt/blackbox
-sudo make symlinks-install
-echo "[ OK ]" 1>&3
-
 # Change to path from snippet
 cd /tmp/box4s
-
-# Import Secret Key and use the deploy token as password
-echo -n "Import BOX4security secret key and decrypting secrets.. " 1>&3
-echo $GIT_DEPLOY_TOKEN | gpg --batch --yes --passphrase-fd 0 --import .blackbox/box4s.pem
-# Remove passphrase from secret key to allow decryptions without a passphrase.
-printf "passwd\n$GIT_DEPLOY_TOKEN\n\n\ny\n\n\ny\nsave\n" | gpg --batch --pinentry-mode loopback --command-fd 0 --status-fd=2 --edit-key box@4sconsult.de
-# Decrypt secrets
-blackbox_decrypt_file config/secrets/secrets.conf
-blackbox_decrypt_file config/secrets/db.conf
-# Source the secrets relatively
+echo -n "Sourcing secret files.. " 1>&3
 source config/secrets/secrets.conf
 source config/secrets/db.conf
 echo "[ OK ]" 1>&3
@@ -288,12 +270,6 @@ cd /home/amadmin
 # Delete already existing repository
 delete_If_Exists /home/amadmin/box4s
 git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/box4s.git box4s -b $TAG
-echo "[ OK ]" 1>&3
-
-# Decrypt all secrets via postdeploy
-echo -n "Decrypting secrets.. " 1>&3
-cd box4s
-blackbox_postdeploy
 echo "[ OK ]" 1>&3
 
 # Set SSH allowed keys
