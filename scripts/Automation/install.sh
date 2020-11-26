@@ -460,7 +460,7 @@ echo -n "Downloading documentation.. " 1>&3
 delete_If_Exists /var/lib/box4s_docs
 mkdir -p /var/lib/box4s_docs
 cd /var/lib/box4s_docs
-sudo git clone https://deploy:$GIT_DEPLOY_TOKEN@gitlab.com/4sconsult/docs.git .
+sudo git clone https://gitlab.com/4sconsult/docs.git .
 echo " [ OK ]" 1>&3
 
 echo -n "Configuring BOX4s.. " 1>&3
