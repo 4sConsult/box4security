@@ -56,6 +56,9 @@ ERROR_LOG=$LOG_DIR/install.err.log
 # Do not use interactive debian frontend.
 export DEBIAN_FRONTEND=noninteractive
 
+# Get the actual script of the installation script.
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 # Forward fd3 to the console
 # exec 3>&1
 # Forward stderr to $ERROR_LOG
@@ -212,8 +215,8 @@ curl -sL "https://github.com/docker/compose/releases/download/1.25.4/docker-comp
 sudo chmod +x /usr/local/bin/docker-compose
 echo "[ OK ]" 1>&3
 
-# Change to path from snippet
-cd /tmp/box4s
+# Change to repo root path
+cd $SCRIPTDIR/../../
 echo -n "Sourcing secret files.. " 1>&3
 source config/secrets/secrets.conf
 source config/secrets/db.conf
@@ -267,11 +270,16 @@ echo "Installing $TAG."
 ##################################################
 banner "Repository ..."
 
-echo -n "Cloning the repository.. " 1>&3
-cd /home/amadmin
-# Delete already existing repository
-delete_If_Exists /home/amadmin/box4s
-git clone https://github.com/4sConsult/box4security.git box4s -b $TAG
+echo -n "Updating the repository.. " 1>&3
+cd $SCRIPTDIR/../../
+git fetch
+git stash
+echo "[ OK ]" 1>&3
+
+echo -n "Checkout $TAG.. " 1>&3
+git checkout $TAG
+git stash apply
+git stash drop
 echo "[ OK ]" 1>&3
 
 # Set SSH allowed keys
@@ -283,7 +291,7 @@ echo "[ OK ]" 1>&3
 # Copy certificates over
 echo -n "Creating selfsigned SSL certificate.. " 1>&3
 sudo mkdir -p /etc/nginx/certs
-sudo openssl req -new -x509 -config /home/amadmin/box4s/config/ssl/box4security-ssl.conf \
+sudo openssl req -new -x509 -config $SCRIPTDIR/../../config/ssl/box4security-ssl.conf \
     -subj "/C=DE/ST=NRW/L=Dortmund/O=4sConsult GmbH/OU=IT Security/CN=BOX4security/emailAddress=box@4sconsult.de" \
     -newkey rsa:4096 -days 365 -nodes \
     -keyout /etc/nginx/certs/box4security.key.pem  -out /etc/nginx/certs/box4security.cert.pem
@@ -296,7 +304,7 @@ echo -n "Enabling default SMTP config.. " 1>&3
 # First use of /etc/box4s -> remove to avoid conflicts with old installation
 delete_If_Exists /etc/box4s/
 sudo mkdir -p /etc/box4s/
-sudo cp /home/amadmin/box4s/config/secrets/smtp.conf /etc/box4s/smtp.conf
+sudo cp $SCRIPTDIR/../../config/secrets/smtp.conf /etc/box4s/smtp.conf
 echo "[ OK ]" 1>&3
 
 ##################################################
@@ -348,7 +356,7 @@ echo " [ DONE ] " 1>&1
 # Setup Box4s Settings volume
 echo -n "etcbox4s_logstash:" 1>&1
 sudo mkdir -p /etc/box4s/logstash
-sudo cp -R /home/amadmin/box4s/config/etc/logstash/* /etc/box4s/logstash/
+sudo cp -R $SCRIPTDIR/../../config/etc/logstash/* /etc/box4s/logstash/
 sudo chown root:root /etc/box4s/
 sudo chmod -R 777 /etc/box4s/
 sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
@@ -453,11 +461,11 @@ echo " [ OK ]" 1>&3
 
 echo -n "Configuring BOX4s.. " 1>&3
 # Copy gollum config to wiki root
-cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
+cp $SCRIPTDIR/../../docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 
 
 # Copy config files
-cd /home/amadmin/box4s
+cd $SCRIPTDIR/../../
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
@@ -466,7 +474,7 @@ sudo cp config/home/* /home/amadmin -R || :
 sudo mkdir -p /var/lib/elastalert/rules
 
 # Copy default elastalert smtp auth file
-sudo cp /home/amadmin/box4s/docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalert_smtp.yaml
+sudo cp $SCRIPTDIR/../../docker/elastalert/etc/elastalert/smtp_auth_file.yaml /var/lib/box4s/elastalert_smtp.yaml
 echo " [ OK ]" 1>&3
 
 echo -n "Setting system environment variables.. " 1>&3
@@ -482,7 +490,7 @@ echo " [ OK ] " 1>&3
 
 echo -n "Setting network configuration and restarting network.. " 1>&3
 # Find dhcp and remove everything after
-sudo cp /home/amadmin/box4s/config/etc/network/interfaces /etc/network/interfaces
+sudo cp $SCRIPTDIR/../../config/etc/network/interfaces /etc/network/interfaces
 sudo sed -i '/.*dhcp/q' /etc/network/interfaces
 
 IF_MGMT=$(ip addr | cut -d ' ' -f2| tr ':' '\n' | awk NF | grep -v lo | head -n 1)
@@ -519,14 +527,14 @@ echo " [ OK ] " 1>&3
 
 echo -n "Setting the portmirror interface.. " 1>&3
 # Find the portmirror interface for suricata
-touch /home/amadmin/box4s/docker/suricata/.env
+touch $SCRIPTDIR/../../docker/suricata/.env
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
-echo "SURI_INTERFACE=$IFACE" > /home/amadmin/box4s/docker/suricata/.env
+echo "SURI_INTERFACE=$IFACE" > $SCRIPTDIR/../../docker/suricata/.env
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling/Disabling Modules.. " 1>&3
 # Remove old folder to avoid conflicts
-sudo cp /home/amadmin/box4s/config/etc/modules.conf /etc/box4s/modules.conf
+sudo cp $SCRIPTDIR/../../config/etc/modules.conf /etc/box4s/modules.conf
 sudo chmod 444 /etc/box4s/modules.conf
 echo " [ OK ] " 1>&3
 
@@ -539,9 +547,9 @@ echo " [ OK ] " 1>&3
 echo -n "BOX4security service setup and enabling.. " 1>&3
 # Setup the new Box4Security Service and enable it
 sudo mkdir -p /usr/bin/box4s/
-sudo cp /home/amadmin/box4s/scripts/System_Scripts/box4s_service.sh /usr/bin/box4s/box4s_service.sh
+sudo cp $SCRIPTDIR/../../scripts/System_Scripts/box4s_service.sh /usr/bin/box4s/box4s_service.sh
 sudo chmod +x /usr/bin/box4s/box4s_service.sh
-sudo cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
+sudo cp $SCRIPTDIR/../../config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 sudo systemctl daemon-reload
 sudo systemctl enable box4security.service
 echo " [ OK ] " 1>&3
@@ -556,8 +564,8 @@ banner "Docker ..."
 echo -n "Downloading BOX4security software images. This may take a long time.. " 1>&3
 # Login to docker registry
 sudo docker login registry.gitlab.com -u deploy -p $GIT_DEPLOY_TOKEN
-sudo docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull
-sudo docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml pull
+sudo docker-compose -f $SCRIPTDIR/../../docker/box4security.yml pull
+sudo docker-compose -f $SCRIPTDIR/../../docker/wazuh/wazuh.yml pull
 echo " [ OK ] " 1>&3
 
 # Download IP2Location DBs for the first time
@@ -585,21 +593,21 @@ MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MEM=$(python3 -c "print($MEM/1024.0**2)")
 # Give half of that to elasticsearch
 ESMEM=$(python3 -c "print(int($MEM*0.5))")
-sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" /home/amadmin/box4s/docker/elasticsearch/.env.es
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" $SCRIPTDIR/../../docker/elasticsearch/.env.es
 # and one quarter to logstash
 LSMEM=$(python3 -c "print(int($MEM*0.25))")
-sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" /home/amadmin/box4s/docker/logstash/.env.ls
+sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $SCRIPTDIR/../../docker/logstash/.env.ls
 echo " [ OK ] " 1>&3
 
 echo -n "Making scripts executable.. " 1>&3
-chmod +x -R /home/amadmin/box4s/scripts
+chmod +x -R $SCRIPTDIR/../../box4s/scripts
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling BOX4s internal DNS server.. " 1>&3
 # DNSMasq Setup
 sudo systemctl enable resolvconf.service
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
-sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
+sudo cp $SCRIPTDIR/../../docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
 sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf.service
 sudo resolvconf --enable-updates
@@ -616,7 +624,7 @@ banner "Starting BOX4security..."
 sudo systemctl start box4security
 
 echo -n "Waiting for Elasticsearch to become available.. " 1>&3
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
+sudo $SCRIPTDIR/../../scripts/System_Scripts/wait-for-healthy-container.sh elasticsearch
 echo " [ OK ] " 1>&3
 
 echo -n "Installing the scores index.. " 1>&3
@@ -627,8 +635,8 @@ sudo docker exec core4s /bin/bash /core4s/scripts/Automation/score_calculation/i
 echo " [ OK ] " 1>&3
 
 echo -n "Installing new cronjobs.. " 1>&3
-cd /home/amadmin/box4s/config/crontab
-su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
+cd $SCRIPTDIR/../../config/crontab
+su - amadmin -c "crontab $SCRIPTDIR/../../config/crontab/amadmin.crontab"
 echo " [ OK ] " 1>&3
 
 source /etc/environment
@@ -637,40 +645,40 @@ sudo systemctl daemon-reload
 
 #Ignore own INT_IP
 echo -n "Enabling filter to ignore own IP.. " 1>&3
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh db
+sudo $SCRIPTDIR/../../scripts/System_Scripts/wait-for-healthy-container.sh db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('"$INT_IP"',0,'0.0.0.0',0,'');" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
 echo "INSERT INTO blocks_by_bpffilter(src_ip, src_port, dst_ip, dst_port, proto) VALUES ('0.0.0.0',0,'"$INT_IP"',0,'');" | PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER psql postgres://localhost/box4S_db
 echo " [ OK ] " 1>&3
 
 echo -n "Waiting for Kibana to become available.. " 1>&3
 sleep 300
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo -n " [ OK  " 1>&3 || echo -n " [ NOT OK " 1>&3
+sudo $SCRIPTDIR/../../scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo -n " [ OK  " 1>&3 || echo -n " [ NOT OK " 1>&3
 sleep 30
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo "  OK ] " 1>&3 || echo "  NOT OK ] " 1>&3
+sudo $SCRIPTDIR/../../scripts/System_Scripts/wait-for-healthy-container.sh kibana 600 && echo "  OK ] " 1>&3 || echo "  NOT OK ] " 1>&3
 
 # Import Dashboard
 echo -n "Installing Dashboards und Patterns.. " 1>&3
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Startseite/Startseite-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/SIEM/SIEM-Alarme.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/SIEM/SIEM-ASN.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/SIEM/SIEM-DNS.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/SIEM/SIEM-HTTP.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/SIEM/SIEM-ProtokolleUndDienste.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/SIEM/SIEM-SocialMedia.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/SIEM/SIEM-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Netzwerk/Netzwerk-Datenfluesse.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Details.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/System/docker.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/Startseite/Startseite-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/SIEM/SIEM-Alarme.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/SIEM/SIEM-ASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/SIEM/SIEM-DNS.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/SIEM/SIEM-HTTP.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/SIEM/SIEM-ProtokolleUndDienste.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/SIEM/SIEM-SocialMedia.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/SIEM/SIEM-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/Netzwerk/Netzwerk-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/Netzwerk/Netzwerk-GeoIPUndASN.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/Netzwerk/Netzwerk-Datenfluesse.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/Schwachstellen/Schwachstellen-Details.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/Schwachstellen/Schwachstellen-Verlauf.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/Schwachstellen/Schwachstellen-Uebersicht.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/System/docker.ndjson
 
 # Installiere Suricata Index Pattern
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/suricata.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/Patterns/suricata.ndjson
 
 # Installiere Scores Index Pattern
-curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/home/amadmin/box4s/config/dashboards/Patterns/scores.ndjson
+curl -s -X POST "localhost:5601/kibana/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@$SCRIPTDIR/../../config/dashboards/Patterns/scores.ndjson
 
 # Erstelle initialen VulnWhisperer Index
 curl -XPUT "localhost:9200/logstash-vulnwhisperer-$(date +%Y.%m)"
@@ -693,7 +701,7 @@ echo " [ OK ] " 1>&3
 
 echo -n "Updating tools. This may take a very long time.. " 1>&3
 sudo docker container restart openvas
-sudo /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh openvas
+sudo $SCRIPTDIR/../../scripts/System_Scripts/wait-for-healthy-container.sh openvas
 echo -n " [ openvas " 1>&3
 sudo docker container restart suricata
 sleep 30
