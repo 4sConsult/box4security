@@ -236,9 +236,6 @@ echo "[ OK ]" 1>&3
 ##################################################
 banner "Tags ..."
 
-# Fetch all TAGS as names
-mapfile -t TAGS < <(curl -s https://gitlab.com/api/v4/projects/4sconsult%2Fbox4s/repository/tags --header "PRIVATE-TOKEN: $GIT_API_TOKEN" | jq -r .[].name)
-
 # If manual isntallation, make all tags visible and choose the tag to install
 if [[ "$*" == *manual* ]]
 then
