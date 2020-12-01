@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 PYTHON = python3
 COMPOSE = docker-compose
-COMPOSE_F = /home/amadmin/box4s/docker/box4security.yml
+COMPOSE_F = ./docker/box4security.yml
 
 images = `arg="$(filter-out $@,$(MAKECMDGOALS))" && echo $${arg:-${1}}`
 
