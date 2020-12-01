@@ -59,4 +59,4 @@ Possibly, remotely accessible instances of this software may be affected by your
 Any other forms of findings and requests are very welcome to be posted and discussed publicly on the issues tab of this repository.
 
 # License
-As introduced in the contribution section, the BOX4security is licensed under the X [license](LICENSE) ([TL;DR](tldrlicense)).
+As introduced in the contribution section, the BOX4security is licensed under the [AGPL-3.0](LICENSE) ([TL;DR](https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0))).
