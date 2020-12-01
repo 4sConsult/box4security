@@ -268,17 +268,21 @@
         var url = $(this).val();
         var extension = ($(this).val()).substring(url.lastIndexOf('.') + 1).toLowerCase();
         if (this.files && this.files[0] && extension == "zip"){
-          alert("Correct file")
           var input = document.querySelector('input[type="file"]')
-          var data = new FormData()
-          data.append('file', input.files[0])
+          var formData = new FormData()
+          data.append('file.zip', input.files[0])
           fetch(`//{{ request.host }}/api/snapshot/info`, {
               method: "POST",
-              body: data
+              body: formData
             })
-            .then((response) => {
+            .then((response) => response.json())
+            .then(result => ){
+              console.log(formData)
               console.log(data)
               console.log(response)
+            })
+            .catch(error => {
+              console.error('Error', error)
             })
         }
         else {
