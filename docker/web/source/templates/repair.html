@@ -274,9 +274,6 @@
           data.append('file', input.files[0])
           fetch(`//{{ request.host }}/api/snapshot/info`, {
               method: "POST",
-              headers: {
-                'Content-Type': 'application/zip'
-              },
               body: data
             })
             .then((response) => {
