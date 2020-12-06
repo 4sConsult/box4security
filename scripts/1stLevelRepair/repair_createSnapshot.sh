@@ -37,7 +37,6 @@ copyFolder /etc/box4s
 copyFolder /var/lib/box4s
 delete_If_Exists $folder/var/lib/box4s/snapshots
 copyFolder /var/lib/postgresql
-copyFolder /var/lib/box4s_openvas
 copyFolder /var/lib/box4s_suricata_rules
 copyFolder /etc/box4s/logstash
 copyFolder /var/lib/logstash
