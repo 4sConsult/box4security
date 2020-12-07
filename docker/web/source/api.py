@@ -188,7 +188,7 @@ class SnapshotInfo(Resource):
     @roles_required(['Super Admin'])
     def put(self):
         """Upload a Snapshot"""
-        file = request.files['file'].read()
+        file = request.files['file']
         snap_folder = "/var/lib/box4s/snapshots"
         if file.filename == '':
             abort(403)
