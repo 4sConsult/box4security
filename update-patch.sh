@@ -43,7 +43,8 @@ sudo chown root:44269 /var/lib/box4s/resolv.personal
 sudo chmod 770 /var/lib/box4s/resolv.personal
 
 #install program for deleting data
-sudo apt-get install secure-delete
+sudo apt update
+sudo apt install -y secure-delete
 ###################
 # CHANGES FOR MODULES
 

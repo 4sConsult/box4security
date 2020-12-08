@@ -152,7 +152,7 @@ class Repair(Resource):
         """Deny deleting Reapir Script."""
         abort(405, message="Cannot GET Repair Script.")
 
-    @roles_required(['Super Admin', 'Filter'])
+    @roles_required(['Super Admin'])
     def post(self):
         """Forward Repair."""
         return self.put()
@@ -176,7 +176,7 @@ class SnapshotInfo(Resource):
         files['snapshots'] = []
         for filename in os.listdir(snap_folder):
             path = os.path.join(snap_folder, filename)
-            if os.path.isfile(path) and allowed_file_snaphsot(filename, 'zip'):
+            if os.path.isfile(path) and allowed_file_snaphsot(filename, ['zip']):
                 time_snap = datetime.fromtimestamp(os.path.getctime(path))
                 files['snapshots'].append({'name': filename, 'date': time_snap})
         return jsonify(files)
@@ -194,7 +194,7 @@ class SnapshotInfo(Resource):
         snap_folder = "/var/lib/box4s/snapshots"
         if file.filename == '':
             abort(403)
-        if file and allowed_file_snaphsot(file.filename, 'zip'):
+        if file and allowed_file_snaphsot(file.filename, ['zip']):
             filename = secure_filename(file.filename)
             file.save(os.path.join(snap_folder, filename))
             return {"message": "uploaded"}, 200
@@ -208,7 +208,7 @@ class SnapshotFileHandler(Resource):
     def get(self, filename):
         """Download a Snapshot"""
         snap_folder = "/var/lib/box4s/snapshots"
-        if filename and allowed_file_snaphsot(filename, 'zip'):
+        if filename and allowed_file_snaphsot(filename, ['zip']):
             return send_from_directory(snap_folder, filename, as_attachment=True)
         else:
             abort(404, message="Cannot download this file.")
@@ -223,8 +223,11 @@ class SnapshotFileHandler(Resource):
     def delete(self, filename):
         """Delete Snapshot"""
         snap_folder = "/var/lib/box4s/snapshots"
-        if allowed_file_snaphsot(filename, 'zip'):
-            os.remove(os.path.join(snap_folder, filename))
+        if allowed_file_snaphsot(filename, ['zip']):
+            try:
+                os.remove(os.path.join(snap_folder, filename))
+            except OSError:
+                pass
             return {"message": "accepted"}, 200
         else:
             abort(404, message="Cannot delete this file.")
