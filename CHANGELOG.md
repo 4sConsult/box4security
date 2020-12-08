@@ -5,6 +5,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 
 ### Added
 
+* Eine neue Website Reparieren ist unter Administration verfügbar. Unter dieser Website können verschiedene Skripte gefunden werden, die benutzt werden können um einige Reperaturservices an der Box durchzuführen.
 
 ### Changed
 
