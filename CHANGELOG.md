@@ -7,6 +7,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 * Konfiguration von HTTPS-Zertifikat und privatem Schlüssel sowie zugehöriger Schnittstelle implementiert.
 * Auch der Einrichtungswizard erlaubt nun die Konfiguration von HTTPS-Zertifikat und privatem Schlüssel.
 * Einrichtungswizard erlaubt nun die Konfiguration der SMTP-Verbindung.
+* Eine neue Website Reparieren ist unter Administration verfügbar. Unter dieser Website können verschiedene Skripte gefunden werden, die benutzt werden können um einige Reperaturservices an der Box durchzuführen.
 
 ### Changed
 

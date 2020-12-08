@@ -8,6 +8,7 @@ from source.api import APISMTP, APISMTPCertificate
 from source.api import APIWazuhAgentPass
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.api import CertificateResource
+from source.api import Repair
 from source.models import User, Role
 from source.config import Dashboards, RoleURLs
 import source.error
