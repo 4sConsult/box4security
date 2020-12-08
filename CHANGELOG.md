@@ -4,23 +4,30 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ## [x.x.x](https://gitlab.com/4sconsult/box4s/-/tags/x.x.x) - x-x-x
 
 ### Added
-
-* Eine neue Website Reparieren ist unter Administration verfügbar. Unter dieser Website können verschiedene Skripte gefunden werden, die benutzt werden können um einige Reperaturservices an der Box durchzuführen.
+* Konfiguration von HTTPS-Zertifikat und privatem Schlüssel sowie zugehöriger Schnittstelle implementiert.
+* Auch der Einrichtungswizard erlaubt nun die Konfiguration von HTTPS-Zertifikat und privatem Schlüssel.
+* Einrichtungswizard erlaubt nun die Konfiguration der SMTP-Verbindung.
 
 ### Changed
 
 
 ### Optimized
+* Security bei API-Endpunkten die einen Neustart der BOX4security erfordern erhöht.
 
 
 ### Fixed
-
+* Bug behoben, bei dem die SMTP-Konfigurationsseite nicht mit der aktuellen Einstellung befüllt wurde.
+* Bug behoben, durch den die Schwachstellendashboards nicht angezeigt werden konnten.
+* Bug behoben, durch den die Schwachstellenverläufe stets nicht differenziert den Gesamtverlauf gezeigt haben.
+* Bug behoben, bei dem geänderte SMTP-Einstellungen aufgrund eines Berechtigungsfehlers möglicherweise nicht geschrieben wurde.
+* Der Wizard ermittelt nicht länger den maximal zu bearbeitenden Schritt. Stattdessen leitet ein Klick auf *Weiter* nun stets linear durch den Wizard.
 
 ### Deprecated
 
 
 ### Removed
-
+* Das überholte Einrichtungsverfahren FetchQC wurde jetzt entfernt.
+* Die Berechnung und Darstellung *IT-Security-Scores* wurden entfernt. Per Designentscheidung reicht die Einsicht in Schwachstellen- und IDS-Scores aus, um eine schnelle Bewertung der IT-Security zu treffen.
 
 ## [1.8.9](https://gitlab.com/4sconsult/box4s/-/tags/1.8.9) - 2020-11-11
 

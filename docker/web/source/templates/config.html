@@ -23,6 +23,9 @@
               Wazuh
             </a>
             {% endif %}
+            <a data-tab="https" class="item">
+                HTTPS
+            </a>
           </div>
           <div data-tab="mail" class="ui bottom attached active tab segment">
             <!-- Mail -->
@@ -118,6 +121,31 @@
             </div>
           </div>
           {% endif %}
+          <div data-tab="https" class="ui bottom attached tab segment">
+            <form id="formHTTPS" method="POST" class="ui form" enctype="multipart/form-data">
+                <h4 class="ui dividing header">HTTPS-Konfiguration</h4>
+                <div class="field">
+                    <div class="ui action input cert">
+                        <input id="https-cert-text" type="text" placeholder="HTTPS-Zertifikat.pem" readonly>
+                        <input id="https-cert-file" type="file" name="files[]" accept=".pem" autocomplete="off" required>
+                        <div class="ui icon button">
+                        <i class="attach icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui action input cert">
+                        <input id="https-key-text" type="text" placeholder="PrivaterRSA-Key.pem" readonly>
+                        <input id="https-key-file" type="file" accept=".pem" name="files[]" autocomplete="off" required>
+                        <div class="ui icon button">
+                        <i class="attach icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <button class="ui green button" type="submit">Änderungen anwenden</button>
+                <small class="helper">Um die Änderungen anzuwenden, wird die BOX4security neustarten.</small>
+              </form>
+          </div>
     </div>
   <div class="ui vertical footer segment">
     <div class="ui center aligned container">
@@ -126,6 +154,59 @@
   </div>
   {% endblock %}
 {% block scripts %}
+  <script>
+    $("#https-cert-text, .ui.action.input.cert>.button").click(function() {
+        $(this).parent().find("#https-cert-file").click();
+    });
+    $('#https-cert-file', '.ui.action.input.cert')
+    .on('change', function(e) {
+        var name = e.target.files[0].name;
+        $('#https-cert-text', $(e.target).parent()).val(name);
+    });
+    $("#https-key-text, .ui.action.input.cert>.button").click(function() {
+        $(this).parent().find("#https-key-file").click();
+    });
+    $('#https-key-file', '.ui.action.input.cert')
+    .on('change', function(e) {
+        var name = e.target.files[0].name;
+        $('#https-key-text', $(e.target).parent()).val(name);
+    });
+    $('#formHTTPS').on('submit', async (e) => {
+        e.preventDefault();
+        var form = document.getElementById('formHTTPS');
+        var pemData = new FormData()
+        pemData.append('files[]', $('#https-cert-file')[0].files[0]);
+        pemData.append('files[]', $('#https-key-file')[0].files[0]);
+        const response = await fetch('//{{ request.host }}/api/config/cert', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+            },
+                body: pemData
+        });
+        var msg =  document.createElement('div');
+        msg.classList = "ui visible message"
+        if(response.ok){
+            msg.classList.add("success");
+            msg.innerHTML = '<div class="header">HTTPS-Konfiguration erfolgreich gespeichert.</div><p>Die BOX4security startet nun mit geänderter Konfiguration neu. Bitte haben Sie einen Moment Geduld. Die Seite wird automatisch neu geladen. Bei selbstsignierten Zertifikaten ist unter Umständen ein manuelles Neuladen des Tabs erforderlich. </p>'
+            $('#formHTTPS').find('button').prop('disabled', true).html('<div class="ui active centered inline loader"></div>');
+            setTimeout(async () => {
+                await waitForWeb();
+                // Reload without parameters
+                window.location = window.location.pathname;
+                var msg =  document.createElement('div');
+                msg.innerHTML = '<div class="header">Neustart abgeschlossen.</div>';
+                msg.classList = "ui visible message success";
+                form.appendChild(msg);
+            }, 15000);
+        } else {
+            msg.classList.add("error");
+            msg.innerHTML = 'HTTPS-Konfiguration konnte nicht gespeichert werden.';
+            response.json().then(j => console.log(response.status + " " + j['message']));
+    }
+    form.insertBefore(msg, form.lastElementChild);
+    });
+  </script>
   <script type="text/javascript">
   $('div.item.active').removeClass('active');
   $('#administration').addClass('active');
@@ -155,6 +236,7 @@
       document.getElementById('smtpUsername').value = jso.SMTP_USERNAME;
     });
   }
+  </script>
   <script type="text/javascript">
     const waitForWeb = async () =>  {
       var done = false;
