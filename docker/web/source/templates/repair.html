@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ui main text container">
+  {% block flash_messages %}
+  {%- with messages = get_flashed_messages(with_categories=true) -%}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="ui message {{category}}">{{ message|safe }}</div>
+  {% endfor %}
+  {% endif %}
+  {%- endwith %}
+  {% endblock %}
+  <h1 class="ui header">BOX4security - Reparieren</h1>
+  <div class="ui floating tiny message">
+    <p>
+      Sie haben hier die Möglichkeit Reperaturen vorzunehmen. Diese Reperaturen haben begrenzte Möglichkeiten. Sollte Ihr Problem nicht behoben werden, nehmen Sie Kontakt zu uns auf.
+    </p>
+  </div>
+  <div class="ui inverted section divider"></div>
+
+  <div class="ui middle aligned grid">
+
+    <div class="fourteen wide column">
+      <h5 class="ui header">Dashboards<div class="sub header">Durch diese Reparatur werden die Dashboards neu eingefügt. Dadurch können mögliche Anzeigefehler behoben werden.</div>
+      </h5>
+    </div>
+    <div class="two wide center aligned column">
+      <div class="ui fitted toggle checkbox"><button class="ui button" value="dashboard">Start</button></div>
+    </div>
+
+    <div class="fourteen wide column">
+      <h5 class="ui header">Datenfestplatte<div class="sub header">Durch diese Reparatur wird die Datenfestplatte geleert. Alle gesammelten Daten werden sicher und unwiderruflich gelöscht.</div>
+      </h5>
+    </div>
+    <div class="two wide center aligned column">
+      <div class="ui fitted toggle checkbox"><button class="ui button" value="format">Start</button></div>
+    </div>
+
+    <div class="fourteen wide column">
+      <h5 class="ui header">Service Neustart<div class="sub header">Durch diese Reparatur werden die Komponenten der BOX4security neugestartet. Dadurch können Fehler automatisch behoben werden. Der Neustart dauert üblicherweise bis zu 10 Minuten. Während dieser Zeit ist die BOX4Security nicht erreichbar.</div>
+      </h5>
+    </div>
+    <div class="two wide center aligned column">
+      <div class="ui fitted toggle checkbox"><button class="ui button" value="restart">Start</button></div>
+
+    </div>
+
+    <div class="fourteen wide column">
+      <h5 class="ui header">Zurücksetzen<div class="sub header">Durch diese Funktion kann die komplette BOX4security zurückgesetzt werden. Alle gesammelten Daten sowie vorgenommene Konfiguration gehen verloren.</div>
+      </h5>
+    </div>
+    <div class="two wide center aligned column">
+      <div class="ui fitted toggle checkbox"><button class="ui button" value="reset">Start</button></div>
+    </div>
+
+  </div>
+
+  <div class="ui modal" id="format">
+    <i class="close icon"></i>
+    <div class="header">
+      Format BOX4security
+    </div>
+    <div class="image content">
+      <div class="description">
+        Dies wird alle Daten der BOX4security unwiderruflich löschen.
+      </div>
+    </div>
+    <div class="actions">
+      <div class="ui cancel button">Abbrechen</div>
+      <div class="ui approve button">Formatieren</div>
+    </div>
+  </div>
+
+  <div class="ui modal" id="reset">
+    <i class="close icon"></i>
+    <div class="header">
+      Reset BOX4security
+    </div>
+    <div class="image content">
+      <div class="description">
+        Dies wird alle Daten und Einstellung der BOX4security unwiderruflich löschen.
+      </div>
+    </div>
+    <div class="actions">
+      <div class="ui cancel button">Abbrechen</div>
+      <div class="ui approve button">Reset</div>
+    </div>
+  </div>
+
+
+
+
+  <div class="ui vertical footer segment">
+    <div class="ui center aligned container">
+      <img src="/static/Box4S_Logo.png" class="ui centered small image">
+    </div>
+  </div>
+  {% endblock %}
+  {% block scripts %}
+  <script type="text/javascript">
+    $('div.item.active').removeClass('active');
+    $(`#administration`).addClass('active');
+      </script>
+  <script type="text/javascript">
+    $('div.item.active').removeClass('active');
+    $(`#administration`).addClass('active');
+
+
+    $(".ui.button").click((e) => {
+      var key = e.target.value
+      if (key == "format") {
+
+        $('.ui.modal#format')
+          .modal({
+            closable: true,
+            blurring: true,
+            onApprove: function() {
+              fetch(`//{{ request.host }}/api/repair/`, {
+                  method: "POST",
+                  redirect: 'follow',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    'key': 'format'
+                  })
+                })
+                .then((response) => {
+                  if (response.ok) {
+                    console.log("format done");
+                  }
+                })
+            }
+          })
+          .modal('show');
+        console.log("format engaged ")
+      }
+
+      if (key == "reset") {
+        $('.ui.modal#reset')
+          .modal({
+            closable: true,
+            blurring: true,
+            onApprove: function() {
+              fetch(`//{{ request.host }}/api/repair/`, {
+                  method: "POST",
+                  redirect: 'follow',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    'key': 'reset'
+                  })
+                })
+                .then((response) => {
+                  if (response.ok) {
+                    console.log("reset done");
+                  }
+                })
+            }
+          })
+          .modal('show');
+        console.log("reset engaged ")
+      }
+
+      if ((key == "dashboard") || (key == "restart")) {
+
+        fetch(`//{{ request.host }}/api/repair/`, {
+            method: "POST",
+            redirect: 'follow',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              'key': key
+            })
+          })
+          .then((response) => {
+            if (response.ok) {
+              console.log("Success");
+            }
+          })
+      }
+    })
+
+  </script>
+  {% endblock %}
