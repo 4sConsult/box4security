@@ -8,6 +8,7 @@ from source.api import APISMTP, APISMTPCertificate
 from source.api import APIWazuhAgentPass
 from source.api import Alerts, Alert, AlertsQuick, AlertMailer
 from source.api import CertificateResource
+from source.api import Repair
 from source.models import User, Role
 from source.config import Dashboards, RoleURLs
 import source.error
@@ -34,6 +35,8 @@ api.add_resource(UpdateStatus, '/api/update/status/', endpoint='api.update.statu
 api.add_resource(Health, '/api/_health')
 api.add_resource(APIUser, '/api/user/<int:user_id>')
 api.add_resource(APIUserLock, '/api/user/<int:user_id>/lock')
+api.add_resource(Repair, '/api/repair/')
+
 
 api.add_resource(AlertsQuick, '/api/rules/alerts_quick/')
 api.add_resource(Alert, '/api/rules/alerts/<alert_id>')
@@ -117,6 +120,18 @@ def faq():
     """
     client = os.getenv('KUNDE')
     return render_template('faq.html', client=client)
+
+
+@app.route('/repair', methods=['GET'])
+@login_required
+@roles_required(['Super Admin'])
+def show_repair():
+    """Return the repair page.
+
+    Required Role: Super Admin
+    Shows the 1st level repair scripts
+    """
+    return render_template('repair.html')
 
 
 @app.route('/system', methods=['GET'])
