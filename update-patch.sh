@@ -27,24 +27,7 @@ sudo docker rmi $(sudo docker images -a -q) || :
 
 ###################
 # CHANGES FOR STANDARD
-# Fix miss setting of $INT_IP in logstash with quotes
-source /etc/environment
-sed -i "s/INT_IP=\"$INT_IP\"/INT_IP=$INT_IP/g" /etc/environment
-sed -i "s/INT_IP=\"$INT_IP\"/INT_IP=$INT_IP/g" /etc/default/logstash
-sudo chmod 770 -R /etc/nginx/certs
-sudo chown root:44269 -R /etc/nginx/certs
 
-# Fix SMTP permission
-sudo chown root:44269 /etc/msmtprc
-sudo chmod 770 /etc/msmtprc
-
-# Fix DNS resolv permission
-sudo chown root:44269 /var/lib/box4s/resolv.personal
-sudo chmod 770 /var/lib/box4s/resolv.personal
-
-#install program for deleting data
-sudo apt update
-sudo apt install -y secure-delete
 ###################
 # CHANGES FOR MODULES
 
