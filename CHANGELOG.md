@@ -1,7 +1,7 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [1.8.10-rc](https://gitlab.com/4sconsult/box4s/-/tags/1.8.10-rc) - 2020-12-08
+## [1.8.10](https://gitlab.com/4sconsult/box4s/-/tags/1.8.10) - 2020-12-08
 
 ### Added
 * Konfiguration von HTTPS-Zertifikat und privatem Schlüssel sowie zugehöriger Schnittstelle implementiert.
