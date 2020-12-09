@@ -14,12 +14,11 @@ stages:
 before_script:
     - cp /home/amadmin/box4s/docker/suricata/.env docker/suricata/.env
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - blackbox_postdeploy
 
 # Build using compose file
 build_runner:
     stage: build_runner
-    before_script:
-        - blackbox_postdeploy
     script:
         - docker-compose -f docker/box4security.runner.yml build
 
@@ -33,8 +32,6 @@ build_release:
     stage: build_release
     only:
         - master
-    before_script:
-        - blackbox_postdeploy
     script:
         - docker-compose -f docker/box4security.prod.yml build
 
