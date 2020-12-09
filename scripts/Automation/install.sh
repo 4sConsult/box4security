@@ -193,7 +193,7 @@ echo "[ OK ]" 1>&3
 # Lets install all dependencies
 waitForNet
 echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
-sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
+sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs openconnect jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat secure-delete
 echo "[ OK ]" 1>&3
 
 echo -n "Enabling git lfs.. " 1>&3
@@ -305,10 +305,10 @@ echo "[ OK ]" 1>&3
 # Copy certificates over
 echo -n "Copying SSL certificates.. " 1>&3
 sudo mkdir -p /etc/nginx/certs
-sudo chown -R root:44269 /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/ssl/box4security.cert.pem /etc/nginx/certs
 sudo cp /home/amadmin/box4s/config/secrets/box4security.key.pem /etc/nginx/certs
-sudo chmod 760 -R /etc/nginx/certs
+sudo chown -R root:44269 /etc/nginx/certs
+sudo chmod 770 -R /etc/nginx/certs
 echo "[ OK ]" 1>&3
 
 # Copy the smtp.conf to /etc/box4s
@@ -489,6 +489,8 @@ cp /home/amadmin/box4s/docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 cd /home/amadmin/box4s
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
+sudo chown root:44269 /etc/msmtprc
+sudo chmod 770 /etc/msmtprc
 sudo cp config/home/* /home/amadmin -R || :
 
 # Create a folder for the alerting rules
@@ -503,9 +505,10 @@ set +e
 IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | grep -v "host lo")
 IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
-grep -qxF  INT_IP="$INT_IP" /etc/environment || echo INT_IP="$INT_IP" >> /etc/environment
+grep -qxF  INT_IP=$INT_IP /etc/environment || echo INT_IP=$INT_IP >> /etc/environment
 grep -qxF  INT_IP="$INT_IP" /etc/default/logstash || echo INT_IP="$INT_IP" >> /etc/default/logstash
 source /etc/environment
+grep -qxF KUNDE="NEWSYSTEM" /etc/default/logstash || echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 set -e
 echo " [ OK ] " 1>&3
 
@@ -629,6 +632,9 @@ echo -n "Enabling BOX4s internal DNS server.. " 1>&3
 sudo systemctl enable resolvconf.service
 echo "nameserver 127.0.0.1" > /etc/resolvconf/resolv.conf.d/head
 sudo cp /home/amadmin/box4s/docker/dnsmasq/resolv.personal /var/lib/box4s/resolv.personal
+# Fix DNS resolv permission
+sudo chown root:44269 /var/lib/box4s/resolv.personal
+sudo chmod 770 /var/lib/box4s/resolv.personal
 sudo systemctl stop systemd-resolved
 sudo systemctl start resolvconf.service
 sudo resolvconf --enable-updates
@@ -660,8 +666,6 @@ cd /home/amadmin/box4s/config/crontab
 su - amadmin -c "crontab /home/amadmin/box4s/config/crontab/amadmin.crontab"
 echo " [ OK ] " 1>&3
 
-source /etc/environment
-grep -qxF KUNDE="NEWSYSTEM" /etc/default/logstash || echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 sudo systemctl daemon-reload
 
 #Ignore own INT_IP

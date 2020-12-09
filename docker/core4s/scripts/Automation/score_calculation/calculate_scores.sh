@@ -22,21 +22,9 @@ VULNSCORE=$(python3 $DIR/calculate_vuln_score.py)
 curl -s -H "Content-type: application/json" -X POST http://elasticsearch:9200/scores/_doc --data-binary @/tmp/vuln.scores.json > /dev/null
 echo "Vulnscore: $VULNSCORE"
 
-# Calculate current time and combine scores to IT-SEC-SCore
-EPOCHTIMESTAMP=$(($(date +%s%N)/1000000))
-ITSECSCORE=$(echo "scale=2; ($ALERTSCORE + $VULNSCORE) / 2" | bc)
-# and the it-sec-score
-cp $DIR/res/insert_template.json $DIR/insert_itsec_score.json
-sed -i 's/%1/itsec_score/g' $DIR/insert_itsec_score.json
-sed -i "s/%2/$ITSECSCORE/g" $DIR/insert_itsec_score.json
-sed -i "s/%3/$EPOCHTIMESTAMP/g" $DIR/insert_itsec_score.json
-curl -s -H "Content-type: application/json" -X POST http://elasticsearch:9200/scores/_doc --data-binary @$DIR/insert_itsec_score.json > /dev/null
-echo "IT-Sec-Score $ITSECSCORE"
-
 # Delete all temp files to keep the directory clean
 rm $DIR/cvss_buckets.json
 rm $DIR/alerts_buckets.json
 rm $DIR/social_media_count.json
 rm /tmp/alerts.scores.json
 rm /tmp/vuln.scores.json
-rm $DIR/insert_itsec_score.json
