@@ -21,7 +21,9 @@ ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
 
 RUN mkdir -p /home/app && \
-  addgroup app && useradd -g app app && \
+  addgroup app && \
+  addgroup --gid 44269 boxforsecurity && \
+  useradd -g app -G boxforsecurity app && \
   mkdir $APP_HOME
 WORKDIR $APP_HOME
 RUN mkdir $HOME/.ssh
@@ -50,7 +52,9 @@ RUN chown -R app:app $HOME && \
   chown -R app:app /var/lib/box4s/ && \
   chmod 600 /home/app/.ssh/web.key && \
   mkdir -p /etc/box4s && \
-  chown -R app:app /etc/box4s
+  chown -R app:app /etc/box4s && \
+  mkdir -p /etc/nginx/certs && \
+  chown -R root:44269 /etc/nginx/certs
 
 # change to the app user
 USER app
