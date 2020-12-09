@@ -196,7 +196,7 @@ echo "[ OK ]" 1>&3
 # Lets install all dependencies
 waitForNet
 echo -n "Downloading and installing dependencies. This may take some time.. " 1>&3
-sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat
+sudo apt-fast install -y unattended-upgrades curl python python3 python3-pip python3-venv git git-lfs jq docker.io apt-transport-https msmtp msmtp-mta landscape-common unzip postgresql-client resolvconf boxes lolcat secure-delete
 echo "[ OK ]" 1>&3
 
 echo -n "Enabling git lfs.. " 1>&3
@@ -485,8 +485,9 @@ IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | 
 IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
 grep -qxF  INT_IP=$INT_IP /etc/environment || echo INT_IP=$INT_IP >> /etc/environment
-grep -qxF  INT_IP=$INT_IP /etc/default/logstash || echo INT_IP=$INT_IP >> /etc/default/logstash
+grep -qxF  INT_IP="$INT_IP" /etc/default/logstash || echo INT_IP="$INT_IP" >> /etc/default/logstash
 source /etc/environment
+grep -qxF KUNDE="NEWSYSTEM" /etc/default/logstash || echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 set -e
 echo " [ OK ] " 1>&3
 
@@ -644,8 +645,6 @@ cd $SCRIPTDIR/../../config/crontab
 su - amadmin -c "crontab $SCRIPTDIR/../../config/crontab/amadmin.crontab"
 echo " [ OK ] " 1>&3
 
-source /etc/environment
-grep -qxF KUNDE="NEWSYSTEM" /etc/default/logstash || echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 sudo systemctl daemon-reload
 
 #Ignore own INT_IP

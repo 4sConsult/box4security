@@ -1,12 +1,13 @@
 # Changelog
 Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehalten.
 
-## [x.x.x](https://gitlab.com/4sconsult/box4s/-/tags/x.x.x) - x-x-x
+## [1.8.10](https://gitlab.com/4sconsult/box4s/-/tags/1.8.10) - 2020-12-08
 
 ### Added
 * Konfiguration von HTTPS-Zertifikat und privatem Schlüssel sowie zugehöriger Schnittstelle implementiert.
 * Auch der Einrichtungswizard erlaubt nun die Konfiguration von HTTPS-Zertifikat und privatem Schlüssel.
 * Einrichtungswizard erlaubt nun die Konfiguration der SMTP-Verbindung.
+* Als Teil des Administrationsmenüs ist nun der Punkt *Reparieren* für Nutzer der Rolle *Super Admin* verfügbar. Unter dieser Seite können diverse Skripte gefunden werden, die automatisiert Reperaturservices an der BOX durchführen.
 
 ### Changed
 
@@ -18,7 +19,7 @@ Alle nennenswerten Änderungen dieses Projektes werden in dieser Datei festgehal
 ### Fixed
 * Bug behoben, bei dem die SMTP-Konfigurationsseite nicht mit der aktuellen Einstellung befüllt wurde.
 * Bug behoben, durch den die Schwachstellendashboards nicht angezeigt werden konnten.
-* Bug behoben, durch den die Schwachstellenverläufe stets nicht differenziert den Gesamtverlauf gezeigt haben.
+* Bug behoben, durch den die Schwachstellenverläufe den Gesamtverlauf nicht differenziert angezeigt haben.
 * Bug behoben, bei dem geänderte SMTP-Einstellungen aufgrund eines Berechtigungsfehlers möglicherweise nicht geschrieben wurde.
 * Der Wizard ermittelt nicht länger den maximal zu bearbeitenden Schritt. Stattdessen leitet ein Klick auf *Weiter* nun stets linear durch den Wizard.
 
