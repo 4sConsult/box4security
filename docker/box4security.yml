@@ -59,7 +59,7 @@ services:
     build: suricata/.
     container_name: suricata
     restart: always
-    image: "4sconsult/suricata:dev
+    image: "4sconsult/suricata:dev"
     network_mode: "host"
     env_file:
       - suricata/.env

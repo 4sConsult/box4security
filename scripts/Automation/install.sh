@@ -56,7 +56,7 @@ ERROR_LOG=$LOG_DIR/install.err.log
 # Do not use interactive debian frontend.
 export DEBIAN_FRONTEND=noninteractive
 
-# Get the actual script of the installation script.
+# Get the actual dir of the installation script.
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Forward fd3 to the console
@@ -138,16 +138,6 @@ fi
 #                                                #
 ##################################################
 banner "Dependencies ..."
-
-echo -n "Checking for git Repository.. " 1>&3
-if [ -d "/tmp/box4s/" ]; then
-  echo "[ OK ]" 1>&3
-else
-  echo "[ NOT OK ]" 1>&3
-  echo "## Make sure the git Repository is installed at /tmp/box4s/ ##" 1>&3
-  exit 1
-fi
-
 
 echo -n "Creating the /data directory.. " 1>&3
 # Create the /data directory if it does not exist and make it readable
