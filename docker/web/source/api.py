@@ -2,18 +2,20 @@
 from source import models, db, helpers
 from flask_restful import Resource, reqparse, abort, marshal, fields
 from flask_user import login_required, current_user, roles_required
-from flask import request, render_template, send_file
+from flask import request, render_template, send_file, jsonify, send_from_directory
 from source.wizard.models import Network, NetworkType, System, SystemType
 from source.wizard.schemas import SYS, SYSs, NET, NETs
 from source.wizard.middleware import WizardMiddleware
 import tempfile
 import requests
 import os
+import time
 import subprocess
 import json
 from shlex import quote
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
+from werkzeug.utils import secure_filename
 
 
 def tail(f, window=1):
@@ -64,6 +66,12 @@ def writeAlertFile(alert):
     with open(f'/var/lib/elastalert/rules/{ alert["safe_name"] }.yaml', 'w') as f_alert:
         filled = render_template(f'application/{ alert["type"] }.yaml.j2', alert=alert)
         f_alert.write(filled)
+
+
+def allowed_file_snaphsot(filename, extension):
+    """Helper for Snapshots - only allows files with specified extension to be uploaded"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in extension
 
 
 def enableQuickAlert(key, email, smtp={}):
@@ -127,6 +135,102 @@ def writeSMTPConfig(config):
             abort(503, message="Alert API unreachable")
         except Exception:
             abort(502, message="Alert API Failure")
+
+
+class Repair(Resource):
+    """API Resource for starting a Repair Script."""
+
+    @roles_required(['Super Admin'])
+    def put(self):
+        """Execute Repair Script"""
+        value = request.json['key']
+        os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_{ value }.sh")
+        return {"message": "accepted"}, 200
+
+    @roles_required(['Super Admin'])
+    def get(self):
+        """Deny deleting Reapir Script."""
+        abort(405, message="Cannot GET Repair Script.")
+
+    @roles_required(['Super Admin'])
+    def post(self):
+        """Forward Repair."""
+        return self.put()
+
+    @roles_required(['Super Admin'])
+    def delete(self):
+        """Deny deleting Reapir Script."""
+        abort(405, message="Cannot delete Repair Script.")
+
+
+class SnapshotInfo(Resource):
+    """API for gathering info about snapshots or creating a new snapshot and Uploading a snapshot"""
+
+    @roles_required(['Super Admin'])
+    def get(self):
+        """Gather info for all Snapshots"""
+        snap_folder = "/var/lib/box4s/snapshots"
+        if not os.path.exists(snap_folder):
+            os.makedirs(snap_folder)
+        files = {}
+        files['snapshots'] = []
+        for filename in os.listdir(snap_folder):
+            path = os.path.join(snap_folder, filename)
+            if os.path.isfile(path) and allowed_file_snaphsot(filename, ['zip']):
+                time_snap = datetime.fromtimestamp(os.path.getctime(path))
+                files['snapshots'].append({'name': filename, 'date': time_snap})
+        return jsonify(files)
+
+    @roles_required(['Super Admin'])
+    def post(self):
+        """Create a snapshot"""
+        os.system("ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_createSnapshot.sh")
+        return {"message": "accepted"}, 200
+
+    @roles_required(['Super Admin'])
+    def put(self):
+        """Upload a Snapshot"""
+        file = request.files['file']
+        snap_folder = "/var/lib/box4s/snapshots"
+        if file.filename == '':
+            abort(403)
+        if file and allowed_file_snaphsot(file.filename, ['zip']):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(snap_folder, filename))
+            return {"message": "uploaded"}, 200
+        return ''
+
+
+class SnapshotFileHandler(Resource):
+    """API for interacting with Snapshot File Requests"""
+
+    @roles_required(['Super Admin'])
+    def get(self, filename):
+        """Download a Snapshot"""
+        snap_folder = "/var/lib/box4s/snapshots"
+        if filename and allowed_file_snaphsot(filename, ['zip']):
+            return send_from_directory(snap_folder, filename, as_attachment=True)
+        else:
+            abort(404, message="Cannot download this file.")
+
+    @roles_required(['Super Admin'])
+    def post(self, filename):
+        """Restore a Snapshot"""
+        os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { filename }")
+        return {"message": "accepted"}, 200
+
+    @roles_required(['Super Admin'])
+    def delete(self, filename):
+        """Delete Snapshot"""
+        snap_folder = "/var/lib/box4s/snapshots"
+        if allowed_file_snaphsot(filename, ['zip']):
+            try:
+                os.remove(os.path.join(snap_folder, filename))
+            except OSError:
+                pass
+            return {"message": "accepted"}, 200
+        else:
+            abort(404, message="Cannot delete this file.")
 
 
 class BPF(Resource):
@@ -762,8 +866,14 @@ class APISMTP(Resource):
     def __init__(self):
         """Register Parser."""
         self.parser = reqparse.RequestParser()
+        if not WizardMiddleware.isShowWizard():
+            # If Wizard disabled, must have Super Admin or Config role and be authenticated
+            if current_user.is_authenticated and current_user.has_role('Config'):
+                # User is allowed to access, continue with resource.
+                pass
+            else:
+                abort(403, message="Not allowed to access the SMTP endpoint.")
 
-    @roles_required(['Super Admin', 'Config'])
     def get(self):
         """Return the current SMTP configuration."""
         # Read current SMTP configuration from environment variables.
@@ -777,7 +887,6 @@ class APISMTP(Resource):
         # marshal = apply described format
         return marshal(config, self.SMTP_MARSHAL), 200
 
-    @roles_required(['Super Admin', 'Config'])
     def post(self):
         """Set (replace) the SMTP configuration.
 
@@ -808,12 +917,19 @@ class APISMTPCertificate(Resource):
 
     POST accepts non-json form-data.
     """
-    @roles_required(['Super Admin', 'Config'])
+    def __init__(self):
+        if not WizardMiddleware.isShowWizard():
+            # If Wizard disabled, must have Super Admin or Config role and be authenticated
+            if current_user.is_authenticated and current_user.has_role('Config'):
+                # User is allowed to access, continue with resource.
+                pass
+            else:
+                abort(403, message="Not allowed to access the SMTP certificate endpoint.")
+
     def get(self):
         """Return not implemented."""
-        abort(501, message="Certificate retrieval not implemented.")
+        abort(405, message="Certificate retrieval not implemented.")
 
-    @roles_required(['Super Admin', 'Config'])
     def post(self):
         """Replace the current SMTP certificate."""
         print(request.files)
