@@ -11,6 +11,8 @@ then
     /usr/local/bin/docker-compose $COMPOSE_FILES down -v
     /usr/local/bin/docker-compose $COMPOSE_FILES rm -v
     /usr/local/bin/docker-compose $COMPOSE_FILES up --no-color --no-build --remove-orphans
+    # Listen to the web named pipe.
+    /bin/bash /home/amadmin/box4security/scripts/System_Scripts/listenNamedPipe.sh &
 elif [ $1 == "down" ]
 then
     # perform commands to set the service down
