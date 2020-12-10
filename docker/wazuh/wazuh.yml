@@ -2,7 +2,7 @@ version: "2.3"
 services:
     wazuh:
         container_name: wazuh
-        image: "registry.gitlab.com/4sconsult/box4s/wazuh:dev"
+        image: 4sconsult/wazuh:dev
         build: .
         hostname: wazuh-manager
         restart: always
@@ -14,5 +14,5 @@ services:
         volumes:
         - /var/lib/box4s/wazuh-authd.pass:/wazuh-config-mount/etc/authd.pass
         env_file:
-        - /home/amadmin/box4s/config/secrets/wazuh.conf
+        - ../../config/secrets/wazuh.conf
         - /etc/box4s/modules.conf
