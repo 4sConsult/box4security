@@ -163,6 +163,7 @@ services:
       - /etc/box4s/smtp.conf
       - /etc/box4s/modules.conf
       - ../VERSION
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - KUNDE
     depends_on:
