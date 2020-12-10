@@ -26,9 +26,6 @@ RUN mkdir -p /home/app && \
   useradd -g app -G boxforsecurity app && \
   mkdir $APP_HOME
 WORKDIR $APP_HOME
-RUN mkdir $HOME/.ssh
-COPY web.key $HOME/.ssh/web.key
-COPY web.pub $HOME/.ssh/web.pub
 
 
 # Install curl & ssh
@@ -50,7 +47,6 @@ RUN chown -R app:app $HOME && \
   chown -R app:app /var/log/box4s/ && \
   mkdir -p /var/lib/box4s && \
   chown -R app:app /var/lib/box4s/ && \
-  chmod 600 /home/app/.ssh/web.key && \
   mkdir -p /etc/box4s && \
   chown -R app:app /etc/box4s && \
   mkdir -p /etc/nginx/certs && \
