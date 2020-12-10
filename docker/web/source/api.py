@@ -16,6 +16,7 @@ from shlex import quote
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 from werkzeug.utils import secure_filename
+import docker
 
 
 def tail(f, window=1):
@@ -40,6 +41,18 @@ def tail(f, window=1):
     return b'\n'.join(b''.join(reversed(data)).splitlines()[-window:])
 
 
+def restartContainer(name=None):
+    """Restart a Docker container via Docker API."""
+    client = docker.from_env()
+    if name:
+        try:
+            container = client.containers.get(name)
+            container.restart()
+        except (docker.errors.APIError, docker.errors.NotFound):
+            return None
+    return name
+
+
 def writeLSRFile():
     """Write all Logstash Rules from DB to correct file."""
     # TODO: check permissions / try error
@@ -56,8 +69,8 @@ def writeBPFFile():
         rules = models.BPFRule.query.all()
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
-        # login to dockerhost using ssh key and execute restartSuricata
-        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml restart suricata')
+        _ = restartContainer("suricata")
+        # TODO: Log/Display Error.
 
 
 def writeAlertFile(alert):
@@ -1029,9 +1042,8 @@ class APIWazuhAgentPass(Resource):
         except Exception:
             abort(500, message="Failed to write the Wazuh password file.")
 
-        try:
-            os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart wazuh')
-        except Exception:
+        r = restartContainer('wazuh')
+        if not r:
             abort(500, message="Failed to restart the Wazuh service.")
         return {'password': password}
 
@@ -1046,9 +1058,9 @@ class APIWazuhAgentPass(Resource):
                 f.write(password)
         except Exception:
             abort(500, message="Failed to write the Wazuh password file.")
-        try:
-            os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart wazuh')
-        except Exception:
+
+        r = restartContainer('wazuh')
+        if not r:
             abort(500, message="Failed to restart the Wazuh service.")
         return {'password': self.args['password']}
 
@@ -1283,6 +1295,7 @@ class CertificateResource(Resource):
         """
         Install a new HTTPS certificate (RSA) and its corresponding private key (RSA).
         """
+        files = []
         try:
             files = request.files.getlist("files[]")
         except Exception:
