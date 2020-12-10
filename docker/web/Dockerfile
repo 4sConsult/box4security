@@ -28,9 +28,9 @@ RUN mkdir -p /home/app && \
 WORKDIR $APP_HOME
 
 
-# Install curl & ssh
+# Install curl
 RUN apt update && \
-  apt install -y curl ssh && \
+  apt install -y curl && \
   rm -rf /var/lib/apt/lists/*
 
 

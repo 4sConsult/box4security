@@ -17,7 +17,7 @@ from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import docker
-
+from shlex import quote
 
 def tail(f, window=1):
     """Return the last `window` lines of file `f` as a list of bytes."""
@@ -106,7 +106,14 @@ def restartBOX4s(sleep=10):
     """Restart the BOX4s after sleeping for `sleep` seconds (default=10)."""
     strSeconds = str(sleep)
     subprocess.Popen(['sleep', strSeconds])
-    subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo systemctl restart box4security', shell=True)
+    runHostCommand('sudo systemctl restart box4security')
+
+
+def runHostCommand(cmd=None):
+    if cmd:
+        cmd += '\n'
+        with open('/var/lib/box4s/web.pipe', 'a') as pipe:
+            pipe.write(quote(cmd))
 
 
 def writeSMTPConfig(config):
@@ -157,7 +164,7 @@ class Repair(Resource):
     def put(self):
         """Execute Repair Script"""
         value = request.json['key']
-        os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_{ value }.sh")
+        runHostCommand(cmd=f"sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_{ value }.sh")
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
@@ -197,7 +204,7 @@ class SnapshotInfo(Resource):
     @roles_required(['Super Admin'])
     def post(self):
         """Create a snapshot"""
-        os.system("ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_createSnapshot.sh")
+        runHostCommand(cmd="sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_createSnapshot.sh")
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
@@ -229,7 +236,7 @@ class SnapshotFileHandler(Resource):
     @roles_required(['Super Admin'])
     def post(self, filename):
         """Restore a Snapshot"""
-        os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { filename }")
+        runHostCommand(cmd=f"sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { filename }")
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
@@ -466,7 +473,7 @@ class LaunchUpdate(Resource):
     def post(self):
         """Launch update.sh."""
         # targetVersion = self.args['target']
-        subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo /home/amadmin/box4s/scripts/Automation/update.sh', shell=True)
+        runHostCommand(cmd="sudo /home/amadmin/box4security/scripts/Automation/update.sh")
         return {"message": "accepted"}, 200
 
 
@@ -953,8 +960,8 @@ class APISMTPCertificate(Resource):
             file.save('/etc/ssl/certs/BOX4s-SMTP.pem')
             # Update update /etc/ssl/certs and ca-certificates.crt
             #  on docker host
-            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo cp /etc/ssl/certs/BOX4s-SMTP.pem /usr/local/share/ca-certificates/BOX4s-SMTP.crt', shell=True)
-            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo update-ca-certificates', shell=True)
+            runHostCommand(cmd="sudo cp /etc/ssl/certs/BOX4s-SMTP.pem /usr/local/share/ca-certificates/BOX4s-SMTP.crt")
+            runHostCommand(cmd="sudo update-ca-certificates")
             return {"message": "SMTP Certificate saved."}, 200
         else:
             return {"message": "No SMTP Certificate supplied."}, 204
