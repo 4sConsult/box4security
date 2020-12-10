@@ -155,9 +155,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    # Add dockerhost IP to /etc/hosts in container for ssh
-    extra_hosts:
-      - "dockerhost:${INT_IP}"
     env_file:
       - web/web.env
       - ../config/secrets/web.conf
