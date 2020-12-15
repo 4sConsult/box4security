@@ -585,7 +585,7 @@ sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $
 echo " [ OK ] " 1>&3
 
 echo -n "Making scripts executable.. " 1>&3
-chmod +x -R $SCRIPTDIR/../../box4s/scripts
+chmod +x -R $SCRIPTDIR/../../scripts
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling BOX4s internal DNS server.. " 1>&3
