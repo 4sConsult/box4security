@@ -112,7 +112,7 @@ def restartBOX4s(sleep=10):
 def runHostCommand(cmd=None):
     if cmd:
         cmd += '\n'
-        with open('/var/lib/box4s/web.pipe', 'a') as pipe:
+        with open('/var/lib/box4s/web.pipe', 'w') as pipe:
             pipe.write(quote(cmd))
 
 
