@@ -249,7 +249,7 @@ then
 else
   # not manual, install most recent and valid tag
   TAG=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-  https://api.github.com/repos/4sConsult/box4security/releases/latest | jq -r '[.[] | select(.tag_name | contains("-") | not)][0] | .tag_name')
+  https://api.github.com/repos/4sConsult/box4security/releases/latest | jq -r '[select(.tag_name | contains("-") | not)][0] | .tag_name')
   echo "Installing the most recent tag $TAG.. [ OK ]" 1>&3
 fi
 echo "Installing $TAG."
@@ -268,7 +268,7 @@ echo "[ OK ]" 1>&3
 
 echo -n "Checkout $TAG.. " 1>&3
 git checkout $TAG
-git stash apply
+git stash apply || :
 git stash drop
 echo "[ OK ]" 1>&3
 
@@ -440,7 +440,7 @@ echo -n "Downloading documentation.. " 1>&3
 delete_If_Exists /var/lib/box4s_docs
 mkdir -p /var/lib/box4s_docs
 cd /var/lib/box4s_docs
-sudo git clone https://gitlab.com/4sconsult/box4s-docs.git .
+sudo git clone https://github.com/4sconsult/box4s-docs.git .
 echo " [ OK ]" 1>&3
 
 echo -n "Configuring BOX4s.. " 1>&3
@@ -454,7 +454,6 @@ sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo chown root:44269 /etc/msmtprc
 sudo chmod 770 /etc/msmtprc
-sudo cp config/home/* /home/amadmin -R || :
 
 # Create a folder for the alerting rules
 sudo mkdir -p /var/lib/elastalert/rules
@@ -550,7 +549,6 @@ banner "Docker ..."
 
 echo -n "Downloading BOX4security software images. This may take a long time.. " 1>&3
 # Login to docker registry
-sudo docker login registry.gitlab.com -u deploy -p $GIT_DEPLOY_TOKEN
 sudo docker-compose -f $SCRIPTDIR/../../docker/box4security.yml pull
 sudo docker-compose -f $SCRIPTDIR/../../docker/wazuh/wazuh.yml pull
 echo " [ OK ] " 1>&3
