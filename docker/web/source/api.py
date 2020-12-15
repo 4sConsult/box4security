@@ -17,7 +17,7 @@ from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import docker
-from shlex import quote
+
 
 def tail(f, window=1):
     """Return the last `window` lines of file `f` as a list of bytes."""
