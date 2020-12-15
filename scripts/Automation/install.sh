@@ -249,7 +249,7 @@ then
 else
   # not manual, install most recent and valid tag
   TAG=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-  https://api.github.com/repos/4sConsult/box4security/releases/latest | jq -r '[select(.tag_name | contains("-") | not)][0] | .tag_name')
+  https://api.github.com/repos/4sConsult/box4security/releases/latest | jq -r '.tag_name')
   echo "Installing the most recent tag $TAG.. [ OK ]" 1>&3
 fi
 echo "Installing $TAG."
