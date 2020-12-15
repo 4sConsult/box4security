@@ -16,6 +16,7 @@ from shlex import quote
 from requests.exceptions import Timeout, ConnectionError
 from datetime import datetime
 from werkzeug.utils import secure_filename
+import docker
 
 
 def tail(f, window=1):
@@ -40,6 +41,18 @@ def tail(f, window=1):
     return b'\n'.join(b''.join(reversed(data)).splitlines()[-window:])
 
 
+def restartContainer(name=None):
+    """Restart a Docker container via Docker API."""
+    client = docker.from_env()
+    if name:
+        try:
+            container = client.containers.get(name)
+            container.restart()
+        except (docker.errors.APIError, docker.errors.NotFound):
+            return None
+    return name
+
+
 def writeLSRFile():
     """Write all Logstash Rules from DB to correct file."""
     # TODO: check permissions / try error
@@ -56,8 +69,8 @@ def writeBPFFile():
         rules = models.BPFRule.query.all()
         filled = render_template('suricata_suppress.bpf.j2', rules=rules)
         f_bpf.write(filled)
-        # login to dockerhost using ssh key and execute restartSuricata
-        os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/box4security.yml restart suricata')
+        _ = restartContainer("suricata")
+        # TODO: Log/Display Error.
 
 
 def writeAlertFile(alert):
@@ -93,7 +106,14 @@ def restartBOX4s(sleep=10):
     """Restart the BOX4s after sleeping for `sleep` seconds (default=10)."""
     strSeconds = str(sleep)
     subprocess.Popen(['sleep', strSeconds])
-    subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo systemctl restart box4security', shell=True)
+    runHostCommand('sudo systemctl restart box4security')
+
+
+def runHostCommand(cmd=None):
+    if cmd:
+        cmd += '\n'
+        with open('/var/lib/box4s/web.pipe', 'w') as pipe:
+            pipe.write(quote(cmd))
 
 
 def writeSMTPConfig(config):
@@ -144,7 +164,7 @@ class Repair(Resource):
     def put(self):
         """Execute Repair Script"""
         value = request.json['key']
-        os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_{ value }.sh")
+        runHostCommand(cmd=f"sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_{ value }.sh")
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
@@ -184,7 +204,7 @@ class SnapshotInfo(Resource):
     @roles_required(['Super Admin'])
     def post(self):
         """Create a snapshot"""
-        os.system("ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_createSnapshot.sh")
+        runHostCommand(cmd="sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_createSnapshot.sh")
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
@@ -216,7 +236,7 @@ class SnapshotFileHandler(Resource):
     @roles_required(['Super Admin'])
     def post(self, filename):
         """Restore a Snapshot"""
-        os.system(f"ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { filename }")
+        runHostCommand(cmd=f"sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { filename }")
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
@@ -453,7 +473,7 @@ class LaunchUpdate(Resource):
     def post(self):
         """Launch update.sh."""
         # targetVersion = self.args['target']
-        subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo /home/amadmin/box4s/scripts/Automation/update.sh', shell=True)
+        runHostCommand(cmd="sudo /home/amadmin/box4security/scripts/Automation/update.sh")
         return {"message": "accepted"}, 200
 
 
@@ -940,8 +960,8 @@ class APISMTPCertificate(Resource):
             file.save('/etc/ssl/certs/BOX4s-SMTP.pem')
             # Update update /etc/ssl/certs and ca-certificates.crt
             #  on docker host
-            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo cp /etc/ssl/certs/BOX4s-SMTP.pem /usr/local/share/ca-certificates/BOX4s-SMTP.crt', shell=True)
-            subprocess.Popen('ssh -o StrictHostKeyChecking=no -i ~/.ssh/web.key -l amadmin dockerhost sudo update-ca-certificates', shell=True)
+            runHostCommand(cmd="sudo cp /etc/ssl/certs/BOX4s-SMTP.pem /usr/local/share/ca-certificates/BOX4s-SMTP.crt")
+            runHostCommand(cmd="sudo update-ca-certificates")
             return {"message": "SMTP Certificate saved."}, 200
         else:
             return {"message": "No SMTP Certificate supplied."}, 204
@@ -1029,9 +1049,8 @@ class APIWazuhAgentPass(Resource):
         except Exception:
             abort(500, message="Failed to write the Wazuh password file.")
 
-        try:
-            os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart wazuh')
-        except Exception:
+        r = restartContainer('wazuh')
+        if not r:
             abort(500, message="Failed to restart the Wazuh service.")
         return {'password': password}
 
@@ -1046,9 +1065,9 @@ class APIWazuhAgentPass(Resource):
                 f.write(password)
         except Exception:
             abort(500, message="Failed to write the Wazuh password file.")
-        try:
-            os.system('ssh -l amadmin dockerhost -i ~/.ssh/web.key -o StrictHostKeyChecking=no sudo /usr/local/bin/docker-compose -f /home/amadmin/box4s/docker/wazuh/wazuh.yml restart wazuh')
-        except Exception:
+
+        r = restartContainer('wazuh')
+        if not r:
             abort(500, message="Failed to restart the Wazuh service.")
         return {'password': self.args['password']}
 
@@ -1283,6 +1302,7 @@ class CertificateResource(Resource):
         """
         Install a new HTTPS certificate (RSA) and its corresponding private key (RSA).
         """
+        files = []
         try:
             files = request.files.getlist("files[]")
         except Exception:
