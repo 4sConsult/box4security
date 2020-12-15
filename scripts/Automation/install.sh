@@ -272,12 +272,6 @@ git stash apply
 git stash drop
 echo "[ OK ]" 1>&3
 
-# Set SSH allowed keys
-echo -n "Enabling allowed SSH key (web app).. " 1>&3
-sudo mkdir -p /home/amadmin/.ssh
-sudo cp config/home/authorized_keys /home/amadmin/.ssh/authorized_keys
-echo "[ OK ]" 1>&3
-
 # Copy certificates over
 echo -n "Creating selfsigned SSL certificate.. " 1>&3
 sudo mkdir -p /etc/nginx/certs
