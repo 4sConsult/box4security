@@ -2,7 +2,7 @@ version: "2.3"
 services:
     wazuh:
         container_name: wazuh
-        image: 4sconsult/wazuh:0.0.1
+        image: 4sconsult/wazuh:0.0.3
         build: .
         hostname: wazuh-manager
         restart: always
