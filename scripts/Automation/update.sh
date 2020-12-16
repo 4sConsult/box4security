@@ -68,36 +68,37 @@ function rollback() {
   cp -R /var/lib/box4s/backup/alerts/* /var/lib/elastalert/rules/
   rm -rf /var/lib/box4s/backup/alerts
 
-  cd /home/amadmin/box4s/
+  cd /home/amadmin/box4security/
   git fetch
   git checkout -f $1 >/dev/null 2>&1
 
   # Rolling back jvm settings
-  cp /var/lib/box4s/backup/.env.es /home/amadmin/box4s/docker/.env.es
-  cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4s/docker/.env.ls
+  cp /var/lib/box4s/backup/.env.es /home/amadmin/box4security/docker/.env.es
+  cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4security/docker/.env.ls
   rm -f /var/lib/box4s/backup/.env.es /var/lib/box4s/backup/.env.ls
 
   echo "Setze Dienst auf Version $1 zurück"
-  cp /home/amadmin/box4s/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
+  cp /home/amadmin/box4security/config/etc/systemd/box4security.service /etc/systemd/system/box4security.service
 
   # sleep to wait for established connection
   sleep 8
 
   echo "Setze BOX4security Software auf Version $1 zurück"
-  docker-compose -f /home/amadmin/box4s/docker/box4security.yml pull -q
+  docker-compose -f /home/amadmin/box4security/docker/box4security.yml pull -q
+  docker-compose -f /home/amadmin/box4security/docker/wazuh/wazuh.yml pull -q
 
   echo "Starte BOX4security Software neu."
   # set version in file
-  echo "VERSION=$1" > /home/amadmin/box4s/VERSION
-  echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
+  echo "VERSION=$1" > /home/amadmin/box4security/VERSION
+  echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4security/VERSION
   # restart box, causes start of the images of Version $1
   systemctl restart box4security
 
   # Lösche fehlerhaften Tag lokal
-  cd /home/amadmin/box4s/
+  cd /home/amadmin/box4security/
   git tag -d $2
 
-  /home/amadmin/box4s/scripts/System_Scripts/wait-for-healthy-container.sh web
+  /home/amadmin/box4security/scripts/System_Scripts/wait-for-healthy-container.sh web
   # Notify API that we're finished rolling back
   echo "rollback-successful" > /var/lib/box4s/.update.state
   echo "Wiederherstellung auf $1 abgeschlossen."
@@ -157,25 +158,25 @@ PRIOR=$(curl -sLk -XGET https://localhost/api/ver/ | jq -r .version)
 VERSIONS=()
 # Use Python Script to create array of versions that have to be installed
 # versions between current and the latest
-mapfile -t VERSIONS < <(python3 /home/amadmin/box4s/scripts/Automation/versions.py)
+mapfile -t VERSIONS < <(python3 /home/amadmin/box4security/scripts/Automation/versions.py)
 # GET env from local endpoint and extract it so we can keep it
 ENV=$(curl -sLk localhost/api/ver/ | jq -r '.env')
 TAG=${VERSIONS[-1]}
 echo "Aktualisierung auf $TAG über alle zwischenliegenden Versionen gestartet."
-source /home/amadmin/box4s/config/secrets/db.conf
+source /home/amadmin/box4security/config/secrets/db.conf
 for v in "${VERSIONS[@]}"
 do
    backup $PRIOR
    echo "Installiere Version $v"
    cd $BASEDIR$GITDIR
    git fetch
-   cp /home/amadmin/box4s/docker/logstash/.env.ls /var/lib/box4s/backup/.env.ls
-   cp /home/amadmin/box4s/docker/elasticsearch/.env.es /var/lib/box4s/backup/.env.es
+   cp /home/amadmin/box4security/docker/logstash/.env.ls /var/lib/box4s/backup/.env.ls
+   cp /home/amadmin/box4security/docker/elasticsearch/.env.es /var/lib/box4s/backup/.env.es
    git checkout -f $v >/dev/null 2>&1
    blackbox_postdeploy
    # Restore Memory Settings for JVM
-   cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4s/docker/logstash/.env.ls
-   cp /var/lib/box4s/backup/.env.es /home/amadmin/box4s/docker/elasticsearch/.env.es
+   cp /var/lib/box4s/backup/.env.ls /home/amadmin/box4security/docker/logstash/.env.ls
+   cp /var/lib/box4s/backup/.env.es /home/amadmin/box4security/docker/elasticsearch/.env.es
    echo "Führe Updateanweisungen aus Version $v aus"
    sed -i "3s/.*/TAG=$v/g" $BASEDIR$GITDIR/update-patch.sh
    chmod +x $BASEDIR$GITDIR/update-patch.sh
@@ -198,8 +199,8 @@ do
 done
 echo "Update auf $TAG abgeschlossen."
 # set version in file
-echo "VERSION=$TAG" > /home/amadmin/box4s/VERSION
-echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4s/VERSION
+echo "VERSION=$TAG" > /home/amadmin/box4security/VERSION
+echo "BOX4s_ENV=$ENV" >> /home/amadmin/box4security/VERSION
 # Notify API that we're finished
 curl -sLk -XPOST https://localhost/api/update/status/ -H "Content-Type: application/json" -d '{"status":"successful"}' > /dev/null
 # Prepare new update.sh for next update

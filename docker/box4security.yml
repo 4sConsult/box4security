@@ -235,8 +235,8 @@ services:
       - /data/suricata/eve.json:/core4s/workfolder/suricata/eve.json
       - /var/lib/box4s:/core4s/workfolder/var/lib/box4s
       - varlib_logstash:/core4s/workfolder/var/lib/logstash
-      - /home/amadmin/box4s/docker/web/source/wazuh:/core4s/workfolder/wazuh_files
-      - /home/amadmin/box4s/config/secrets:/core4s/config/secrets:ro
+      - /home/amadmin/box4security/docker/web/source/wazuh:/core4s/workfolder/wazuh_files
+      - /home/amadmin/box4security/config/secrets:/core4s/config/secrets:ro
     image: 4sconsult/core4s:0.0.3
   wiki:
     container_name: wiki
