@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.4] - 2020-12-16
+Separate installation, configuration from the cloned repository.
+
+### Added
+* New environment variables `$BOX4s_INSTALL_DIR` and `$BOX4s_CONFIG_DIR` are available, resolving to the installation and configuration directory respectively.
+
+### Changed 
+* Installation is now performed (by default) to `/opt/box4s`. The config files (secrets!) are by default copied from the local repos folder to `/etc/box4s` during installation. **Change secrets before running install script!**
+* Installation no longer restarts the OpenVAS container. This became obsolete with recent OpenVAS image updates. Updates are performed with each start, so also with the first.
+
+
 ## [0.0.3] - 2020-12-15
 First publicly from GitHub installable release.
 
