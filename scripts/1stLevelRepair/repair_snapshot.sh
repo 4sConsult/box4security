@@ -8,7 +8,7 @@ snapDir="$tempDir/$directory"
 #Unzip snapshot
 sudo unzip $snap -d $tempDir
 #check version for equality
-if ! cmp -s /home/amadmin/box4s/VERSION $snapDir/VERSION
+if ! cmp -s /var/lib/box4s/VERSION $snapDir/VERSION
 then
   #versions not equal, exit
   exit 1

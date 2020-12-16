@@ -58,7 +58,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Get the actual dir of the installation script.
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
+INSTALL_DIR="/opt/box4s/"
+CONFIG_DIR="/etc/box4s/"
 # Forward fd3 to the console
 # exec 3>&1
 # Forward stderr to $ERROR_LOG
@@ -222,6 +223,18 @@ cat /etc/group | grep boxforsecurity &>/dev/null || sudo addgroup --gid 44269 bo
 id -G $HOST_USER | grep 44229 &>/dev/null || sudo usermod -a -G boxforsecurity $HOST_USER # Add HOST_USER to created group if not in it
 echo "[ OK ]" 1>&3
 
+echo -n "Creating the installation directory ($INSTALL_DIR).. " 1>&3
+delete_If_Exists $INSTALL_DIR
+sudo mkdir -p $INSTALL_DIR
+sudo chown amadmin:amadmin $INSTALL_DIR
+echo "[ OK ]" 1>&3
+
+echo -n "Creating the configuration directory ($CONFIG_DIR).. " 1>&3
+delete_If_Exists $CONFIG_DIR
+sudo mkdir -p $CONFIG_DIR
+sudo chown amadmin:amadmin $CONFIG_DIR
+echo "[ OK ]" 1>&3
+
 ##################################################
 #                                                #
 # Tags                                           #
@@ -260,35 +273,24 @@ echo "Installing $TAG."
 ##################################################
 banner "Repository ..."
 
-echo -n "Updating the repository.. " 1>&3
-cd $SCRIPTDIR/../../
-git fetch
-git stash
-echo "[ OK ]" 1>&3
-
-echo -n "Checkout $TAG.. " 1>&3
-git checkout $TAG
-git stash apply || :
-git stash drop
+echo -n "Downloading the repository @ $TAG" 1>&3
+git clone --depth 1 --branch $TAG https://github.com/4sConsult/BOX4security $INSTALL_DIR
 echo "[ OK ]" 1>&3
 
 # Copy certificates over
 echo -n "Creating selfsigned SSL certificate.. " 1>&3
-sudo mkdir -p /etc/nginx/certs
+sudo mkdir -p $CONFIG_DIR/box4s/certs
 sudo openssl req -new -x509 -config $SCRIPTDIR/../../config/ssl/box4security-ssl.conf \
     -subj "/C=DE/ST=NRW/L=Dortmund/O=4sConsult GmbH/OU=IT Security/CN=BOX4security/emailAddress=box@4sconsult.de" \
     -newkey rsa:4096 -days 365 -nodes \
-    -keyout /etc/nginx/certs/box4security.key.pem  -out /etc/nginx/certs/box4security.cert.pem
-sudo chown -R root:44269 /etc/nginx/certs
-sudo chmod 770 -R /etc/nginx/certs
+    -keyout $CONFIG_DIR/certs/box4security.key.pem  -out $CONFIG_DIR/certs/box4security.cert.pem
+sudo chown -R root:44269 $CONFIG_DIR/certs
+sudo chmod 770 -R $CONFIG_DIR/certs
 echo "[ OK ]" 1>&3
 
-# Copy the smtp.conf to /etc/box4s
-echo -n "Enabling default SMTP config.. " 1>&3
-# First use of /etc/box4s -> remove to avoid conflicts with old installation
-delete_If_Exists /etc/box4s/
-sudo mkdir -p /etc/box4s/
-sudo cp $SCRIPTDIR/../../config/secrets/smtp.conf /etc/box4s/smtp.conf
+# Copy the smtp.conf to the config directory
+echo -n "Enabling SMTP config.. " 1>&3
+sudo cp $SCRIPTDIR/../../config/secrets/smtp.conf $CONFIG_DIR/smtp.conf
 echo "[ OK ]" 1>&3
 
 ##################################################
@@ -339,13 +341,13 @@ echo " [ DONE ] " 1>&1
 
 # Setup Box4s Settings volume
 echo -n "etcbox4s_logstash:" 1>&1
-sudo mkdir -p /etc/box4s/logstash
-sudo cp -R $SCRIPTDIR/../../config/etc/logstash/* /etc/box4s/logstash/
-sudo chown root:root /etc/box4s/
-sudo chmod -R 777 /etc/box4s/
-sudo docker volume create --driver local --opt type=none --opt device=/etc/box4s/logstash/ --opt o=bind etcbox4s_logstash
-sudo chown -R root:44269 /etc/box4s/logstash
-sudo chmod 760 -R /etc/box4s/logstash
+sudo mkdir -p $CONFIG_DIR/logstash
+sudo cp -R $SCRIPTDIR/../../config/etc/logstash/* $CONFIG_DIR/logstash/
+sudo chown root:root $CONFIG_DIR/logstash
+sudo chmod -R 777 $CONFIG_DIR/logstash
+sudo docker volume create --driver local --opt type=none --opt device=$CONFIG_DIR/logstash/ --opt o=bind etcbox4s_logstash
+sudo chown -R root:44269 $CONFIG_DIR/logstash
+sudo chmod 760 -R $CONFIG_DIR/logstash
 echo " [ DONE ] " 1>&1
 
 # Setup Logstash volume
@@ -403,10 +405,10 @@ echo "[ OK ]" 1>&3
 
 echo -n "Initializing important files and setting permissions.. " 1>&3
 create_and_changePermission /var/lib/box4s/elastalert_smtp.yaml
-create_and_changePermission /etc/box4s/smtp.conf
+create_and_changePermission $CONFIG_DIR/smtp.conf
 create_and_changePermission /etc/ssl/certs/ca-certificates.crt
 create_and_changePermission /var/lib/box4s/elastalert_smtp.yaml
-create_and_changePermission /etc/box4s/modules.conf
+create_and_changePermission $CONFIG_DIR/modules.conf
 create_and_changePermission /etc/ssl/certs/BOX4s-SMTP.pem
 
 echo "[ OK ]" 1>&3
@@ -447,9 +449,12 @@ echo -n "Configuring BOX4s.. " 1>&3
 # Copy gollum config to wiki root
 cp $SCRIPTDIR/../../docker/wiki/config.ru /var/lib/box4s_docs/config.ru
 
+# Copy version file
+cp $SCRIPTDIR/../../VERSION /var/lib/box4s/VERSION
 
 # Copy config files
 cd $SCRIPTDIR/../../
+sudo cp config/secrets/* /etc/box4s/
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo chown root:44269 /etc/msmtprc
@@ -468,8 +473,10 @@ IPINFO=$(ip a | grep -E "inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | 
 IPINFO2=$(echo $IPINFO | grep -o -P '(?<=inet)((?!inet).)*(?=ens|eth|eno|enp)')
 INT_IP=$(echo $IPINFO2 | sed 's/\/.*//')
 grep -qxF  INT_IP=$INT_IP /etc/environment || echo INT_IP=$INT_IP >> /etc/environment
-grep -qxF  INT_IP="$INT_IP" /etc/default/logstash || echo INT_IP="$INT_IP" >> /etc/default/logstash
+grep -qxF BOX4s_CONFIG_DIR="$CONFIG_DIR" /etc/environment || echo BOX4s_CONFIG_DIR="$CONFIG_DIR" | sudo tee -a /etc/environment
+grep -qxF BOX4s_INSTALL_DIR="$INSTALL_DIR" /etc/environment || echo BOX4s_INSTALL_DIR="$INSTALL_DIR" | sudo tee -a /etc/environment
 source /etc/environment
+grep -qxF  INT_IP="$INT_IP" /etc/default/logstash || echo INT_IP="$INT_IP" >> /etc/default/logstash
 grep -qxF KUNDE="NEWSYSTEM" /etc/default/logstash || echo KUNDE="NEWSYSTEM" | sudo tee -a /etc/default/logstash
 set -e
 echo " [ OK ] " 1>&3
@@ -520,8 +527,8 @@ echo " [ OK ] " 1>&3
 
 echo -n "Enabling/Disabling Modules.. " 1>&3
 # Remove old folder to avoid conflicts
-sudo cp $SCRIPTDIR/../../config/etc/modules.conf /etc/box4s/modules.conf
-sudo chmod 444 /etc/box4s/modules.conf
+sudo cp $SCRIPTDIR/../../config/etc/modules.conf $CONFIG_DIR/modules.conf
+sudo chmod 444 $CONFIG_DIR/modules.conf
 echo " [ OK ] " 1>&3
 
 echo -n "Generating Wazuh Agent-Password.. " 1>&3
@@ -578,10 +585,10 @@ MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MEM=$(python3 -c "print($MEM/1024.0**2)")
 # Give half of that to elasticsearch
 ESMEM=$(python3 -c "print(int($MEM*0.5))")
-sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" $SCRIPTDIR/../../docker/elasticsearch/.env.es
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" $SCRIPTDIR/../../docker/elasticsearch/.env.es $CONFIG_DIR/.env.es
 # and one quarter to logstash
 LSMEM=$(python3 -c "print(int($MEM*0.25))")
-sed -i "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $SCRIPTDIR/../../docker/logstash/.env.ls
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $SCRIPTDIR/../../docker/logstash/.env.ls $CONFIG_DIR/.env.ls
 echo " [ OK ] " 1>&3
 
 echo -n "Making scripts executable.. " 1>&3
