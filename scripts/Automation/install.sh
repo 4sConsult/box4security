@@ -279,7 +279,7 @@ echo "[ OK ]" 1>&3
 
 # Copy certificates over
 echo -n "Creating selfsigned SSL certificate.. " 1>&3
-sudo mkdir -p $CONFIG_DIR/box4s/certs
+sudo mkdir -p $CONFIG_DIR/certs
 sudo openssl req -new -x509 -config $SCRIPTDIR/../../config/ssl/box4security-ssl.conf \
     -subj "/C=DE/ST=NRW/L=Dortmund/O=4sConsult GmbH/OU=IT Security/CN=BOX4security/emailAddress=box@4sconsult.de" \
     -newkey rsa:4096 -days 365 -nodes \
@@ -520,9 +520,9 @@ echo " [ OK ] " 1>&3
 
 echo -n "Setting the portmirror interface.. " 1>&3
 # Find the portmirror interface for suricata
-touch $SCRIPTDIR/../../docker/suricata/.env
+touch $CONFIG_DIR/.env.suri
 IFACE=$(sudo ip addr | cut -d ' ' -f2 | tr ':' '\n' | awk NF | grep -v lo | sed -n 2p | cat)
-echo "SURI_INTERFACE=$IFACE" > $SCRIPTDIR/../../docker/suricata/.env
+echo "SURI_INTERFACE=$IFACE" > $CONFIG_DIR/.env.suri
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling/Disabling Modules.. " 1>&3
@@ -585,14 +585,14 @@ MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MEM=$(python3 -c "print($MEM/1024.0**2)")
 # Give half of that to elasticsearch
 ESMEM=$(python3 -c "print(int($MEM*0.5))")
-sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" $SCRIPTDIR/../../docker/elasticsearch/.env.es $CONFIG_DIR/.env.es
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" $SCRIPTDIR/../../docker/elasticsearch/.env.es > $CONFIG_DIR/.env.es
 # and one quarter to logstash
 LSMEM=$(python3 -c "print(int($MEM*0.25))")
-sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $SCRIPTDIR/../../docker/logstash/.env.ls $CONFIG_DIR/.env.ls
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $SCRIPTDIR/../../docker/logstash/.env.ls > $CONFIG_DIR/.env.ls
 echo " [ OK ] " 1>&3
 
 echo -n "Making scripts executable.. " 1>&3
-chmod +x -R $SCRIPTDIR/../../scripts
+chmod +x -R $INSTALL_DIR/scripts
 echo " [ OK ] " 1>&3
 
 echo -n "Enabling BOX4s internal DNS server.. " 1>&3
@@ -693,13 +693,10 @@ sudo docker exec core4s /bin/bash /core4s/scripts/Automation/download_wazuh_clie
 echo " [ OK ] " 1>&3
 
 echo -n "Updating tools. This may take a very long time.. " 1>&3
-sudo docker container restart openvas
-sudo $SCRIPTDIR/../../scripts/System_Scripts/wait-for-healthy-container.sh openvas
-echo -n " [ openvas " 1>&3
 sudo docker container restart suricata
 sleep 30
 sudo docker exec suricata /root/scripts/update.sh
-echo " suricata ] " 1>&3
+echo "[ suricata ] " 1>&3
 
 echo -n "Cleaning up.. " 1>&3
 sudo apt-fast autoremove -y

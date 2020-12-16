@@ -62,7 +62,7 @@ services:
     image: "4sconsult/suricata:0.0.4-nightly.install.1"
     network_mode: "host"
     env_file:
-      - suricata/.env
+      - /etc/box4s/.env.suri
     cap_add:
       - NET_ADMIN
       - SYS_NICE
