@@ -53,6 +53,15 @@
       <div class="ui fitted toggle checkbox"><button class="ui button" value="reset">Start</button></div>
     </div>
 
+
+    <div class="fourteen wide column">
+      <h5 class="ui header">Snapshot<div class="sub header">Durch diese Funktion kann der momentane Stand der BOX4security festgehalten und wiederhergestellt werden. Dadurch ist es möglich genau zu gespeicherten Zeitpunkten zurückzukehren. Daten werden nicht gespeichert.</div>
+      </h5>
+    </div>
+    <div class="two wide center aligned column">
+      <div class="ui fitted toggle checkbox"><button class="ui button" value="snapshot">Snapshot Menü</button></div>
+    </div>
+
   </div>
 
   <div class="ui modal" id="format">
@@ -88,7 +97,34 @@
   </div>
 
 
-
+  <div class="ui modal" id="snapshot">
+    <i class="close icon"></i>
+    <div class="header">
+      Snapshot Menü
+    </div>
+      <div class="description">
+        <br>
+        Die BOX4security speichert selbst Snapshots. Diese können aus einer Datei oder direkt von der BOX4security wiederhergestellt werden.
+      <br>
+      <table class="ui celled table">
+  <thead>
+    <tr><th>Name</th>
+    <th>Erstellungsdatum</th>
+    <th>Job</th>
+  </tr></thead>
+  <tbody>
+  </tbody>
+</table>
+<br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen
+<form class="ui form" method="POST" action="/api/snapshot/info" enctype = "multipart/form-data" >
+  <input type="file" name="file" class="inputfile" id="fileUplaod" />
+  <input type="submit" value="Submit">
+  </form>
+      </div>
+    <div class="actions">
+      <div class="ui approve button">Snapshot Erstellen</div>
+    </div>
+  </div>
 
   <div class="ui vertical footer segment">
     <div class="ui center aligned container">
@@ -163,6 +199,48 @@
         console.log("reset engaged ")
       }
 
+      if (key == "snapshot") {
+        $('.ui.modal#snapshot')
+          .modal({
+            closable: true,
+            blurring: true,
+            onShow: function(){
+              fetch(`//{{ request.host }}/api/snapshot/info`, {
+                  method: "GET",
+                })
+                .then((response) => {
+                  return response.json()
+                }).then((parsed_resp) => {
+                  for (var i = 0; i < parsed_resp.snapshots.length; i++) {
+                    var tr = $("<tr></tr>")
+                    var td = '<td> <a href="/api/snapshot/files/'+ parsed_resp.snapshots[i].name + '">' + (parsed_resp.snapshots[i].name).replace(/\.[^/.]+$/, "") + '</a></td>' +
+                              '<td>'+ parsed_resp.snapshots[i].date + '</td>'+
+                              '<td> <button class="ui button" value="'+ parsed_resp.snapshots[i].name +'" onclick="restore_snap(this)">Wiederherstellen </button>' +
+                              '<button class="ui button" value="'+ parsed_resp.snapshots[i].name +'" onclick="delete_snap(this)">Löschen </button>'
+                    $(tr).append(td);
+                    $('tbody').append($(tr));
+                  }
+                  console.log(parsed_resp);
+                })
+            },
+            onHide: function(){
+              $('tbody').empty();
+            },
+            onApprove: function(){
+              fetch(`//{{ request.host }}/api/snapshot/info`, {
+                  method: "POST"
+                })
+                .then((response) => {
+                  console.log(response)
+                })
+            }
+          })
+          .modal('show');
+      }
+
+
+
+
       if ((key == "dashboard") || (key == "restart")) {
 
         fetch(`//{{ request.host }}/api/repair/`, {
@@ -182,6 +260,59 @@
           })
       }
     })
+
+
+    $(function(){
+      $('#fileUplaod').change(function(event){
+        console.log(event.target.files[0].name)
+        var url = $(this).val();
+        var extension = ($(this).val()).substring(url.lastIndexOf('.') + 1).toLowerCase();
+        if (this.files && this.files[0] && extension == "zip"){
+          var input = document.querySelector('input[type="file"]')
+          var formData = new FormData()
+          data.append('file.zip', input.files[0])
+          fetch(`//{{ request.host }}/api/snapshot/info`, {
+              method: "POST",
+              body: formData
+            })
+            .then((response) => response.json())
+            .then(result => ){
+              console.log(formData)
+              console.log(data)
+              console.log(response)
+            })
+            .catch(error => {
+              console.error('Error', error)
+            })
+        }
+        else {
+          alert("Bitte Laden Sie eine Datei im zip Format hoch.")
+        }
+      })
+
+    })
+
+    function restore_snap(data){
+      fetch(`//{{ request.host }}/api/snapshot/files/${data.value}`, {
+          method: "POST",
+        })
+        .then((response) => {
+          console.log(response)
+        }).catch((err) => {
+          console.log('Delete Error', err)
+        })
+    }
+    function delete_snap(data){
+      fetch(`//{{ request.host }}/api/snapshot/files/${data.value}`, {
+          method: "DELETE",
+        })
+        .then((response) => {
+          console.log(response)
+        }).catch((err) => {
+          console.log('Delete Error', err)
+        })
+    }
+
 
   </script>
   {% endblock %}
