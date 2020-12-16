@@ -32,7 +32,7 @@ function copyFolder(){
 
 #COPY FILES
 #copy version to check if snapshot can be copied
-cp /home/amadmin/box4s/VERSION $folder
+cp /var/lib/box4s/VERSION $folder
 copyFolder /etc/box4s
 copyFolder /var/lib/box4s
 delete_If_Exists $folder/var/lib/box4s/snapshots

@@ -19,8 +19,8 @@ Before you start the installation, be sure that at the current state, the instal
 * A new folder `/data` will be created in your root directory. The folder serves for data storage of Elasticsearch and Suricata alerts and flows.
 * A new sudo user called `amadmin` will be created on the system.
 * The BOX4security service will be enabled.
-* The systems' nameserver will be set to the proxying DNS server included in the BOX4security. It can be configrred using the initial wizard.
-* The BOX4security will be installed to `/home/amadmin/box4s/`.
+* The systems' nameserver will be set to the proxying DNS server included in the BOX4security. It can be configured using the initial wizard.
+* The BOX4security will be installed to `/opt/box4s/` and its configs will be copied from the cloned repo folder `/etc/box4s`.
 
 After cloning you should edit and replace the default credentials in:
 * `config/secrets/*.conf`
@@ -30,12 +30,12 @@ Once you are ready, the installation is as simple as:
 ```
 git clone https://github.com/4sConsult/box4security.git
 # Edit configuration files before running install.sh!
-sudo ./box4security/scripts/Automation/install.sh
+sudo /bin/bash /box4security/scripts/Automation/install.sh
 ```
 
 The script may ask you some questions and will notify you about the progress.
 
-After it is done, browse to `https://YOUR_SERVER_IP:443`
+After it is done, browse to `https://YOUR_SERVER_IP`
 
 # Contribute
 ## Our Philosophy

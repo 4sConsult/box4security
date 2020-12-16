@@ -7,7 +7,7 @@ services:
     restart: always
     ports:
      - 127.0.0.1:9200:9200
-    image: 4sconsult/elasticsearch:0.0.3
+    image: 4sconsult/elasticsearch:0.0.4
     volumes:
      - /data/elasticsearch:/data/elasticsearch
      - /data/elasticsearch_backup:/data/elasticsearch_backup
@@ -20,10 +20,10 @@ services:
     environment:
      - INT_IP=${INT_IP}
     env_file:
-     - ../config/secrets/wazuh.conf
+     - /etc/box4s/wazuh.conf
     ports:
      - 127.0.0.1:5601:5601
-    image: 4sconsult/kibana:0.0.3
+    image: 4sconsult/kibana:0.0.4
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -38,7 +38,7 @@ services:
     ports:
         - 5001:8080
     user: "2000:44269"
-    image: 4sconsult/spiderfoot:0.0.3
+    image: 4sconsult/spiderfoot:0.0.4
   openvas:
     build: openvas
     container_name: openvas
@@ -52,17 +52,17 @@ services:
     volumes:
       - gvm-data:/data
       - varlib_logstash:/var/lib/logstash
-    image: 4sconsult/openvas:0.0.3
+    image: 4sconsult/openvas:0.0.4
     env_file:
-      - ../config/secrets/openvas.conf
+      - /etc/box4s/openvas.conf
   suricata:
     build: suricata/.
     container_name: suricata
     restart: always
-    image: "4sconsult/suricata:0.0.3"
+    image: "4sconsult/suricata:0.0.4"
     network_mode: "host"
     env_file:
-      - suricata/.env
+      - /etc/box4s/.env.suri
     cap_add:
       - NET_ADMIN
       - SYS_NICE
@@ -74,7 +74,7 @@ services:
   metricbeat:
     build: metricbeat/.
     container_name: metricbeat
-    image: 4sconsult/metricbeat:0.0.3
+    image: 4sconsult/metricbeat:0.0.4
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -84,7 +84,7 @@ services:
   heartbeat:
     build: heartbeat/.
     container_name: heartbeat
-    image: 4sconsult/heartbeat:0.0.3
+    image: 4sconsult/heartbeat:0.0.4
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -99,13 +99,13 @@ services:
         condition: service_healthy
     env_file:
      - /etc/default/logstash
-     - ../config/secrets/db.conf
+     - /etc/box4s/db.conf
      - logstash/.env.ls
     ports:
       - 9600:9600
       - 5044:5044
       - 5046:5046
-    image: 4sconsult/logstash:0.0.3
+    image: 4sconsult/logstash:0.0.4
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - etcbox4s_logstash:/etc/logstash/conf.d/general/
@@ -117,7 +117,7 @@ services:
     depends_on:
         elasticsearch:
             condition: service_healthy
-    image: 4sconsult/filebeat:0.0.3
+    image: 4sconsult/filebeat:0.0.4
     volumes:
       - varlib_logstash:/var/lib/logstash/
       - data:/data
@@ -127,7 +127,7 @@ services:
     networks:
       default:
         ipv4_address: 172.20.08.11
-    image: 4sconsult/web:0.0.3
+    image: 4sconsult/web:0.0.4
     build: web/.
     command: >
      bash -c "python main.py db upgrade head &&
@@ -146,7 +146,7 @@ services:
        - /etc/box4s/logstash/BOX4s-special.conf:/etc/box4s/logstash/BOX4s-special.conf
        - /etc/default/logstash:/etc/default/logstash
        - /etc/netplan:/etc/_netplan/
-       - /etc/nginx/certs/:/etc/nginx/certs/
+       - /etc/box4s/certs/:/etc/box4s/certs/
        - /var/run/docker.sock:/var/run/docker.sock
     expose:
       - 5000
@@ -157,7 +157,7 @@ services:
       retries: 5
     env_file:
       - web/web.env
-      - ../config/secrets/web.conf
+      - /etc/box4s/web.conf
       - /etc/box4s/smtp.conf
       - /etc/box4s/modules.conf
       - ../VERSION
@@ -169,14 +169,14 @@ services:
     user: "app:44269"
   db:
     container_name: db
-    image: 4sconsult/db:0.0.3
+    image: 4sconsult/db:0.0.4
     build: db/.
     volumes:
       - varlib_postgresql/:/var/lib/postgresql/data
     ports:
       - "127.0.0.1:5432:5432"
     env_file:
-      - ../config/secrets/db.conf
+      - /etc/box4s/db.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -185,15 +185,14 @@ services:
     user: "0:44269"
   nginx:
     container_name: nginx
-    image: 4sconsult/nginx:0.0.3
+    image: 4sconsult/nginx:0.0.4
     build: nginx/.
     ports:
       - 80:80
       - 443:443
     volumes:
       - static_volume:/home/app/web/source/static
-      # certs (placed in host /etc/ folder by install script)
-      - /etc/nginx/certs:/etc/nginx/certs
+      - /etc/box4s/certs:/etc/nginx/certs
     depends_on:
       - web
       - kibana
@@ -201,7 +200,7 @@ services:
     user: "0:44269"
   dnsmasq:
     container_name: dnsmasq
-    image: 4sconsult/dnsmasq:0.0.3
+    image: 4sconsult/dnsmasq:0.0.4
     build: dnsmasq/.
     ports:
       - 53:5353/tcp
@@ -211,7 +210,7 @@ services:
     user: "dnsmasq:44269"
   elastalert:
     container_name: elastalert
-    image: 4sconsult/elastalert:0.0.3
+    image: 4sconsult/elastalert:0.0.4
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -235,12 +234,12 @@ services:
       - /data/suricata/eve.json:/core4s/workfolder/suricata/eve.json
       - /var/lib/box4s:/core4s/workfolder/var/lib/box4s
       - varlib_logstash:/core4s/workfolder/var/lib/logstash
-      - /home/amadmin/box4s/docker/web/source/wazuh:/core4s/workfolder/wazuh_files
-      - /home/amadmin/box4s/config/secrets:/core4s/config/secrets:ro
-    image: 4sconsult/core4s:0.0.3
+      - varlib_box4s:/core4s/workfolder/wazuh_files
+      - /etc/box4s/:/core4s/config/secrets:ro
+    image: 4sconsult/core4s:0.0.4
   wiki:
     container_name: wiki
-    image: 4sconsult/wiki:0.0.3
+    image: 4sconsult/wiki:0.0.4
     build: wiki/.
     restart: always
     volumes:
