@@ -164,7 +164,7 @@ class Repair(Resource):
     def put(self):
         """Execute Repair Script"""
         value = request.json['key']
-        runHostCommand(cmd=f"sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_{ value }.sh")
+        runHostCommand(cmd=f"sudo bash /home/amadmin/box4security/scripts/1stLevelRepair/repair_{ value }.sh")
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
@@ -204,7 +204,8 @@ class SnapshotInfo(Resource):
     @roles_required(['Super Admin'])
     def post(self):
         """Create a snapshot"""
-        runHostCommand(cmd="sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_createSnapshot.sh")
+        # !This does not work yet
+        runHostCommand(cmd="sudo bash /home/amadmin/box4security/scripts/1stLevelRepair/repair_createSnapshot.sh")
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])
@@ -228,6 +229,7 @@ class SnapshotFileHandler(Resource):
     def get(self, filename):
         """Download a Snapshot"""
         snap_folder = "/var/lib/box4s/snapshots"
+        runHostCommand(cmd="sudo bash /home/amadmin/box4security/scripts/1stLevelRepair/repair_createSnapshot.sh")
         if filename and allowed_file_snaphsot(filename, ['zip']):
             return send_from_directory(snap_folder, filename, as_attachment=True)
         else:
@@ -236,7 +238,7 @@ class SnapshotFileHandler(Resource):
     @roles_required(['Super Admin'])
     def post(self, filename):
         """Restore a Snapshot"""
-        runHostCommand(cmd=f"sudo bash /home/amadmin/box4s/scripts/1stLevelRepair/repair_snapshot.sh { filename }")
+        runHostCommand(cmd=f"sudo bash /home/amadmin/box4security/scripts/1stLevelRepair/repair_snapshot.sh { filename }")
         return {"message": "accepted"}, 200
 
     @roles_required(['Super Admin'])

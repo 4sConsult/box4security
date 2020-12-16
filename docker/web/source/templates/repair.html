@@ -116,7 +116,7 @@
   </tbody>
 </table>
 <br><i class="ui upload icon"></i> Snapshot Hochladen und Wiederherstellen
-<form class="ui form" method="POST" action="/api/snapshot/info" enctype = "multipart/form-data" >
+<form class="ui form" id="uploadForm">
   <input type="file" name="file" class="inputfile" id="fileUplaod" />
   <input type="submit" value="Submit">
   </form>
@@ -261,7 +261,7 @@
       }
     })
 
-
+/*
     $(function(){
       $('#fileUplaod').change(function(event){
         console.log(event.target.files[0].name)
@@ -270,13 +270,13 @@
         if (this.files && this.files[0] && extension == "zip"){
           var input = document.querySelector('input[type="file"]')
           var formData = new FormData()
-          data.append('file.zip', input.files[0])
+          formData.append('file.zip', input.files[0])
           fetch(`//{{ request.host }}/api/snapshot/info`, {
               method: "POST",
               body: formData
             })
             .then((response) => response.json())
-            .then(result => ){
+            .then(result => {
               console.log(formData)
               console.log(data)
               console.log(response)
@@ -291,6 +291,29 @@
       })
 
     })
+*/
+    $("#uploadForm").submit(function(e) {
+
+
+var form = $(this);
+var input = document.querySelector('input[type="file"]')
+          var formData = new FormData()
+          formData.append('file.zip', input.files[0])
+fetch(`//{{ request.host }}/api/snapshot/info`, {
+              method: "POST",
+              body: formData
+            })
+            .then((response) => response.json())
+            .then(result => {
+              console.log(formData)
+              console.log(data)
+              console.log(response)
+            })
+            .catch(error => {
+              console.error('Error', error)
+            })
+        })
+
 
     function restore_snap(data){
       fetch(`//{{ request.host }}/api/snapshot/files/${data.value}`, {
