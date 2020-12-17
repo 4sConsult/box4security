@@ -119,6 +119,9 @@ function create_and_changePermission() {
   sudo chown -R root:44269 $1
   sudo chmod 760 -R $1
 }
+function genSecret() {
+    echo `tr -dc A-Za-z0-9 </dev/urandom | head -c 24`
+}
 
 # Lets make sure some basic tools are available
 CURL=$(which curl) || echo ""
@@ -211,6 +214,26 @@ cd $SCRIPTDIR/../../
 echo -n "Sourcing secret files.. " 1>&3
 source config/secrets/secrets.conf
 source config/secrets/db.conf
+source config/secrets/web.conf
+source config/secrets/openvas.conf
+echo "[ OK ]" 1>&3
+
+echo -n "Checking and replacing default secrets.. " 1>&3
+if [[ -z $POSTGRES_PASSWORD || "$POSTGRES_PASSWORD" == "CHANGEME" ]]; then
+    POSTGRES_PASSWORD=`genSecret`
+fi
+if [[ -z $IP2TOKEN || "$IP2TOKEN" == "GET_ME_FROM_IP2LOCATION.COM" ]]; then
+    echo "[ FAIL ]" 1>&3
+    echo "Installation requires a token for IP2Location. Go to https://lite.ip2location.com now and enter an API token below." 1>&3 
+    echo "Tokens are not validated on this end. Make sure the entered token is correct, otherwise the installation WILL fail. Token:" 1>&3 
+    read IP2TOKEN
+fi
+if [[ -z $SECRET_KEY || "$SECRET_KEY" == "CHANGEME" ]]; then
+    SECRET_KEY=`genSecret`
+fi
+if [[ -z $OPENVAS_PASS || "$OPENVAS_PASS" == "CHANGEME" ]]; then
+    OPENVAS_PASS=`genSecret`
+fi
 echo "[ OK ]" 1>&3
 
 # Create the user $HOST_USER only if he does not exist
@@ -454,7 +477,12 @@ cp $SCRIPTDIR/../../VERSION /var/lib/box4s/VERSION
 
 # Copy config files
 cd $SCRIPTDIR/../../
-sudo cp config/secrets/* /etc/box4s/
+sudo cp config/secrets/* $CONFIG_DIR
+sed -i "s/SECRET_KEY=.*$/SECRET_KEY=$SECRET_KEY/g" $CONFIG_DIR/web.conf
+sed -i "s/DATABASE_URL=.*$/DATABASE_URL=postgresql:\/\/$POSTGRES_USER:$POSTGRES_PASSWORD@db:$POSTGRES_PORT\/$POSTGRES_DB/g" $CONFIG_DIR/web.conf
+sed -i "s/POSTGRES_PASSWORD=.*$/POSTGRES_PASSWORD=$POSTGRES_PASSWORD/g" $CONFIG_DIR/db.conf
+sed -i "s/IP2TOKEN=.*$/IP2TOKEN=$IP2TOKEN/g" $CONFIG_DIR/secrets.conf
+sed -i "s/OPENVAS_PASS=.*$/OPENVAS_PASS=$OPENVAS_PASS/g" $CONFIG_DIR/openvas.conf
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo chown root:44269 /etc/msmtprc
@@ -554,6 +582,18 @@ echo " [ OK ] " 1>&3
 ##################################################
 banner "Docker ..."
 
+echo -n "Detecting available memory and distributing it to the containers.. " 1>&3
+# Detect rounded memory
+MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+MEM=$(python3 -c "print($MEM/1024.0**2)")
+# Give half of that to elasticsearch
+ESMEM=$(python3 -c "print(int($MEM*0.5))")
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" $SCRIPTDIR/../../docker/elasticsearch/.env.es > $CONFIG_DIR/.env.es
+# and one quarter to logstash
+LSMEM=$(python3 -c "print(int($MEM*0.25))")
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $SCRIPTDIR/../../docker/logstash/.env.ls > $CONFIG_DIR/.env.ls
+echo " [ OK ] " 1>&3
+
 echo -n "Downloading BOX4security software images. This may take a long time.. " 1>&3
 # Login to docker registry
 sudo docker-compose -f $SCRIPTDIR/../../docker/box4security.yml pull
@@ -577,18 +617,6 @@ echo -n "Setting up BOX4security Filters.. " 1>&3
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
 sudo touch /var/lib/box4s/suricata_suppress.bpf
 sudo chmod -R 777 /var/lib/box4s/
-echo " [ OK ] " 1>&3
-
-echo -n "Detecting available memory and distributing it to the containers.. " 1>&3
-# Detect rounded memory
-MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-MEM=$(python3 -c "print($MEM/1024.0**2)")
-# Give half of that to elasticsearch
-ESMEM=$(python3 -c "print(int($MEM*0.5))")
-sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" $SCRIPTDIR/../../docker/elasticsearch/.env.es > $CONFIG_DIR/.env.es
-# and one quarter to logstash
-LSMEM=$(python3 -c "print(int($MEM*0.25))")
-sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $SCRIPTDIR/../../docker/logstash/.env.ls > $CONFIG_DIR/.env.ls
 echo " [ OK ] " 1>&3
 
 echo -n "Making scripts executable.. " 1>&3
@@ -701,5 +729,11 @@ echo "[ suricata ] " 1>&3
 echo -n "Cleaning up.. " 1>&3
 sudo apt-fast autoremove -y
 echo " [ OK ] " 1>&3
+
+echo "The following secrets were used:" 1>&3
+echo "Flask SECRET_KEY: $SECRET_KEY" 1>&3
+echo "Postgres: $POSTGRES_USER:$POSTGRES_PASSWORD" 1>&3
+echo "IP2Location API Key: $IP2TOKEN" 1>&3
+echo "OpenVAS Password: $OPENVAS_PASS" 1>&3
 
 echo "BOX4security.. [ READY ]" | /usr/games/lolcat 1>&3

@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.5-dev] - 2020-12-17
 ### Changed 
 * Use NVD Vulnerability Severity Ratings (CVSS) Ranges. Previously custom vulnerability ranges were used.
+* `VERSION` file is now stored under fixed path `/var/lib/box4s`. Only modify if you know what you're doing (`BOX4s_ENV=dev` toggles the development mode).
+* When using insecure default secrets (i.e. unchanged prior to installation), these are replaced by randomly generated secrets that are also printed at the end of the installation script. Save them, if you need to.
+### Fixed
+* Fixed parts of the update script, which didn't use changed directories yet.
 
 
 ## [0.0.4] - 2020-12-16
