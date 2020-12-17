@@ -225,8 +225,8 @@ fi
 if [[ -z $IP2TOKEN || "$IP2TOKEN" == "GET_ME_FROM_IP2LOCATION.COM" ]]; then
     echo "[ FAIL ]" 1>&3
     echo "Installation requires a token for IP2Location. Go to https://lite.ip2location.com now and enter an API token below." 1>&3 
-    echo "Tokens are not validated on this end. Make sure the entered token is correct, otherwise the installation WILL fail." 1>&3 
-    read -p "IP2Location API Token:" IP2TOKEN 1>&3 
+    echo "Tokens are not validated on this end. Make sure the entered token is correct, otherwise the installation WILL fail. Token:" 1>&3 
+    read IP2TOKEN
 fi
 if [[ -z $SECRET_KEY || "$SECRET_KEY" == "CHANGEME" ]]; then
     SECRET_KEY=`genSecret`
@@ -582,6 +582,18 @@ echo " [ OK ] " 1>&3
 ##################################################
 banner "Docker ..."
 
+echo -n "Detecting available memory and distributing it to the containers.. " 1>&3
+# Detect rounded memory
+MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+MEM=$(python3 -c "print($MEM/1024.0**2)")
+# Give half of that to elasticsearch
+ESMEM=$(python3 -c "print(int($MEM*0.5))")
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" $SCRIPTDIR/../../docker/elasticsearch/.env.es > $CONFIG_DIR/.env.es
+# and one quarter to logstash
+LSMEM=$(python3 -c "print(int($MEM*0.25))")
+sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $SCRIPTDIR/../../docker/logstash/.env.ls > $CONFIG_DIR/.env.ls
+echo " [ OK ] " 1>&3
+
 echo -n "Downloading BOX4security software images. This may take a long time.. " 1>&3
 # Login to docker registry
 sudo docker-compose -f $SCRIPTDIR/../../docker/box4security.yml pull
@@ -605,18 +617,6 @@ echo -n "Setting up BOX4security Filters.. " 1>&3
 sudo touch /var/lib/box4s/15_logstash_suppress.conf
 sudo touch /var/lib/box4s/suricata_suppress.bpf
 sudo chmod -R 777 /var/lib/box4s/
-echo " [ OK ] " 1>&3
-
-echo -n "Detecting available memory and distributing it to the containers.. " 1>&3
-# Detect rounded memory
-MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-MEM=$(python3 -c "print($MEM/1024.0**2)")
-# Give half of that to elasticsearch
-ESMEM=$(python3 -c "print(int($MEM*0.5))")
-sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${ESMEM}g -Xmx${ESMEM}g/g" $SCRIPTDIR/../../docker/elasticsearch/.env.es > $CONFIG_DIR/.env.es
-# and one quarter to logstash
-LSMEM=$(python3 -c "print(int($MEM*0.25))")
-sed "s/-Xms[[:digit:]]\+g -Xmx[[:digit:]]\+g/-Xms${LSMEM}g -Xmx${LSMEM}g/g" $SCRIPTDIR/../../docker/logstash/.env.ls > $CONFIG_DIR/.env.ls
 echo " [ OK ] " 1>&3
 
 echo -n "Making scripts executable.. " 1>&3
