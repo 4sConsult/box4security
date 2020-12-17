@@ -160,7 +160,7 @@ services:
       - /etc/box4s/web.conf
       - /etc/box4s/smtp.conf
       - /etc/box4s/modules.conf
-      - ../VERSION
+      - /etc/box4s/VERSION
     environment:
       - KUNDE
     depends_on:
