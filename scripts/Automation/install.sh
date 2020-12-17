@@ -230,6 +230,10 @@ source config/secrets/web.conf
 if [[ -z $SECRET_KEY || "$SECRET_KEY" == "CHANGEME" ]]; then
     SECRET_KEY=`genSecret`
 fi
+source config/secrets/openvas.conf
+if [[ -z $OPENVAS_PASS || "$OPENVAS_PASS" == "CHANGEME" ]]; then
+    OPENVAS_PASS=`genSecret`
+fi
 echo "[ OK ]" 1>&3
 
 # Create the user $HOST_USER only if he does not exist
@@ -477,7 +481,8 @@ sudo cp config/secrets/* $CONFIG_DIR
 sed -i "s/SECRET_KEY=.*$/SECRET_KEY=$SECRET_KEY/g" $CONFIG_DIR/web.conf
 sed -i "s/DATABASE_URL=.*$/DATABASE_URL=postgresql:\/\/$POSTGRES_USER:$POSTGRES_PASSWORD@db:$POSTGRES_PORT\/$POSTGRES_DB/g" $CONFIG_DIR/web.conf
 sed -i "s/POSTGRES_PASSWORD=.*$/POSTGRES_PASSWORD=$POSTGRES_PASSWORD/g" $CONFIG_DIR/db.conf
-sed .i "s/IP2TOKEN=.*$/IP2TOKEN=$IP2TOKEN/g" $CONFIG_DIR/secrets.conf
+sed -i "s/IP2TOKEN=.*$/IP2TOKEN=$IP2TOKEN/g" $CONFIG_DIR/secrets.conf
+sed -i "s/OPENVAS_PASS=.*$/OPENVAS_PASS=$OPENVAS_PASS/g" $CONFIG_DIR/openvas.conf
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo chown root:44269 /etc/msmtprc
@@ -729,5 +734,6 @@ echo "The following secrets were used:" 1>&3
 echo "Flask SECRET_KEY: $SECRET_KEY" 1>&3
 echo "Postgres: $POSTGRES_USER:$POSTGRES_PASSWORD" 1>&3
 echo "IP2Location API Key: $IP2TOKEN" 1>&3
+echo "OpenVAS Password: $OPENVAS_PASS" 1>&3
 
 echo "BOX4security.. [ READY ]" | /usr/games/lolcat 1>&3
