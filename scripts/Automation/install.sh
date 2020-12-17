@@ -119,6 +119,9 @@ function create_and_changePermission() {
   sudo chown -R root:44269 $1
   sudo chmod 760 -R $1
 }
+function genSecret() {
+    echo `tr -dc A-Za-z0-9 </dev/urandom | head -c 24`
+}
 
 # Lets make sure some basic tools are available
 CURL=$(which curl) || echo ""
@@ -211,6 +214,20 @@ cd $SCRIPTDIR/../../
 echo -n "Sourcing secret files.. " 1>&3
 source config/secrets/secrets.conf
 source config/secrets/db.conf
+echo "[ OK ]" 1>&3
+
+echo -n "Checking and replacing default secrets.." 1>&3
+if [[ -z $POSTGRES_PASSWORD || "$POSTGRES_PASSWORD" == "CHANGEME" ]]; then
+    POSTGRES_PASSWORD=`genSecret`
+fi
+if [[ -z $IP2TOKEN || "$IP2TOKEN" == "GET_ME_FROM_IP2LOCATION.COM" ]]; then
+    echo "[ FAIL ]" 1>&3
+    echo "Installation requires a token from https://lite.ip2location.com. Enter code in config/secrets/secrets.conf. Exiting.." 1>&3 
+fi
+source config/secrets/web.conf
+if [[ -z $SECRET_KEY || "$SECRET_KEY" == "CHANGEME" ]]; then
+    SECRET_KEY=`genSecret`
+fi
 echo "[ OK ]" 1>&3
 
 # Create the user $HOST_USER only if he does not exist
@@ -454,7 +471,11 @@ cp $SCRIPTDIR/../../VERSION /var/lib/box4s/VERSION
 
 # Copy config files
 cd $SCRIPTDIR/../../
-sudo cp config/secrets/* /etc/box4s/
+sudo cp config/secrets/* $CONFIG_DIR
+sed -i "s/SECRET_KEY=.*$/SECRET_KEY=$SECRET_KEY/g" $CONFIG_DIR/web.conf
+sed -i "s/DATABASE_URL=.*$/DATABASE_URL=postgresql:\/\/$POSTGRES_USER:$POSTGRES_PASSWORD@db:$POSTGRES_PORT\/$POSTGRES_DB/g" $CONFIG_DIR/web.conf
+sed -i "s/POSTGRES_PASSWORD=.*$/POSTGRES_PASSWORD=$POSTGRES_PASSWORD/g" $CONFIG_DIR/db.conf
+
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo chown root:44269 /etc/msmtprc
@@ -701,5 +722,10 @@ echo "[ suricata ] " 1>&3
 echo -n "Cleaning up.. " 1>&3
 sudo apt-fast autoremove -y
 echo " [ OK ] " 1>&3
+
+echo "The following secrets were used:" 1>&3
+echo "Flask SECRET_KEY: $SECRET_KEY" 1>&3
+echo "Postgres: $POSTGRES_USER:$POSTGRES_PASSWORD" 1>&3
+echo "IP2Location API Key: $IP2TOKEN" 1>&3
 
 echo "BOX4security.. [ READY ]" | /usr/games/lolcat 1>&3
