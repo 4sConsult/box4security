@@ -222,7 +222,9 @@ if [[ -z $POSTGRES_PASSWORD || "$POSTGRES_PASSWORD" == "CHANGEME" ]]; then
 fi
 if [[ -z $IP2TOKEN || "$IP2TOKEN" == "GET_ME_FROM_IP2LOCATION.COM" ]]; then
     echo "[ FAIL ]" 1>&3
-    echo "Installation requires a token from https://lite.ip2location.com. Enter code in config/secrets/secrets.conf. Exiting.." 1>&3 
+    echo "Installation requires a token for IP2Location. Go to https://lite.ip2location.com now and enter an API token below." 1>&3 
+    echo "Tokens are not validated on this end. Make sure the entered token is correct, otherwise the installation WILL fail." 1>&3 
+    read -p "IP2Location API Token:" $IP2TOKEN 1>&3 
 fi
 source config/secrets/web.conf
 if [[ -z $SECRET_KEY || "$SECRET_KEY" == "CHANGEME" ]]; then
@@ -475,7 +477,7 @@ sudo cp config/secrets/* $CONFIG_DIR
 sed -i "s/SECRET_KEY=.*$/SECRET_KEY=$SECRET_KEY/g" $CONFIG_DIR/web.conf
 sed -i "s/DATABASE_URL=.*$/DATABASE_URL=postgresql:\/\/$POSTGRES_USER:$POSTGRES_PASSWORD@db:$POSTGRES_PORT\/$POSTGRES_DB/g" $CONFIG_DIR/web.conf
 sed -i "s/POSTGRES_PASSWORD=.*$/POSTGRES_PASSWORD=$POSTGRES_PASSWORD/g" $CONFIG_DIR/db.conf
-
+sed .i "s/IP2TOKEN=.*$/IP2TOKEN=$IP2TOKEN/g" $CONFIG_DIR/secrets.conf
 sudo cp config/etc/etc_files/* /etc/ -R || :
 sudo cp config/secrets/msmtprc /etc/msmtprc
 sudo chown root:44269 /etc/msmtprc
