@@ -12,7 +12,7 @@ services:
      - /data/elasticsearch:/data/elasticsearch
      - /data/elasticsearch_backup:/data/elasticsearch_backup
     env_file:
-      - elasticsearch/.env.es
+      - /etc/box4s/.env.es
   kibana:
     build: kibana/.
     container_name: kibana
