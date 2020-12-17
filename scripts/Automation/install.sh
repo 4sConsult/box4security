@@ -214,9 +214,11 @@ cd $SCRIPTDIR/../../
 echo -n "Sourcing secret files.. " 1>&3
 source config/secrets/secrets.conf
 source config/secrets/db.conf
+source config/secrets/web.conf
+source config/secrets/openvas.conf
 echo "[ OK ]" 1>&3
 
-echo -n "Checking and replacing default secrets.." 1>&3
+echo -n "Checking and replacing default secrets.. " 1>&3
 if [[ -z $POSTGRES_PASSWORD || "$POSTGRES_PASSWORD" == "CHANGEME" ]]; then
     POSTGRES_PASSWORD=`genSecret`
 fi
@@ -224,13 +226,11 @@ if [[ -z $IP2TOKEN || "$IP2TOKEN" == "GET_ME_FROM_IP2LOCATION.COM" ]]; then
     echo "[ FAIL ]" 1>&3
     echo "Installation requires a token for IP2Location. Go to https://lite.ip2location.com now and enter an API token below." 1>&3 
     echo "Tokens are not validated on this end. Make sure the entered token is correct, otherwise the installation WILL fail." 1>&3 
-    read -p "IP2Location API Token:" $IP2TOKEN 1>&3 
+    read -p "IP2Location API Token:" IP2TOKEN 1>&3 
 fi
-source config/secrets/web.conf
 if [[ -z $SECRET_KEY || "$SECRET_KEY" == "CHANGEME" ]]; then
     SECRET_KEY=`genSecret`
 fi
-source config/secrets/openvas.conf
 if [[ -z $OPENVAS_PASS || "$OPENVAS_PASS" == "CHANGEME" ]]; then
     OPENVAS_PASS=`genSecret`
 fi
