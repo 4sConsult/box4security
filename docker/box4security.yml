@@ -100,7 +100,7 @@ services:
     env_file:
      - /etc/default/logstash
      - /etc/box4s/db.conf
-     - logstash/.env.ls
+     - /etc/box4s/.env.ls
     ports:
       - 9600:9600
       - 5044:5044
