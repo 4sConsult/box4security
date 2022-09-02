@@ -237,9 +237,14 @@ fi
 echo "[ OK ]" 1>&3
 
 # Create the user $HOST_USER only if he does not exist
-# The used password is known to the whole dev-team
-echo -n "Creating BOX4security user on the host.. " 1>&3
-id -u $HOST_USER &>/dev/null || sudo useradd -m -p $HOST_PASS -s /bin/bash $HOST_USER
+if ! id -u $HOST_USER &>/dev/null; then
+  echo -n "Creating BOX4security user on the host.. " 1>&3
+  sudo useradd -m -s /bin/bash $HOST_USER
+  # Generate a 24 random digit password
+  HOST_PASS=$(openssl rand -base64 24)
+  echo $HOST_PASS | sudo passwd $HOST_USER --stdin
+fi
+
 sudo usermod -aG sudo $HOST_USER
 grep -qxF "$HOST_USER ALL=(ALL) NOPASSWD: ALL" /etc/sudoers || echo "$HOST_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 cat /etc/group | grep boxforsecurity &>/dev/null || sudo addgroup --gid 44269 boxforsecurity # Create group if it does not exist
@@ -731,6 +736,9 @@ sudo apt-fast autoremove -y
 echo " [ OK ] " 1>&3
 
 echo "The following secrets were used:" 1>&3
+if [ -n "$HOST_PASS" ]; then
+  echo "$HOST_USER generated initial password: $HOST_PASS" 1>&3
+fi
 echo "Flask SECRET_KEY: $SECRET_KEY" 1>&3
 echo "Postgres: $POSTGRES_USER:$POSTGRES_PASSWORD" 1>&3
 echo "IP2Location API Key: $IP2TOKEN" 1>&3
